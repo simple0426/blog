@@ -89,14 +89,18 @@ local_search:
 # hexo命令
 * hexo init：新建一个网站。如果没有设置 folder ，Hexo 默认在目前的文件夹建立网站。
 * hexo new 文章标题：新建一篇文章
+* hexo new draft 文章标题：新建一篇草稿【或私密文章】
+  - 在source/`_`drafts目录下建立相应文件
 * hexo generate|g：生成静态文件。
 * hexo server|s 
     - -p, --port    重设端口【默认4000】
     - -s, --static  只使用静态文件
     - -l, --log 启动日记记录，使用覆盖记录格式
+    - --drafts 将草稿也显示【默认不显示草稿】
 * hexo deploy|d：部署网站。
     - -g, --generate    部署之前预先生成静态文件
 * hexo clean：清除缓存文件 (db.json) 和已生成的静态文件 (public)。
+* hexo publish 文章标题：将草稿发布为文章
 
 # FAQ
 ## 文章插入图片
