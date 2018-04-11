@@ -2,7 +2,7 @@
 title: IPC与MQ
 date: 2018-02-28 13:54:15
 tags: ['MQ']
-categories: ['基础概念']
+categories: ['python']
 ---
 # IPC通信
 进程间的通讯IPC (Inter-process communication))：指至少两个进程或线程间传送数据或信号的一些技术或方法。
