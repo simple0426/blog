@@ -67,3 +67,92 @@ Producer把消息发送给Broker来存储，那么我们就可以在消息队列
 考虑一下这个问题，如果消息消费失败后，怎么办，是等待处理这个消息呢？还是让消费者再次消费一次呢？通常情况下，采取后者的形式，因为大多数情况下，消费失败的原因在于该消息本身的原因，如果再次消费这个消息的话，还是会出现失败的情况，因此通常采取再次发送消息的方式。
 ## 回溯消费
 什么是回溯消费呢？对于已经消费成功的消息，是不是在Broker中就丢弃该消息呢？显而易见是不可能的，因此需要中间件对该功能支持，支持已经消费的信息进行时间段内的存储，等待某一刻内该消息会被重新消费的可能。
+
+# 范例
+## 队列-Queue
+* q=Queue(3) 定义队列及其大小
+* q.put() 向队列放置元素
+* q.full() 队列是否已满
+* q.empty() 队列是否为空
+* q.put_nowait() 不能放置元素直接报异常
+* q.put('4', block=False) 不能放则报异常【默认block为True】
+* q.put('4', timeout=2) 放置时最多等待2s，超时则报异常
+
+## 队列-JoinableQueue
+>和Queue方法类似，但是JoinableQueue消费者消费完时必须向生产者发送信号，生产者必须等待消费者消费完成时发送的信号
+
+* JoinableQueue.task_done()：向生产者发送已消费的信号
+* JoinableQueue.join()：等待消费者发送已消费的信号
+
+```python
+from multiprocessing import Process, Queue, Pool, Manager, JoinableQueue
+import os, time, random
+
+def write(seq, q):
+    print('Process to write: %s' % os.getpid())
+    for value in seq:
+        time.sleep(random.randint(1, 3))
+        print('put %s to queue...' % value)
+        q.put(value)
+    # (JoinableQueue下）等待消费者发送已消费的信号
+    q.join()
+
+
+def read(q):
+    print('Process to read: %s' % os.getpid())
+    while True:
+        time.sleep(random.randint(1, 3))
+        value = q.get(True)
+        # （JoinableQueue下）向生产者发送已消费的信号
+        q.task_done()
+        print('get %s from queue' % value)
+
+# 进程模式下队列使用【使用原生的queue】
+if __name__ == '__main__':
+    #q = Queue()
+    q = JoinableQueue()
+    data = list(range(5))
+    pw = Process(target=write, args=(data, q))
+    pr = Process(target=read, args=(q,))
+    # 当主进程结束时子进程也跟着结束，子进程的daemon属性必须先于start设置
+    pr.daemon = True
+    pw.start()
+    pr.start()
+    pw.join()
+    # pr.join()
+
+# 进程池模式下队列使用【使用Manager的queue】
+#if __name__ == '__main__':
+#    manager = Manager()
+#    q = manager.Queue()
+#    p = Pool()
+#    p.apply_async(write, args=(q,))
+#    p.apply_async(read, args=(q,))
+#    p.close()
+#    p.join()
+```
+
+## 共享内存空间-Manager
+```python
+from multiprocessing import Process, Manager
+import os
+
+def work(l, d):
+    l.append(os.getpid())
+    d[os.getpid()] = os.getpid()
+
+
+if __name__ == '__main__':
+    m = Manager()
+    # 由manager创建的列表和字典对象可以被所有进程操作
+    l = m.list(['init'])
+    d = m.dict({'name': 'egon'})
+    p_l = []
+    for i in range(5):
+        p = Process(target=work, args=(l, d))
+        p_l.append(p)
+        p.start()
+    for p in p_l:
+        p.join()
+    print(d, l)
+```
