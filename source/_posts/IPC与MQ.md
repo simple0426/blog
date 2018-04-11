@@ -1,5 +1,5 @@
 ---
-title: 消息队列与中间件
+title: IPC与MQ
 date: 2018-02-28 13:54:15
 tags: ['MQ']
 categories: ['基础概念']
