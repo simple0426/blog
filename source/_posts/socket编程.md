@@ -41,7 +41,7 @@ print('等待连接。。。')
 def tcplink(sock, addr):
     print('从%s:%s接受新连接' % addr)
     # 连接建立时首先向客户端发送信息
-    sock.send(b'Welcome!')
+    sock.send('Welcome!'.encode('utf-8'))
     while True:
         # 接受数据
         data = sock.recv(1024)
@@ -67,11 +67,11 @@ from socket import *
 s = socket(AF_INET, SOCK_STREAM)
 s.connect(('127.0.0.1', 9999))
 print(s.recv(1024).decode('utf-8'))
-for data in [b'Michael', b'Tracy', b'Sarah']:
-    s.send(data)
+for data in ['Michael', 'Tracy', 'Sarah']:
+    s.send(data.encode('utf-8'))
     print(s.recv(1024).decode('utf-8'))
 
-s.send(b'exit')
+s.send('exit'.encode('utf-8'))
 s.close()
 ```
 
@@ -92,8 +92,8 @@ while True:
 ```python
 from socket import *
 s = socket(AF_INET, SOCK_DGRAM)
-for data in [b'Michael', b'Tracy', b'Sarah']:
-    s.sendto(data, ('127.0.0.1', 9999))
+for data in ['Michael', 'Tracy', 'Sarah']:
+    s.sendto(data.encode('utf-8'), ('127.0.0.1', 9999))
     print(s.recv(1024).decode('utf-8'))
 s.close()
 ```
