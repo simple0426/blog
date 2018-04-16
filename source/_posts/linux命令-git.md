@@ -94,3 +94,7 @@ categories: ['command']
     - git merge dev
 * init：将普通目录初始化为版本库
 * .gitignore 配置.gitignore文件忽略部分文件或目录的变更
+
+# FAQ
+## git中文数字类型乱码
+git config –global core.quotepath false
