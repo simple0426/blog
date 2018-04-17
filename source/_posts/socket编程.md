@@ -98,8 +98,8 @@ for data in ['Michael', 'Tracy', 'Sarah']:
 s.close()
 ```
 
-# 范例
-## 模拟远程登录服务端
+# 模拟远程执行命令
+## 服务端
 ```python
 from socket import *
 import threading
@@ -146,7 +146,7 @@ if __name__ == '__main__':
         t.start()
 ```
 
-## 模拟远程登录客户端
+## 客户端
 ```python
 from socket import *
 import time
