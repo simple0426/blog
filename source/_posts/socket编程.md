@@ -97,3 +97,70 @@ for data in ['Michael', 'Tracy', 'Sarah']:
     print(s.recv(1024).decode('utf-8'))
 s.close()
 ```
+
+# 范例
+## 模拟远程登录服务端
+```python
+from socket import *
+import threading
+import subprocess
+
+s = socket(AF_INET, SOCK_STREAM)
+s.bind(('127.0.0.1', 10000))
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+s.listen(5)
+print('端口正在监听。。。')
+
+def tcplink(sock, addr):
+    while True:
+        try:
+            cmd = sock.recv(1024)
+            if not cmd:
+                break
+            # print(cmd.decode())
+            res = subprocess.Popen(cmd.decode('utf-8'), shell=True,
+                                   stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            res_err = res.stderr.read()
+            res_std = res.stdout.read()
+            if res_err:
+                # print('err')
+                cmd_out = res_err
+            # 假如执行命令结果为空
+            elif not res_std:
+                cmd_out = 'ok'.encode('utf-8')
+            else:
+                # print('std')
+                cmd_out = res_std
+            print(cmd_out)
+            sock.send(cmd_out)
+        except Exception:
+            break
+    sock.close()
+    print('来自%s:%s的连接已关闭' % addr)
+
+if __name__ == '__main__':
+    while True:
+        sock, addr = s.accept()
+        print('已接受来自%s:%s的连接' % addr)
+        t = threading.Thread(target=tcplink, args=(sock, addr))
+        t.start()
+```
+
+## 模拟远程登录客户端
+```python
+from socket import *
+import time
+s = socket(AF_INET, SOCK_STREAM)
+s.connect(('127.0.0.1', 10000))
+while True:
+    cmd = input('>>>').strip()
+    if not cmd:
+        continue
+    elif cmd == 'exit':
+        break
+
+    s.send(cmd.encode('utf-8'))
+    cmd_out = s.recv(1024)
+    print(cmd_out.decode('utf-8'))
+s.close()
+```
