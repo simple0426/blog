@@ -98,3 +98,19 @@ categories: ['command']
 # FAQ
 ## git中文数字类型乱码
 git config –global core.quotepath false
+
+## 强制放弃本地修改和增加的文件
+>此时，本地修改“多于”远程库
+
+* git checkout . 放弃修改
+* git clean -xdf 删除未追踪文件
+
+## 强制本地与远程版本库保持一致
+>此时本地与远程库的均有修改
+
+* git fetch --all  取回远程端所有【分支】修改，但不和本地合并
+* git reset --hard origin/master 
+    - 将版本强制设置到origin/master【远程master】这个分支的最新代码
+    - 放弃本地所有修改等操作，保持与远程代码库的一致
+* git pull 与远程分支保持同步
+
