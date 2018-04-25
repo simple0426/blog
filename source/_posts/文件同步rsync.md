@@ -2,7 +2,7 @@
 title: 文件同步rsync
 date: 2018-02-26 16:09:38
 tags: ['rsync']
-categories: ['software']
+categories: ['linux']
 ---
 # name
 * 远程同步：remote synchronization

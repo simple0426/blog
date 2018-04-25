@@ -2,7 +2,7 @@
 title: linux命令-git
 date: 2018-02-26 16:18:04
 tags: ['git']
-categories: ['command']
+categories: ['linux']
 ---
 # 状态迁移
 版本库=》工作区=》暂存区=》版本库

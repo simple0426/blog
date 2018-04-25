@@ -2,7 +2,7 @@
 title: linux实用命令
 date: 2018-04-16 10:15:24
 tags: ['技巧']
-categories: ['command']
+categories: ['linux']
 ---
 
 # nc

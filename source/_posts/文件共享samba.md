@@ -2,7 +2,7 @@
 title: 文件共享samba
 date: 2018-02-26 16:09:59
 tags: ['samba']
-categories: ['software']
+categories: ['linux']
 ---
 # 安装samba软件
 

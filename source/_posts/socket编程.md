@@ -2,6 +2,7 @@
 title: socket编程
 tags:
   - socket
+  - 粘包
 categories:
   - python
 date: 2018-03-12 11:47:40

@@ -3,7 +3,7 @@ title: 部署工具fabric
 tags:
   - fabric
 date: 2018-04-20 16:52:38
-categories: ['python']
+categories: ['linux']
 ---
 # 命令行选项
 * -l 显示任务名称

@@ -2,7 +2,7 @@
 title: linux命令-find
 date: 2018-02-26 16:17:49
 tags: ['find']
-categories: ['command']
+categories: ['linux']
 ---
 # 功能说明
 在指定的目录下搜索特定的文件
