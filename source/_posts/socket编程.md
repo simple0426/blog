@@ -98,40 +98,70 @@ for data in ['Michael', 'Tracy', 'Sarah']:
 s.close()
 ```
 
-# 模拟远程执行命令
-## 服务端
+# 粘包与分包
+>[参考][2]
+## 粘包
+* 简单描述：发送方发送两个字符串”hello”+”world”，接收方却一次性接收到了”helloworld”。
+* 产生原因：有时候，TCP为了提高网络的利用率，会使用一个叫做Nagle的算法。该算法是指，发送端即使有要发送的数据，如果很少的话，会延迟发送。如果应用层给TCP传送数据很快的话，就会把两个应用层数据包“粘”在一起，TCP最后只发一个TCP数据包给接收端。
+
+## 分包
+* 简单描述：发送方发送字符串”helloworld”，接收方却接收到了两个字符串”hello”和”world”。
+* 产生原因：由于[MTU和MSS][1]的长度限制
+
+# 范例
+## 思路解读【粘包处理】
+* 设置数据的属性信息比如版本、md5、长度为报头信息
+* 【发送】将报头信息的长度发送给接收方【struct】
+    - struct用于python【str，int】和c【struct】之间的数据类型转换
+    - 此处struct将要发送的【数据长度】打包成固定长度的bytes对象发送给接收方
+* 【接收方】接收固定长度的数据【struct】，解析出报头长度
+* 【发送】发送报头信息
+* 【接收方】根据报头长度接收报头信息
+* 【发送】发送数据
+* 【接收方】根据报头信息接收数据信息
+
+## 模拟远程执行命令服务端
 ```python
 from socket import *
 import threading
 import subprocess
+import struct
+import hashlib
+import json
 
 s = socket(AF_INET, SOCK_STREAM)
-s.bind(('127.0.0.1', 10000))
-# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+s.bind(('0.0.0.0', 9999))
 s.listen(5)
 print('端口正在监听。。。')
 
 def tcplink(sock, addr):
     while True:
         try:
-            cmd = sock.recv(1024)
-            if not cmd:
-                break
-            # print(cmd.decode())
-            res = subprocess.Popen(cmd.decode('utf-8'), shell=True,
-                                   stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            data = sock.recv(1024)
+            print(data.decode('utf-8'))
+            res = subprocess.Popen(data.decode('utf-8'), shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
             res_err = res.stderr.read()
             res_std = res.stdout.read()
             if res_err:
-                # print('err')
                 cmd_out = res_err
-            # 假如执行命令结果为空
             elif not res_std:
                 cmd_out = 'ok'.encode('utf-8')
             else:
-                # print('std')
                 cmd_out = res_std
-            print(cmd_out)
+            head = {
+                'ver': '1',
+                'md5': hashlib.md5(cmd_out).hexdigest(),
+                'lenth': len(cmd_out)
+            }
+            head_json = json.dumps(head)
+            head_bytes = head_json.encode('utf-8')
+            print(head_bytes)
+            # 发送报头长度
+            sock.send(struct.pack('i', len(head_bytes)))
+            # 发送发送报头
+            sock.send(head_bytes)
+            # 发送数据
             sock.send(cmd_out)
         except Exception:
             break
@@ -145,22 +175,42 @@ if __name__ == '__main__':
         t = threading.Thread(target=tcplink, args=(sock, addr))
         t.start()
 ```
-
-## 客户端
+## 模拟远程执行命令客户端
 ```python
 from socket import *
-import time
-s = socket(AF_INET, SOCK_STREAM)
-s.connect(('127.0.0.1', 10000))
+import struct
+import json
+
+t = socket(AF_INET, SOCK_STREAM)
+t.connect(('10.10.10.100', 9999))
+
 while True:
     cmd = input('>>>').strip()
     if not cmd:
         continue
     elif cmd == 'exit':
         break
-
-    s.send(cmd.encode('utf-8'))
-    cmd_out = s.recv(1024)
-    print(cmd_out.decode('utf-8'))
-s.close()
+    else:
+        t.send(cmd.encode('utf-8'))
+        # 接收报头长度
+        head_info = t.recv(4)
+        head_len = struct.unpack('i', head_info)[0]
+        # 接收报头
+        head_bytes = t.recv(head_len)
+        head_json = head_bytes.decode('utf-8')
+        head_dict = json.loads(head_json)
+        data_len = head_dict['lenth']
+        print(head_dict)
+        # 接收数据
+        data_buffers = bytes()
+        recv_size = 0
+        while recv_size < data_len:
+            recv_data = t.recv(1024)
+            data_buffers+=recv_data
+            recv_size+=len(recv_data)
+        print(data_buffers.decode('utf-8'))
+t.close()
 ```
+
+[1]:https://blog.csdn.net/keyouan2008/article/details/5843388
+[2]: https://blog.csdn.net/yannanxiu/article/details/52096465
