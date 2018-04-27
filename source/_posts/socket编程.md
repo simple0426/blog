@@ -99,6 +99,32 @@ for data in ['Michael', 'Tracy', 'Sarah']:
 s.close()
 ```
 
+# socketserver编程
+* SocketServer模块简化了编写网络服务程序的任务。同时SocketServer模块也 是Python标准库中很多服务器框架的基础。
+* socketserver中包含了两种类，
+    -  一种为服务类（server class），它提供了许多方法：像绑定，监听，运行…… （也就是建立连接的过程）
+    -  一种为请求处理类（request handle class），则专注于如何处理用户所发送的数据（也就是事务逻辑）。
+* 范例【服务端】
+
+```python
+import socketserver
+import time
+
+class Myhandler(socketserver.BaseRequestHandler):
+    # 数据处理
+    def handle(self):
+        # while True:
+        res = self.request.recv(1024)
+        if res:
+            msg = res.decode('utf-8')
+            print('client:%s msg:%s' % (self.client_address, res))
+
+if __name__ == '__main__':
+    # 连接循环
+    s = socketserver.ThreadingTCPServer(('127.0.0.1', 9999), Myhandler)
+    s.serve_forever()
+```
+
 # 粘包与分包
 >[参考][2]
 ## 粘包
