@@ -1,18 +1,22 @@
 ---
 title: python之类的学习
-tags: ['class']
-categories: ['python']
+tags:
+  - class
+categories:
+  - python
+date: 2018-05-07 15:08:57
 ---
+
 # 概念
 ## 面向对象
-* 面向过程：面向过程的程序设计把计算机程序视为一系列的命令集合，即即一组函数的顺序执行
+* 面向过程：面向过程的程序设计把计算机程序视为一系列的命令集合，即一组函数的顺序执行
 * 面向对象：面向对象的程序设计把计算机程序视为一组对象的集合，而每个对象都可以接收并处理其他对象发送的消息，程序的执行即为一系列消息在各个对象之间的传递
     - 在python中一切皆为对象，对象包括数据（属性）和操作数据的函数（方法）
-    - object是一个基类或元类，在python2中集成object为新式类，否则为经典类；python3中默认都是新式类（无论是否明写object）
+    - object是一个基类或元类，在python2中继承object为新式类，否则为经典类；python3中默认都是新式类（无论是否明写object）
     - 类的三大特性：数据[封装](#封装)、[继承](#继承)、[多态](#多态)
 
 ## 封装
-* 类的属性和方法可以共用一套数据【例如echo方法中可以调用age属性的值】
+* 类的属性和方法可以共用一套数据【例如下例中农echo方法中可以调用age属性的值】
 * 在python中，以双下划线开头同时以双下划线结尾的是特殊变量，可以直接访问
 * 以下划线开头的是私有变量：单下划线开头的变量在导入类时会被忽略，双下划线是类的私有变量
 
@@ -30,7 +34,7 @@ person1.echo()
 
 ## 多态
 * 是指由继承而产生的相关的不同类，这些类的实例对象会对同一消息作出不同的响应
-* 狗和鸡都有“叫()”这一方法，但是调用狗的“叫()”，狗会吠叫；调用鸡的“叫()”，鸡则会啼叫。
+* 例如：狗和鸡都有“叫”这一方法，但是调用狗的“叫”，狗会吠叫；调用鸡的“叫”，鸡则会啼叫。
 
 ## 继承
 ```python
@@ -46,7 +50,7 @@ dog = Dog()
 dog.run()
 ```
 ### 多重继承
-在进行主线继承的同时，需要“混入”额外的功能，通过多重继承既可以实现，这种设计模式即为Mixin
+在进行主线继承的同时，需要“混入”额外的功能，这可以通过多重继承来实现，这种设计模式即为Mixin
 
 ```python
 class Animal(object):
@@ -64,7 +68,7 @@ class Dog(Mammal, Runnable):
 ```
 ### MRO
 * MRO即method resolution order，主要用于在多重继承时判断方法的调用路径（来自哪个类）
-* 在新式类中，查找一个要调用的函数或属性时，是广度优先搜索的。范例如下：
+* 在新式类中，查找一个要调用的函数或属性时，采用广度优先原则。范例如下：
 
 ```python
 class D(object):
@@ -82,7 +86,7 @@ f = A()
 f.foo()
 输出：               class C
 ```
-### super
+### Super
 【只能用于新式类】从运行结果上看，普通继承和super继承是一样的。但是其实他们的内部运行机制不一样，这一点在多重继承时体现得很明显。在super机制里可以保证公共父类仅被执行一次，至于执行顺序，则是按照MRO进行。
 
 ```python
@@ -103,8 +107,8 @@ self指代类的实例
 ```
 
 ## 开闭原则
-* 开闭原则是面向对象设计中“可复用设计”的基石
 * 对功能组件扩展开放、对源代码修改封闭
+* 开闭原则是面向对象设计中“可复用设计”的基石
 
 ## 鸭子类型
 * 鸭子类型是动态类型的一种风格。在这种风格中，一个对象的有效语义不是由继承自特定的类或实现特定的接口来决定，而是由当前的方法和属性的集合决定
@@ -123,7 +127,7 @@ class chinese(object):
         print('%s is chinese' % self.name)
 ```
 ## 类属性
-* 在类中定义的变量,country即为类属性
+* 在类中定义的变量,上例中country即为类属性
 * 既可以在类中，也可以在实例中调用
 
 ## property
@@ -154,7 +158,7 @@ del s.score
 print(s.score)
 ```
 
-## 动态设置实例属性
+## 动态属性
 ```python
 class person():
     # 限制给实例添加的属性
@@ -167,7 +171,7 @@ class person():
         print('%s:%s' % (self.name, self.age))
 
 p = person('he', 18)
-# 1）使用setattr添加属性【getattr获取hasattr判断delattr删除】
+# 1）使用setattr添加属性【getattr获取/hasattr判断/delattr删除】
 # setattr(p, 'height', 16)
 # 2）直接添加属性
 p.score = 32
@@ -275,23 +279,23 @@ print(test1)
 * 包含类的名称空间【包含属性和方法的集合】
 
 ## `__init__`
-* 通过`__init__`方法可以给实例绑定属性，而勒种的其他函数则给实例绑定方法
+* 通过`__init__`方法可以给实例绑定属性，而类的其他函数则给实例绑定方法
 * 它是一个特殊的函数，在类实例化时首先执行，并且此函数不能有返回值
 * self指代实例本身
 
 ## `__init__`
 * 打印实例对象时触发此方法的执行
 * 此方法只能返回字符串
-* PS：在命令行直接显示变量，调用的`__repr__`方法
+* PS：在命令行直接显示变量，调用的是`__repr__`方法
 
 ## `__del__`
 * 当实例对象被解释器回收或主动删除实例对象时触发此方法执行
 
-## `__setitem__|__getitem__|__delitem__`
+## `__setitem__`
 * 以字典形式设置（获取、删除）类的属性时触发方法的执行
-* 这3种方法和【setattr、getattr、delattr】函数具有相同功能
+* 这3种方法【setitem、getitem、delitem】和【setattr、getattr、delattr】函数具有相同功能
 
-## `__setattr__|__delattr__`
+## `__setattr__`
 ** 以属性形式设置或删除类的属性 **
 
 ```python
@@ -344,7 +348,7 @@ obj.close()
 
 ## `__iter__|__next__`
 * 如果一个类实现了iter和next方法，那么他就实现了迭代器协议，它就是一个迭代器
-* 如下的类实现了迭代器协议，就可以被用于for...in循环
+* 如下的类实现了迭代器协议【因此就可以被用于for...in循环】
 * for循环通过next方法获取循环的下一个值，直到遇到StopIteration错误时退出循环
 
 ```python
@@ -366,8 +370,8 @@ for n in Foo():
 
 ## `__enter__|__exit__`
 * enter和exit用于上下文管理（with）
-* enter方法用于进入的处理，直接返回对象本身，当使用as后实现f=self.f效果
-* exit方法用于出的处理，exc_type为异常类型，exc_value异常的值，exc_tb为异常的追踪
+* enter方法用于入口的处理，直接返回对象本身，当使用as后实现f=self.f效果
+* exit方法用于出口的处理，exc_type为异常类型，exc_value异常的值，exc_tb为异常的追踪
 * exit方法必须返回True以保证with代码块的异常不会影响其他代码的执行
 
 ```python
@@ -412,3 +416,59 @@ class Student:
 s = Student('Michael')
 s()
 ```
+
+# 元类
+## 创建类
+* 使用type创建类和直接写class完全一样，因为python解释器遇到class定义时，仅仅是扫描class定义的语法，然后调用type创建class
+* 语法：type(name, bases, dict) -> a new type
+    - class的名称，字符串形式
+    - 继承的父类集合，由于python支持多重继承，所以此处为元组形式
+    - 包含的属性或方法的字典
+
+## exec函数
+>读取字符串中的python代码并执行
+
+* 表达式：exec(object[, globals[, locals]])
+* 参数1：python代码形式字符串对象
+* 参数2：语句执行的全局作用域【下例：复用已存在的globals获取全局变量字典】
+* 参数3：语句执行的本地作用域【下例：将函数的执行结果使用字典接收】
+
+## type与class对比
+* 使用type
+
+```python
+class_name = 'chinese'
+class_base = (object,)
+class_body = """
+def __init__(self, name):
+    self.name = name
+def print_info(self):
+    print(self.name)
+"""
+class_dict = {}
+exec(class_body, globals(), class_dict)
+
+chinese = type(class_name, class_base, class_dict)
+p = chinese('he')
+p.print_info()
+```
+
+* 使用class
+
+```python
+class chinese:
+    def __init__(self, name):
+        self.name = name
+
+    def print_info(self):
+        print(self.name)
+```
+
+## 元类扩展阅读
+* [python中type和object关系][1]
+* [使用元类实现自定义ORM框架][2]
+* [瞎驴讲解元类][3]
+
+[1]:https://www.zhihu.com/question/38791962
+[2]:https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000#0
+[3]: http://www.cnblogs.com/linhaifeng/articles/6204014.html
