@@ -1,6 +1,7 @@
 ---
 title: 类unix颜色输出
 tags: ['颜色']
+categories:
 ---
 ## 简介
 >[参考](https://www.cnblogs.com/crabxx/p/4046498.html)

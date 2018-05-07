@@ -1,6 +1,7 @@
 ---
 title: 版本管理之svn
 tags: ['svn']
+categories:
 ---
 # 安装与部署
 [参考][1]
