@@ -154,7 +154,7 @@ def foo(s):
 foo('0')
 ```
 
-# assert
+## assert
 如果第一个条件为假时，抛出第二个语句
 
 ```python
