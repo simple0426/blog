@@ -1,5 +1,5 @@
 ---
-title: 数据类型
+title: python之数据类型
 date: 2018-05-07 18:02:12
 tags: ['数据类型']
 categories: ['python']
