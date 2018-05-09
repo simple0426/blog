@@ -1,8 +1,12 @@
 ---
 title: python之函数学习
-tags: ['函数']
-categories: ['python']
+tags:
+  - 函数
+categories:
+  - python
+date: 2018-05-09 16:23:13
 ---
+
 # 函数定义
 ## 名称空间
 * 内置名称空间：python解释器自带的名字所在的空间
@@ -32,7 +36,7 @@ categories: ['python']
 
 ## 参数
 >位置参数必须在关键词参数之前
-## 位置参数
+### 位置参数
 * 是必选参数
 * 按位置赋值
 
@@ -141,7 +145,7 @@ bar(1,2,3,4, x='a', y='g')
 * 使用递归函数需要防止栈溢出。在计算机中，函数调用是通过栈【stack】这种数据结构实现的，每当进入一个函数调用，栈就会增加一层栈帧。每当函数返回，栈就会减少一层栈帧。由于栈的大小不是无限的，所以递归调用的次数过多就会导致栈溢出。
 * 尾递归可以解决递归栈溢出，但由于python解释器没有对尾递归做优化，依然会存在栈溢出，只要保证函数嵌套不超过100一般就没问题。
 
-## 范例（汉诺塔）
+### 范例（汉诺塔）
 把圆盘从下面开始按大小顺序重新摆放到另一根柱子上。并且规定，在小圆盘上不能放大圆盘，在三根柱子之间一次只能移动一个圆盘。
 
 ```python
@@ -244,3 +248,109 @@ print(sorted(student_tuple, key=lambda student:student[2]))
 ```
 
 # 闭包
+* 定义在函数内部的函数，它包含对外部作用域而非全局作用域的引用，该内部函数就是闭包函数
+* 一个闭包就是你调用了函数A，这个函数A返回了一个函数B给你，这个返回的函数B就是闭包；调用函数A传递的参数就是自由变量
+
+```python
+def funcA():
+    x = 1
+    def funcB():
+        print(x) #可以引用外部作用域的变量x
+    return funcB
+f = funcA()
+f()
+```
+```python
+from urllib.request import urlopen
+def index(url):
+    def get():
+        return urlopen(url).read()
+    return get
+res = index('https://blog.unforget.cn')
+print(res().decode('utf-8'))
+```
+
+# 装饰器
+## 作用
+符合开闭原则：对源代码修改封闭，对功能扩展开放
+## 语法
+>多个装饰器，从上往下依次执行，从下往上依次装饰
+
+|           写法          |                                      使用decorator                                       |                                          不使用decorator                                          |
+|-------------------------|------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| 单个Decorator，不带参数 | @dec<br>def method(args):<br>&emsp;pass                                                  | def method(args):<br>&emsp;pass<br>method = dec(method)                                           |
+| 多个Decorator，不带参数 | @dec_a<br>@dec_b<br>@dec_c<br>def method(args):<br>&emsp;pass                            | def method(args):<br>&emsp;pass<br>method = dec_a(dec_b(dec_c(method)))                           |
+| 单个Decorator，带参数   | @dec(params)<br>def method(args):<br>&emsp;pass                                          | def method(args):<br>&emsp;pass<br>method = dec(params)(method)                                   |
+| 多个Decorator，带参数   | @dec_a(params1)<br>@dec_b(params2)<br>@dec_c(params3)<br>def method(args):<br>&emsp;pass | def method(args):<br>&emsp;pass<br>method = dec_a(params1)(dec_b(params2)(dec_c(params3)(method))) |
+
+## 范例
+### 无参装饰器
+```python
+import time, functools
+def timmer(func):
+    # 添加此装饰器后可保持原函数属性不变
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        func(*args, **kwargs)  #index()
+        end_time = time.time()
+        print('run time is %s' % (end_time - start_time))
+    return wrapper
+
+@timmer  #timmer(index)
+def index():
+    time.sleep(3)
+    print('welcome!')
+
+@timmer
+def index1(args):
+    time.sleep(3)
+    print('%s' % args)
+index()
+index1('test')
+```
+### 有参装饰器
+```python
+import time
+def log(text):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            print('%s %s' % (text, func.__name__))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+@log('execute')
+def now():
+    print(time.time())
+now()
+print(now.__name__)
+```
+### 装饰器的叠加
+```python
+def decorator_a(func):
+    print('Get in decorator_a')
+    def inner_a(*args, **kwargs):
+        print('Get in inner_a')
+        return func(*args, **kwargs)
+    return inner_a
+
+def decorator_b(func):
+    print('Get in decorator_b')
+    def inner_b(*args, **kwargs):
+        print('Get in inner_b')
+        return func(*args, **kwargs)
+    return inner_b
+
+@decorator_a
+@decorator_b
+def f(x):
+    print('Get in f')
+    return x * 2
+# 函数定义阶段，decorator_b将f作为参数，取得“Get in decorator_b”
+# decorator_a把decorator_b作为参数，取得"Get in decorator_a"
+f(1)
+# 函数调用阶段，执行等同于decorator_a(decorator_b(f(1))),
+# 依次执行decorator_a，decorator_b，f,取得“Get in inner_a”、“ Get in inner_b”“Get in f”
+```
+
+
