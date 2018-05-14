@@ -1,5 +1,5 @@
 ---
-title: 字符串操作
+title: python数据类型之字符串
 tags:
   - 编码
   - 格式化

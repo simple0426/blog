@@ -1,5 +1,5 @@
 ---
-title: 迭代器和生成器
+title: python函数之迭代器
 date: 2018-03-02 10:18:09
 tags: ['迭代器', '生成器']
 categories: ['python']

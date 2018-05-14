@@ -1,5 +1,5 @@
 ---
-title: python之类的学习
+title: python类
 tags:
   - class
 categories:

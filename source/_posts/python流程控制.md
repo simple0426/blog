@@ -1,5 +1,5 @@
 ---
-title: python之流程控制
+title: python流程控制
 tags:
   - 流程控制
 categories:

@@ -1,5 +1,5 @@
 ---
-title: harbor单节点安装与配置
+title: 虚拟化之harbor学习
 date: 2018-03-20 16:39:21
 tags: ['harbor']
 categories: ['docker']
@@ -10,7 +10,7 @@ categories: ['docker']
 * 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能
 * harbor镜像的复制是通过docker registry 的API去拷贝
 ## 架构
-![](harbor单节点安装与配置/schema.jpg)
+![](虚拟化之harbor学习/schema.jpg)
 
 * 主要组件包括proxy，他是一个nginx前端代理，主要是分发前端页面ui访问和镜像上传和下载流量，上图中通过深蓝色先标识；
 * ui提供了一个web管理页面，当然还包括了一个前端页面和后端API，底层使用mysql数据库；
@@ -32,7 +32,7 @@ categories: ['docker']
 * 当然harbor功能不止我上面说的，譬如harbor集成了clair镜像扫描功能，它是cereos开发的一款漏洞扫描工具，可以检查镜像操作系统以及上面安装包是否与已知不安全的包版本相匹配，从而提高镜像安全性
 
 ### harbor高可用
-![](harbor单节点安装与配置/ha.jpg)
+![](虚拟化之harbor学习/ha.jpg)
 
 # 安装
 >[安装参考][6]

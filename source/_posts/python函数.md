@@ -1,5 +1,5 @@
 ---
-title: python之函数学习
+title: python函数
 tags:
   - 函数
 categories:

@@ -1,5 +1,5 @@
 ---
-title: 进程通信与消息队列
+title: python网络编程之进程通信
 date: 2018-02-28 13:54:15
 tags: ['MQ', 'IPC', '消息队列']
 categories: ['python']

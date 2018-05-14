@@ -1,7 +1,7 @@
 ---
-title: 进程和线程
+title: python网络编程之进程
 date: 2018-03-02 14:25:00
-tags: ['进程', '线程', 'IPC']
+tags: ['进程', '线程', 'IPC', '协程', 'gevent']
 categories: python
 ---
 # 进程与线程
@@ -270,6 +270,129 @@ t1.start()
 t2.start()
 t1.join()
 t2.join()
+```
+
+# 协程
+* 对于多线程应用，cpu通过切片的方式来切换线程间的执行，线程切换需要耗时【保存上下文】
+* 协程则只使用一个线程，在一个线程中规定某个代码块的执行顺序
+
+## 生成器实现
+>生产者和消费者在同一进程中的使用范例
+
+```python
+import time
+
+def consumer():
+    r = ''
+    while True:
+        n = yield r
+        if not n:
+            return
+        print('[消费者] 正在消费 %s...' % n)
+        time.sleep(1)
+        r = '200 OK'
+
+def produce(c):
+    next(c)
+    n = 0
+    while n < 5:
+        n = n + 1
+        print('[生产者] 正在生产 %s...' % n)
+        r = c.send(n)
+        print('[生产者] 消费返回：%s' % r)
+    c.close()
+
+if __name__ == '__main__':
+    c = consumer()
+    produce(c)
+
+# 范例详解
+生产者中：
+n = 1
+生产1
+消费者中：
+向yield传值1后，n为1
+消费1
+消费者返回r 为‘200 ok’
+生产者中：
+接受消费者的返回值r为‘200 ok’
+```
+
+## gevent实现
+* gevent是第三方库，通过greenlet实现协程
+* 当一个greenlet遇到IO操作时，比如访问网络，就会自动切换到其他的greenlet，等待IO操作完成，再在适当的时候切换回来继续执行
+* 由于IO操作非常耗时，经常处于等待状态，有了gevent为我们自动切换协程，就保证总有greenlet在运行，而不是等待IO
+* 由于gevent是基于IO切换的协程，所以最神奇的是，我们编写的Web App代码，不需要引入gevent的包，也不需要改任何代码，仅仅在部署的时候，用一个支持gevent的WSGI服务器，立刻就获得了数倍的性能提升。
+
+```python
+# 创建一个协程对象g1，spawn括号内第一个参数是函数名，如eat，后面可以有多个参数，可以是位置实参或关键字实参，都是传给函数eat的
+g1=gevent.spawn(func,1,,2,3,x=4,y=5)
+g2=gevent.spawn(func2)
+# 等待g1结束
+g1.join() 
+# 等待g2结束
+g2.join() 
+# 或者上述两步合作一步：gevent.joinall([g1,g2])
+# 拿到func1的返回值
+g1.value
+```
+
+## gevent范例
+* 基本使用
+
+```python
+from gevent import monkey;monkey.patch_all()
+import gevent
+import time
+
+def eat(name):
+    print('%s eat 1' % name)
+    # 模拟IO阻塞
+    ''' 
+    在gevent模块里面要用gevent.sleep(2)表示等待的时间
+    然而我们经常用time.sleep()用习惯了，那么有些人就想着
+    可以用time.sleep()，那么也不是不可以。要想用，就得在
+    最上面导入from gevent import monkey;monkey.patch_all()这句话
+    如果不导入直接用time.sleep()，就实现不了单线程并发的效果了
+    '''
+    time.sleep(2)
+    print('%s eat 2' % name)
+    return 'eat'
+
+def play(name):
+    print('%s play 1' % name)
+    time.sleep(1)
+    print('%s play 2' % name)
+    return 'play'
+
+start = time.time()
+g1 = gevent.spawn(eat, 'egon')
+g2 = gevent.spawn(play, 'alex')
+gevent.joinall([g1, g2])
+print('主', time.time() - start)
+print(g1.value)
+print(g2.value)
+```
+
+* 爬虫的使用
+
+```python
+import time
+
+def get_page(url):
+    print('get :%s' % url)
+    response = requests.get(url)
+    if response.status_code == 200:
+        print('%d bytes received from:%s' % (len(response.text), url))
+
+start = time.time()
+gevent.joinall([
+    gevent.spawn(get_page, 'http://www.baidu.com'),
+    gevent.spawn(get_page, 'https://www.yahoo.com'),
+    gevent.spawn(get_page, 'https://github.com'),
+])
+stop = time.time()
+print('run time is %s' % (stop - start))
 ```
 
 # 参考

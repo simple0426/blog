@@ -3,7 +3,7 @@ title: mysql数据操作
 tags:
   - mysql
 categories:
-  - DataBase
+  - database
 date: 2018-05-14 16:13:01
 ---
 
