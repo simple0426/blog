@@ -4,7 +4,8 @@ tags:
   - 颜色
   - 光标
 date: 2018-05-28 11:16:15
-categories:
+categories: 
+    - linux
 ---
 
 # ANSI转义序列
