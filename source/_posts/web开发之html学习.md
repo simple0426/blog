@@ -29,6 +29,7 @@ date: 2018-06-03 22:08:16
 * 自闭和标签：只有开始的标志，如：`<meta charset="utf-8">|<img src="">`
 * 块级别标签：显示效果为独占一行，如`<h1></h1><div></div><p></p>`
 * 内联标签：显示效果取决于内容长度，如`<label></label><span></span><img src="">`
+    - 助记：span = 跨度
 
 ## 嵌套原则
 * 块级别标签可以嵌套快级别标签和内联标签
@@ -62,6 +63,7 @@ date: 2018-06-03 22:08:16
 <h1>一级标题</h1>
 <h2>二级标题</h2>
 <p>段落1</p>
+# p = paragraph 段落
 <p>段落2</p>
 <br>换行
 <hr>分割线
@@ -76,13 +78,20 @@ date: 2018-06-03 22:08:16
 <label>自定义内联标签</label>
 ```
 ## 资源标签
-* 图片引用：`<img src="http://blog.unforget.cn/2018/04/18/TCP%E8%BF%9E%E6%8E%A5/tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5.png"height="200px" width="110px" alt="无资源显示" title="tcp连接">`
+* 图片引用：
+
+```
+<img src="http://blog.unforget.cn/2018/04/18/TCP%E8%BF%9E%E6%8E%A5/tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5.png" 
+height="200px" width="110px" alt="无资源显示" title="tcp连接">
+```
+
 * 超链接：`<a href="http://www.baidu.com" target="_blank">点击地址</a>`
     - target="_blank" 跳转时新打开一个窗口
 
 ## 列表标签
 ### 无序列表
 ```
+# ul = unordered list
 <ul>
     <li>111</li>
     <li>222</li>
@@ -91,6 +100,7 @@ date: 2018-06-03 22:08:16
 ```
 ### 有序列表
 ```
+# ol = ordered list
 <ol>
     <li>aaa</li>
     <li>bbb</li>
@@ -99,6 +109,7 @@ date: 2018-06-03 22:08:16
 ```
 ### 自定义列表
 ```
+# dl = define list
 <dl>
     <dt>列表名称</dt>
     <dd>列表项1</dd>
@@ -108,10 +119,12 @@ date: 2018-06-03 22:08:16
 ```
 ## 表格标签
 ```
+# padding 填充
 <!--cellpading内容到内边框的距离-->
 <!--cellspacing内边框到外边框的距离-->
 <!--border有边框-->
 <table border="1" cellpadding="5px" cellspacing="10px">
+<!--tr = table row 表格的行-->
     <tr>
         <!--th为头部信息-->
         <th>id</th>
@@ -145,7 +158,7 @@ date: 2018-06-03 22:08:16
 
 ```
 <p>
-    <!--label的for和下边的id使用同一值，则鼠标点击提示信息即可直接输入-->
+    <!--label的for和input的id使用同一值，则鼠标点击提示信息即可直接输入-->
     <label for="user">姓名</label>
     <!--name为向后端传递的变量名，id则确定标签的唯一性-->
     <input type="text" name="username" id="user">
@@ -201,7 +214,8 @@ date: 2018-06-03 22:08:16
 <input type="reset" value="恢复默认">
 ```
 ### file
-上传文件：form表单需要加上属性enctype="multipart/form-data" method="post"
+* 上传文件：form表单需要加上属性enctype="multipart/form-data" method="post"
+    - enctype = encode type 编码方式
 
 ```
 <form action="http://www.baidu.com" method="post" enctype="multipart/form-data">
