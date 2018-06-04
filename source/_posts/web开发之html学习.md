@@ -81,6 +81,7 @@ date: 2018-06-03 22:08:16
 * 图片引用：
 
 ```
+alt = alternate 备用的
 <img src="http://blog.unforget.cn/2018/04/18/TCP%E8%BF%9E%E6%8E%A5/tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5.png" 
 height="200px" width="110px" alt="无资源显示" title="tcp连接">
 ```
