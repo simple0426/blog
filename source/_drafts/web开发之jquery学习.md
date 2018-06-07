@@ -1,0 +1,136 @@
+---
+title: web开发之jquery学习
+tags: ['jquery', 'ajax']
+categories: ['web']
+---
+# 介绍
+* jquery是一个快速、简洁的JavaScript框架，
+* 它封装了JavaScript是常用的功能模块，提供了一种简便的JavaScript设计模式，优化HTML文档操作、事件处理、动画设计和Ajax交互
+* [下载地址](https://jquery.com/)
+
+# 语法
+* 语法：$(selector).action()
+* 导入方式：`<script type="text/javascript" src="jquery-3.1.1.js"></script>`
+
+# 节点查找
+>jquery支持链式操作
+
+```
+$('.title').click(function(event) {
+  //jquery支持链式操作
+  $(this).next().removeClass('hide').parent().siblings().children('.con').addClass('hide');
+});
+```
+## 基本查找
+* 标签选择器：`$("tag")`
+* ID选择器：`$("#id")`
+* 类选择器：`$(".class")`
+* 自定义属性选择器：`$('[egon="ceshi1"]') $('[egon]')`
+
+## 导航查找
+>需先通过基本选择器确定一个基点
+
+* `$(".box2").sibling()`：所有兄弟标签
+* `$(".box2").next()`：下一个兄弟
+* `$(".box2").nextAll()`：下面所有兄弟
+* `$(".box2").nextUntil('.p3')`：下面直到.p3标签的所有兄弟
+* `$(".box2").prev()`：前面兄弟
+* `$(".box2").prevAll()`：前面所有兄弟
+* `$(".box2").prevUntil(".p3")`：前面直到.p3标签的所有兄弟
+* `$(".box2").children('p')`：寻找子标签
+* `$(".box2").find('p')`：寻找后代标签
+* `$(".box2").parent()`：查找父标签
+
+## 混合查找
+* 逻辑“或”连接：`$(".class,#id,div")`
+* 子代选择：`$(".outer>p")`
+* 后代选择：`$(".outer p")`
+* 向下的兄弟选择：`$(".box1~p")`
+* 向下的毗邻选择（紧挨）：`$(".box1+p")`
+
+## 筛选器
+* `$("ul li").eq(2)`：索引为2的li
+* `$("ul li:lt(2)")`：索引小于2的li
+* `$("ul li:odd")`：索引为奇数的li
+* `$("ul li:even")`：索引为偶数的li
+
+# 节点事件
+## 页面载入
+>等同于window.load
+
+```
+$(function (argument) {
+    alert('123')
+})
+```
+## 事件绑定
+* 给已存在的标签绑定事件
+* 与js区别：事件没有on关键词
+    - js：js标签对象.on事件=函数
+    - jquery：js标签对象.事件(函数)
+
+```
+//js方式
+var ele = document.getElementsByClassName("box2")[0]
+ele.onclick = function () {
+    alert('123')
+}
+//jquery方式
+$(".box2").click(
+    function () {
+        alert("123")
+    }
+)
+```
+## 事件委派
+* 无论子标签是否存在
+* 父标签委派事件给子标签
+* 语法：父标签.on(事件，子标签，函数)
+
+```
+$(".box1").on("click", 'p', function () {
+    alert(345);
+})
+```
+# 节点修改
+## 属性与值
+* 添加类属性：$(".box1").addClass("aa")
+* 移除类属性：$(".box1").removeClass("aa")
+* 设置或获取自有属性：$(".box1").prop("id")
+* 移除自有属性：$(".box1").removeProp("id")
+* 设置或获取自定义属性：$(".box1").attr("age", 18)
+* 移除自定义属性：$(".box1").removeAttr("sex")
+* 获取标签html：$(".box2").html()
+* 获取标签文本：$(".box2").text()
+* 获取input标签的value值：$("input").val()
+
+## css操作 
+* 设置标签的css：$(".box1").css({"color":"gold", "background-color":"green"})
+
+## 显示效果
+* 隐藏标签：$(".box2").hide()
+* 显示标签：$(".box2").show()
+* 标签显示隐藏切换：$(".box").toggle()
+* 滑入：$("").slideUp()
+* 滑出：$("").slideDown()
+* 滑入滑出切换：$("").slideToggle() 
+* 淡入：$("").fadeIn() 
+* 淡出：$("").fadeOut() 
+* 淡入淡出切换：$("").fadeToggle() 
+
+```
+//显隐切换
+$("button").click(
+    function () {
+        if($(this).text() == 'hide'){
+            $("p").hide();
+        }else if($(this).text() == 'show'){
+            $("p").show();
+        }else {
+            $("p").toggle();
+        }
+    }
+)
+```
+
+# 节点增删
