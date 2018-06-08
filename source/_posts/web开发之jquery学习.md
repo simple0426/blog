@@ -1,8 +1,12 @@
 ---
 title: web开发之jquery学习
-tags: ['jquery', 'ajax']
-categories: ['web']
+tags:
+  - jquery
+categories:
+  - web
+date: 2018-06-08 15:25:02
 ---
+
 # 介绍
 * jquery是一个快速、简洁的JavaScript框架，
 * 它封装了JavaScript是常用的功能模块，提供了一种简便的JavaScript设计模式，优化HTML文档操作、事件处理、动画设计和Ajax交互
@@ -12,6 +16,22 @@ categories: ['web']
 * 语法：$(selector).action()
 * 导入方式：`<script type="text/javascript" src="jquery-3.1.1.js"></script>`
 
+## echo循环
+### 无标签对象的循环
+```
+var lis = [11, 22, 33];
+$.each(lis, function (index, val) {
+    console.log(index, val);
+})
+```
+### 有标签对象的循环
+```
+$("li").each(function(index, el) {
+     if ($(this).text() == '22') {
+        $(this).css('color', 'red');
+     }   
+});
+```
 # 节点查找
 >jquery支持链式操作
 
@@ -100,8 +120,9 @@ $(".box1").on("click", 'p', function () {
 * 移除自有属性：$(".box1").removeProp("id")
 * 设置或获取自定义属性：$(".box1").attr("age", 18)
 * 移除自定义属性：$(".box1").removeAttr("sex")
-* 获取标签html：$(".box2").html()
-* 获取标签文本：$(".box2").text()
+* 设置或获取标签html：`$(".box2").html('<label>yes</label>')`
+* 设置或获取标签文本：`$(".box2").text('ceshi')`
+* 清空标签内容：$(".aaa").empty()
 * 获取input标签的value值：$("input").val()
 
 ## css操作 
@@ -134,3 +155,35 @@ $("button").click(
 ```
 
 # 节点增删
+## 创建节点
+* 创建：`var $ele1 = $("<p>")`
+* 克隆：var $ele1 = $(".aaa").clone()
+
+## 添加节点
+* 父节点末尾添加：$("div").append($ele1)
+* 父节点开始添加：$("div").prepend($ele1)
+* 指定节点之后添加：$(".aaa").after($ele1)
+* 指定节点之前添加：$(".aaa").before($ele1)
+
+## 删除节点
+>操作自身
+
+$(".aaa").remove() 
+
+## 替换节点
+>操作自身
+
+$(".aaa").replaceWith($ele1)
+
+```
+//添加标签【克隆】
+$(".add").click(function (event) {
+    var $outer=$(this).parent().clone();
+    $outer.children('button').text('删除').attr('class', 'remove');
+    $("body").append($outer);
+});
+//删除标签【事件委派】
+$("body").on("click", ".remove", function (event) {
+    $(this).parent().remove();
+});
+```
