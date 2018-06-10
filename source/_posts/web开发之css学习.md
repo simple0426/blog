@@ -135,7 +135,7 @@ div{
     font-size: 30px;
     /*字体颜色*/
     color: red;
-    /*文本左右居中*/
+    /*使标签内的文本或图像左右居中*/
     text-align: center;
     /*设置行高的同时即设置了文本上下居中*/
     line-height: 500px;
@@ -152,7 +152,7 @@ div{
     padding: 50px;
     /*margin 页边距；
     此区块与其他区块的间距，
-    第一个为上下间距，第二个为左右间距（auto自动居中）*/
+    第一个为上下间距，第二个为左右间距（auto自动居中【需要搭配width实现居中】）*/
     margin: 20px auto;
     /*边框：厚度 实线 红色*/
     border: 2px solid red;
