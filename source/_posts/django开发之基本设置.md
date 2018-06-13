@@ -59,8 +59,8 @@ MTV即是通用的web开发模型MVC在django中的实现，  此外django中还
 
 ## 静态目录设置
 * STATIC_URL = '/static/'：使用STATIC_ROOT中的静态文件时使用的url前缀
-* STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)：设置app公有的静态目录
-* STATIC_ROOT = os.path.join(BASE_DIR,'static') ：这个目录配置只在运行collectstaitc时才会用到
+* STATICFILES_DIRS = (os.path.join(BASE_DIR, "statics"),)：设置app公有的静态目录
+* STATIC_ROOT = os.path.join(BASE_DIR,'static_root') ：这个目录配置只在运行collectstaitc时才会用到
 
 ## 数据库设置
 ```
