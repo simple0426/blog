@@ -2,6 +2,8 @@
 title: web开发之jquery学习
 tags:
   - jquery
+  - ajax
+  - json
 categories:
   - web
 date: 2018-06-08 15:25:02
@@ -187,3 +189,81 @@ $("body").on("click", ".remove", function (event) {
     $(this).parent().remove();
 });
 ```
+# json
+## 介绍
+* JSON（JavaScript Object Notation）：js对象标记；它使用JavaScript语法来描述数据对象，但是它仍独立于语言和平台。
+* json是存储和交换文本的语法。类似XML，但是比XML更小、更快，更易解析。
+* json文本的MIME类型是"application/json"
+
+## 语法
+* 数据在名称/值对中，值可以是
+  - 字符串【在双引号中】
+  - 数值【整数和浮点数】
+  - 布尔值【true和false】
+  - 对象
+  - 数组
+  - null
+* 数据由逗号分隔
+* 花括号保存对象
+* 方括号保存数据
+
+## 使用
+* json对象转换为json字符串（stringify）：console.log(JSON.stringify({"name": "xiaofang"}))
+* json字符串转换为json对象（parse）：console.log(JSON.parse('{"name": "hejingqi"}'))
+
+# ajax
+## 简介
+* AJAX（Asynchronous JavaScript And XML）：异步JavaScript和XML
+* 异步向服务端发送数据
+* 浏览器局部刷新
+* 语法：$.ajax({key1: value1})
+
+## 参数
+* url：ajax向后端提交数据的url
+* type：提交数据的方式（默认get）
+* data：向后端传送的数据
+* contentType：提交数据MIME类型(默认application/x-www-form-urlencoded)
+* success：当后端处理成功时，前端的处理方式
+* traditional：（true/false） 当要传输的数据为多维数组时使用
+* error：后端错误时的处理方式
+* complete：后端处理完成时的处理方式
+* statusCode：根据后端处理结果的返回码进行处理
+
+## 范例
+* js实现
+
+```
+    <script>
+        $("#username").blur(function () {
+            var $user = $(this).val();
+            //csrf设置
+            $.ajaxSetup({
+                    data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+            });
+            if($user.trim().length != 0) {
+                $.ajax({
+                    url: "checkuser",
+                    type: "POST",
+                    data: {username: $user},
+                    success: function (data) {
+                        console.log(data)
+                    }
+                })
+            } else {console.log('user is empty')};
+            })
+    </script>
+```
+
+* python实现
+
+```
+def checkuser(request):
+    username = request.POST.get('username')
+    if username == 'he':
+        return HttpResponse("user is exist")
+    else:
+        return HttpResponse('user not exists')
+```
+## 注意
+当数据传输使用json格式时，由于django的csrf中间件默认使用“application/x-www-form-urlencoded”格式获取csrftoken值，  
+此时由于格式不匹配，造成后端无法正确获取csrftoken值从而造成csrf Forbidden错误，目前暂未解决，建议使用默认数据格式传输。
