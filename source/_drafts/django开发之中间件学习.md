@@ -97,19 +97,21 @@ MIDDLEWARE = [
 ```
 def auth(func):
     def wrapper(request, *args, **kwargs):
-        if not request.session.get('yyyy'):
+        if request.session.get('username'):
+            obj = func(request, *args, **kwargs)
+            return obj
+        else:
             return redirect('login.html')
-        return func(request, *args, **kwargs)
     return wrapper
 
 @auth
 def ok(request):
-    user = request.session.get('yyyy')
+    user = request.session.get('username')
     return render(request, 'ok.html', context={'user':user})
 
 @csrf_exempt
 def login(request):
-    if request.session.get('yyyy'):
+    if request.session.get('username'):
         return redirect('ok.html')
     if request.method == 'POST':
         if request.session.test_cookie_worked():
@@ -118,7 +120,7 @@ def login(request):
             pwd = md5.encrypt(request.POST.get('passwd'))
             obj = UserInfo.objects.filter(username=user, password=pwd).first()
             if obj:
-                request.session['yyyy'] = user
+                request.session['username'] = user
                 return redirect('ok.html')
             else:
                 return render(request, 'login.html', {'msg': '用户名或密码错误'})
@@ -129,7 +131,7 @@ def login(request):
 
 @auth
 def logout(request):
-    del request.session['yyyy']
+    del request.session['username']
     return redirect('login.html')
 ```
 ## 扩展
