@@ -83,4 +83,4 @@ class LogoutView(View):
     def get(self, request, *args, **kwargs):
         del request.session['username']
         return redirect('login.html')
-``` 
+```
