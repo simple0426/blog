@@ -20,7 +20,7 @@ date: 2018-05-07 15:08:57
 * 在python中，以双下划线开头同时以双下划线结尾的是特殊变量，可以直接访问
 * 以下划线开头的是私有变量：单下划线开头的变量在导入类时会被忽略，双下划线是类的私有变量
 
-```python
+```
 class test:
     def __init__(self, name, age):
         self.name = name
@@ -37,7 +37,7 @@ person1.echo()
 * 例如：狗和鸡都有“叫”这一方法，但是调用狗的“叫”，狗会吠叫；调用鸡的“叫”，鸡则会啼叫。
 
 ## 继承
-```python
+```
 class Animal():
     def run(self):
         print('Animal is running')
@@ -52,7 +52,7 @@ dog.run()
 ### 多重继承
 在进行主线继承的同时，需要“混入”额外的功能，这可以通过多重继承来实现，这种设计模式即为Mixin
 
-```python
+```
 class Animal(object):
     pass
 
@@ -70,7 +70,7 @@ class Dog(Mammal, Runnable):
 * MRO即method resolution order，主要用于在多重继承时判断方法的调用路径（来自哪个类）
 * 在新式类中，查找一个要调用的函数或属性时，采用广度优先原则。范例如下：
 
-```python
+```
 class D(object):
     def foo(self):
         print("class D")
@@ -89,7 +89,7 @@ f.foo()
 ### Super
 【只能用于新式类】从运行结果上看，普通继承和super继承是一样的。但是其实他们的内部运行机制不一样，这一点在多重继承时体现得很明显。在super机制里可以保证公共父类仅被执行一次，至于执行顺序，则是按照MRO进行。
 
-```python
+```
 class C(object):
     def __init__(self):
         print("Enter C")
@@ -116,7 +116,7 @@ self指代类的实例
 * Python的“file-like object“就是一种鸭子类型。对真正的文件对象，它有一个read()方法，返回其内容。但是，许多对象只要有read()方法，都被视为“file-like object“。许多函数接收的参数就是“file-like object“，你不一定要传入真正的文件对象，完全可以传入任何实现了read()方法的对象。
 
 # 属性
-```python
+```
 class chinese(object):
     country = 'china'
     def __init__(self, name, age):
@@ -133,7 +133,7 @@ class chinese(object):
 ## property
 将类的方法变为属性
 
-```python
+```
 class Student():
     # 返回属性值
     @property
@@ -159,7 +159,7 @@ print(s.score)
 ```
 
 ## 动态属性
-```python
+```
 class person():
     # 限制给实例添加的属性
     __slots__ = ('name', 'age', 'score')
@@ -190,7 +190,7 @@ p.print_info()
 * 与类进行绑定，函数的第一个参数是cls
 * 类和实例均可以直接调用
 
-```python
+```
 class test:
     @classmethod
     def tell(cls):
@@ -203,7 +203,7 @@ test.tell()
 * 不与实例或类进行绑定（所以不需要第一个参数是self或cls）
 * 类和实例均可以直接调用
 
-```python
+```
 class test:
     @staticmethod
     def tell(x, y):
@@ -212,7 +212,7 @@ test.tell(3, 5)
 ```
 
 ## 方法范例
-```python
+```
 import settings
 import time
 import hashlib
@@ -244,7 +244,7 @@ con1.select()
 con4.select()
 ```
 # 内置方法
-```python
+```
 class Foo:
     def __init__(self, name, age):
         self.__name = name
@@ -283,6 +283,8 @@ print(test1)
 * 它是一个特殊的函数，在类实例化时首先执行，并且此函数不能有返回值
 * self指代实例本身
 
+## `__new__`
+待续，参考[见][4]
 ## `__str__`
 * 打印实例对象时触发此方法的执行
 * 此方法只能返回字符串
@@ -298,7 +300,7 @@ print(test1)
 ## `__setattr__`
 ** 以属性形式设置或删除类的属性 **
 
-```python
+```
 class Foo:
     def __init__(self, name, age):
         self.__name = name
@@ -322,7 +324,7 @@ print(test1.score)
 ## `__getattr__`
 ** 只有在没有找到属性的情况下，才调用__getattr__,已有的属性，比如name，不会在__getattr__中查找 **
 
-```python
+```
 import datetime
 class Open:
     def __init__(self, filepath, mode='r', encoding='utf-8'):
@@ -351,7 +353,7 @@ obj.close()
 * 如下的类实现了迭代器协议【因此就可以被用于for...in循环】
 * for循环通过next方法获取循环的下一个值，直到遇到StopIteration错误时退出循环
 
-```python
+```
 class Foo:
     def __init__(self):
         self.a, self.b = 0, 1
@@ -374,7 +376,7 @@ for n in Foo():
 * exit方法用于出口的处理，exc_type为异常类型，exc_value异常的值，exc_tb为异常的追踪
 * exit方法必须返回True以保证with代码块的异常不会影响其他代码的执行
 
-```python
+```
 class Open:
     def __init__(self, filepath, mode='r', encoding='utf-8'):
         self.filepath = filepath
@@ -406,7 +408,7 @@ print('ok')
 * 对实例进行调用就好比对一个函数进行调用，所以你完全可以把实例对象当成函数
 * 因为任何自定义类都是元类type的实例，而可以直接调用自定义类就是因为元类有call方法
 
-```python
+```
 class Student:
     def __init__(self, name):
         self.name = name
@@ -418,12 +420,23 @@ s()
 ```
 
 # 元类
+* 元类是类的类，是用来创建类【对象】的
+* 函数type实际上是一个元类。type就是python在背后用来创建所有类【包括自身】的元类。
+* str是用来创建字符串对象的类，int时用来创建整数对象的类，而type就是用来创建类对象的类
+* python中所有的东西都是对象，包括整数、字符串、函数、类，他们都是由一个类【元类】创建的
+
 ## 创建类
 * 使用type创建类和直接写class完全一样，因为python解释器遇到class定义时，仅仅是扫描class定义的语法，然后调用type创建class
 * 语法：type(name, bases, dict) -> a new type
     - class的名称，字符串形式
     - 继承的父类集合，由于python支持多重继承，所以此处为元组形式
     - 包含的属性或方法的字典
+
+## 修改类
+元类很复杂，对于非常简单的类可以不通过元类对类进行修改，可以通过其他两种两种技术实现
+
+* Monkey patching
+* class decorators
 
 ## exec函数
 >读取字符串中的python代码并执行
@@ -436,7 +449,7 @@ s()
 ## type与class对比
 * 使用type
 
-```python
+```
 class_name = 'chinese'
 class_base = (object,)
 class_body = """
@@ -455,7 +468,7 @@ p.print_info()
 
 * 使用class
 
-```python
+```
 class chinese:
     def __init__(self, name):
         self.name = name
@@ -472,3 +485,4 @@ class chinese:
 [1]:https://www.zhihu.com/question/38791962
 [2]:https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000#0
 [3]: http://www.cnblogs.com/linhaifeng/articles/6204014.html
+[4]: https://www.cnblogs.com/34fj/p/6358702.html
