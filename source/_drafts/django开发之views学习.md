@@ -3,16 +3,26 @@ title: django开发之views学习
 tags:
 categories:
 ---
-# request请求内容
+# request内容
+## 请求路径
+* request.path：除域名以外的请求路径，以斜杠开头
+* request.get_host()：主机名（比如通常所说的域名）
+* request.get_full_path()：请求路径，可能包含查询字符串
+* request.is_secure()：请求方法是否是https，是则返回True
+
+## 请求内容
 * request.method：请求方法
-* request.GET：对收到的get请求进行参数解析
-* request.POST：对收到的post请求进行参数解析
+* request.GET：对收到的get请求进行数据【来自form或url中的查询串】解析，它是一个类字典对象
+* request.POST：对收到的post请求进行数据【来自html中的form】解析，他是一个类字典对象
     - 仅当Content-Type：application/x-www-form-urlencoded
-* request.Meta：请求的元数据信息
 * request.body：请求体内容
     - get请求体为空
     - post请求体范例：
     `b'csrfmiddlewaretoken=SP3GO7LEfUb0QqWwE4Rq0r0W&user=he&passwd=12'`
+* request.Meta：它是一个python字典，包含了本次请求的所有header信息，可以通过get请求获得【防止异常退出】
+    - HTTP_REFERER，进站前链接网页，如果有的话。
+    - HTTP_USER_AGENT，用户浏览器的user-agent字符串，如果有的话。
+    - REMOTE_ADDR 客户端IP
 
 # 类视图
 ## 简单介绍
@@ -84,3 +94,11 @@ class LogoutView(View):
         del request.session['username']
         return redirect('login.html')
 ```
+# Form表单
+* 自动生成html标签，并对字段进行校验
+* 表单框架最主要的用法是，为每一个将要处理的HTML的form定义一个Form类
+
+## 定义Form对象
+## Form对象实例化
+>在views中将request请求的数据使用form对象进行实例化
+## Html标签渲染
