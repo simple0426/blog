@@ -221,8 +221,9 @@ $("body").on("click", ".remove", function (event) {
 ## 参数
 * url：ajax向后端提交数据的url
 * type：提交数据的方式（默认get）
-* data：向后端传送的数据
-* contentType：提交数据MIME类型(默认application/x-www-form-urlencoded)
+* data：向服务端传送的数据
+* contentType：发送给服务端时的内容编码MIME类型(默认application/x-www-form-urlencoded)
+* dataType：客户端希望从服务端接受的数据类型【xml、html、json、text等】
 * success：当后端处理成功时，前端的处理方式
 * traditional：（true/false） 当要传输的数据为多维数组时使用
 * error：后端错误时的处理方式
@@ -244,7 +245,9 @@ $("body").on("click", ".remove", function (event) {
                 $.ajax({
                     url: "checkuser",
                     type: "POST",
-                    data: {username: $user},
+                    //data: {username: $user},
+                    //ajax的serialize方法序列化表单数据
+                    data: $("form").serialize(),
                     success: function (data) {
                         console.log(data)
                     }
