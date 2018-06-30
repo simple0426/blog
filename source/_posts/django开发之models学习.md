@@ -3,6 +3,7 @@ title: django开发之models学习
 tags:
   - models
   - ORM
+  - admin
 categories:
   - django
 date: 2018-06-14 16:38:58
@@ -239,3 +240,71 @@ admin.site.register(Author)
 ```
 ## 登录后台
 http://localhost/admin
+
+# 多数据库联用
+## settings设置
+```
+# 数据库设置
+DATABASES = {
+    # default为默认数据库，具有特殊含义
+    'default': {
+        'NAME': 'app_data',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': 'postgres_user',
+        'PASSWORD': 's3krit'
+    },
+    'users': {
+        'NAME': 'user_data',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'mysql_user',
+        'PASSWORD': 'priv4te'
+    }
+}
+# 数据库路由设置[类名]
+DATABASE_ROUTERS = ['utils.dbroute.DBRouter']
+```
+## 路由设置
+```
+class DBRouter:
+    # 指定读数据库路由
+    def db_for_read(self, model, **hints):
+        app_label = model._meta.app_label
+        if app_label in ('order', 'payment'):
+            return 'order'
+        if app_label in ('xcass_passport', 'store_manage'):
+            return 'xcass'
+        return 'default'
+    # 指定写数据库路由
+    def db_for_write(self, model, **hints):
+        app_label = model._meta.app_label
+        if app_label in ('order', 'payment'):
+            return 'order'
+        if app_label in ('xcass_passport', 'store_manage'):
+            return 'xcass'
+        return 'default'
+    # 如果obj1 和obj2 之间应该允许关联则返回True，如果应该防止关联则返回False，
+    # 如果路由无法判断则返回None
+    def allow_relation(self, obj1, obj2, **hints):
+        if obj1._meta.app_label == obj2._meta.app_label:
+            return True
+    # 定义迁移操作是否允许在别名为db的数据库上运行。如果操作应该运行则返回True，
+    # 如果不应该运行则返回False，如果路由无法判断则返回None
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        if app_label in ('order', 'payment'):
+            return db ==  'order' 
+        if app_label in ('xcass_passport', 'store_manage'):
+            return db == 'xcass'
+        return db  ==  'default' 
+```
+## 数据对象操作
+* queryset对象：Book.objects.using('default').all()
+* Models对象
+    ```
+    author = Author(first_name='yashuai', last_name='gao')
+    author.save(using='default')
+    ```
+
+## 数据导入导出
+* 数据同步【建表】：python manage.py migrate --database=test
+* 数据导出：python manage.py dumpdata app1 --database=db1 > app1_fixture.json
+* 数据导入：python manage.py loaddata app1_fixture.json --database=db1
