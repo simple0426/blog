@@ -1,8 +1,16 @@
 ---
 title: django开发之中间件学习
-tags: ['cookie', 'session', '缓存', '中间件', '信号']
-categories: ['django']
+tags:
+  - cookie
+  - session
+  - 缓存
+  - 中间件
+  - 信号
+categories:
+  - django
+date: 2018-06-30 17:06:14
 ---
+
 # cookie
 ## 简单介绍
 * 保存在浏览器端的键值对
@@ -150,4 +158,124 @@ session.get_decoded()
 session.expire_date
 # 查看session内容
 session.session_data
+```
+
+# 中间件
+1. 中间件1
+2. 中间件2
+
+## 请求处理流程
+* socket
+* 中间件1的request
+* 中间件2的request
+* url路由
+* 中间件1的view
+* 中间件2的view
+* 视图函数
+* 中间件2的response
+* 中间件1的response
+* socket
+    
+## 常用方法
+* process_request
+    - process_request默认返回None，此时其他流程可以继续执行
+    - 如果返回非None，则请求只到此中间件即停止并返回请求
+* process_response
+* process_view：和process_request一样从前往后执行，默认返回None
+* process_exception
+* process_template_response
+
+## 范例
+```
+from django.utils.deprecation import MiddlewareMixin
+from django.shortcuts import render, HttpResponse
+
+class M1(MiddlewareMixin):
+    def process_request(self, request):
+        print('M1.process_request')
+        # return HttpResponse('gun')
+    def process_view(self, request, callback, callback_args, call_kwargs):
+        print('M1.process_view', callback)
+    def process_response(self, request, response):
+        print('M1.process_response')
+        return response
+    def process_exception(self, request, exception):
+        print('M2.process_exception')
+        return HttpResponse('内部错误')
+class M2(MiddlewareMixin):
+    def process_request(self, request):
+        print('M2.process_request')
+    def process_view(self, request, callback, callback_args, call_kwargs):
+        print('M2.process_view', callback)
+    def process_response(self, request, response):
+        print('M2.process_response')
+        return response
+```
+# 缓存
+## 缓存位置
+* 开发调试：dummy
+* 内存：locmem
+    - 默认选项：django.core.cache.backends.locmem.LocMemCache
+* 文件：filebased
+* 数据库：db
+    - 创建缓存表：python manage.py createcachetable
+* memcached：memcached
+* redis【pip install django-redis】
+    ```
+    # settings设置
+    CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache", # 引擎
+        "LOCATION": "redis://192.168.10.10:6379/0", # 缓存位置
+        'TIMEOUT': 300,  # 缓存超时，None永不过期，0立即过期
+        "OPTIONS": {
+            'MAX_ENTRIES': 1000, # 最大缓存个数
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # 默认使用纯python编写的解析器，HiredisParser为c语言编写的解析器可提高性能10倍
+            # 安装hiredis：pip install hiredis
+            #  "PARSER_CLASS": "redis.connection.HiredisParser",
+        },
+        },
+    }
+    ```
+
+## 缓存级别
+* 全局模式【中间件】
+    - 'django.middleware.cache.UpdateCacheMiddleware'【位于所有中间件之前】
+    - 'django.middleware.cache.FetchFromCacheMiddleware'【位于所有中间件之后】
+* 视图函数【cache_page装饰器】
+    ```
+    from django.views.decorators.cache import cache_page 
+    @cache_page(60 * 5) #括号内为时间以秒计算
+    def test(request):
+        now = datetime.datetime.now()
+        return HttpResponse(now)
+    ```
+* 模板变量【cache标签】
+    ```
+    # 5是缓存时间，'ceshi'是缓存key
+    {% cache 5 'ceshi' %}
+        {{ now1 }}
+    {% endcache %}  
+    ```
+
+# 信号
+* 主要功能为：当识别到请求处理流程中的某一行为时，触发自定义动作
+* 可以保存在项目同名app下`__init__.py`文件中
+
+```
+# 请求到来前，请求结束后触发
+from django.core.signals import request_finished, request_started, got_request_exception
+# 对象保存前后触发
+from django.db.models.signals import pre_delete, pre_init, pre_save, pre_migrate
+from django.db.models.signals import post_delete, post_init, post_migrate, post_save
+# 多对多关系表变更触发
+from django.db.models.signals import m2m_changed, class_prepared
+# 创建数据库连接时触发
+from django.db.backends.signals import connection_created
+
+def callback(sender, **kwargs):
+    print('request is comming!')
+    print(sender, kwargs)
+request_started.connect(callback)
 ```

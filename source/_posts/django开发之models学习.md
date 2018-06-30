@@ -191,3 +191,51 @@ class Book(models.Model):
     `Book.objects.all().update(price=F('price') + 10)`
 * Q查询：根据`&|~`【与或非】逻辑组合查询条件
     `Book.objects.filter(Q(id__gt=1)&Q(title='python'))`
+
+# admin site
+主要功能是：在web页面操作Django ORM
+## 前置条件
+* settings中默认配置【INSTALLED_APPS和MIDDLEWARE_CLASSES】
+* urls中保持默认配置【存在admin路由】
+* 数据库中存在django相关表
+* 后台汉化
+    - 'django.middleware.locale.LocaleMiddleware'【SessionMiddleware之后添加】
+
+## 新建用户
+python manage.py createsuperuser
+
+## 注册模块
+### 显示逻辑
+* list_display：可显示的字段
+* list_display_links：可点击编辑的字段
+* search_fields：可搜索字段
+* list_filter：在字段列表右侧显示可用于过滤的字段
+* date_hierarchy：在字段列表上方显示日期过滤参数
+* ordering：默认排序方式【优先级左右依次降低】
+* filter_horizontal：设置多对多字段使用水平的可选控件
+* raw_id_fields：设置外键使用可搜索的文本框形式而非列表【降低列表加载带来的系统开销】
+* actions：执行函数功能
+
+### 范例
+```
+from app01.models import *
+class BookAdmin(admin.ModelAdmin):
+    list_display = ['title', 'price', 'publisher', 'publication_date']
+    list_display_links = ['title']
+    search_fields = ['title', 'publisher']
+    list_filter = ['publication_date']
+    date_hierarchy = 'publication_date'
+    ordering = ['-publication_date']
+    filter_horizontal = ['authors']
+    raw_id_fields = ['publisher']
+    def func(self, request, queryset):
+        print(self, request, queryset)
+        print(request.POST.getlist('_selected_action'))
+    func.short_description = '显示结果'
+    actions = [func,]
+
+admin.site.register(Book, BookAdmin)
+admin.site.register(Author)
+```
+## 登录后台
+http://localhost/admin
