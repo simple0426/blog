@@ -99,6 +99,29 @@ t.render(c)
 * with别名设置：`{-% with total=fhjsaldfhjsdfhlasdfhljsdal %-} {-{ total }-} {-% endwith %-}`
 * verbatim禁止渲染：`{-%  verbatim %-}{-{ ceshi }-}{-% endverbatim %-}`
 
+## 安全转义
+>为了避免非法输入造成安全威胁，django模板系统对html开启自动转义
+### 转义字符
+- `<自动转义为&lt`
+- `>自动转义为&gt`
+- `'自动转义为&#39`
+- `"自动转义为&quot`
+- `&自动转义为&amp`
+
+### 转义范例
+* 单变量关闭自动转义
+    ```
+    tm = Template('my name is {{ name|safe }}')
+    con = Context({'name': '<b>'})
+    tm.render(con)
+    ```
+* 模块级别关闭自动转义
+    ```
+    {% autoescape off %}
+    Hello {{ name }}
+    {% endautoescape %}
+    ```
+
 # 自定义标签和过滤器
 ## 创建
 - 在已经注册过的app下新建templatetags包
