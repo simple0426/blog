@@ -10,11 +10,13 @@ categories: ['linux']
 # 建立连接
 >三次握手
 
-![](TCP连接/tcp建立连接.png)
+<!--![](TCP连接/tcp建立连接.png)-->
+![](http://simple0426-blog.oss-cn-beijing.aliyuncs.com/tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5.png)
 # 释放连接
 >四次挥手
 
-![](TCP连接/tcp释放连接.png)
+<!--![](TCP连接/tcp释放连接.png)-->
+![](http://simple0426-blog.oss-cn-beijing.aliyuncs.com/tcp%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5.png)
 # 状态迁移
 ## 客户端状态迁移
 * CLOSED   连接关闭
@@ -47,7 +49,8 @@ categories: ['linux']
     - TIME_WAIT     收到发送关闭连接的确认信息【ACK】
 
 # 有限状态机
-![](TCP连接/tcp有限状态机.png)
+<!--![](TCP连接/tcp有限状态机.png)-->
+![](http://simple0426-blog.oss-cn-beijing.aliyuncs.com/tcp%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA.png)
 
 # TCP参数
 * tcp_syn_retries：对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。不应该大于255，默认值是5，对应于180秒左右时间。(对于大负载而物理通信良好的网络而言,这个值偏高,可修改为2.这个值仅仅是针对对外的连接）
