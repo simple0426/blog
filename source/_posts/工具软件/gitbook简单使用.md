@@ -22,7 +22,7 @@ categories: ['skill']
 * 创建电子书目录\[同时也是github库\]
 * 创建SUMMARY.md文件,此文件主要描述电子书的目录结构
 
-![](gitbook简单使用/summary.png)
+![](http://simple0426-blog.oss-cn-beijing.aliyuncs.com/summary.png)
 
 * 创建book.json文件，此文件主要用于描述gitbook提供web服务时使用的插件及配置
 
