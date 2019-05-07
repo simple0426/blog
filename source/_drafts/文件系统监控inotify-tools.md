@@ -28,6 +28,5 @@ inotify-tools是linux下使用inotify接口的简单实现
 安装完成后会得到两个命令:inotifywait和inotifywatch
 
 # 命令详解
-
 # 常用范例
 # 常见问题
