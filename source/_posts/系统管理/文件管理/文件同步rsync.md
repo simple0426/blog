@@ -46,13 +46,44 @@ rsync [OPTION...] SRC... [DEST]
 * -P ,- -progress 显示传输进度
 * --delete 保持源和目标文件的一致性，如果目标的文件在源没有则删除
 * --delete-before 在传输前删除相关文件
-* include与exclude：
-    - --exclude=PATTERN       exclude files matching PATTERN
-        + 排除部分不需要同步的目录：rsync -azvP --exclude "prod/" files/ test 
-    - --exclude-from=FILE     read exclude patterns from FILE
-    - --include=PATTERN       don't exclude files matching PATTERN
-        +  只同步部分目录：rsync -azvP --include "pre/" --include "keyfile/" --exclude "/*" files/ test     
-    - --include-from=FILE     read include patterns from FILE
+
+# include与exclude
+## 参数
+* --exclude=PATTERN       exclude files matching PATTERN
+* --exclude-from=FILE     read exclude patterns from FILE
+* --include=PATTERN       don't exclude files matching PATTERN
+* --include-from=FILE     read include patterns from FILE
+
+## 特别注意
+* 当要排除特定内容时，可以只使用exclude选项以排除指定的文件或目录
+* 但要只包含特定内容时，必须先使用include包含特定内容，再使用exclude排除其余部分
+* .当使用include-from或exclude-from包含文件时，一行一个匹配规则， 
+    * include选项引用时，规则行首使用“+”
+    * exclude选项引用时，规则行首使用“-”
+* 匹配规则以“/”开始时，则传输根路径上的文件和目录都匹配
+* 匹配规则以“/”结束，则只匹配目录
+
+## 范例
+### include
+* 只同步部分目录及其下的目录和文件：rsync -azvP --include "pre/" --include "keyfile/" --exclude "/*" files/ test 
+* include-from：
+    - include_file.list
+    ```
+    + test1  
+    + test2  
+    ```
+    - rsync -azvP --include-from include_file.list --exclude "/*" python_scripts/ test11/  
+
+### exclude
+* 排除部分不需要同步的目录：rsync -azvP --exclude "prod/" files/ test 
+* exclude-from：
+    - exclude_file.list
+    ```
+    - aa
+    - socket_tcp.py
+    - test1/test234
+    ```
+    - rsync -azvP --exclude-from exclude_file.list python_scripts/ test11/
 
 # daemon模式
 ## 配置文件
@@ -91,11 +122,11 @@ susan:herpass
 ```
 
 ## 服务启动
-* 正常启动 
+* 默认配置 
     -  默认使用873端口
     -  默认配置文件/etc/rsyncd.conf
-* 自定义启动
-    - --config=config_file
+* 启动
+    - rsync --daemon --config=config_file
 
 ## daemon错误集锦
 * 服务端有防火墙阻挡
