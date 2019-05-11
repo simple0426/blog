@@ -38,6 +38,7 @@ categories:
 * office
 * DiskGenius：硬盘分区工具
 * DriverStoreExplorer：驱动卸载工具
+* 百度网盘
 
 # beyondCompare
 ## 适用版本
