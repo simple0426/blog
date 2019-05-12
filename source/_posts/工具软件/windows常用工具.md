@@ -1,15 +1,16 @@
 ---
 title: windows常用工具
-date: 2019-05-11 12:24:02
 tags:
-    - git
-    - beyondCompare
-    - pycharm
-    - sublimeText
-    - xmind
+  - git
+  - beyondCompare
+  - pycharm
+  - sublimeText
+  - xmind
 categories:
-    - skill
+  - skill
+date: 2019-05-11 12:24:02
 ---
+
 # 软件列表
 ## 办公类
 * [beyondCompare](#beyondCompare):文本比较工具
@@ -23,7 +24,6 @@ categories:
 * DockerToolbox：windows下docker使用环境
     - （默认安装）Oracle VM VirtualBox：虚拟化工具
     - （默认安装）Git MSYS-git UNIX tools：windows下linux命令行工具
-* setupssh：windows cmd模式下下ssh工具
 * shadowsocks：FQ工具
 * wireshark：网络包分析工具
 
@@ -31,7 +31,7 @@ categories:
 * 快播/QQ影音
 * 印象笔记
 * windows便签
-* 迅雷极速版
+* 迅雷下载极速版
 * uiso：镜像制作工具
 * 驱动精灵万能网卡版
 * teamviewer：远程协作工具
@@ -39,6 +39,11 @@ categories:
 * DiskGenius：硬盘分区工具
 * DriverStoreExplorer：驱动卸载工具
 * 百度网盘
+* firefox/chrome
+* QQ浏览器：
+    - qq登录
+    - 书签同步
+    - 网站账号云同步
 
 # beyondCompare
 ## 适用版本
