@@ -80,7 +80,17 @@ https://git-scm.com/download/win
 JetBrains PyCharm 2019.1.2 x64
 ## 激活参考
 https://zhile.io/2018/08/26/jetbrains-license-server-crack.html
-
+## 常用设置
+### 设置py文件默认头部信息
+```
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# @Time    : ${DATE} ${TIME}
+# @Author  : simple0426
+# @Email   : istyle.simple@gmail.com
+# @File    : ${NAME}.py
+# @Software: ${PRODUCT_NAME}
+```
 # sublimetext3
 ## 版本
 Sublime Text Build 3143 x64 Setup
@@ -107,10 +117,47 @@ EA7E-890007
 ```
 import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
 ```
-## 安装插件
+## 插件
+### 安装
 >ctrl+shift+p >> install package >> xxxx
 
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/sublimeText3-plugins.jpg)
+###  Table Editor   
+* 通过`Ctrl+Shift+P->Table Editor: Enable for current view`开启  
+* 先输入标题行,如`|id|name|age|`，回车后在第二行输入`|-`后，  
+按tab键就将进入table编辑模式  
+* 表格必须与前面输入的文字之间有空行，否则表格会被当成普通文字渲染 
+
+### Markdown Editing 
+* 设置：package setting-->markdown editing-->GFM setings User  
+
+```json
+{
+    "draw_centered": false, //去除文字整体居中
+    "color_scheme": "Packages/MarkdownEditing/MarkdownEditor-Dark.tmTheme", //主题与sublime保持一致
+    "line_numbers": true, //显示行号
+}
+```
+
+* 在全局设置中忽略默认的markdown
+
+```json
+    "ignored_packages":
+    [
+        "Markdown",
+        "Vintage"
+    ],
+```
+
+### Markdown preview  
+* 按键绑定的设置：  
+
+```
+[
+    { "keys": ["ctrl+m"], "command": "markdown_preview", "args": {"target": "browser", "parser":"markdown"} }
+]
+```
+
 ## 全局配置
 ```
 {
@@ -138,10 +185,5 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
     "update_check": false
 }
 ```
-## 快捷键设置
-```
-[
-    { "keys": ["ctrl+m"], "command": "markdown_preview", "args": {"target": "browser", "parser":"markdown"} }
-]
-```
+
 
