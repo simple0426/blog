@@ -134,3 +134,74 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
     - `ansible python -m lineinfile -a 'dest=/etc/sudoers state=present line="Defaults:muker !requiretty" validate="visudo -cf %s"'`
 * 秘钥登录
     - `ansible python -m authorized_key -a "user=muker key='{\{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }\}' state=present" -u muker -K`
+
+# 跳板机配置
+## 实现目标
+ansible可以通过跳板机管理远程内网服务器
+## 实现原理
+* 通过ssh的代理转发功能实现本地使用远程主机内网ip登录远程服务器，
+* 本案例中使用证书登录，即ansible主机与跳板机(bastion)、跳板机与目标服务器(internal)之间均使用证书登录
+
+## 操作步骤
+### 产生秘钥
+* ssh-keygen -t rsa -P "" -f ./bastion
+* ssh-keygen -t rsa -P "" -f ./internal
+
+### 传送公钥
+>公钥放置在某用户主目录下，则以后必须使用相应的用户登录，此例中
+>ansible主机使用muker登录跳板机，跳板机使用muker登录目标主机
+
+* ansible ops -m copy -a "src=keyfiles/bastion.pub dest=~/.ssh/authorized_keys mode=0600"
+* ansible 1.1.1.1【下例中172.16.0.205主机的公网ip】 -m copy -a "src=keyfiles/internal.pub dest=~/.ssh/authorized_keys mode=0600"
+
+### 设置sshd(可选)
+>设置ssh服务只允许证书登录
+
+```
+# /etc/ssh/sshd_conf
+PermitRootLogin no
+PasswordAuthentication no
+```
+### ssh配置
+* ssh发起连接时，默认使用~/.ssh/config配置，可使用-F参数强制使用指定配置文件
+* 本地私钥权限必须为0600
+* config文件配置
+
+```
+Host ops
+  User muker #连接跳板机使用的用户名
+  HostName 47.99.78.151 #跳板机ip
+  ProxyCommand none
+  BatchMode yes #跳板机模式
+  IdentityFile ~/keyfiles/bastion #本地连跳板机时使用的私钥
+  StrictHostKeyChecking no #首次登录时禁止秘钥检查
+Host 172.16.0.*  # 目标主机网络
+  ServerAliveInterval 60 
+  TCPKeepAlive        yes
+  ProxyCommand ssh -qaY -i ~/keyfiles/bastion muker@ops 'nc -w 14400 %h %p' # ssh代理转发
+  IdentityFile    ~/keyfiles/internal #跳板机使用私钥internal连接目标主机
+  StrictHostKeyChecking no
+```
+### ssh登录测试
+* 登录跳板机： ssh -F keyfiles/config ops
+* 登录目标内网主机：ssh -F keyfiles/config muker@172.16.0.205
+
+### ansible配置
+* ansible.cfg
+    ```
+    [ssh_connection]
+    ssh_args = -C -o ControlMaster=auto -F keyfiles/config
+    scp_if_ssh = True #文件复制操作强制使用scp模式
+    ```
+
+* hosts
+    ```
+    ops ansible_user='muker'
+    172.16.0.205 ansible_user='muker'
+    ```
+
+### ansible测试
+>ping测试
+
+* ansible ops -m ping
+* ansible 172.16.0.205 -m ping
