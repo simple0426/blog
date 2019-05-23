@@ -78,16 +78,56 @@ key=9
 ```
 ## playbook中的变量
 ### playbook中定义
-
+```
+vars: #直接定义变量
+  - key1: 8
+  # 定义长字符变量
+  - key5: |
+      123000
+      234111
+      345222
+vars_files: #使用变量文件
+  - var.yml
+vars_prompt: #交互式输入变量
+  - name: "key3" #变量名
+    prompt: "pls input key3 value:" #交互式信息
+    default: 'None' #默认值
+    private: yes #是否显示输入
+tasks:
+  - name: debug info
+    debug: msg="key1 is {{ key1 }} key2 is {{ key2 }} key3 is {{ key3 }}"
+```
 ### 变量目录中定义
 >与hosts文件同级目录
 
 * group_vars目录下定义组变量
-    - 以组名建文件
+    - 组名文件表示组变量
     - all文件表示所有组的公共变量
 * host_vars目录下定义主机变量
-    - 以主机名或ip建文件
+    - 主机名或ip名文件表示主机变量
 
 ## 命令行下的变量
+ansible-playbook -e "key1=7" -e "@var.yml" test.yml
 ## 注册变量
+将某些输出信息保存为变量
+
+```
+- name: register variable
+  shell: hostname
+  register: info
+- name: use register
+  debug: msg="This is {{ info.stdout_lines[0] }}"
+```
 ## 变量优先级
+* 官方源：<https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable>
+* 简单表示【优先级从高到低】
+  1. 命令行自定义变量
+  2. task 【tasks列表中定义的变量】
+  3. role 【roles列表中定义的变量】
+      - role是将单个play拆分成目录文件结构形式
+  4. play 
+      - play是以单个文件的形式实现特定功能，如安装启动nginx等
+  5. playbook 
+      - playbook是以多级目录文件结构形式实现复杂功能，
+      - playbook是多个play的集合，如部署lnmp的playbook
+  6. inventory 【定义资源的文件】
