@@ -77,7 +77,7 @@ webservers
 * ansible_ssh_pass
 * ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】
 
-# 命令ansible
+# ansible
 ## 示例
 ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K
 ## 常用参数
@@ -107,7 +107,7 @@ python | CHANGED => {
 }
 [hjq@localhost ~]$ ansible python -m async_status -a "jid=759078551843.27281"
 ```
-# 命令ansible-console
+# ansible-console
 >交互式使用ansible
 ## 常用参数
 * cd 切换主机或组
@@ -122,8 +122,25 @@ python | CHANGED => {
 hjq@all (2)[f:5]$ cd ops
 hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
 ```
-# 典型应用
-## 新建用户
+# ansible-doc
+插件文档工具  
+语法：ansible-doc [-l|-F|-s] [options] [-t <plugin type> ] [plugin]  
+
+* -l 插件列表
+* -F 查看插件的源码位置
+* -s 查看插件的参数信息
+* -t 设置插件类型，默认为模块，可选插件如下
+  - cache
+  - callback
+  - connection
+  - inventory
+  - lookup
+  - shell
+  - module
+  - strategy
+  - vars
+
+# 应用范例-新建用户
 * 产生随机密码
     - 使用openssl：` echo pass|openssl passwd -1 -stdin `
     - ubuntu下mkpasswd：` echo pass|mkpasswd --method=sha-512 --stdin `
@@ -135,7 +152,7 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
 * 秘钥登录
     - `ansible python -m authorized_key -a "user=muker key='{\{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }\}' state=present" -u muker -K`
 
-# 跳板机配置
+# 远程连接-跳板机设置
 ## 实现目标
 ansible可以通过跳板机管理远程内网服务器
 ## 实现原理
