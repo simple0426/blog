@@ -178,14 +178,14 @@ tasks:
 ## csvfile
 从csv文件中解析内容  
 ```
-
 # java1是第0列的值，同时作为key，去取第4列的值【从0开始索引】
 # 此时逗号作为分隔符【默认为tab（TAB或t）】
 - name: get value from csv
   debug: msg="java1 password is {{ lookup('csvfile', 'java1 file=b.csv delimiter=, col=4')}}"
 ```
 # 循环
->loop可以部分替代with_xxx功能
+>loop可以部分替代with_xxx功能  
+
 ## 普通列表
 ```
 vars:
@@ -240,5 +240,32 @@ vars:
     - './*.1'
     - './*.2'
 ```
-# conditionals
+
+# 条件判断
+## when
+* 一次性判断  
+* when中直接使用变量名，不需要引号
+* 多个条件为and关系时可以使用列表形式
+
+```
+- name: touch file when os is ubuntu
+  command: touch /tmp/ceshi
+  when:
+    - ansible_facts["os_family"] == "Debian"
+    - ansible_memory_mb.real.total > 900
+```
+## until
+多次尝试性判断  
+
+```
+# 每隔15s执行一次，共尝试3次；条件依然不满足时，task失败
+- name: ensure time is 201905241750
+  shell: date +%Y%m%d%H%M
+  register: date
+  until: date.stdout == '201905241750'
+  retries: 3
+  delay: 15
+```
 # 常用模块
+* setup：用于获取操作系统信息
+  - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
