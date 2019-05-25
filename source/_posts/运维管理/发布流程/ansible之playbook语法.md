@@ -254,6 +254,28 @@ vars:
     - ansible_facts["os_family"] == "Debian"
     - ansible_memory_mb.real.total > 900
 ```
+### 执行结果判断
+* successed
+* failed
+* changed
+* skipped
+* undefined【变量未定义】
+
+```
+- name: test result
+  git:
+    repo: https://github.com/simple0426/gitbook.git
+    dest: /home/python/gitbook
+    version: master
+  run_once: true
+  register: result
+- name: debug change
+  debug: msg="change"
+  when: result is changed
+- name: debug undefined
+  debug: msg="key12 is undefined"
+  when: key12 is undefined
+```
 ## until
 多次尝试性判断  
 
@@ -269,3 +291,13 @@ vars:
 # 常用模块
 * setup：用于获取操作系统信息
   - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
+* command/shell：执行命令
+* template：模板系统，可以复制包含变量名的文件
+  - validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件
+
+  ```
+  - name: write the nginx config file
+    template: src=nginx2.conf dest=/etc/nginx/nginx.conf validate='nginx -t -c %s'
+    notify:
+    - restart nginx
+  ```
