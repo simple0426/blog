@@ -140,7 +140,7 @@ roles
         └── 172.17.8.18
 ```
 
-# ansible-playbook执行
+# ansible-playbook
 * --syntax-check：对playbook进行语法检查
 * --start-at-task：从指定任务处继续执行playbook
 * --list-hosts：查看所有主机
