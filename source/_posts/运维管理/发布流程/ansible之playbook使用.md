@@ -2,11 +2,14 @@
 title: ansible之playbook使用
 date: 2019-05-25 22:33:05
 tags:
-categories:
+  - playbook
+  - include
+  - 多环境
+categories: ansible
 ---
 
 # playbook简介
-playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能的
+playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：
 
 * module：实现功能的基本组成单元，类似程序代码
     - 它应该是幂等效果，即多次执行和一次执行具有同样的效果
@@ -24,67 +27,116 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
     - 在一个play中，多个触发器共同在task列表执行完成后执行
     - 触发器的运行顺序根据handlers中的定义顺序执行，和notify的使用顺序无关
     - pre_tasks/tasks/post_tasks中的触发器在相应部分的末尾被触发
-* import_tasks：包含其他task
-* import_role/include_role：包含其他role
 * run_once：仅执行一次
+* delegate_to：在主机或主机组的task中定义其他主机要执行的任务
+   ```
+   本地操作实现
+   shell：free -m
+   run_once：true
+   delegate_to:localhost
+   ```
 
 # play语法
 * name：play名称
 * hosts：将要执行任务的主机，以逗号分隔多个主机或多个组
 * gather_facts：是否收集操作系统信息
 * vars：定义的变量
-* serial：执行任务时，同时有几台主机在执行
 * tasks：执行任务列表
 * pre_tasks/post_tasks：tasks之前或之后执行的任务列表
 * roles：角色列表
 * handlers：触发器列表；实际也是任务列表，和普通的任务没什么不同
+* serial：指定在主机组或主机列表中执行任务时，同时有几台主机在执行任务，此功能主要用于灰度发布
+    + 可以是数字或数字列表
+    + 可以是百分比或百分比列表
+    + 也可以是数字和百分比的混合
+    ```
+    - hosts: 172.17.134.58,172.17.134.63
+      gather_facts: no
+      vars: { haproxy: 172.17.134.53, end_sec: 10 }
+      serial: 1
+      tasks:
+        - include: files/deploy/double_srv.yml
+          tags: ['service_user']
+          vars:  { project: service_user, project_port: 8050, start_sec: 30 }
+    # 由于serial为1，同时只有一台主机在执行任务，循环2次执行完此任务；
+    # 若serial为2，则同时会有2台主机执行任务，一次循环即可执行完
+    ```
 
 # 公共语法
->play或task中都可以使用的语法
+play或task中都可以使用的语法
 
 * environment：在task和play中设置环境变量
-    -   environment: PATH: /home/{{ ansible_ssh_user }}/open_api:{{ ansible_env.PATH }}
+    - environment: PATH: /home/{{ ansible_ssh_user }}/open_api:{{ ansible_env.PATH }}
 * tags：在play、roles、task级别设置标签，以便只执行特定标签任务
-
-    ```
-    # play级别
-    - name: deploy java
-      hosts: 172.17.12.14
-      tags: ['java']
-
-    # role级别
+    - play级别
+      ```
+      - name: deploy java
+        hosts: 172.17.12.14
+        tags: ['java']
+      ```
+    - role级别
+      ```
       roles:
-        - { role: interface_app, tags: ['interface_app']}
+          - { role: interface_app, tags: ['interface_app']}
+      ```
+    - task级别
+      ```
+      - name: debug info
+        debug: "msg={{ ansible_env.PATH }}"
+        tags: ['path']
+      ```
 
-    # task级别
-    - name: debug info
-      debug: "msg={{ ansible_env.PATH }}"
-      tags: ['path']
+* include：包含另一个play或task
+    + 此功能已被拆分为include_xxx和import_xxx两类模块，未来可能被遗弃：<https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module>
+    + 包含play：与hosts同级的另一个play
+    + 包含task：task列表
     ```
+    ---
+    - hosts: ops
+      vars:
+        - key: 8
+      tasks:
+        - name: debug info
+          debug: msg="The {{ inventory_hostname }} Value is {{ key }}"
+        - include: task.yml
+    - include: play2.yml
+    ```
+    + 与when搭配使用
+    ```
+    - include: service_base.yml
+      when: change|changed and project == 'service_base'
+    ```
+* include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作
+    + include_role：加载并执行一个role
+    + include_tasks：动态包含任务列表
+* import_x：为静态导入，即在ansible整体解析时执行导入操作
+    + import_playbook：导入playbook
+    + import_role：导入role到一个play中
+    + import_tasks：导入task列表
 
 # roles目录
 * roles以包含规定目录名的语法来构成
 * 每个规定的目录名下必须包含main.yml文件
 
 ```
-roles/                            角色主目录
+roles/                          角色主目录
    common/                 common角色目录
-     files/                        文件目录
-     templates/             模板目录
-     tasks/                      任务列表目录
-     handlers/              handler目录
+     files/                      文件目录
+     templates/              模板目录
+     tasks/                    任务列表目录
+     handlers/                handler目录
      vars/                      变量目录[vars中定义的变量优先于defaults中的变量]
-     defaults/              变量目录
-     meta/                   meta中定义角色依赖关系
+     defaults/                 变量目录
+     meta/                      meta中定义角色依赖关系
 ```
 
 # playbook目录
 ## 通用设置
 ```
 site.yml                      主playbook入口
-webservers.yml       特殊任务playbook入口
-hosts                           自定义inventory
-group_vars/               组变量
+webservers.yml           特殊任务playbook入口
+hosts                         自定义inventory
+group_vars/                组变量
    all
    dbservers
 host_vars/                  主机变量
@@ -99,8 +151,6 @@ roles
 ```
 # 主目录结构
 ├── ansible.cfg
-├── deploy-pre.yml
-├── deploy-prod.yml
 ├── environments
 │   ├── pre
 │   └── prod
@@ -115,8 +165,6 @@ roles
 │   ├── project_java
 │   ├── project_python
 │   ├── python_web
-├── service-pre.py
-├── service-prod.py
 ├── site-pre.yml
 ├── site-prod.yml
 └── tasks

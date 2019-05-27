@@ -1,14 +1,12 @@
 ---
-title: ansible之playbook语法
+title: ansible之常用组件
 tags:
   - filter
   - lookup
   - loop
-  - vault
   - condition
   - 变量
-categories:
-  - ansible
+categories: ansible
 date: 2019-05-24 17:07:55
 ---
 
