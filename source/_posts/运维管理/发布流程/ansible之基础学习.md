@@ -78,6 +78,7 @@ webservers
 * ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】
 
 # ansible
+在一个或一组主机下运行单个任务
 ## 示例
 ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K
 ## 常用参数
