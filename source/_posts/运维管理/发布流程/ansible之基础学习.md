@@ -1,11 +1,11 @@
 ---
-title: ansible基础
+title: ansible之基础学习
 tags:
   - ansible
   - ansible-console
   - ansible.cfg
-categories:
-  - ansible
+  - ansible-vault
+categories: ansible
 date: 2019-05-17 14:30:41
 ---
 
@@ -20,7 +20,7 @@ ansible是远程部署工具，类似工具有fabric、puppet，可实现如下�
 
 安装：<https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html>
 # 配置
-## 配置文件ansible.cfg 
+## ansible.cfg 
 定义ansible执行时的参数配置
 ```
 [defaults]
@@ -51,10 +51,10 @@ retry_files_enabled = False
 | scp_if_ssh                   | 如果有跳板机，则需设置为True                            |
 | retry_files_enabled          | 关闭因playbook无法执行而产生的retry文件                 |
 | deprecation_warnings = False | 关闭警告信息                                            |
-## 资源文件hosts
-即inventory：主机列表【默认使用/etc/ansible/hosts或ansible.cf中定义的hosts】
+## hosts
+即inventory：主机列表【默认使用/etc/ansible/hosts或ansible.cfg中定义的hosts】
 
-* 硬编码主机列表【常用】
+* 静态主机列表【常用】
 * 动态主机列表【脚本】
     - 官方使用参考：<https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html>
     - 早期版本定义脚本：<https://github.com/simple0426/sysadm/blob/master/ansible/hosts.py>
@@ -139,6 +139,23 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
   - module
   - strategy
   - vars
+
+# ansible-vault
+是用于加密结构化数据[json或yaml]文件的命令
+
+* 命令参数
+    - create 创建加密文件
+    - edit 编辑加密文件
+    - encrypt 加密文件
+    - decrypt 解密文件
+    - view 查看加密文件内容
+    - rekey 变更加密密码
+* 使用方式【命令ansible或ansible-playbook】
+    - --ask-vault-pass 交互式出入加密密码
+    - --vault-password-file=xx 提供加密密码文件
+* 使用范例
+    - ansible 127.0.0.1 -e "@vars.yml" -m debug  -a "msg={{ key3 }}" --ask-vault-pass
+    - ansible-playbook test.yml --vault-password-file=password.txt
 
 # 应用范例-新建用户
 * 产生随机密码
