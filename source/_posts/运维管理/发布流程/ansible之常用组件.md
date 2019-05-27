@@ -288,14 +288,39 @@ vars:
 ```
 # 常用模块
 * setup：用于获取操作系统信息
-  - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
+    - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
 * command/shell：执行命令
 * template：模板系统，可以复制包含变量名的文件
-  - validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件
+    - validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件
+    ```
+    - name: write the nginx config file
+      template: src=nginx2.conf dest=/etc/nginx/nginx.conf validate='nginx -t -c %s'
+      notify:
+      - restart nginx
+    ```
 
-  ```
-  - name: write the nginx config file
-    template: src=nginx2.conf dest=/etc/nginx/nginx.conf validate='nginx -t -c %s'
-    notify:
-    - restart nginx
-  ```
+* copy：复制文件和目录
+    - 缺点：当复制的目录有多级或目录内的文件数据过多时，传输效率异常低下
+    - 优点：可以备份（backup），可以检测配置文件的有效性（validate）
+* archive：打包文件和目录
+    - 缺点：不会复制空目录或空文件【比如python包文件`__init__.py`即可以是空文件】
+* synchronize：使用rsync模块同步文件和目录
+    - 优点：传输效率高
+    - 缺点：
+        + 必须使用ansible.cfg中的ssh配置选项
+        + 不能备份、不能检测配置文件有效性
+        + 不能解析hosts文件中的变量
+* haproxy：控制haproxy服务
+    + haproxy版本：1.5【增加后端服务器drain状态（软下线）】
+    + haproxy依赖：安装socat，并在haproxy.cnf中配置：stats socket /var/run/haproxy.sock mode 600 level admin
+    ```
+    # 此配置主要将后端的某台服务器软下线【不接受新连接，已经建立的连接正常处理并关闭】
+    - name: disable {{ project }} in haproxy
+      haproxy: state=drain backend='{{ project }}' host='{{ inventory_hostname }}' socket=/var/run/haproxy.sock 
+    # 上线某个后端的某台主机并等待，保障此后端主机可用
+    - name: enable {{ project }} in haproxy
+      haproxy: state=enabled backend='{{ project }}' host='{{ inventory_hostname }}' socket=/var/run/haproxy.sock wait=yes
+      delegate_to: '{{ haproxy }}'
+      become: yes
+    ```
+
