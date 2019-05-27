@@ -17,7 +17,52 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
 * role：是由task、handler、var等组成以实现特定功能
 * play：是将一些主机(inventory)和一些role进行映射、绑定，以达到在这些主机上实现特定功能
 * playbook：playbook是多个play的集合，以达到在多主机进行多功能的部署
+* block：一般用于task的逻辑分组以及在play中进行错误处理
 
+# block范例
+## task逻辑分组
+```
+---
+- hosts: 127.0.0.1
+  debugger: on_skipped
+  tasks:
+    - name: display memory and cpu load
+      block:
+      - name: display memory
+        shell: free -m
+        register: mem
+      - debug: msg="{{ mem.stdout }}"
+      - name: display cpu load
+        shell: uptime
+        register: uptime
+      - debug: msg="{{ uptime.stdout }}"
+      when: ansible_facts['distribution'] == 'Ubuntu'
+      become: yes
+    - name: touch file
+      command: touch /tmp/test
+```
+## play中错误处理
+类似python中的try/expect/finally
+```
+---
+- hosts: 127.0.0.1
+  tasks:
+    - name: Handler the error
+      block:                          # 标记可能出现异常的区块
+        - debug: msg='I execute normally'
+        - name: I force a failure
+          command: /bin/false
+        - debug: msg="I never execute"
+#      ignore_errors: yes     # ignore与rescue功能互斥
+      rescue:                       # 出现异常时的处理
+        - debug: msg='I caught an error'
+        - name: 'force an error in rescue'
+          command: /bin/false
+        - debug: msg='I alse never executes'
+      always:                       # 无论是否出现异常都执行的任务
+        - name: other tasks
+          command: uptime
+```
 # task语法
 * name：task名称，以描述这个task的具体任务；可以在name中使用已经定义过的变量
 * ignore_errors：在task中定义，忽略错误继续执行下个task【否则，遇到错误直接跳出整个playbook的执行】
@@ -88,6 +133,13 @@ play或task中都可以使用的语法
 
 * include：包含另一个play或task
     + 此功能已被拆分为include_xxx和import_xxx两类模块，未来可能被遗弃：<https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module>
+        * include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作
+            - include_role：加载并执行一个role
+            - include_tasks：动态包含任务列表
+        * import_x：为静态导入，即在ansible整体解析时执行导入操作
+            - import_playbook：导入playbook
+            - import_role：导入role到一个play中
+            - import_tasks：导入task列表
     + 包含play：与hosts同级的另一个play
     + 包含task：task列表
     ```
@@ -106,14 +158,44 @@ play或task中都可以使用的语法
     - include: service_base.yml
       when: change|changed and project == 'service_base'
     ```
-* include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作
-    + include_role：加载并执行一个role
-    + include_tasks：动态包含任务列表
-* import_x：为静态导入，即在ansible整体解析时执行导入操作
-    + import_playbook：导入playbook
-    + import_role：导入role到一个play中
-    + import_tasks：导入task列表
 
+* debugger ：调试
+    + 可以再任意具有name属性的区块设置，比如play、role、block、task
+    + debugger值：
+        - always：总是调用调试模块
+        - never：从不调用
+        - on_failed：仅在任务失败时调用调试模块
+        - on_unreachable：当主机不可达时调用模块
+        - on_skipped：任务跳过时调用模块
+    + 可用命令：
+        - p task：显示任务名称
+        - p task.args：显示任务参数
+        - p task_vars：显示任务变量
+        - p host：显示任务操作主机
+        - p result._result：显示任务执行结果
+        - task_vars[key] = value：设置变量
+        - task.args[key] = value：设置参数
+        - r（edo）：重新运行任务
+        - c（continue）：继续执行
+        - q（uit） ：从debugger模式退出
+
+* wait_for：在继续其他任务时，等待一个状态成立
+
+```
+# 指定的时间后【delay】，检测某台主机的某个端口是否还有tcp连接【drained】，最多等待300s，在300s内，  
+# 如果为drained状态则继续执行其他任务，但是exclude_hosts中包含的主机【列表】与所操作的主机连接排除在外
+- name: wait {{ project }} port drain
+  wait_for: 
+    host: '{{ inventory_hostname }}' 
+    port: '{{ project_port }}' 
+    state: drained 
+    timeout: 300 
+    delay: '{{ end_sec }}' 
+    exclude_hosts: '{{ micro_srv }}'
+# 在指定时间后检测端口是否开启
+- name: wait {{ project }} port up
+  wait_for: host='{{ inventory_hostname }}' port='{{ project_port }}' state=started delay='{{ start_sec }}'
+```
 # roles目录
 * roles以包含规定目录名的语法来构成
 * 每个规定的目录名下必须包含main.yml文件
