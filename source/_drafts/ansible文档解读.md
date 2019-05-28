@@ -17,7 +17,7 @@ ansible与阿里云：<https://docs.ansible.com/ansible/latest/scenario_guides/g
 # ansible-config
 配置查看工具
 
-* ansible-config dump --only-changed：查看ansible.cfg中的自定义配置
+* ansible-config dump --only-changed：查看ansible.cfg中的自定义配置【非默认配置】
 * ansible-config view：查看当前配置文件ansible.cfg
 
 # ansible-pull

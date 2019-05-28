@@ -82,18 +82,44 @@ webservers
 ## 示例
 ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K
 ## 常用参数
-| 参数 |              含义              |
-|------|--------------------------------|
-| -u   | 连接远程主机使用的ssh用户名    |
-| -m   | 使用的模块                     |
-| -a   | 模块参数                       |
-| -b   | 执行命令时提升权限【默认sudo】 |
-| -k   | ssh连接密码                    |
-| -K   | 提升权限使用的密码             |
-## 异步模式
-* -B seconds 设置任务异步执行，超时则失败【不设置则永不超时】
-* -P 0 设置轮询异步任务的时间间隔【0为永不轮询】
+### 一般选项
+* --ask-vault-pass：       提示输入加密面
+* --become-method：    权限变更的方式【su或sudo】
+* --become-user：        权限变更时使用的用户
+* --list-hosts：               输出符合要求的主机列表
+* --playbook-dir
+* --private-key，--key-file
+* --scp-extra-args：      scp选项参数
+* --sftp-extra-args ：     sftp选项参数
+* --ssh-common-args：指定传给scp/sftp/ssh的一般参数
+* --ssh-extra-args：     只传给ssh的参数
+* --syntax-check：       检测语法
+* --vault-id
+* --vault-password-file：加密密码的文本文件
+* --version：               显示程序版本、配置文件位置、模块搜索路径、模块文件位置、可执行文件位置
+* -B/--background ：   异步运行模式，运行超过X秒后失败
+* -C/--check：            不实际执行任务，但是显示执行后可能发生的变化
+* -D/--diff：                与-C搭配使用，显示当使用files和templates模块时，变化前后的区别
+* -K/--ask-become-pass：权限变更时交互式输入密码
+* -M/--module-path：  以冒号分隔的自定义模块路径【默认~/.ansible/plugins/modules:/usr/share/ansible/plugins/modules】
+* -P/--poll：               和-B搭配使用，设置轮询时间间隔【默认15，0为永不轮询】
+* -t/--timeout：           设置连接超时时间【默认10】
+* -a/--args：              模块参数
+* -b/--become：         设置将要进行权限变更
+* -c/--connection
+* -e/--extra-vars :       设置自定义变量【key=value形式或yaml、json文件（文件名称前添加@）】
+* -f/--forks：             设置并行进程数【默认为5】
+* -h/--help：              帮助信息
+* -i/--inventory：       设置资源文件位置或以逗号分隔的主机列表
+* -k/--ask-pass：       远程连接时交互式输入密码
+* -l/--limit
+* -m/--module-name：将要执行的模块名称
+* -o/--one-line：         简化输出为一行
+* -t/--tree：                将输出记录到此目录
+* -u/--user：              远程连接用户
+* -v/--verbose：         详细输出模式（-vvv输出更多，-vvvv将开启连接调试）
 
+## 范例：异步模式
 ```
 [hjq@localhost ~]$ ansible python -B 300 -P 0 -m yum -a "name=libselinux-python state=latest" 
 python | CHANGED => {
