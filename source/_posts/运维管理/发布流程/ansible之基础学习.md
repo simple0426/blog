@@ -153,9 +153,10 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
 插件文档工具  
 语法：ansible-doc [-l|-F|-s] [options] [-t <plugin type> ] [plugin]  
 
-* -l 插件列表
-* -F 查看插件的源码位置
+* -l 查看插件列表及相关简单描述信息
+* -F 查看插件列表及相关的源码位置【隐含-l参数】
 * -s 查看插件的参数信息
+  - ansible-doc -s -t lookup csvfile
 * -t 设置插件类型，默认为模块，可选插件如下
   - cache
   - callback
@@ -166,6 +167,24 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
   - module
   - strategy
   - vars
+
+# ansible-config
+配置查看工具
+
+* ansible-config dump --only-changed：查看ansible.cfg中的自定义配置【非默认配置】
+* ansible-config view：查看当前配置文件ansible.cfg
+
+## ansible-inventory
+资源查看工具  
+语法：--list [--export] [--yaml]|--graph [--vars]|--host[--yaml]
+
+* --list：显示所有主机信息
+    - --export ：与--list搭配使用，优化显示信息
+* --host：显示特定主机信息
+* -y/--yaml：以yaml显示输出【默认json格式】
+    - 与list和host搭配使用
+* --graph：以图表形式显示所有主机信息
+    - --vars：在图表中显示变量信息
 
 # ansible-vault
 是用于加密结构化数据[json或yaml]文件的命令

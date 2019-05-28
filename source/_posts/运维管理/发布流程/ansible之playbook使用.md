@@ -271,15 +271,13 @@ roles
 ```
 
 # ansible-playbook
+* --flush-cache：清除每一台主机的facts缓存信息
+* --force-handlers：即使任务失败也执行handlers
 * --syntax-check：对playbook进行语法检查
 * --start-at-task：从指定任务处继续执行playbook
+* -t/--tags xxx：执行指定标签任务
+* --step：每执行一个任务都要进行确认
 * --list-hosts：查看所有主机
 * --list-tags：查看所有标签
 * --list-tasks：查看所有任务
-* -t xxx：执行指定标签任务
-
-# ansible-galaxy
-一个开源的角色库
-
-* 官方地址：<https://galaxy.ansible.com/>
- 
+* --skip-tags：跳过标签执行其他任务
