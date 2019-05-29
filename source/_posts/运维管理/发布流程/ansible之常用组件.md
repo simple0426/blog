@@ -324,4 +324,12 @@ vars:
       delegate_to: '{{ haproxy }}'
       become: yes
     ```
+* fetch：从远程主机拉取文件到本地
+  - dest：保存为本地文件或保存在本地目录【必须以斜线结尾】
+  - flat：设置为yes时，和copy一样的行为；当为no时，则保存在本地的dest/<remote_hostname>/<absolute_path>下
+  - src：远程主机上的文件
+  - validate_checksum：是否在传输完成后进行校验
+  - 范例：ansible test1 -m fetch -a "src=~/vendor/redis-4.0.14.tar.gz dest=files/ flat=yes"
+
+
 
