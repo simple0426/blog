@@ -24,10 +24,6 @@ categories:
 
 # 资源文件设置
 
-# 命令行
-## ansible-pull
-从版本库中拉取playbook并在本地执行
-
 # playbook
 
 # 部署实践

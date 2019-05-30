@@ -9,6 +9,7 @@ tags:
   - ansible-playbook
   - ansible-galaxy
   - ansible-vault
+  - ansible-pull
 categories: ansible
 date: 2019-05-29 15:36:18
 ---
@@ -184,3 +185,67 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
 * install：安装一个角色
     - -f 强制覆盖已存在的角色
     - --force-with-deps：强制覆盖已存在的角色和依赖信息
+
+# ansible-pull
+从版本库中拉取playbook并在本地执行
+
+## 命令参数
+ansible-pull -o -C master -U https://github.com/simple0426/ansible_test.git -i hosts --purge
+
+* -o 只有代码库有变更时拉取代码并执行
+* --purge 执行ansible完成后删除代码
+  - 与-o参数有冲突
+  - 默认会将playbook项目拉取至~/.ansible/pull/《hostname》|local目录下
+* -C 使用指定分支代码
+* -i 强制使用项目中的hosts
+* -U 指定playbook的仓库地址【必选项】
+
+## 仓库目录
+ansible_test/
+├── hosts
+├── local.yml
+├── ops.yml
+└── simple.yml
+
+### hosts
+```
+[localhost]
+127.0.0.1
+```
+
+* hosts中只能定义本机，即127.0.0.1
+* 当系统没hosts或未设置时默认使用项目中的hosts
+* 当系统有hosts设置时，只会读取127.0.0.1设置，此时需要在命令行使用【-i hosts】参数强制读取项目中的hosts
+
+### playbook
+```
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: touch file
+      command: touch /tmp/ceshi3
+```
+
+1. playbook中的hosts只能为本机，即127.0.0.1或其别名
+2. 程序会通过python接口读取系统的主机名或其缩略形式
+3. ansible-pull会在项目中查找与主机名同名的playbook执行【如ops.yml、simple.yml】
+4. 如果未找到主机名相关的playbook，则会在项目中找local.yml这个playbook后执行
+5. 最后，如果找不到local.yml则报错退出
+
+## 使用
+* 可以在项目中的local.yml中定义每个主机都要执行的操作
+* 在项目的《hostname》.yml中定义个别主机需要执行的操作
+* 也可以使用不同分支控制不同主机执行不同操作
+* 可以使用crontab来定义每个主机定期执行的playbook
+
+## 番外：FQDN
+* FQDN=主机名+域名
+* 设置主机名
+    - 命令行：hostname xxxx
+    -  文件/etc/hostname：xxx
+    -  文件/etc/hosts：127.0.0.1 xxx
+* 设置FQDN【以便于python等程序通过接口获取】
+    1. 删除hosts中默认的"127.0.0.1   localhost localhost.localdomain"等选项
+    2. hosts中添加"127.0.0.1       xxx localhost"
+* 如果hosts的127.0.0.1行内存在诸如"localhost.localdomain"以逗号分隔的选项，则FQDN依然为"localhost.localdomain"
