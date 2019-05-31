@@ -8,7 +8,7 @@ date: 2019-05-17 14:30:41
 ---
 
 # 简介
-ansible是远程部署工具，类似工具有fabric、puppet，可实现如下功能
+[ansible是远程部署工具，类似工具有fabric、puppet，可实现如下功能
 
 * 安装软件【yum、apt】
 * 服务启停控制【service】
@@ -16,9 +16,10 @@ ansible是远程部署工具，类似工具有fabric、puppet，可实现如下�
 * 文件上传与下载【copy、fetch】
 * 执行命令【command】
 
-安装：<https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html>
-# 配置
-## ansible.cfg 
+# 安装
+* 参考：<https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html>
+
+# ansible.cfg 
 定义ansible执行时的参数配置
 ```
 [defaults]
@@ -49,31 +50,48 @@ retry_files_enabled = False
 | scp_if_ssh                   | 如果有跳板机，则需设置为True                            |
 | retry_files_enabled          | 关闭因playbook无法执行而产生的retry文件                 |
 | deprecation_warnings = False | 关闭警告信息                                            |
-## hosts
-即inventory：主机列表【默认使用/etc/ansible/hosts或ansible.cfg中定义的hosts】
 
-* 静态主机列表【常用】
-* 动态主机列表【脚本】
-    - 官方使用参考：<https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html>
-    - 早期版本定义脚本：<https://github.com/simple0426/sysadm/blob/master/ansible/hosts.py>
+# inventory
+定义主机资源列表
+## 引用inventory
+* 默认使用/etc/ansible/hosts或ansible.cfg中定义的hosts
+* [动态的获取主机资源][dynamic_inventory]，比如
+    - 使用脚本，动态获取主机资源
+    - 通过插件，从云上获取主机资源
+* 主机资源文件可以是多种格式的，默认是ini，也可以是yaml
+    - 查看ansible支持的主机资源类型：ansible-doc -t inventory --list
+* 多种主机资源聚合时
+    - 可以在命令行中多次使用-i参数指定
+    - 也可以建立一个目录，在目录下定义多个主机资源文件
 
-### 定义主机与主机变量
-`crm ansible_user='root' ansible_ssh_pass='123456'`
-### 定义组和组变量
+## 定义inventory
+* 可以在inventory中定义主机变量和组变量【一般只设置[连接类型的内置变量][inventory-parameters]，如下：】
+    - ansible_user：ansible连接远程主机使用的ssh用户
+    - ansible_host：远程连接主机
+    - ansible_port：远程连接使用的端口
+    - ansible_password：远程连接面
+    - ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】
+* 一个主机可以被包含在多个组中，一个组也可以包含另一个组
+* 当主机名或ip中有包含连续的字母或数字时，可以使用正则形式，比如
+    - www[a-f].example.com
+    - 192.168.0.1[0-9]
+* 默认的组all包含所有主机，ungrouped包含未分组的主机
+* 当控制端与远程主机没有使用标准的22端口通信时，
+    - 如果使用的是paramiko进行连接【比如centos6/RHEL6】,则不会读取ssh配置文件中的端口信息
+    - 当使用openssh进行连接时，则会使用ssh配置文件中的端口信息
+    - 所以当使用非标准端口进行通信时，应该在inventory中明确指明使用的端口，例如：
+        + 后缀形式：`badwolf.example.com:5309`
+        + 变量形式：`jumper ansible_port=5555 ansible_host=192.0.2.50`
+
 ```
-[docker] 定义docker组
+crm ansible_user='root' ansible_ssh_pass='123456'     定义主机和主机变量
+[docker]      定义docker组
 192.168.99.10[2:9]
-[docker:vars] 定义docker组变量
-ansible_ssh_pass=""
-[newserver:children] newserver组包含webservers组
+[docker:vars]      定义docker组变量
+ansible_ssh_pass="123"
+[newserver:children]      newserver组包含webservers组
 webservers
 ```
-### 常用内置变量
-官方定义：<https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters>
-
-* ansible_user：ansible连接远程主机使用的ssh用户
-* ansible_ssh_pass
-* ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】
 
 # 远程连接-跳板机设置
 ## 实现目标
@@ -145,3 +163,7 @@ Host 172.16.0.*  # 目标主机网络
 
 * ansible ops -m ping
 * ansible 172.16.0.205 -m ping
+
+
+[dynamic_inventory]: https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html
+[inventory-parameters]: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
