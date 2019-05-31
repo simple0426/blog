@@ -3,12 +3,14 @@ title: ansible之基础学习
 tags:
   - ansible.cfg
   - ssh
+  - inventory
+  - hosts
 categories: ansible
 date: 2019-05-17 14:30:41
 ---
 
 # 简介
-[ansible是远程部署工具，类似工具有fabric、puppet，可实现如下功能
+ansible是远程部署工具，类似工具有fabric、puppet，可实现如下功能
 
 * 安装软件【yum、apt】
 * 服务启停控制【service】
@@ -16,26 +18,51 @@ date: 2019-05-17 14:30:41
 * 文件上传与下载【copy、fetch】
 * 执行命令【command】
 
-# 安装
-* 参考：<https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html>
+# 软件安装
+## 安装要求
+### 控制端
+* 当前版本(2.8)要求控制端的python版本
+  - python2（2.7）
+  - python3（3.5以上）
+* 控制端不支持在windows上安装
+* 可以在RHEL/CentOS/Debian/Ubuntu/macOS/BSDs等linux主机安装
 
-# ansible.cfg 
-定义ansible执行时的参数配置
-```
-[defaults]
-inventory = ./hosts
-host_key_checking = False
-log_path= ./ansible.log
-deprecation_warnings = False
-retry_files_enabled = False
-```
+### 被控端
+* python版本要求
+  - python2（2.6或以上）
+  - python3（3.5或以上）
 
-* 配置文件默认加载顺序
-    - 当前目录下的ansible.cfg
+## 安装命令
+* yum：yum install ansible
+* apt：
+    ```
+    sudo apt update
+    sudo apt install software-properties-common
+    sudo apt-add-repository --yes --update ppa:ansible/ansible
+    sudo apt install ansible
+    ```
+
+* pip：pip install ansible
+* [其他安装参考](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
+## 注意事项
+* 假如远端主机开启selinux，如果需要使用copy/file/template模块，则需要先安装libselinux-python软件
+* 被控端，ansible默认使用的python解释器位置为/usr/bin/python，可以使用ansible_python_interpreter设置
+* ansible有个原生模块“raw”不需要使用python解释器，可以使用它初始化安装python：ansible myhost --become -m raw -a "yum install -y python2"
+* pip或源码安装的ansilbe默认没有配置文件[ansible.cfg](https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg)
+
+# 设置ansible
+>主要为设置ansible.cfg文件
+
+* 配置文件ansible.cfg中定义了ansible执行时的参数配置
+* 可以使用环境变量或命令行参数进行部分选项设置，多种选项的优先级是：命令行》环境变量》配置文件
+* 配置文件默认加载顺序：
+    -  环境变量ANSIBLE_CONFIG
+    - 当前目录下的ansible.cfg【但是当前目录权限为其他人可写时，则拒绝加载】
     - 用户主目录下的.ansible.cfg
     - 系统目录/etc/ansible/ansible.cfg
-* 常用参数设置
 
+## [常用参数](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings)
 |             参数             |                           含义                          |
 |------------------------------|---------------------------------------------------------|
 | inventory                    | 资源清单                                                |
@@ -51,8 +78,18 @@ retry_files_enabled = False
 | retry_files_enabled          | 关闭因playbook无法执行而产生的retry文件                 |
 | deprecation_warnings = False | 关闭警告信息                                            |
 
-# inventory
-定义主机资源列表
+## 范例
+```
+[defaults]
+inventory = ./hosts
+host_key_checking = False
+log_path= ./ansible.log
+deprecation_warnings = False
+retry_files_enabled = False
+```
+
+# 设置inventory
+inventory即执行任务的主机资源列表，默认指的是/etc/ansible/hosts文件
 ## 引用inventory
 * 默认使用/etc/ansible/hosts或ansible.cfg中定义的hosts
 * [动态的获取主机资源][dynamic_inventory]，比如
@@ -65,17 +102,17 @@ retry_files_enabled = False
     - 也可以建立一个目录，在目录下定义多个主机资源文件
 
 ## 定义inventory
-* 可以在inventory中定义主机变量和组变量【一般只设置[连接类型的内置变量][inventory-parameters]，如下：】
+* 可以在inventory中定义主机变量和组变量【一般只设置[连接类型的内置变量][inventory-parameters]，常用参数如下：】
     - ansible_user：ansible连接远程主机使用的ssh用户
     - ansible_host：远程连接主机
     - ansible_port：远程连接使用的端口
     - ansible_password：远程连接面
     - ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】
 * 一个主机可以被包含在多个组中，一个组也可以包含另一个组
-* 当主机名或ip中有包含连续的字母或数字时，可以使用正则形式，比如
+* 当主机名或ip中包含连续的字母或数字时，可以使用正则形式，比如
     - www[a-f].example.com
     - 192.168.0.1[0-9]
-* 默认的组all包含所有主机，ungrouped包含未分组的主机
+* 默认的组是all【包含所有主机】和ungrouped【包含未分组的主机】
 * 当控制端与远程主机没有使用标准的22端口通信时，
     - 如果使用的是paramiko进行连接【比如centos6/RHEL6】,则不会读取ssh配置文件中的端口信息
     - 当使用openssh进行连接时，则会使用ssh配置文件中的端口信息
@@ -93,7 +130,20 @@ ansible_ssh_pass="123"
 webservers
 ```
 
-# 远程连接-跳板机设置
+# 远程连接设置
+* ansible默认使用原生openssh用于远程连接，并将开启ControlPersist 功能  
+* 由于RHEL6和centos6的openssh版本过老无法使用ControlPersist 功能，在这些系统上将会使用paramiko来替代openssh用于远程连接  
+* 有时会出现个别设备不支持sftp，这时候就需要使用scp来替代【比如使用跳板机】  
+
+## 密码方式登录
+在inventory文件中设置ansible_user和ansible_password参数
+## 秘钥方式登录
+>先使用密码方式，建立秘钥后取消密码选项
+
+* 产生秘钥：ssh-keygen -t rsa -P "" -f ./bastion
+* 传送公钥：ansible ops -m copy -a "src=keyfiles/bastion.pub dest=~/.ssh/authorized_keys mode=0600"
+
+# 跳板机设置
 ## 实现目标
 ansible可以通过跳板机管理远程内网服务器
 ## 实现原理
@@ -163,7 +213,6 @@ Host 172.16.0.*  # 目标主机网络
 
 * ansible ops -m ping
 * ansible 172.16.0.205 -m ping
-
 
 [dynamic_inventory]: https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html
 [inventory-parameters]: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
