@@ -5,23 +5,6 @@ categories:
 ---
 # 功能介绍
 
-# 安装
-* yum
-* apt
-* pip
-* 其他参考：<https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installation-guide>
-
-# 远程连接设置
-## 免密登陆
-## 跳板机设置
-
-## 远程连接
-* ansible默认使用原生openssh用于远程连接，这将开启ControlPersist 功能
-* 但由于RHEL6和centos6的openssh版本过老，在这些系统上将会使用paramiko来替代
-* 有时会出现一个设备不支持sftp，这时候就需要使用scp来替代【比如使用跳板机】
-
-# 配置文件设置
-
 # playbook
 
 # 部署实践
@@ -39,3 +22,5 @@ categories:
 ## 自定义模块
 ## 自定义插件
 ## 编写可共享的roles
+
+
