@@ -16,14 +16,25 @@ date: 2019-05-29 15:36:18
 
 # ansible
 在一个或一组主机下运行单个任务
-## 示例
-ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K
+## 语法
+* 语法：ansible 《pattern》 -m 《module_name》 -a 《arguments》 other_options  
+  - 默认的模块名为command
+* 示例：ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K  
+
+## 主机资源匹配
+* all或`*`匹配所有主机
+* 以逗号分隔多个主机或组：ansible bigdata,crm -m ping
+* 使用`*`也可以进行主机或组名的部分匹配：ansible test`*` -m ping 
+* 使用切片功能，在组内从上往下进行主机匹配：webservers[0:2]
+* 使用正则进行匹配(必须以~开头)：~(web|db).*\.example\.com
+* 使用-l/--limit参数【ansible/ansible-playbook】进一步说明需要执行任务的主机
+
 ## 常用参数
 * --ask-vault-pass：       提示输入加密面
 * --become-method：    权限变更的方式【su或sudo】
 * --become-user：        权限变更时使用的用户
 * --list-hosts：               输出符合要求的主机列表
-* --playbook-dir
+* --playbook-dir             指定playbok的根目录，这样就可以在命令行下使用playbook的roles、group_vars等特性
 * --private-key，--key-file
 * --scp-extra-args：      scp选项参数
 * --sftp-extra-args ：     sftp选项参数
@@ -42,13 +53,13 @@ ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-me
 * -t/--timeout：           设置连接超时时间【默认10】
 * -a/--args：              模块参数
 * -b/--become：         设置将要进行权限变更
-* -c/--connection
+* -c/--connection         连接类型，比如：ssh/local/docker等
 * -e/--extra-vars :       设置自定义变量【key=value形式或yaml、json文件（文件名称前添加@）】
 * -f/--forks：             设置并行进程数【默认为5】
 * -h/--help：              帮助信息
 * -i/--inventory：       设置资源文件位置或以逗号分隔的主机列表
 * -k/--ask-pass：       远程连接时交互式输入密码
-* -l/--limit
+* -l/--limit                    限定执行任务的主机资源【以逗号分隔或以@开头引用文件】
 * -m/--module-name：将要执行的模块名称
 * -o/--one-line：         简化输出为一行
 * -t/--tree：                将输出记录到此目录
