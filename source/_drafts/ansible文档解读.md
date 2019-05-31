@@ -22,8 +22,6 @@ categories:
 
 # 配置文件设置
 
-# 资源文件设置
-
 # playbook
 
 # 部署实践

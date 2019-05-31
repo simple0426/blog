@@ -12,7 +12,7 @@ date: 2019-05-24 17:07:55
 
 # 变量
 ## 内置变量
-* 官方说明：<https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html#special-variables>
+* [官方说明](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html#special-variables)
 * 常用
 
 |        变量        |           含义          |
@@ -25,7 +25,7 @@ date: 2019-05-24 17:07:55
 | inventory_dir      | iniventory所在目录      |
 
 ## inventory中的变量
-* 主机变量： 192.168.1.1 key=9 
+* 主机变量： `crm ansible_user='root' ansible_ssh_pass='123456'`
 * 组变量：
 
 ```
@@ -54,8 +54,10 @@ tasks:
     debug: msg="key1 is {{ key1 }} key2 is {{ key2 }} key3 is {{ key3 }}"
 ```
 ### 变量目录中定义
->与hosts文件同级目录
-
+* 可以包含在playbook根目录下，也可以包含在inventory目录下，当两者同时存在时，playbook下的覆盖inventory下的
+* 变量目录包含的变量文件是yaml格式的，且文件名没有后缀或是以'.yml'、'.yaml'、'.json'为后缀
+* ansible-playbook命令默认寻找当前playbook目录下的变量文件，但是其他ansible命令（比如ansible/ansible-console）则只查找inventory目录下的变量文件，除非使用--playbook-dir参数后才会查找playbook下的变量文件
+* 多个地方定义的变量，优先级如下：host》childgroup》parentgroup》allgroup
 * group_vars目录下定义组变量
     - 组名文件表示组变量
     - all文件表示所有组的公共变量
@@ -74,9 +76,10 @@ ansible-playbook -e "key1=7" -e "@var.yml" test.yml
 - name: use register
   debug: msg="This is {{ info.stdout_lines[0] }}"
 ```
-## 变量优先级
-* 官方源：<https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable>
-* 简单表示【优先级从高到低】
+## 变量冲突
+* [变量合并][var-merge]
+* [变量优先级][var-precedence]
+* 优先级简单表示【优先级从高到低】
   1. 命令行自定义变量
   2. task 【tasks列表中定义的变量】
   3. role 【roles列表中定义的变量】
@@ -330,6 +333,39 @@ vars:
   - src：远程主机上的文件
   - validate_checksum：是否在传输完成后进行校验
   - 范例：ansible test1 -m fetch -a "src=~/vendor/redis-4.0.14.tar.gz dest=files/ flat=yes"
+* blockinfile：插入、更新、删除多行文本内容
+  - group/owner/mode：属主属组权限等
+  - backup：备份文件
+  - block：在标记处将要插入的文本；如果选项缺失或是空字符串，则和state=present一样都是删除内容
+  - path：文件路径
+  - create：文件不存在则新创建
+  - validate：文件语法检查
+  - state：present为添加或更新，absent为删除
+  - marker：替换内容的前后注释信息，默认："# {mark} ANSIBLE MANAGED BLOCK"
+  - insertafter：在指定标记后插入内容
+    + ‘EOF’表示文件末尾
+    + regex表示一般正则表达式，如果匹配不到则使用EOF
+  - insertbefore：在指定标记钱插入内容
+    + 'BOF'表示文件开始
+    + regex表示一般正则表达式，如果匹配不到则使用EOF
 
+```
+# 修改mavne仓库为阿里云
+- name: add aliyun repo
+  blockinfile:
+    path: /usr/local/apache-maven-3.6.0/conf/settings.xml
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    backup: yes
+    insertafter: "<mirrors>"
+    block: |
+      <mirror>
+         <id>nexus-aliyun</id>
+         <mirrorOf>central</mirrorOf>
+         <name>Nexus aliyun</name>
+         <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+      </mirror>
+```
 
+[var-merge]: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#how-we-merge
+[var-precedence]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 
