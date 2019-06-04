@@ -303,6 +303,12 @@ vars:
       - restart nginx
     ```
 
+* file：创建、删除文件或目录
+    - state：directory、absent
+* yum/apt：软件包管理
+* service：服务管理
+* user：用户管理
+* git：git操作
 * copy：复制文件和目录
     - 缺点：当复制的目录有多级或目录内的文件数据过多时，传输效率异常低下
     - 优点：可以备份（backup），可以检测配置文件的有效性（validate）
