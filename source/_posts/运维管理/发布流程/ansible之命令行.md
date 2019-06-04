@@ -20,6 +20,7 @@ date: 2019-05-29 15:36:18
 * 语法：ansible 《pattern》 -m 《module_name》 -a 《arguments》 other_options  
   - 默认的模块名为command
 * 示例：ansible 10.150.20.209 -u db -m apt -a "pkg=dos2unix state=latest" -b --become-method sudo -k -K  
+* 注意：在执行任务时，应该特别注意shell引用规则(即单双引号的使用规则)，避免变量在被传递给ansible前被本地shell捕获
 
 ## 主机资源匹配
 * all或`*`匹配所有主机
