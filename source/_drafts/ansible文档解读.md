@@ -4,6 +4,9 @@ tags:
 categories:
 ---
 # playbook
+* module是基本工具集
+* playbook是使用说明书
+* inventory是原材料
 
 # 部署实践
 * 发布
