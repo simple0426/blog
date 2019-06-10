@@ -25,7 +25,7 @@ angular是用typescript编写的，所以先安装typescript，再安装angularj
 # 错误
 * npm install报错：Error: EACCES: permission denied, mkdir '/root/web/CRM-Website-ABKE/node_modules/wd/build'
     - 原因：如果npm是在root账户下执行的话，它会将uid改成当前账户，或者uid的值从user配置文件中获取，而默认情况下uid的值为nobody。所以在root账户下运行npm install时需要将unsafe-perm选项加上。
-    - 解决npm install -registry=https://registry.npm.taobao.org --unsafe-perm
+    - 解决npm install -registry=https://registry.npm.taobao.org --unsafe-perm=true
 * ng build报错:  JavaScript heap out of memory
     - 原因：项目build时需要的内存不足
     - 解决：export NODE_OPTIONS=--max_old_space_size=4096
