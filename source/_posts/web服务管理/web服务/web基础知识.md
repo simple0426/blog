@@ -1,10 +1,13 @@
 ---
 title: web基础知识
 tags:
-    - 状态码
-    - http报文
-categories: ['web']
+  - 状态码
+  - http报文
+categories:
+  - web
+date: 2019-06-11 18:08:44
 ---
+
 # http浏览过程
 1. 用户提交域名
 2. 浏览器进行域名解析
@@ -105,14 +108,16 @@ html，js，css，xml
 | 5系列               |    503 | Service Unavailable（服务不可用），可能因为超载或停机维护                                           |
 | 5系列               |    504 | Gateway Timeout（网关超时），一般是因为网关服务器请求后端服务时，后端服务没有在特定的时间内完成服务 |
 
-# http变量
-
 # 名词注解
 * IP：独立的ip数，是网站流量分析的重要指标，0:00-24:00内相同ip被计算一次
 * PV【page view 访问量】：用户刷新一次被计算1次
 * UV【unique vistor独立访客】：访问网站的一个电脑客户端为一个访客
     - 通过IP地址+其他特征信息定义
     - 通过cookies分辨
+* URI标记一个网络资源
+* URL用地址标记一个网络资源
+    - 格式：scheme://host.domain:port/path/filename
+    - 范例：http://www.w3school.com.cn/html/html_url.asp
 
 # web服务器
 * IIS：windows下常用web服务器
