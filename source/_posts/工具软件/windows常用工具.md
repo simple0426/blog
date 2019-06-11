@@ -129,6 +129,8 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 >ctrl+shift+p >> install package >> xxxx
 
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/sublimeText3-plugins.jpg)
+### Pretty JSON
+按Ctrl+Alt+J就可格式化json数据
 ###  Table Editor   
 * 通过`Ctrl+Shift+P->Table Editor: Enable for current view`开启  
 * 先输入标题行,如`|id|name|age|`，回车后在第二行输入`|-`后，  

@@ -15,7 +15,7 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
     - 它应该是幂等效果，即多次执行和一次执行具有同样的效果
 * task：执行module，用以实现特定功能，类似运行代码后的进程
 * role：是由task、handler、var等组成以实现特定功能
-* play：是将一些主机(inventory)和一些role进行映射、绑定，以达到在这些主机上实现特定功能
+* play：是将一些主机(inventory)和一些role或task进行映射、绑定，以达到在这些主机上实现特定功能
 * playbook：playbook是多个play的集合，以达到在多主机进行多功能的部署
 * block：一般用于task的逻辑分组以及在play中进行错误处理
 
@@ -84,6 +84,9 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
 # play语法
 * name：play名称
 * hosts：将要执行任务的主机，以逗号分隔多个主机或多个组
+* remote_user：远程连接用户
+* order：设置执行任务的主机顺序
+  - 默认inventory，即以inventory中定义的顺序执行任务
 * gather_facts：是否收集操作系统信息
 * vars：定义的变量
 * tasks：执行任务列表
