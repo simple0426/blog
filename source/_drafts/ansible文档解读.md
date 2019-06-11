@@ -4,9 +4,26 @@ tags:
 categories:
 ---
 # playbook
+官方示例：https://github.com/ansible/ansible-examples
+
 * module是基本工具集
 * playbook是使用说明书
 * inventory是原材料
+
+## playbook功能
+* 管理配置文件
+* 远程部署服务
+* 多层架构下的滚动更新
+* 将操作委派给其他主机
+* 在部署等操作过程中和监控系统、负载均衡系统交互
+
+## remote_user和ansible_user
+* remote_user、ansible_user【ansible_ssh_user】、命令行下的-u参数 三者具有相同功能都是用于ssh远程连接时设置用户
+* remote_user主要在ansible.cfg、play中设置
+* ansible_user主要在inventory中设置
+
+## playbook使用建议
+* 使用git等版本控制系统保留playbook及变更事项
 
 # 部署实践
 * 发布
@@ -30,5 +47,6 @@ categories:
 ## 自定义插件
 ## 编写可重用的roles
 
+解读位置：https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#tasks-list
 
 
