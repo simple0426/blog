@@ -126,6 +126,7 @@ lua*：
 ```
 client_max_body_size  20m;
 client_header_buffer_size    32K;
+client_body_buffer_size 128k;
 large_client_header_buffers  4 32k;
 Sendfile  on;
 tcp_nopush     on;
@@ -140,6 +141,8 @@ client_max_body_size  20m;
     用来设置允许客户端请求的最大的单个文件字节数
 client_header_buffer_size    32K;
     用于指定来自客户端请求头的header buffer大小
+client_body_buffer_size   128k;
+    指定客户端请求主体缓冲区大小
 large_client_header_buffers  4 32k;
     用来指定客户端请求中较大的消息头的缓存最大数量和大小
 sendfile  on;

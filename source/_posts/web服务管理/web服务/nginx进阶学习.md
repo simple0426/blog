@@ -39,6 +39,8 @@ date: 2019-06-11 18:08:11
 ```
 
 * proxy参数
+    - proxy_redirect：是否对后端服务器的“Location”响应头和“Refresh”响应头,默认为default，即使用代理服务器的location替换后端服务器的location；off为关闭替换
+    - 
 
 ```
 # http, server, location
@@ -46,27 +48,41 @@ proxy_redirect off;
 proxy_set_header Host $host;
 proxy_set_header X-Real-IP $remote_addr;
 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-client_body_buffer_size 128k;
-proxy_connect_timeout 90;
-proxy_send_timeout 90;
-proxy_read_timeout 90;
+proxy_connect_timeout 60;
+proxy_send_timeout 60;
+proxy_read_timeout 60;
+proxy_buffering on;
 proxy_buffer_size 4k;
 proxy_buffers 4 32k;
 proxy_busy_buffers_size 64k;
 proxy_temp_file_write_size 64k;
 ```
 ```
+proxy_redirect
+    是否对后端服务器的“Location”响应头和“Refresh”响应头进行该写,默认为default，即使用代理服务器的location替换后端服务器的location；off为关闭替换
 proxy_set_header             设置后，可以向后端服务器传递指定的header信息，默认的只有下面的header被定义
     proxy_set_header Host $proxy_host;
     proxy_set_header Connection close;
-client_body_buffer_size     指定客户端请求主体缓冲区大小，可以理解为先保存在本地在传给用户
-proxy_connect_timeout       表示与后端服务器连接的超时时间，即发起握手等候响应的超时时间
-proxy_send_timeout      表示后端服务器的数据回传时间，即在规定时间内后端服务器必须传完所有数据，否则，nginx将断开这个连接
-proxy_read_timeout      设置nginx从代理的后端服务器获取信息的时间，表示连接建立成功后，nginx等待后端服务器的响应时间，其实nginx已经计入后端服务器的排队之中等待处理的时间
-proxy_buffer_size       设置缓冲区大小，默认该缓冲区大小等于proxy_buffers设置的大小
-proxy_buffers       设置缓冲区的大小和数量。nginx从代理的后端服务器获取的响应信息会放置到缓冲区。
-proxy_busy_buffers_size     用于设置系统很忙时可以使用的proxy_buffers大小，官方推荐位proxy_buffers*2
-proxy_temp_file_write_size      指定proxy缓存临时文件的大小
+proxy_connect_timeout
+    表示与后端服务器连接的超时时间，即发起握手等候响应的超时时间；这个超时一般不可能大于75秒
+proxy_send_timeout
+    定义向后端服务器传输请求的超时。此超时是指相邻两次写操作之间的最长时间间隔，而不是整个请求传输完成的最长时间。如果后端服务器在超时时间段内没有接收到任何数据，连接将被关闭。 
+proxy_read_timeout
+    定义从后端服务器读取响应的超时。此超时是指相邻两次读操作之间的最长时间间隔，而不是整个响应传输完成的最长时间。如果后端服务器在超时时间段内没有传输任何数据，连接将被关闭。 
+proxy_buffering on;
+    代理的时候，开启或关闭缓冲后端服务器的响应。默认为on；
+    当开启缓冲时，nginx尽可能快地从被代理的服务器接收响应，再将它存入proxy_buffer_size和proxy_buffers指令设置的缓冲区中。如果响应无法整个纳入内存，那么其中一部分将存入磁盘上的临时文件。proxy_max_temp_file_size和proxy_temp_file_write_size指令可以控制临时文件的写入。 
+    当关闭缓冲时，收到响应后，nginx立即将其同步传给客户端。nginx不会尝试从被代理的服务器读取整个请求，而是将proxy_buffer_size指令设定的大小作为一次读取的最大长度。 
+proxy_buffer_size  【该缓冲区大小默认等于proxy_buffers指令设置的一块缓冲区的大小，但它也可以被设置得更小】
+    nginx从被代理的服务器读取响应时，使用该缓冲区保存响应的开始部分，即header信息。
+proxy_buffers  【每块缓冲区默认等于一个内存页的大小。这个值是4K还是8K，取决于平台】
+    为每个连接设置缓冲区的数量为number，每块缓冲区的大小为size。这些缓冲区用于保存从被代理的服务器读取的响应。
+proxy_busy_buffers_size     【默认是proxy_buffer_size和proxy_buffers指令设置单块缓冲大小的两倍】
+    当开启缓冲响应的功能以后，在没有读到全部响应的情况下，写缓冲到达一定大小时，nginx一定会向客户端发送响应，直到缓冲小于此值。这条指令用来设置此值。 同时，剩余的缓冲区可以用于接收响应，如果需要，一部分内容将缓冲到临时文件。该大小
+proxy_temp_file_write_size   【默认值是proxy_buffer_size指令和proxy_buffers指令定义的每块缓冲区大小的两倍】
+    在开启缓冲后端服务器响应到临时文件的功能后，设置nginx每次写数据到临时文件的size(大小)限制。   
+proxy_max_temp_file_size  【默认值1024m，设置0时禁止响应写入临时文件】
+    打开响应缓冲以后，如果整个响应不能存放在proxy_buffer_size和proxy_buffers指令设置的缓冲区内，部分响应可以存放在临时文件中。 这条指令可以设置临时文件的最大容量。 
 ```
 
 * proxy_set_header Host $host解析
