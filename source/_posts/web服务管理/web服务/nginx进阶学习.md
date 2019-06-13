@@ -167,6 +167,16 @@ real_ip_recursive   on;
 
 
 # 在线升级
+## nginx相关信号
+>可以通过向nginx主进程发送相关信号控制nginx
+
+* TERM、INT：快速关闭nginx
+* QUIT：优雅关闭nginx【待处理完请求才关闭】
+* HUP：变更配置文件时，新的worker进程使用新配置文件，老的worker使用旧配置文件
+* USR1：打开一个新的日志文件
+* USR2：升级nginx二进制文件【使用新的二进制文件启动进程】
+* WINCH：优雅关闭worker进程
+
 ## 编译新的二进制文件
 只需configure和make，不需要make install
 ## 二进制文件替换 
