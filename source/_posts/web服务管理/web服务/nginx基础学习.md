@@ -48,6 +48,10 @@ make && make install
 * -T            : test configuration, dump it and exit【显示配置文件详情】
 * -q            : suppress non-error messages during configuration testing【检查配置文件语法时屏蔽非错误提示信息】
 * -s signal     : send signal to a master process: stop, quit, reopen, reload
+    - stop：强制关闭主进程
+    - quit：优雅关闭煮即成
+    - reopen：打开新的日志文件写入
+    - reload：重新加载配置文件
 * -p prefix     : set prefix path (default: /usr/local/nginx/)
 * -c filename   : set configuration file (default: conf/nginx.conf)
 * -g directives : set global directives out of configuration file【配置文件外设置全局命令，如：-g daemon on】
