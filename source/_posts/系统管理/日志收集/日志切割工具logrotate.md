@@ -1,19 +1,42 @@
 ---
-title: linux日志切割logrotate
+title: 日志切割工具logrotate
 tags: logrotate
 categories: linux
+date: 2019-06-13 11:13:28
 ---
-# 介绍
+
+# 示例
+```
+/home/haproxy/log/*.log {
+rotate 15
+daily
+dateext
+missingok
+notifempty
+minsize 50M
+compress
+delaycompress
+copytruncate
+# size 50M
+# create 0640 user group
+# olddir oldlog
+# sharedscripts
+# postrotate
+#  reload rsyslog >/dev/null 2>&1 || true
+# endscript
+}
+```
+# [介绍][lograte]
 * 功能
     - 日志轮转
     - 压缩
     - 删除
 * 默认在每天的定时任务【cron.daily】下执行，因此每天只会执行一次
 * 只有当日志轮转参数基于日志大小并且多次运行logrotate，或者使用-f参数【logrotate -f】才会形成对日志的修改
-* 可以在命令行使用任意多的配置文件或定义配置文件目录；具有相同功能的配置选项，后来的配置会覆盖前面的配置
+* 可以在命令行使用任意多的配置文件或定义配置文件目录；具有相同功能的配置选项，后面的配置会覆盖前面的配置
 * 命令参数
     - -f 强制日志轮转
-    - -s 使用轮转状态文件，默认/var/lib/logrotate.status
+    - -s 使用轮转状态文件，默认使用/var/lib/logrotate.status
 
 # 默认轮转命令
 /usr/sbin/logrotate -s /var/lib/logrotate/logrotate.status /etc/logrotate.conf
@@ -33,6 +56,7 @@ categories: linux
 * nocopytruncate：在建立新副本后不清空原有日志
 * create mode owner group：设置新日志的属性
     - 需要搭配postrotate脚本来通知程序产生新的日志文件
+    - 当任何的属性不设置时，都采用和原文件相同的属性
 * nodelaycompress：不延迟压缩日志
 * ifempty：日志为空也轮转
 * notifempty：日志为空不轮转
@@ -50,25 +74,28 @@ categories: linux
 * dateformat：设置旧日志文件后缀格式【默认-%Y%m%d】
 * olddir directory：旧日志被移动到一个单独的目录，可以是相对路径，也可以是绝对路径【但必须在同一个物理磁盘上】
 * noolddir：轮转日志在同级目录
-* postrotate/endscript：日志轮转之后执行的命令或脚本【/bin/sh】，这些指令可能只出现在日志文件定义中
-* prerotate/endscript：日志轮转之前执行的命令或脚本【/bin/sh】，这些指令可能只出现在日志文件定义中
+* postrotate/endscript：日志轮转之后执行的命令或脚本【/bin/sh】，这些指令只可能出现在日志文件定义中
+    - 可以向进程发送特殊信号【signal】触发程序产生新的日志文件【相当于使用了create选项】
+* prerotate/endscript：日志轮转之前执行的命令或脚本【/bin/sh】，这些指令只可能出现在日志文件定义中
+* sharedscripts：对于同一个log定义下的所有待轮转的日志文件，他们所需执行的pre或post脚本仅被执行一次；
+* nosharedscripts：默认情况下，同一个log定义下每个待轮转的文件都会触发pre或post脚本的执行
 
-# 实践
+# 应用实践
 ```
-compress  #全局设置
+# 全局设置
+compress  
 
 # 使用双引号以处理特殊情况，比如文件名中的空格等
-# 可以在一行书写多个轮转选项，以空格分隔
+# 可以在一行书写多个待轮转文件，空格分隔
 "/var/log/httpd/access.log" /var/log/httpd/error.log { 
     xxxxxx
 }
 
-#使用掩码进行文件名匹配
+# 使用掩码进行文件名匹配
 /var/log/news/* { 
     xxxxxx
 }
 ```
 
-# 参考
-* 官方参考：https://linux.die.net/man/8/logrotate
-* 参考2：https://blog.51cto.com/istyle/1785003
+[lograte]: https://linux.die.net/man/8/logrotate
+
