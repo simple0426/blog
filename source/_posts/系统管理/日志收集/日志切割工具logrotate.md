@@ -13,11 +13,10 @@ daily
 dateext
 missingok
 notifempty
-minsize 50M
 compress
 delaycompress
 copytruncate
-# size 50M
+size 50M
 # create 0640 user group
 # olddir oldlog
 # sharedscripts
@@ -60,9 +59,7 @@ copytruncate
 * nodelaycompress：不延迟压缩日志
 * ifempty：日志为空也轮转
 * notifempty：日志为空不轮转
-* minsize：在daily, weekly, monthly, or yearly轮转周期下达到此值也进行轮转
 * size：日志轮转大小，以字节为单位，可选单位【k、M、G】
-    - 此选项与daily, weekly, monthly, or yearly轮转周期互不影响独立运转
 * missingok：日志不存在不报错
 * nomissingok：需要轮转的日志不存在时，报错
 * daily：按天轮转日志
