@@ -293,7 +293,8 @@ vars:
 * ping：测试主机连通性
 * setup：用于获取操作系统信息
     - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
-* command：执行命令【command为命令行下默认模块】
+* command/shell：执行命令【command为命令行下默认模块】
+  - creates：当文件存在时，module所在task不执行【可用于实现幂等性】
 * template：模板系统，可以复制包含变量名的文件
     - validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件
     ```

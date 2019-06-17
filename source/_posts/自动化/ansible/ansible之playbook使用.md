@@ -14,10 +14,18 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
 * module：实现功能的基本组成单元，类似程序代码
     - 它应该是幂等效果，即多次执行和一次执行具有同样的效果
 * task：执行module，用以实现特定功能，类似运行代码后的进程
-* role：是由task、handler、var等组成以实现特定功能
+* role：是由task、handler、var等组成以实现特定功能，它还可能包含模块、插件等其他功能组件
 * play：是将一些主机(inventory)和一些role或task进行映射、绑定，以达到在这些主机上实现特定功能
 * playbook：playbook是多个play的集合，以达到在多主机进行多功能的部署
 * block：一般用于task的逻辑分组以及在play中进行错误处理
+* handlers：事件触发器，当远程系统发生变化时执行的触发器【即特定task】
+
+## playbook功能
+* 管理配置文件
+* 远程部署服务
+* 多层架构下的滚动更新
+* 将操作委派给其他主机
+* 在部署等操作过程中和监控系统、负载均衡系统交互
 
 # block范例
 ## task逻辑分组
@@ -63,15 +71,24 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
         - name: other tasks
           command: uptime
 ```
+
+# handlers语法
+- 不支持在notify和handlers的name中使用变量
+- 在handers中定义listen选项，既可以作为handler的名称被notify使用，也可以将多个handler分组以便notify使用
+- 一个触发器仅被执行一次，即使在一个play中声明多次
+- 在一个play中，多个触发器共同在task列表执行完成后执行
+- 触发器的运行顺序根据handlers中的定义顺序执行，和notify的使用顺序无关
+- pre_tasks/tasks/post_tasks中的触发器在相应部分的末尾被触发
+- 不能触发位于include中触发器，但可以使用import中包含的触发器
+
 # task语法
 * name：task名称，以描述这个task的具体任务；可以在name中使用已经定义过的变量
+* action：task定义旧形式
+  - task定义新形式：【module：options】
+  - task定义旧形式：【action：module options】
 * ignore_errors：在task中定义，忽略错误继续执行下个task【否则，遇到错误直接跳出整个playbook的执行】
 * module：执行的模块；如果模块中的参数过长，可以在末尾留出空格并以缩进形式开启新行
-* notify：在任务执行完成后执行的触发器；
-    - 一个触发器仅被执行一次，即使在一个play中声明多次
-    - 在一个play中，多个触发器共同在task列表执行完成后执行
-    - 触发器的运行顺序根据handlers中的定义顺序执行，和notify的使用顺序无关
-    - pre_tasks/tasks/post_tasks中的触发器在相应部分的末尾被触发
+* notify：在任务执行完成后激活触发器的执行；
 * run_once：仅执行一次
 * delegate_to：在主机或主机组的task中定义其他主机要执行的任务
    ```
@@ -85,6 +102,9 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
 * name：play名称
 * hosts：将要执行任务的主机，以逗号分隔多个主机或多个组
 * remote_user：远程连接用户
+  - remote_user、ansible_user【ansible_ssh_user】、命令行下的-u参数 三者具有相同功能都是用于ssh远程连接时设置用户
+  - remote_user主要在ansible.cfg、play中设置
+  - ansible_user主要在inventory中设置
 * order：设置执行任务的主机顺序
   - 默认inventory，即以inventory中定义的顺序执行任务
 * gather_facts：是否收集操作系统信息
@@ -136,13 +156,6 @@ play或task中都可以使用的语法
 
 * include：包含另一个play或task
     + 此功能已被拆分为include_xxx和import_xxx两类模块，未来可能被遗弃：<https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module>
-        * include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作
-            - include_role：加载并执行一个role
-            - include_tasks：动态包含任务列表
-        * import_x：为静态导入，即在ansible整体解析时执行导入操作
-            - import_playbook：导入playbook
-            - import_role：导入role到一个play中
-            - import_tasks：导入task列表
     + 包含play：与hosts同级的另一个play
     + 包含task：task列表
     ```
@@ -161,6 +174,25 @@ play或task中都可以使用的语法
     - include: service_base.yml
       when: change|changed and project == 'service_base'
     ```
+
+* 动态导入与静态导入
+  * include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作
+      - include_role：加载并执行一个role
+      - include_tasks：动态包含任务列表
+  * import_x：为静态导入，即在ansible整体解析时执行导入操作
+      - import_playbook：导入playbook
+      - import_role：导入role到一个play中
+      - import_tasks：导入task列表
+  * 当使用tags或when时
+    - 对于import，task选项(options)将会被复制进子task中
+    - 对于include，task选项(options)只会影响自身，不会影响子task
+  * include_x使用限制
+    - 被包含的tags或tasks不会出现在命令行下--list-tags或--list-tasks中
+    - 主play中的notify不会触发include包含的handler
+    - 不能使用--start-at-task从include包含的task处执行
+  * import_x使用限制
+    - 循环时只能使用include而不是import
+    - inventory中的变量不能用于目标文件名或角色名
 
 * debugger ：调试
     + 可以再任意具有name属性的区块设置，比如play、role、block、task
