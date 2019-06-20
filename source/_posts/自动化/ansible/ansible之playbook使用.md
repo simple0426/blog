@@ -242,8 +242,8 @@ roles/                          角色主目录
      templates/              模板目录
      tasks/                    任务列表目录
      handlers/                handler目录
-     vars/                      变量目录[vars中定义的变量优先于defaults中的变量]
-     defaults/                 变量目录
+     vars/                      不可被inventory定义覆盖的变量目录
+     defaults/                 可被inventory定义覆盖的变量目录
      meta/                      meta中定义角色依赖关系
 ```
 
