@@ -114,3 +114,5 @@ git config –global core.quotepath false
     - 放弃本地所有修改等操作，保持与远程代码库的一致
 * git pull 与远程分支保持同步
 
+# remote
+* 变更本地关联的远程库：git remote set-url origin URL
