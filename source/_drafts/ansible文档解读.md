@@ -31,5 +31,5 @@ categories:
 ## 自定义插件
 ## 编写可重用的roles
 
-解读至：https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html【模板系统】
+解读至：https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html
 
