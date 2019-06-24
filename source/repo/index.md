@@ -1,13 +1,6 @@
 ---
-title: 资源库
-tags:
-  - pypi
-  - marven
-  - jdk7
-  - shadowsocks
-categories:
-  - skill
-date: 2019-05-15 13:09:47
+title: repo
+date: 2019-06-24 21:54:01
 ---
 
 * shadowsocks一键安装：<https://teddysun.com/342.html>
@@ -45,5 +38,3 @@ date: 2019-05-15 13:09:47
   - 命令行临时设置：--registry=https://registry.npm.taobao.org
   - 永久设置：npm config set registry https://registry.npm.taobao.org
     + 验证：npm config get registry
-
-
