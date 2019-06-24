@@ -1,7 +1,10 @@
 ---
-title: ansible之变量
+title: ansible之变量与模板
 tags:
   - 变量
+  - lookup
+  - loop
+  - condition
   - filter
 categories:
   - ansible
@@ -133,16 +136,19 @@ facts是从远程操作系统收集的信息
 * [ansible支持的过滤器][ansible-filter]
 
 ## 常用过滤器
-|     名称     |     含义     |
-|--------------|--------------|
-| int          | 字符串转整形 |
-| capitalize   | 首字母大写   |
-| default      | 设置默认值   |
-| random       | 取随机值     |
-| min/max      | 取最大最小值 |
-| replace      | 替换         |
-| regu_replace | 正则替换     |
-| join         | 字符串拼接   |
+|     名称     |          含义          |
+|--------------|------------------------|
+| int          | 字符串转整形           |
+| capitalize   | 首字母大写             |
+| default      | 设置默认值             |
+| random       | 取随机值               |
+| min/max      | 取最大最小值           |
+| replace      | 替换                   |
+| regu_replace | 正则替换               |
+| join         | 字符串拼接             |
+| json_query   | 从复杂json结构中获取值 |
+| from_json    | 从json文件获取变量     |
+| from_yaml    | 从yaml文件中获取变量   |
 
 ## 使用范例
 ```
@@ -154,13 +160,32 @@ facts是从远程操作系统收集的信息
     list: [1, 2, 3, 4, 5]
     one: "1"
     str: "string"
+    domain_definition:
+        domain:
+            cluster:
+                - name: "cluster1"
+                - name: "cluster2"
+            server:
+                - name: "server11"
+                  cluster: "cluster1"
+                  port: "8080"
+                - name: "server12"
+                  cluster: "cluster1"
+                  port: "8090"
   tasks:
+    # 使用jmespath从复杂json结构中获取变量
+    - debug:
+        var: item
+      loop: "{{ domain_definition|json_query('domain.cluster[*].name')}}"
     - name: use filter basename
       shell: echo {{ filename|basename }} >> /tmp/shell11
     - name: debug int capitalize filter
       debug: msg="The int value {{ one|int }} the lower value is {{ str|capitalize }}"
     - name: debug default value filter
       debug: msg="The variable is {{ ansible|default('ansible is not defined')}}"
+    # 当default第二个值为true，则会在变量计算出来为空或false时使用默认值
+    - debug:
+        msg: "var is {{ lookup('env', 'USER1')|default('admin', true)}}"
     - name: debug list max and min filter
       debug: msg="The list max value is {{ list|max }} the min is {{ list|min }}"
     - name: debug join filter
@@ -171,10 +196,194 @@ facts是从远程操作系统收集的信息
     - name: debug replace and regex_replace filter
       debug: msg="The replace value is {{ str|replace('t', 'T')}},\
                 The regex_replace value is {{ str|regex_replace('.*str(.*)$', '\\1')}}"
+    # 从json或yaml文件中读取变量
+    - name: cat test.json
+      shell: cat test.json
+      register: result_json
+    - name: debug json info
+      debug:
+        msg: "test2 var is {{ (result_json.stdout|from_json)['test2']}}"
+    - name: cat test1.yml
+      shell: cat test1.yml
+      register: result_yml
+    - name: debug yml info
+      debug:
+        msg: "test1 var is {{ (result_yml.stdout|from_yaml)['test1'] }}"    
+```
+# [lookup插件][ansible-lookup]
+* lookup插件允许访问外部数据源
+* 解析过程在控制端完成，和模板系统类似
+
+## file
+从文件中解析内容  
+```
+vars:
+- contents: "{{ lookup('file', '/etc/hosts')}}"
+tasks:
+- name: display network content
+  debug: msg="network content is {% for i in contents.split('\n') %}{{ i }}{% endfor %}"
+```
+## template
+主要用于解析模板中的facts信息【被控主机】  
+```
+lookup.j2：
+worker_processes {{ ansible_processor_cores }}
+IPaddress {{ ansible_eth0.ipv4.address }}
+test.yml：
+vars:
+- temp: "{{ lookup('template', 'lookup.j2')}}"
+tasks:
+- name: display lookup content
+  debug: msg="network content is {% for i in temp.split('\n') %}{{ i }}{% endfor %}"
+```
+## pipe
+解析命令行输出  
+```
+vars:
+- cmd: "{{ lookup('pipe', 'date +%s')}}"
+tasks:
+- name: display lookup content
+  debug: msg="{{ cmd }}"
+```
+## redis
+从redis中解析key值  
+```
+vars:
+- key: "{{ lookup('redis', 'he', host='127.0.0.1', port=6379)}}"
+tasks:
+- name: display lookup content
+  debug: msg="{{ key }}"
+```
+## csvfile
+从csv文件中解析内容  
+```
+# java1是第0列的值，同时作为key，去取第4列的值【从0开始索引】
+# 此时逗号作为分隔符【默认为tab（TAB或t）】
+- name: get value from csv
+  debug: msg="java1 password is {{ lookup('csvfile', 'java1 file=b.csv delimiter=, col=4')}}"
+```
+## lookup与loop
+* lookup一次解析的多个结果默认用逗号连接；loop循环默认用列表作为输入。
+* 为了让lookup解析的结果可以使用loop循环输出，需要如下操作，以便将解析结果转为列表
+  - 在lookup中添加wantlist=True，
+  - 或使用query代替lookup
+
+```
+    - debug: 
+#        msg: "{{ lookup('inventory_hostnames', 'all', wantlist=True)}}"
+        msg: "{{ query('inventory_hostnames', 'all')}}"
+#        msg: "{{ item }}"
+#      loop: "{{ lookup('inventory_hostnames', 'all', wantlist=True) }}"
+```
+# 循环
+>loop可以部分替代with_xxx功能  
+
+## 普通列表
+```
+vars:
+  - numbers: ['one', 'two', 'three']
+
+- debug: msg='{{ item }}'
+  # with_flattened: '{{ numbers }}'
+  loop: '{{ numbers|flatten }}'
+
+- debug: msg="{{ item }}"
+  # with_items: 
+  loop:
+    - 'one'
+    - 'two'
+    - 'three'
+```
+## hash列表
+```
+- debug: msg="{{ item.key }} is {{ item.value }}"
+  # with_items:
+  loop:
+    - {'key': 'name', 'value': 1}
+    - {'key': 'nam2', 'value': 2}
+```
+## 字典
+```
+vars:
+  - user:
+      shencan:
+        name: shencan
+        shell: bash
+      ruifengyun:
+        name: ruifengyun
+        shell: zsh
+
+- debug: msg='{{ item.key }} value={{ item.value.name }}
+              shell={{ item.value.shell}}'
+  #loop: "{{ user|dict2items }}"
+  with_dict: "{{ user }}"
+```
+## 双循环
+```
+- shell: "echo {{ item[0] }}*{{ item[1] }}|bc"
+  with_nested:
+    - [2, 3]
+    - [3, 5, 7]
+```
+## 匹配文件
+```
+- shell: echo 12 > {{ item }}
+  with_fileglob:
+    - './*.1'
+    - './*.2'
 ```
 
+# 条件判断
+## when
+* 一次性判断  
+* when中直接使用变量名，不需要使用双大括号
+* 多个条件为and关系时可以使用列表形式
+
+```
+- name: touch file when os is ubuntu
+  command: touch /tmp/ceshi
+  when:
+    - ansible_facts["os_family"] == "Debian"
+    - ansible_memory_mb.real.total > 900
+```
+### 执行结果判断
+* successed
+* failed
+* changed
+* skipped
+* undefined【变量未定义】
+
+```
+- name: test result
+  git:
+    repo: https://github.com/simple0426/gitbook.git
+    dest: /home/python/gitbook
+    version: master
+  run_once: true
+  register: result
+- name: debug change
+  debug: msg="change"
+  when: result is changed
+- name: debug undefined
+  debug: msg="key12 is undefined"
+  when: key12 is undefined
+```
+## until
+多次尝试性判断  
+
+```
+# 每隔15s执行一次，共尝试3次；条件依然不满足时，task失败
+- name: ensure time is 201905241750
+  shell: date +%Y%m%d%H%M
+  register: date
+  until: date.stdout == '201905241750'
+  retries: 3
+  delay: 15
+```
+
+[jinjia-filter]: http://jinja.pocoo.org/docs/templates/#builtin-filters
+[ansible-filter]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html
+[ansible-lookup]: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 [build-vars]: https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html#special-variables
 [var-merge]: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#how-we-merge
 [var-precedence]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
-[jinjia-filter]: http://jinja.pocoo.org/docs/templates/#builtin-filters
-[ansible-filter]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#playbooks-filters

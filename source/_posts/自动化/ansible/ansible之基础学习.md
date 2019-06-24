@@ -224,5 +224,89 @@ Host 172.16.0.*  # 目标主机网络
 * ansible ops -m ping
 * ansible 172.16.0.205 -m ping
 
+# 常用模块
+* ping：测试主机连通性
+* setup：用于获取操作系统信息
+    - ansible 127.0.0.1 -m setup -a "filter=ansible_os*"
+* command/shell：执行命令【command为命令行下默认模块】
+  - creates：当文件存在时，module所在task不执行【可用于实现幂等性】
+* template：模板系统，可以复制包含变量名的文件
+    - validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件
+    ```
+    - name: write the nginx config file
+      template: src=nginx2.conf dest=/etc/nginx/nginx.conf validate='nginx -t -c %s'
+      notify:
+      - restart nginx
+    ```
+
+* file：创建、删除文件或目录
+    - state：directory、absent
+* yum/apt：软件包管理
+* service：服务管理
+* user：用户管理
+* git：git操作
+* copy：复制文件和目录
+    - 缺点：当复制的目录有多级或目录内的文件数据过多时，传输效率异常低下
+    - 优点：可以备份（backup），可以检测配置文件的有效性（validate）
+* archive：打包文件和目录
+    - 缺点：不会复制空目录或空文件【比如python包文件`__init__.py`即可以是空文件】
+* synchronize：使用rsync模块同步文件和目录
+    - 优点：传输效率高
+    - 缺点：
+        + 必须使用ansible.cfg中的ssh配置选项
+        + 不能备份、不能检测配置文件有效性
+        + 不能解析hosts文件中的变量
+* haproxy：控制haproxy服务
+    + haproxy版本：1.5【增加后端服务器drain状态（软下线）】
+    + haproxy依赖：安装socat，并在haproxy.cnf中配置：stats socket /var/run/haproxy.sock mode 600 level admin
+    ```
+    # 此配置主要将后端的某台服务器软下线【不接受新连接，已经建立的连接正常处理并关闭】
+    - name: disable {{ project }} in haproxy
+      haproxy: state=drain backend='{{ project }}' host='{{ inventory_hostname }}' socket=/var/run/haproxy.sock 
+    # 上线某个后端的某台主机并等待，保障此后端主机可用
+    - name: enable {{ project }} in haproxy
+      haproxy: state=enabled backend='{{ project }}' host='{{ inventory_hostname }}' socket=/var/run/haproxy.sock wait=yes
+      delegate_to: '{{ haproxy }}'
+      become: yes
+    ```
+* fetch：从远程主机拉取文件到本地
+  - dest：保存为本地文件或保存在本地目录【必须以斜线结尾】
+  - flat：设置为yes时，和copy一样的行为；当为no时，则保存在本地的dest/<remote_hostname>/<absolute_path>下
+  - src：远程主机上的文件
+  - validate_checksum：是否在传输完成后进行校验
+  - 范例：ansible test1 -m fetch -a "src=~/vendor/redis-4.0.14.tar.gz dest=files/ flat=yes"
+* blockinfile：插入、更新、删除多行文本内容
+  - group/owner/mode：属主属组权限等
+  - backup：备份文件
+  - block：在标记处将要插入的文本；如果选项缺失或是空字符串，则和state=present一样都是删除内容
+  - path：文件路径
+  - create：文件不存在则新创建
+  - validate：文件语法检查
+  - state：present为添加或更新，absent为删除
+  - marker：替换内容的前后注释信息，默认："# {mark} ANSIBLE MANAGED BLOCK"
+  - insertafter：在指定标记后插入内容
+    + ‘EOF’表示文件末尾
+    + regex表示一般正则表达式，如果匹配不到则使用EOF
+  - insertbefore：在指定标记钱插入内容
+    + 'BOF'表示文件开始
+    + regex表示一般正则表达式，如果匹配不到则使用EOF
+
+```
+# 修改mavne仓库为阿里云
+- name: add aliyun repo
+  blockinfile:
+    path: /usr/local/apache-maven-3.6.0/conf/settings.xml
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    backup: yes
+    insertafter: "<mirrors>"
+    block: |
+      <mirror>
+         <id>nexus-aliyun</id>
+         <mirrorOf>central</mirrorOf>
+         <name>Nexus aliyun</name>
+         <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+      </mirror>
+```
+
 [dynamic_inventory]: https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html
 [inventory-parameters]: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
