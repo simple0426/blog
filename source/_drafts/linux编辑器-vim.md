@@ -1,8 +1,7 @@
 ---
-title: 编辑器技巧
-date: 2018-04-28 11:40:45
-tags: ['vim', ]
-categories: ['skill']
+title: linux编辑器-vim
+tags:
+categories:
 ---
 # vim
 ## 选中多行内容  
@@ -28,6 +27,3 @@ set autoindent
 "搜索高亮
 set hlsearch
 ```
-
-
-
