@@ -3,26 +3,10 @@ title: linux命令-awk
 tags: awk
 categories: linux
 ---
-# 语法
-* awk 选项 -f 程序文件 源文件
-* awk 选项 程序文本 源文件
+# 介绍
+在给定的文本中，通过正则匹配(pattern)对行(记录)和列(字段)进行操作(action)
 
-## 选项
-* -f awk程序文件
-* -F 定义分隔符【FS】
-* -v var=val 定义变量【定义程序执行前的变量】
-* -e awk程序文本【可省略】
-
-## awk程序
-* 格式：pattern { action }
-* 执行顺序
-    - 命令行-v指定的变量
-    - BEGIN指定的规则
-    - 处理命令行下引用的每一个源文件【ARGV方式调用】
-    - 使用pattern匹配每一个record，匹配成功则执行actions
-    - 所有record处理完成后执行END规则
-
-# 变量记录和字段
+# 预定义内容
 ## 记录
 * 记录通常由换行符分隔【也即一行内容为一个记录】，也可以由内置变量RS定义分隔符
 * 只有单字符或正则表达式可以作为分隔符
@@ -37,40 +21,57 @@ categories: linux
 * 引用不存在的字段将会产生空字符串
 
 ## 内置变量
-* ARGC：命令行参数数量
-* ARGIND：当前处理的文件在ARGV中的索引
-* ARGV：命令行参数数组
+* ARGC：【count of arg】命令行参数数量
+* ARGIND：【index in ARGV of file being processed 】当前处理的文件在ARGV中的索引
+* ARGV：【arry of cmd arg】命令行参数数组
 * ENVIRON：环境变量数组
 * FIELDWIDTHS：固定宽度分隔字段
 * FILENAME：当前输入的文件名，在BEGIN阶段则是未定义
-* FNR：当前处理的记录所在行号
-* FS：输入字段分隔符【默认空格】
-* NF：输入记录的字段总数
-* NR：到目前为止的输入记录总数
-* OFMT：数字输出格式，默认"%.6g"
-* OFS：输出字段分隔符【默认空格】
-* ORS：输出记录分隔符【默认换行符】
-* RS：输入记录分隔符【默认换行符】
-* RT：记录终止符，awk将RT设置为与RS相匹配的字符或正则表达式匹配的文本
+* NR【number of record】：到目前为止的输入记录总数【当前处理记录的行号】
+* FNR：【number record of current file】当前处理的记录所在行号
+* FS【field separator】：输入字段分隔符【默认空格】
+* OFS【output field separator】：输出字段分隔符【默认空格】
+* RS【record separator】：输入记录分隔符【默认换行符】
+* ORS【output record separator】：输出记录分隔符【默认换行符】
+* NF【number of field】：输入记录的字段总数
+* OFMT【output format】：数字输出格式，默认"%.6g"
+* RT【record terminator】：记录终止符，awk将RT设置为与RS相匹配的字符或正则表达式匹配的文本
 
-# 模式和行为
-* awk是面向行的语言，先是模式(pattern)，后是行为(action)【行为包含在花括号中】
-* pattern或action其中之一可能不存在，但不可能出现二者都缺失的情况
-* 假如pattern缺失，则action应用于每一行记录
-* 如果action缺失，则相当于action是{print}【即打印整行记录】
-* 可以使用分号分隔pattern-action中的action的多条语句，或者分隔pattern-actions本身
+# 匹配与执行语法
+* awk [选项](#选项) -f [程序文件](#awk程序) 源文件
+* awk 选项 程序文本 源文件
+
+## 选项
+* -f awk程序文件
+* -F 定义分隔符【也可使用变量FS】，可以同时定义多个分隔符
+    - `ifconfig eth0|awk -F'[ :]*' 'NR==2{print $3}'`【同时使用任意多个空格和任意多个冒号作为分隔符】
+* -v var=val 定义变量【定义程序执行前的变量】
+* -e awk程序文本【可省略】
+
+## awk程序
+* 格式：[pattern](#pattern) { [action](#action) }
+* 执行顺序
+    - 命令行-v指定的变量
+    - BEGIN指定的规则
+    - 处理命令行下引用的每一个源文件【ARGV方式调用】
+    - 使用pattern匹配每一个record，匹配成功则执行actions
+    - 所有record处理完成后执行END规则
+* pattern和action
+    - awk是面向行的语言，先是模式(pattern)，后是行为(action)【行为包含在花括号中】
+    - pattern或action其中之一可能不存在，但不可能出现二者都缺失的情况
+    - 假如pattern缺失，则action应用于每一行记录
+    - 如果action缺失，则相当于action是{print}【即打印整行记录】
+    - 可以使用分号分隔pattern-action中的action的多条语句，或者分隔pattern-actions本身
 
 # pattern
-pattern可能是下列之一
-
-* BEGINEND：
+* BEGIN/END：
     - BEGIN模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN模式在读取输入之前执行
     - 所有输入都被处理完毕或执行exit语句后，才开始执行END规则
     - 所有BEGIN和END模式应该被写成单一规则，且BEGIN和END模式的action部分被合并
     - BEGIN和END模式不与其他模式表达式组合
     - BEGIN和END模式必须有action部分
 * BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式，相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
-* /regular expression/：对于正则表达式模式，关联的语句将在正则匹配的记录的每一行上都执行；这里使用的正则和egrep中的一样
+* /regular expression/：对于[正则表达式](#正则表达式)模式，关联的语句将在正则匹配的记录的每一行上都执行；这里使用的正则和egrep中的一样
 * relational expression：关系表达式
     - pattern && pattern：两个表达式“与”关系
     - pattern || pattern：两个表达式或关系
@@ -90,7 +91,7 @@ pattern可能是下列之一
 * r+：匹配r 1次或多次
 * r*：匹配r 0次或多次
 * r?：匹配r 0次或1次
-* (r)：分组后，匹配r
+* (r)：分组后(但是分组功能不支持后向引用)，匹配r，
 * r{n,m}：匹配r至少n次，至多m次
 * \y：匹配单词开头或即为的空字符串
 * \B：匹配单词中的空字符串
@@ -106,7 +107,9 @@ pattern可能是下列之一
 * `[:keyword:]`：POSIX标准字符类【与国家、地区的字符集有关，不建议使用】
 
 # action
-* action语句由大括号包围，
+* action语句整体由大括号包围
+    - if条件中多个条件使用圆括号连接
+    - if条件中的多个执行动作使用分号分隔，整体使用花括号包围
 * action语句和大多数程序语言一样，由赋值、条件、循环语句构成
 
 ## 操作符(优先级递减)
@@ -158,7 +161,7 @@ pattern可能是下列之一
 * nextfile：停止处理当前的输入文件，读取的下一个记录来自下一个文件。FILENAME和ARGIND被更新，FNR设置为1，并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
 * print：打印当前记录，输出记录以ORS定义的值结束
 * print expr-list：打印表达式，表达式直接以OFS分隔，输出记录以ORS定义的值结束
-* print expr-list >file：打印表达式到文件
+* print expr-list >file：打印表达式到文件，文件名使用双引号
 * printf fmt, expr-list：格式化输出
 * printf fmt, expr-list >file：格式化输出到文件
 * system(cmd-line)：执行命令并返回退出状态【不适用于非unix系统】
@@ -205,17 +208,17 @@ pattern可能是下列之一
 * `srand([expr])`：使用expr作为随机数生成器的新种子，如果未提供expr则使用时间作为种子
 
 ## 字符串函数
-* gsub(r, s [, t]) ：在字符串t中，每个与正则表达式r匹配的子串都被替换成s，并返回替换的次数；如果t未提供则使用$0
-* sub(r, s [, t])：只替换第一个匹配的字符串
-* index(s, t)：返回子串t在字符串s中的索引位置，从1开始
-* length([s]) ：返回字符串的长度或数组个数
-* match(s, r [, a])：返回正则表达式在字符串中出现的位置，找不到则返回0
-* substr(s, i [, n])：字符串截取，从字符串s中的第i个索引位置截取n个字符
-* tolower(str)：返回字符串的字母的小写形式
-* toupper(str)：返回字符串中字母的大写形式
-* split(s, a [, r [, seps] ])：使用正则表达式r定义的分隔符将字符串s拆分成数组a，如果r未定义则使用FS
-* strtonum(str)：字符串转化我数字
-* sprintf(fmt, expr-list)：使用指定格式输出表达式
+* `gsub(regx, str [, target_str])` ：在目标字符串中，每个与正则表达式匹配的子串都被替换，并返回替换的次数；如果目标字符串未提供则使用$0
+* `sub(regx, str [, target_str])`：只替换第一个匹配的字符串
+* `index(str, target)`：返回子字符串在字符串中的索引位置，从1开始
+* `length([str]) `：返回字符串的长度或数组个数
+* `match(str, regx [, arry])`：返回正则表达式在字符串中出现的位置，找不到则返回0
+* `substr(str, index [, n])`：字符串截取，从字符串中的第i个索引位置截取n个字符
+* `tolower(str)`：返回字符串的字母的小写形式
+* `toupper(str)`：返回字符串中字母的大写形式
+* `split(str, arry [, regx [, seps] ])`：使用正则表达式r定义的分隔符将字符串s拆分成数组a，如果r未定义则使用FS
+* `strtonum(str)`：字符串转化我数字
+* `sprintf(fmt, expr-list)`：使用指定格式输出表达式
 
 ## 时间函数
 * systime()：返回当前时间到epoch(1970-01-01 00:00:00 UTC)之间的秒数
@@ -234,3 +237,38 @@ isarray(x)：如果x是数组则返回为真
     - 函数调用时，左括号需要紧跟函数名【但这不适用于内置函数】
     - 可以在函数中使用return表达式来返回值，假如没有提供值则返回值显示为未定义
 
+# awk学习范例
+* getline：对匹配的行不处理，直接读取下一行进行处理
+
+```
+/0/00
+/0/00/001a86
+/0/00/00273e
+/0/00/015ecd
+/0/01
+/0/01/00101a
+/0/01/00201a
+/0/01/01501a
+```
+```
+# 只取目录下的第一个文件即【/0/00/001a86和/0/01/00101a】
+awk -F'/' 'NF==3{getline;print}' cache.txt
+```
+
+# awk应用范例
+* 将java项目的sql导出：`awk -F'Preparing: ' '/Preparing/{var=$2;sub("  .*$","",var);print var}' catalina.out-20190622`
+    - 过滤包含“Preparing”的行【这样的行包含sql语句】
+    - 将第一步过滤的记录以“Preparing: ”分隔取第二个字段
+    - 删除【双空格及以后的内容】
+* 统计sql及其执行次数：`awk '{++count[$0]}END{for(i in count)print i,"/",count[i]}' total.sql|sort -t'/' -rn -k2 > tongji.sql`
+    - 以每行sql作为自加的变量
+    - 重复的sql，变量会自加；新的sql会形成新的自加变量；多个不同的sql自加变量会形成数组，以此类推。
+    - 在所有记录处理完成后打印变量以及变量的自加结果【以斜线分隔】
+    - 对awk的处理结果再使用sort进行排序【以斜线作为分隔符，对第二个字段以数字方式进行倒序输出】
+* 查看海关数据接口访问次数【过滤掉心跳】：`awk '/python/{if($7 !~ /heartbeat$/)++count[$2]}END{print count[$2]}' access.log-20190627`
+    - 过滤含有python关键词的行【这样的行即为海关数据接口访问url】
+    - 将第一步过滤的记录进行二次过滤，过滤掉url末尾是heartbeat的记录
+    - 选取每一行日志都不变的信息【即短横线】作为自加的变量
+    - 在所有记录处理完成后打印变量的自加结果
+* 统计web服务器80端口外网tcp各种连接状态及数量【也即并发连接】
+* 统计一天中某个域名下url访问排行榜【get去除参数】
