@@ -186,6 +186,9 @@ hjq@ops (1)[f:5]$ copy src=ansible.cfg dest=~/
 * --list-tags：查看所有标签
 * --list-tasks：查看所有任务
 * --skip-tags：跳过标签执行其他任务
+* -C/--check： 不实际执行任务，但是显示执行后可能发生的变化
+  - playbook关键词用法：check_mode：yes
+* -D/--diff：与-C搭配使用，显示当使用files和templates模块时，变化前后的区别
 
 # ansible-galaxy
 管理共享仓库中的ansible角色，默认的共享仓库是<https://galaxy.ansible.com.>
