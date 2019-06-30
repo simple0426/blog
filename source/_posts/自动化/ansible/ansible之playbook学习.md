@@ -1,5 +1,5 @@
 ---
-title: ansible之playbook使用
+title: ansible之playbook学习
 date: 2019-05-25 22:33:05
 tags:
   - playbook
@@ -193,26 +193,6 @@ play或task中都可以使用的语法
   * import_x使用限制
     - 循环时只能使用include而不是import
     - inventory中的变量不能用于目标文件名或角色名
-
-* debugger ：调试
-    + 可以再任意具有name属性的区块设置，比如play、role、block、task
-    + debugger值：
-        - always：总是调用调试模块
-        - never：从不调用
-        - on_failed：仅在任务失败时调用调试模块
-        - on_unreachable：当主机不可达时调用模块
-        - on_skipped：任务跳过时调用模块
-    + 可用命令：
-        - p task：显示任务名称
-        - p task.args：显示任务参数
-        - p task_vars：显示任务变量
-        - p host：显示任务操作主机
-        - p result._result：显示任务执行结果
-        - task_vars[key] = value：设置变量
-        - task.args[key] = value：设置参数
-        - r（edo）：重新运行任务
-        - c（continue）：继续执行
-        - q（uit） ：从debugger模式退出
 
 * wait_for：在继续其他任务时，等待一个状态成立
 
