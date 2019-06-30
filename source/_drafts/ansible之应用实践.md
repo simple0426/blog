@@ -63,3 +63,4 @@ poll等于0，则任务不轮询结果；ansible在执行任务的过程中，�
 
 # 信息加密：ansible-vault
 # pull模式：ansible-pull
+# 灰度发布：serial
