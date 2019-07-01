@@ -64,3 +64,11 @@ poll等于0，则任务不轮询结果；ansible在执行任务的过程中，�
 # 信息加密：ansible-vault
 # pull模式：ansible-pull
 # 灰度发布：serial
+# playbook中的错误处理
+* 忽略错误
+* 重置主机不可达错误
+* 强制handler执行
+* 重定义什么是失败状态
+* 重定义什么是变更状态
+* 主机列表中任何错误都直接退出
+* 使用block处理错误
