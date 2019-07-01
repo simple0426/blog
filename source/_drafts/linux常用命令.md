@@ -48,6 +48,9 @@ categories:
 * curl
 * ifconfig
 * route
+* iptables
+* ssh
+* iftop
 
 ## 系统管理
 * chkconfig
@@ -64,4 +67,3 @@ categories:
 * apt
 * rpm
 * dpkg
-
