@@ -86,7 +86,6 @@ playbook是以目录文件结构的形式组织ansible语法，用以实现复�
 * action：task定义旧形式
   - task定义新形式：【module：options】
   - task定义旧形式：【action：module options】
-* ignore_errors：在task中定义，忽略错误继续执行下个task【否则，遇到错误直接跳出整个playbook的执行】
 * module：执行的模块；如果模块中的参数过长，可以在末尾留出空格并以缩进形式开启新行
 * notify：在任务执行完成后激活触发器的执行；
 * run_once：在一组主机中仅执行一次【即仅在一组主机的第一个主机上执行，但是执行结果可以应用到所有主机】
