@@ -30,4 +30,4 @@ categories:
 ## 自定义插件
 ## 编写可重用的roles
 
-
+解读位置：https://docs.ansible.com/ansible/latest/plugins/plugins.html
