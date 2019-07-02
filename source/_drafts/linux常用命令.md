@@ -41,17 +41,6 @@ categories:
 * sudo
 * su
 
-## 网络
-* tcpdump 重要
-* lsof 重要
-* netstat
-* curl 重要
-* ifconfig
-* route
-* iptables 重要
-* ssh
-* iftop
-
 ## 系统管理
 * chkconfig
 * crond
