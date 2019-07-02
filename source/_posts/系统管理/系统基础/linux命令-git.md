@@ -116,3 +116,6 @@ git config –global core.quotepath false
 
 # remote
 * 变更本地关联的远程库：git remote set-url origin URL
+
+# 故障收集
+* git bash乱码：git config --global core.quotepath false
