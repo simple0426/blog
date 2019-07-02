@@ -270,5 +270,14 @@ awk -F'/' 'NF==3{getline;print}' cache.txt
     - 将第一步过滤的记录进行二次过滤，过滤掉url末尾是heartbeat的记录
     - 选取每一行日志都不变的信息【即短横线】作为自加的变量
     - 在所有记录处理完成后打印变量的自加结果
-* 统计web服务器80端口外网tcp各种连接状态及数量【也即并发连接】
-* 统计一天中某个域名下url访问排行榜【get去除参数】
+* 统计web服务器80/443端口外网tcp各种连接状态及数量【也即并发连接】
+    - 连接状态统计并排序：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Act|^Pro/{if(($5==443)&&($6!="0.0.0.0"))++count[$8]}END{for(i in count)print i,count[i]}'|sort -nr -k2`
+        + 排除Act和Pro开头的字头行
+        + 包含连接443端口的连接
+        + 排除来自0.0.0.0的连接
+        + 以tcp状态为作为自加数组变量，不同tcp状态共同构成数组
+        + 打印tcp状态及数量
+        + 以tcp状态的个数作为排序依据
+    - 并发总数：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Act|^Pro/{if(($5==443)&&($6!="0.0.0.0"))++count[$1]}END{print count[$1]}'`
+        + 选取每行都不变的信息作为自加变量，最终统计并发连接
+* 统计一天中某个域名下url访问排行榜【get去除参数】:`awk -F'[ ?]' '{++count[$7]}END{for(i in count)print i,count[i]}' access.log|sort -rn -k2|head -10`

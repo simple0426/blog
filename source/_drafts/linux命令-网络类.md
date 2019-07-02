@@ -1,13 +1,23 @@
 ---
-title: linux命令-curl
+title: linux命令-网络类
 tags:
-  - curl
 categories:
-  - linux
-date: 2019-05-06 16:38:25
 ---
+## 网络
+* tcpdump
+* lsof
+* [curl](#curl)
+* iptables
+* netstat
+* ifconfig
+* route
+* ssh
+* iftop
+* wget
+* nc
+* socat
 
-# 命令参数
+# curl
 ## 响应
 * -o 下载文件并另存为
 * -O 下载文件
@@ -30,6 +40,3 @@ date: 2019-05-06 16:38:25
 * -e, --referer指定上次访问的页面【可用于盗链】
     - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
 * -x 使用代理服务器
-
-
-
