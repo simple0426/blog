@@ -1,8 +1,13 @@
 ---
 title: ansible之应用实践
+date: 2019-07-02 11:04:24
 tags:
-categories:
+  - 异步
+  - debug
+  - 错误处理
+categories: ['ansible']
 ---
+
 # 异步模式
 ## 异步等待模式
 * ansible在客户端异步执行，在任务执行过程中，无论ssh连接是否中断都不影响任务执行  
@@ -61,14 +66,43 @@ poll等于0，则任务不轮询结果；ansible在执行任务的过程中，�
     - c（continue）：继续执行
     - q（uit） ：从debugger模式退出
 
-# 信息加密：ansible-vault
-# pull模式：ansible-pull
-# 灰度发布：serial
-# playbook中的错误处理
-* 忽略错误
-* 重置主机不可达错误
-* 强制handler执行
-* 重定义什么是失败状态
-* 重定义什么是变更状态
-* 主机列表中任何错误都直接退出
-* 使用block处理错误
+# 错误处理
+* 忽略错误继续执行以后任务(task)：ignore_errors：yes
+  - 默认遇到错误会终止错误处以后task的执行
+* 重置主机不可达错误(play):ignore_unreachable: yes
+  - 默认情况下，当执行某任务时，主机不可达，会退出正在执行的任务进而退出整个play
+  - 重置主机不可达错误时，某个task的主机不可达不影响其他task的连接尝试
+* 强制handler执行：force_handlers: True
+  - 默认情况下，一个play中某个task的失败，会引起已经触发的handler不再执行
+  - 可以在play、ansible.cfg或命令行（--force-handlers）设置
+  
+  ```
+  force_handlers: true
+  handlers:
+    - name: touch file
+      command: touch /tmp/file
+  tasks:
+    - name: exe handlers
+      command: touch /tmp/file1
+      notify:
+        - touch file
+    - name: touch failed
+      command: touch /home/muk/ceshi
+  ```
+
+* 主机列表中任何错误都直接退出(play)：any_errors_fatal: true
+  - 默认情况下，在多个主机执行任务时，在一个主机上遇到错误只造成此主机剩余任务不执行，不影响其他主机任务的执行【多个主机间的错误互不干扰】
+  - 当设置此标志后，任何主机的任何错误都会造成整个play的退出，不再执行。
+* 重定义什么是失败状态(task)：failed_when
+  - 只有满足自定义的条件才算是失败状态
+  
+  ```
+  - name: test fail when
+    command: touch /home/ceshi/12
+     register: result
+     failed_when: "'No such' in result.stderr"
+  ```
+
+* 重定义什么是变更状态(task):changed_when
+  - 只有满足自定义的条件才算是“变更”状态
+* 使用block处理错误【参见block章节】

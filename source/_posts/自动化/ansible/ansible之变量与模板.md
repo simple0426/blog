@@ -12,13 +12,37 @@ date: 2019-06-20 18:08:10
 ---
 # 变量
 ## 变量使用注意
-* 变量定义时，应该以字母开头，并且变量名中不不含空格、逗点、中横线
+* 变量名，应该以字母开头，并且变量名中不含空格、逗点、中横线
+* 变量内容，如果只包含字母、数字、下划线、中横线等普通字符，可以直接书写，无需使用引号
 * 使用jinja2模块系统进行变量引用
 * 对于字典变量，可以使用方括号或点方式引用，但是点方式可能会和python字典的属性或方法冲突
 * 变量作用域
     - 全局：由config、环境变量【environment】、命令行设置
     - play级别：每个play和包含的结构，变量条目【vars，vars_files，vars_prompt】，roles的defaults和vars
     - host级别：直接关联主机的变量，比如inventory，include_vars，facts信息，任务执行产生的注册变量
+
+## 特殊处理
+* 当变量内容包含特殊字符（如&#）时，需使用双引号包围变量内容；
+* 当变量内容含有`{{`等字符时，则需要使用“!unsafe“标志避免语法错误：`un_safevar:  !unsafe '{{in12var'`
+* 避免模板变量被渲染（无论变量是否存在，都不对变量进行渲染）：`{% raw %}{{ test1 }}{% endraw %}`
+
+## 锚点和引用
+>这是yaml语法特性
+
+```
+vars:
+  test1: &defaults 'he' #定义锚点
+  test2:
+    - 'jing'
+    - 'qi'
+    - *defaults # 在列表中引用锚点
+  test3: &pro
+    name: 'yaning'
+    age: 30
+  test4:
+    <<: *pro # 将test3的变量内容合并到test4中
+    age: 31  # 重新定义age变量
+```
 
 ## [内置变量][build-vars]
 * 保留变量
