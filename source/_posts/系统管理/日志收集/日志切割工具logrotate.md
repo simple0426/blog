@@ -83,9 +83,24 @@ size 50M
 compress  
 
 # 使用双引号以处理特殊情况，比如文件名中的空格等
+
+# 对于使用同一轮转配置的多个文件
 # 可以在一行书写多个待轮转文件，空格分隔
 "/var/log/httpd/access.log" /var/log/httpd/error.log { 
     xxxxxx
+}
+# 也可以一行写一个待轮转文件，书写多行
+/home/web/webhive/log/uwsgi/imgstore.log
+/home/web/webhive/log/uwsgi/shownail.log
+{
+  copytruncate
+  daily
+  dateext
+  rotate 60
+  compress
+  delaycompress
+  missingok
+  notifempty
 }
 
 # 使用掩码进行文件名匹配
