@@ -42,13 +42,13 @@ categories:
 * su
 
 ## 网络
-* tcpdump
-* lsof
+* tcpdump 重要
+* lsof 重要
 * netstat
-* curl
+* curl 重要
 * ifconfig
 * route
-* iptables
+* iptables 重要
 * ssh
 * iftop
 
