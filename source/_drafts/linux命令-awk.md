@@ -10,13 +10,13 @@ categories: linux
 ## 记录
 * 记录通常由换行符分隔【也即一行内容为一个记录】，也可以由内置变量RS定义分隔符
 * 只有单字符或正则表达式可以作为分隔符
-* 如果RS设置空，则由空行(\n\n)作为记录分隔符；此时，换行符(\n)作为域分隔符【FS】
+* 如果RS设置空，则由空行(\n\n)作为记录分隔符；此时，换行符(\n)作为字段分隔符【FS】
 
 ## 字段
 * 默认使用空格分隔记录为多个字段
 * 使用FS定义字段分隔符，FS可以是单字符或正则表达式
 * 如果设定FIELDWIDTHS，即每个字段相同宽度，则会覆盖FS设置
-* 记录中的每个字段都可以使用$1,$2...进行引用，$0表示整个记录记录，不能使用负数进行字段引用
+* 记录中的每个字段都可以使用$1,$2...$N进行引用，$0表示整个记录，不能使用负数进行字段引用
 * 变量NF表示记录中的总字段数
 * 引用不存在的字段将会产生空字符串
 
@@ -29,8 +29,8 @@ categories: linux
 * FILENAME：当前输入的文件名，在BEGIN阶段则是未定义
 * NR【number of record】：到目前为止的输入记录总数
 * FNR：【number record of current file】正在处理的记录在当前文件的行号
-    - NR与FNR：由于awk可以一次处理多个文件，而FNR每打开一个文件都会都会重置为0，所以NR>=FNR【在一个文件中NR和FNR相等】
-    - 范例（打印5到10行之间的内容）：awk 'NR>=5&&NR<=10{print $0}' access.log
+    - NR与FNR：由于awk可以一次处理多个文件，而FNR每打开一个文件都会重置为0，所以总是存在NR>=FNR【在一个文件中NR和FNR相等】
+    - 范例(打印5到10行之间的内容)：awk 'NR>=5&&NR<=10{print $0}' access.log
 * FS【field separator】：输入字段分隔符【默认空格】
 * OFS【output field separator】：输出字段分隔符【默认空格】
 * RS【record separator】：输入记录分隔符【默认换行符】
@@ -39,9 +39,9 @@ categories: linux
 * OFMT【output format】：数字输出格式，默认"%.6g"
 * RT【record terminator】：记录终止符，awk将RT设置为与RS相匹配的字符或正则表达式匹配的文本
 
-# 匹配与执行语法
-* awk [选项](#选项) -f [程序文件](#awk程序) 源文件
-* awk 选项 程序文本 源文件
+# awk命令语法
+* awk [选项](#选项) -f [awk程序文件](#awk程序) 待处理的文本文件
+* awk 选项 awk程序文本 待处理的文本文件
 
 ## 选项
 * -f awk程序文件
@@ -51,7 +51,7 @@ categories: linux
 * -e awk程序文本【可省略】
 
 ## awk程序
-* 格式：[pattern](#pattern) { [action](#action) }
+* 格式：[pattern](#awk-pattern) { [action](#awk-action) }
 * 执行顺序
     - 命令行-v指定的变量
     - BEGIN指定的规则
@@ -59,17 +59,17 @@ categories: linux
     - 使用pattern匹配每一个record，匹配成功则执行actions
     - 所有record处理完成后执行END规则
 * pattern和action
-    - awk是面向行的语言，先是模式(pattern)，后是行为(action)【行为包含在花括号中】
+    - awk是面向行的语言，先是模式(pattern)，后是行为(action)【action包含在花括号中】
     - pattern或action其中之一可能不存在，但不可能出现二者都缺失的情况
     - 假如pattern缺失，则action应用于每一行记录
     - 如果action缺失，则相当于action是{print}【即打印整行记录】
-    - 可以使用分号分隔pattern-action中的action的多条语句，或者分隔pattern-actions本身
+    - 可以使用分号分隔pattern-action下的action的多条语句，或者分隔pattern-actions本身
 
-# pattern
+# awk-pattern
 * BEGIN/END：
     - BEGIN模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN模式在读取输入之前执行
     - 所有输入都被处理完毕或执行exit语句后，才开始执行END规则
-    - 所有BEGIN和END模式应该被写成单一规则，且BEGIN和END模式的action部分被合并
+    - 所有BEGIN模式应该被写成单一规则，且BEGIN模式的action部分会合并执行；END模式也是如此。
     - BEGIN和END模式不与其他模式表达式组合
     - BEGIN和END模式必须有action部分
 * BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式，相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
@@ -108,7 +108,7 @@ categories: linux
 * `\`：转义字符
 * `[:keyword:]`：POSIX标准字符类【与国家、地区的字符集有关，不建议使用】
 
-# action
+# awk-action
 * action语句整体由大括号包围
     - if条件中多个条件使用圆括号连接
     - if条件中的多个执行动作使用分号分隔，整体使用花括号包围
