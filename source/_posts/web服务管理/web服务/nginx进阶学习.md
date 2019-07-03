@@ -11,7 +11,8 @@ categories:
   - web
 date: 2019-06-11 18:08:11
 ---
-
+# 参考文档
+[淘宝nginx文档](http://tengine.taobao.org/nginx_docs/cn/docs/)
 # proxy设置
 ## proxy相关变量
 * $remote_addr：客户端地址【距离服务器最近的客户端ip，有代理时为代理的ip】
