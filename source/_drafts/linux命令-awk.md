@@ -27,8 +27,10 @@ categories: linux
 * ENVIRON：环境变量数组
 * FIELDWIDTHS：固定宽度分隔字段
 * FILENAME：当前输入的文件名，在BEGIN阶段则是未定义
-* NR【number of record】：到目前为止的输入记录总数【当前处理记录的行号】
-* FNR：【number record of current file】当前处理的记录所在行号
+* NR【number of record】：到目前为止的输入记录总数
+* FNR：【number record of current file】正在处理的记录在当前文件的行号
+    - NR与FNR：由于awk可以一次处理多个文件，而FNR每打开一个文件都会都会重置为0，所以NR>=FNR【在一个文件中NR和FNR相等】
+    - 范例（打印5到10行之间的内容）：awk 'NR>=5&&NR<=10{print $0}' access.log
 * FS【field separator】：输入字段分隔符【默认空格】
 * OFS【output field separator】：输出字段分隔符【默认空格】
 * RS【record separator】：输入记录分隔符【默认换行符】
@@ -151,13 +153,13 @@ categories: linux
 
 ## 输入输出语句
 * close：关闭文件或管道
-* getline：从下一个输入记录中设置$0，同时设置NF, NR, FNR, RT.
+* getline：从下一个输入记录中设置$0，同时设置NF, NR, FNR, RT.【对于模式匹配的记录直接跳过，直接处理相邻的下一个记录】
 * getline < file：从下一个文件记录中设置$0，设置NF，RT
 * getline var：从下一个输入记录中设置变量，设置NR，FNR，RT
 * getline var < file：从下一个文件记录中设置变量，设置RT
 * command| getline `[var]`：执行命令，将结果保存在$0或变量var中以及RT中
 * command|& getline `[var]`：执行命令，同时将结果保存在$0或变量var中以及RT中
-* next：停止处理当前的输入记录，读取下一个输入记录并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
+* next：停止处理当前的输入记录，读取下一个输入记录并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则【对于第一个模式匹配的记录直接跳过(因此需要至少一个匹配模式，next位于第一个匹配模式之后，且由花括号包围)，直接处理余下的全部记录】
 * nextfile：停止处理当前的输入文件，读取的下一个记录来自下一个文件。FILENAME和ARGIND被更新，FNR设置为1，并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
 * print：打印当前记录，输出记录以ORS定义的值结束
 * print expr-list：打印表达式，表达式直接以OFS分隔，输出记录以ORS定义的值结束
@@ -169,6 +171,28 @@ categories: linux
 * print ... >> file：追加输出到文件
 * print ... | command：输出写入管道
 * print ... |& command：打印输出并写入管道
+
+## 输入输出范例
+### getline与next
+```
+1
+2
+3
+00
+23
+4
+
+5
+6
+7
+11
+12
+# next
+awk '/3/{next}{print $0}' 1.txt：直接过滤掉包含3的记录
+# getline
+awk '/3/{getline;print $0}' 1.txt：对包含3的记录进行处理：读取下一行内容后直接打印
+awk '/3/{getline}{print $0}' 1.txt：此时和next用法一直：直接过滤掉包含3的记录
+```
 
 ## 格式化输出printf
 * %c：单字符
