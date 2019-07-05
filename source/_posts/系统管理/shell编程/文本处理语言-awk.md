@@ -2,7 +2,9 @@
 title: 文本处理语言-awk
 tags: awk
 categories: linux
+date: 2019-07-06 01:42:52
 ---
+
 # 介绍
 * awk是用于文本检索和处理的语言
 * awk程序是由一系列的pattern-action以及可选的函数定义组成
@@ -11,14 +13,14 @@ categories: linux
 * 输入的数据被记录分隔符RS(RS默认为”\n“)切分为多条记录，每个记录都会与每个模式进行比较，如果匹配则执行{action}的程序文本
 
 # awk命令
-## awk命令语法
+## 命令语法
 * awk [选项](#选项) -f [awk程序文件](#awk程序) 待处理的文本文件
 * awk 选项 awk程序文本 待处理的文本文件
 
 ## 命令选项
 * -f awk程序文件
 * -F 定义分隔符【也可使用变量FS】，可以同时定义多个分隔符
-    - `ifconfig eth0|awk -F'[ :]*' 'NR==2{print $3}'`【同时使用任意多个空格和任意多个冒号作为分隔符】
+    - 范例：`ifconfig eth0|awk -F'[ :]*' 'NR==2{print $3}'`【同时使用任意多个空格和任意多个冒号作为分隔符】
 * -v var=val 定义变量【定义程序执行前的变量】
 * -e awk程序文本【可省略】
 
@@ -36,16 +38,16 @@ categories: linux
 
 ## awk模式
 * BEGIN/END：
-    - BEGIN和END模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN在读取输入之前执行，END在所有输入都被处理完毕后执行
+    - BEGIN和END模式不对输入进行测试【也即不需要源文件也能使用BEGIN】，BEGIN在读取输入之前执行，END在所有输入都被处理完毕后执行
     - BEGIN模式通常被用来改变内建变量，如OFS，RS，FS等，也可以用于初始化自定义变量值，或打印输出标题
     - BEGIN和END模式必须有action部分
     - 所有BEGIN模式的action部分会合并执行，END模式也是如此；但是BEGIN和END模式不与模式匹配中的表达式合并。
 * BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式；相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
-* 模式匹配主体部分：由表达式(可以是记录、字段、内置变量、字符串、数字、正则表达式)和[操作符](#操作符)构成
+* 模式匹配部分：由表达式(可以是记录、字段、内置变量、字符串、数字、正则表达式)和[操作符](#操作符)构成
     - 正则表达式
         + 语法：expr ~ /r/
         + 含义：expr用来和[正则表达式](#正则表达式)【和egrep一样的正则】进行匹配测试
-        + 说明：【/r/ { action }】和【$0 ~ /r/ { action }】都是相同的意思，都是用记录和正则进行匹配测试
+        + 说明：【/r/ { action }】和【$0 ~ /r/ { action }】都是相同的意思，都是用一行记录和正则进行匹配测试
     - 条件表达式
         + 范例：'NR>=2&&NR<=10{print $3}'【取2到10行中第3个字段中的内容】
     - 关系表达式：使用[操作符](#操作符)【&&、||、!、三元操作符、括号(改变连接顺序)，逗号(先后进行匹配测试)】连接多个表达式
@@ -53,9 +55,9 @@ categories: linux
 ## awk执行
 * action语句和大多数程序语言一样，由控制语句、输入输入语句、赋值、操作符构成
 * 循环体或action部分被大括号`{...}`分块，块内语句由分号或换行符分隔，块内最后一条语句不需要终止符
-* 可以使用`\`来继续长语句，在逗号、左大括号、&&、do、else、if/while/for语句的右括号、自定义函数的右括号之后，可以在没有反斜杠的情况下断开语句
+* 可以使用`\`来继续长语句；相反的，在逗号、左大括号、&&、do、else、if/while/for语句的右括号、自定义函数的右括号之后，可以在没有反斜杠的情况下断开语句
 
-# awk程序语法
+# awk语法
 ## 记录
 * 记录通常由换行符分隔【也即一行内容为一个记录】，也可以由内置变量RS定义分隔符
 * 只有单字符或正则表达式可以作为分隔符
@@ -75,7 +77,8 @@ categories: linux
 * ARGV：【arry of cmd arg】命令行参数数组
     - ARGV[0]为awk解释器
     - ARGV[1]...ARGV[ARGC-1]为待处理的文件
-* ENVIRON：环境变量数组
+* ENVIRON：环境变量数组【环境变量是由a父进程shell传递给awk程序的】
+    - 范例：`awk 'BEGIN{print ENVIRON["HOME"]}'`
 * FIELDWIDTHS：固定宽度分隔字段
 * FILENAME：当前输入的文件名，在BEGIN阶段则是未定义
 * NR【number of record】：到目前为止的输入记录总数
@@ -96,38 +99,36 @@ categories: linux
     - `\n`：换行符
     - `\t`：制表符
     - `\\`：反斜杠
-* 数字：在awk中变量无须定义即可使用，变量在赋值时即已经完成了定义。变量的类型可以是数字、字符串。根据使用的不同，未初始化变量的值为0或空白字符串" "，这主要取决于变量应用的上下文。
 * 字符串：由双引号包围
+* 数字：在awk中变量无须定义即可使用，变量在赋值时即已经完成了定义。变量的类型可以是数字、字符串。根据使用的不同，未初始化变量的值为0或空白字符串" "，这主要取决于变量应用的上下文。
 * 数组
     - 删除数组成员：delete array[index]
     - 删除数组：delete array
 
 ## 操作符
->优先级递减
-
-1. (...)：分组(但是awk分组功能不支持后向引用)
-2. $：字段或变量引用
-3. ^：指数【也可以使用`**`，例如`**`=可以在赋值语句中使用】
-4. `+ - * / % ++ --`：算数运算符：加、减、乘、除、取余、递增、递减
-5. |和|&：用于getline、print、printf的的管道符
-6. `< > <= >= != ==`：比较运算符
-7. ~ !~：正则匹配，正则否定；只在符号的右侧使用常量，比如【$1 ~ 'ceshi'】
-8. in：在数组之中
-9. && || !：逻辑运算符：“与”、“或”、“非”
-10. ?:：三元运算符【第一个为真则执行第二个，否则执行第三个】
-11. = += -= *= /= %= ^=：赋值语句（包含绝对赋值和带有其他操作符的赋值）
+* (...)：分组(但是awk分组功能不支持后向引用)
+* $：字段或变量引用
+* ^：指数【也可以使用`**`，例如`**`=可以在赋值语句中使用】
+* `+ - * / % ++ --`：算数运算符：加、减、乘、除、取余、递增、递减
+* |和|&：用于getline、print、printf的的管道符
+* `< > <= >= != ==`：比较运算符
+* ~ !~：正则匹配，正则否定；只在符号的右侧使用常量，比如【$1 ~ 'ceshi'】
+* in：在数组之中
+* && || !：逻辑运算符：“与”、“或”、“非”
+* ?:：三元运算符【第一个为真则执行第二个，否则执行第三个】
+* = += -= *= /= %= ^=：赋值语句（包含绝对赋值和带有其他操作符的赋值）
 
 ## 流程控制
 * if语句：if (condition) statement [ else statement ]
-    - if条件中多个条件使用圆括号分组后使用逻辑操作符连接
-    - if条件中的多个执行动作使用分号分隔，整体使用花括号包围
+    - 多个条件语句使用圆括号分组后使用逻辑操作符连接
+    - 多个执行语句使用分号分隔，整体使用花括号包围
 * 循环语句while：while (condition) statement
 * 循环语句do-while：do statement while (condition)
 * 循环语句for：for (expr_st; expr_end; expr_incre) statement
 * 数组循环for：for (var in array) statement
 * 跳出循环体：break
 * 跳出本次循环：continue
-* 退出程序：exit [ expression ]{ statements }
+* 退出awk程序【但是不会跳过END模块】：exit [ expression ]{ statements }
 * 多种选择switch：
 
     ```
@@ -139,39 +140,49 @@ categories: linux
     ```
 
 ## 输入输出
-* close：关闭文件或管道
+### 输出重定向
+* 使用shell的通用重定向符号“>”完成awk的输出重定向
+* 使用">"时，被打开的文件先被清空；文件会持续打开，直到文件被明确关闭(close)或awk程序结束
+* 使用">>"时，重定向的输出只是添加到文件末尾
+
+### 输入重定向
+* awk对于输入重定向是通过getline函数完成的，
+* getline可以从标准输入、管道、当前正在处理的文件之外的其他文件获取
+
+### 语法
 * [getline](#getline与next)：从下一个输入记录中设置$0，同时设置NF, NR, FNR, RT.
     - 对于模式匹配的记录直接跳过，直接处理相邻的下一个记录
 * getline < file：从下一个文件记录中设置$0，设置NF，RT
 * getline var：从下一个输入记录中设置变量，设置NR，FNR，RT
 * getline var < file：从下一个文件记录中设置变量，设置RT
 * command| getline `[var]`：执行命令，将结果保存在$0或变量var中以及RT中
+    - 范例【命令输出保存为变量并打印】：`awk 'BEGIN{"date"|getline d;print d}'`
 * command|& getline `[var]`：执行命令，同时将结果保存在$0或变量var中以及RT中
-* [next](#getline与next)：停止处理当前的输入记录，读取下一个输入记录并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
-    - 对于第一个模式匹配的记录直接跳过，直接处理余下的全部记录
-    - 因此需要至少一个匹配模式，next位于第一个匹配模式之后，且由花括号包围
-* nextfile：停止处理当前的输入文件，读取的下一个记录来自下一个文件。FILENAME和ARGIND被更新，FNR设置为1，并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
-* print：显示当前记录【即$0】到标准输出，输出记录以ORS定义的值结束
-    - print的参数可以使变量、数值、字符串【字符串使用双引号引用】
-    - 参数之间使用逗号分隔，没有分隔符时参数就“黏”在一起
-    - 可以使用的特殊字符：`\t`：制表符 `\n`：换行符
+* print：打印当前记录【即$0】到标准输出
+* print expr-list：打印表达式到标准输出
+    - 表达式之间以OFS分隔，输出记录以ORS定义的值结束
+    - 表达式可以时变量、数值、字符串【字符串使用双引号引用】、字符串常量【如`\t`：制表符 `\n`：换行符】
+    - 参数之间使用逗号分隔；没有分隔符时，参数就“黏”在一起
     - 范例：
         + 默认格式(%.6g)：`awk 'BEGIN{a=1.23456789,print a}'`
         + 自定义格式：`awk 'BEGIN{OFMT="%.2f";a=1.23456789;print a}'`
-* print expr-list：打印表达式，表达式直接以OFS分隔，输出记录以ORS定义的值结束
-* print expr-list >file：打印表达式到文件，文件名使用双引号
-    - 被打开的文件先被清空
-    - 文件会持续打开，直到文件被明确关闭(close)或awk程序结束
-* print ... >> file：输出追加到文件
+* print expr-list >file：打印表达式到文件【文件名使用双引号】
+* print ... >> file：打印表达式到文件末尾
 * printf fmt, expr-list：格式化输出
     - 范例：
         + 显示日期的每一个字段：`date|awk '{for(i=1;i<=NF;i++)printf("%s\n",$i)}'`
         + 格式化数字：`awk 'BEGIN{a=123.456;printf("a is %.2f\n", a)}'`
 * printf fmt, expr-list >file：格式化输出到文件
-* system(cmd-line)：执行命令并返回退出状态【不适用于非unix系统】
-* `fflush([file])`：刷新所有输出文件或管道的buffer，如果文件丢失或为空则刷新所有输出文件或管道
 * print ... | command：输出写入管道
 * print ... |& command：打印输出并写入管道
+* [next](#getline与next)：停止处理当前的输入记录，读取下一个输入记录并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
+    - 对于第一个模式匹配的记录直接跳过，直接处理余下的全部记录
+    - 因此需要至少一个匹配模式，next位于第一个匹配模式之后，且由花括号包围
+* nextfile：停止处理当前的输入文件，读取的下一个记录来自下一个文件。FILENAME和ARGIND被更新，FNR设置为1，并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
+* close：关闭文件或管道
+* system(cmd-line)：执行命令并返回退出状态【不适用于非unix系统】
+    - `awk 'BEGIN{system("date")}'`
+* `fflush([file])`：刷新所有输出文件或管道的buffer，如果文件丢失或为空则刷新所有输出文件或管道
 
 ### 特殊文件
 当从print或printf进行i/o重定向到文件，或使用getline从文件中进行i/o重定向时，awk程序可以从内部识别某些特殊的文件名。  
@@ -185,15 +196,18 @@ categories: linux
 
 ## 内置函数
 ### 字符串函数
-* `gsub(regx, str [, target_str])` ：在目标字符串中，每个与正则表达式匹配的子串都被替换，并返回替换的次数；如果目标字符串未提供则使用$0
-* `sub(regx, str [, target_str])`：只替换第一个匹配的字符串
-* `index(str, target)`：返回子字符串在字符串中的索引位置，从1开始
+* `gsub(regx, substr [, target_str])` ：在目标字符串中，每个与正则表达式匹配的子串都被替换，并返回替换的次数；如果目标字符串未提供则使用$0
+    - 范例：`awk '{gsub(":1","--");print}' test.txt`【将记录中的":1"替换为"--"】
+* `sub(regx, substr [, target_str])`：只替换第一个匹配的字符串
+* `index(str, substr)`：返回子字符串在字符串中的索引位置，从1开始
+    - 范例：`awk 'BEGIN{print index("1a2b3","2b")}' test.txt`【返回"2b"第一个字符在"1a2b3"中的索引位置】
 * `length([str]) `：返回字符串的长度或数组个数
 * `match(str, regx [, arry])`：返回正则表达式在字符串中出现的位置，找不到则返回0
 * `substr(str, index [, n])`：字符串截取，从字符串中的第index个索引位置截取n个字符
 * `tolower(str)`：返回字符串的字母的小写形式
 * `toupper(str)`：返回字符串中字母的大写形式
 * `split(str, arry [, regx [, seps] ])`：使用正则表达式regx定义的分隔符将字符串str拆分成数组arry，如果regx未定义则使用FS
+    - 范例：`awk 'BEGIN{split("1a 2b 3c",a)}END{for(i=0;i<length(a);i++)print a[i]}' test.txt`
     - awk的切分算法：用split函数将字符串切分为数组，用RS分隔符将文件切分为记录，用FS分隔符将记录切分为字段
 * `strtonum(str)`：字符串转化我数字
 * `sprintf(fmt, expr-list)`：使用指定格式输出表达式
@@ -222,11 +236,13 @@ categories: linux
 * int(expr)：截断为整数
 * rand()：返回0和1之间的随机数N【0 ≤ N < 1】
 * `srand([expr])`：使用expr作为随机数生成器的新种子，如果未提供expr则使用时间作为种子
+    - 范例：`awk 'BEGIN{srand();printf("%d\n", rand()*10)}'`
 
 ### 时间函数
 * systime()：返回当前时间到epoch(1970-01-01 00:00:00 UTC)之间的秒数【即timestamp】
 *  mktime(datespec)：将datespec转换成和systime一样的时间戳（timestamp），datespec形式为`YYYY MM DD HH MM SS[ DST]`
 * strftime([format [, timestamp[, utc-flag]]])：将timestamp格式化为[指定格式](#时间格式)的字符串输出
+    - 范例：`awk 'BEGIN{print strftime("%Y%m%d", systime())}'`
 
 ### 类型函数
 isarray(x)：如果x是数组则返回为真
@@ -260,17 +276,26 @@ awk '/3/{getline;print $0}' 1.txt：对包含3的记录进行处理：读取下�
 awk '/3/{getline}{print $0}' 1.txt：此时和next用法一直：直接过滤掉包含3的记录
 ```
 
+##  getline
+* 循环获取命令输出并打印：`awk 'BEGIN{while("ls"|getline)print}'`
+* getline交互式
+
+```
+awk 'BEGIN{print "what is your name?";getline name < "/dev/pts/0"}\
+$1 ~ name{print "Found " name "on line", NR}\
+END{print"See ya," name}' test.txt
+
+# BEGIN部分：打印标题【what is your name?】，从pts终端获取输入并赋值给name
+# pattern-action部分：如果文件中的某一行记录的第一个字段是name变量的值，则打印内容
+# END部分：打印name变量相关内容
+```
+
 ## 应用范例
-* 将java项目的sql导出：`awk -F'Preparing: ' '/Preparing/{var=$2;sub("  .*$","",var);print var}' catalina.out-20190622`
+* SQL执行统计【将java项目运行过程中的sql导出】：`awk -F'Preparing: ' '/Preparing/{var=$2;sub("  .*$","",var);print var}' catalina.out-20190622`
     - 过滤包含“Preparing”的行【这样的行包含sql语句】
     - 将第一步过滤的记录以“Preparing: ”分隔取第二个字段
     - 删除【双空格及以后的内容】
-* 统计sql及其执行次数：`awk '{++count[$0]}END{for(i in count)print i,"/",count[i]}' total.sql|sort -t'/' -rn -k2 > tongji.sql`
-    - 以每行sql作为自加的变量
-    - 重复的sql，变量会自加；新的sql会形成新的自加变量；多个不同的sql自加变量会形成数组，以此类推。
-    - 在所有记录处理完成后打印变量以及变量的自加结果【以斜线分隔】
-    - 对awk的处理结果再使用sort进行排序【以斜线作为分隔符，对第二个字段以数字方式进行倒序输出】
-* 统计web服务器443端口外网tcp各种连接状态及数量【也即并发连接】
+* TCP状态统计：【统计服务器443端口外网tcp各种连接状态及数量】
     - 连接状态统计并排序：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Act|^Pro/{if(($5==443)&&($6!="0.0.0.0"))++count[$8]}END{for(i in count)print i,count[i]}'|sort -nr -k2`
         + 排除Act和Pro开头的字头行
         + 包含连接443端口的连接
@@ -278,11 +303,16 @@ awk '/3/{getline}{print $0}' 1.txt：此时和next用法一直：直接过滤掉
         + 以tcp状态为作为自加数组变量，不同tcp状态共同构成数组
         + 打印tcp状态及数量
         + 以tcp状态的个数作为排序依据
-    - 并发总数：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Act|^Pro/{if(($5==443)&&($6!="0.0.0.0"))++count[$1]}END{print count[$1]}'`
+    - 连接总数【并发】：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Act|^Pro/{if(($5==443)&&($6!="0.0.0.0"))++count[$1]}END{print count[$1]}'`
         + 选取每行都不变的信息作为自加变量，最终统计并发连接
-* 统计一天中某个域名下url访问排行榜【get去除参数】:`awk -F'[ ?]' '{++count[$7]}END{for(i in count)print i,count[i]}' access.log|sort -rn -k2|head -10`
+* WEB访问统计：【nginx日志中：第1个字段为访问者ip，第7个字段为访问的url【含get参数】，第10个字段为访问url响应体大小】
+    - 统计每天访问量最大的资源【get去除参数】TOP10:`awk -F'[ ?]' '{++url[$7]}END{for(i in url)print i,url[i]}' access.log|sort -rn -k2|head -10`
+    - 统计每天占用带宽最大的资源TOP10：`awk '{sub("?.*$","",$7);url[$7]+=$10}END{for(i in url)print i,url[i]}' access.log|sort -rn -k2`
+        + sub("?.*$","",$7)：get去除参数，获取真正的资源
+        + `url[$7]+=$10`：对同一个资源，参数不同，获取的响应体大小也不一样；因此需要将相同资源每次返回的响应体大小累加
+    - 统计每天访问量最大的ip TOP10：`awk '{++ip[$1]}END{for(i in ip)print i,ip[i]}' access.log|sort -rn -k2|head -10`
 
-## shell脚本中awk使用
+## shell脚本中的awk
 ```
 read -p "pls input a ip:" ip
 egrep -v "localhost|^$" /etc/hosts|awk '{if($1=="'$ip'")print $2}'
