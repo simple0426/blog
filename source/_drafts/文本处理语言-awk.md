@@ -4,7 +4,11 @@ tags: awk
 categories: linux
 ---
 # 介绍
-在给定的文本中，通过正则匹配(pattern)对行(记录)和列(字段)进行操作(action)
+* awk是用于文本检索和处理的语言
+* awk程序是由一系列的pattern-action以及可选的函数定义组成
+* 可以在命令行中输入短程序文本(通常使用单引号括起来以避免被shell解释)，也可以使用-f选项从文件中读取长的awk程序
+* 读取的数据源可以是命令行的文件列表或标准输入
+* 输入的数据被记录分隔符RS(RS默认为”\n“)切分为多条记录，每个记录都会与每个模式进行比较，如果匹配则执行{action}的程序文本
 
 # awk命令
 ## awk命令语法
@@ -18,46 +22,44 @@ categories: linux
 * -v var=val 定义变量【定义程序执行前的变量】
 * -e awk程序文本【可省略】
 
-# awk程序语法
-* 定义：awk程序是由一系列的pattern-action以及可选的函数定义组成
-* 格式：[pattern](#awk匹配语法) { [action](#awk执行语法) }
-* 执行顺序
-    - 命令行-v指定的变量
-    - BEGIN指定的规则
-    - 处理命令行下引用的每一个源文件【ARGV方式调用】
-    - 使用pattern匹配每一个record，匹配成功则执行actions
-    - 所有record处理完成后执行END规则
-* pattern和action
-    - awk是面向行的语言，先是模式(pattern)，后是行为(action)【action包含在花括号中】
-    - pattern或action其中之一可能不存在，但不可能出现二者都缺失的情况
-    - 假如pattern缺失，则action应用于每一行记录
-    - 如果action缺失，则相当于action是{print}【即打印整行记录】
-    - 可以使用分号分隔pattern-action下的action的多条语句，或者分隔pattern-actions本身
+## 执行顺序
+- 命令行-v指定的变量
+- BEGIN指定的规则
+- 处理命令行下引用的每一个源文件【ARGV方式调用】
+- 使用pattern匹配每一个record，匹配成功则执行actions
+- 所有record处理完成后，执行END规则
 
-## awk匹配语法【正则表达式、关系表达式、条件表达式】
+# awk程序
+## 定义
+awk程序是由一系列的[pattern](#awk模式) { [action](#awk执行) }以及可选的函数定义组成
+## 注意
+* awk是面向行的语言，先是模式(pattern)，后是行为(action)【action包含在花括号中】
+* pattern或action其中之一可能不存在，但不可能出现二者都缺失的情况；假如pattern缺失，则action应用于每一行记录；如果action缺失，则相当于action是{print}【即打印整行记录】
+* 语句由分号或换行符结束【可以使用分号分隔pattern-action下的action的多条语句，或者分隔pattern-actions本身】
+* 循环体或action部分被大括号`{...}`分块，块内的最后一条语句不需要终止符
+* 可以使用`\`来继续长语句
+* 在逗号、左大括号、&&、do、else、if/while/for语句的右括号、自定义函数的右括号之后，可以在没有反斜杠的情况下断开语句
+
+## awk模式
 * BEGIN/END：
-    - BEGIN模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN模式在读取输入之前执行
-    - 所有输入都被处理完毕或执行exit语句后，才开始执行END规则
-    - 所有BEGIN模式应该被写成单一规则，且BEGIN模式的action部分会合并执行；END模式也是如此。
-    - BEGIN和END模式不与其他模式表达式组合
+    - BEGIN和END模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN在读取输入之前执行，END在所有输入都被处理完毕后执行
     - BEGIN和END模式必须有action部分
-* BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式，相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
-* /regular expression/：对于[正则表达式](#正则表达式)模式，关联的语句将在正则匹配的记录的每一行上都执行；这里使用的正则和egrep中的一样
-* relational expression：关系表达式
-    - pattern && pattern：两个表达式“与”关系
-    - pattern || pattern：两个表达式“或”关系
-    - ! pattern：表达式取反
-    - pattern ? pattern : pattern：三元表达式【第一个为真则执行第二个，否则执行第三个】
-    - (pattern)：括号可以变更逻辑连接顺序
-    - pattern1, pattern2：范围表达式，使用pattern1模式测试行记录，接着使用pattern2测试行记录
+    - 所有BEGIN模式的action部分会合并执行，END模式也是如此；但是BEGIN和END模式不与模式匹配中的表达式合并。
+* BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式；相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
+* 模式匹配主体部分：由表达式(可以是记录、字段、内置变量、字符串、数字、正则表达式)和[操作符](#操作符)构成
+    - 正则表达式
+        + 语法：expr ~ /r/
+        + 含义：expr用来和[正则表达式](#正则表达式)【和egrep一样的正则】进行匹配测试
+        + 说明：【/r/ { action }】和【$0 ~ /r/ { action }】都是相同的意思，都是用记录和正则进行匹配测试
+    - 条件表达式
+        + 范例：'NR>=2&&NR<=10{print $3}'【取2到10行中第3个字段中的内容】
+    - 关系表达式：使用[操作符](#操作符)【&&、||、!、三元操作符、括号(改变连接顺序)，逗号(先后进行匹配测试)】连接多个表达式
 
-## awk执行语法
+## awk执行
 * action语句整体由大括号包围
-    - if条件中多个条件使用圆括号连接
-    - if条件中的多个执行动作使用分号分隔，整体使用花括号包围
-* action语句和大多数程序语言一样，由操作符、控制语句、输入输入语句、赋值、条件、循环语句构成
+* action语句和大多数程序语言一样，由控制语句、输入输入语句、赋值、操作符构成
 
-# awk程序构成
+# awk程序语法
 ## 记录
 * 记录通常由换行符分隔【也即一行内容为一个记录】，也可以由内置变量RS定义分隔符
 * 只有单字符或正则表达式可以作为分隔符
@@ -72,9 +74,11 @@ categories: linux
 * 引用不存在的字段将会产生空字符串
 
 ## 内置变量
-* ARGC：【count of arg】命令行参数数量
+* ARGC：【count of arg】命令行参数数量【不包括选项和awk程序】
 * ARGIND：【index in ARGV of file being processed 】当前处理的文件在ARGV中的索引
 * ARGV：【arry of cmd arg】命令行参数数组
+    - ARGV[0]为awk解释器
+    - ARGV[1]...ARGV[ARGC-1]为待处理的文件
 * ENVIRON：环境变量数组
 * FIELDWIDTHS：固定宽度分隔字段
 * FILENAME：当前输入的文件名，在BEGIN阶段则是未定义
@@ -92,11 +96,16 @@ categories: linux
 
 ## 数据类型
 * 字符串常量
-* 数字
-* 字符串
+    - `\n`：换行符
+    - `\t`：制表符
+    - `\\`：反斜杠
+* 数字：新增的变量默认字符串类型，但是数字类型字符串进行格式化或数字运算时会转换为数字类型
+* 字符串：由双引号包围
 * 数组
+    - 删除数组成员：delete array[index]
+    - 删除数组：delete array
 
-## 操作符【和表达式】
+## 操作符
 >优先级递减
 
 1. (...)：分组(但是awk分组功能不支持后向引用)
@@ -111,19 +120,19 @@ categories: linux
 10. ~ !~：正则匹配，正则否定；只在符号的右侧使用常量，比如【$1 ~ 'ceshi'】
 11. in：在数组之中
 12. && ||：逻辑“与”、“或”
-13. ?:：三元运算符
+13. ?:：三元运算符【第一个为真则执行第二个，否则执行第三个】
 14. = += -= *= /= %= ^=：赋值语句（包含绝对赋值和带有其他操作符的赋值）
 
 ## 流程控制
 * if语句：if (condition) statement [ else statement ]
+    - if条件中多个条件使用圆括号分组后使用逻辑操作符连接
+    - if条件中的多个执行动作使用分号分隔，整体使用花括号包围
 * 循环语句while：while (condition) statement
 * 循环语句do-while：do statement while (condition)
-* 循环语句for：for (expr1; expr2; expr3) statement
+* 循环语句for：for (expr_st; expr_end; expr_incre) statement
 * 数组循环for：for (var in array) statement
-* 跳出循环体break
-* 跳出本次循环continue
-* 删除数组成员：delete array[index]
-* 删除数组：delete array
+* 跳出循环体：break
+* 跳出本次循环：continue
 * 退出程序：exit [ expression ]{ statements }
 * 多种选择switch：
 
@@ -148,7 +157,7 @@ categories: linux
     - 对于第一个模式匹配的记录直接跳过，直接处理余下的全部记录
     - 因此需要至少一个匹配模式，next位于第一个匹配模式之后，且由花括号包围
 * nextfile：停止处理当前的输入文件，读取的下一个记录来自下一个文件。FILENAME和ARGIND被更新，FNR设置为1，并使用awk程序的第一个模式处理；在到达输入数据的末尾时，awk执行END规则
-* print：打印当前记录，输出记录以ORS定义的值结束
+* print：显示当前记录【即$0】到标准输出，输出记录以ORS定义的值结束
     - print的参数可以使变量、数值、字符串【字符串使用双引号引用】
     - 参数之间使用逗号分隔，没有分隔符时参数就“黏”在一起
     - 可以使用的特殊字符：`\t`：制表符 `\n`：换行符
@@ -189,6 +198,7 @@ categories: linux
 * `tolower(str)`：返回字符串的字母的小写形式
 * `toupper(str)`：返回字符串中字母的大写形式
 * `split(str, arry [, regx [, seps] ])`：使用正则表达式regx定义的分隔符将字符串str拆分成数组arry，如果regx未定义则使用FS
+    - awk的切分算法：用split函数将字符串切分为数组，用RS分隔符将文件切分为记录，用FS分隔符将记录切分为字段
 * `strtonum(str)`：字符串转化我数字
 * `sprintf(fmt, expr-list)`：使用指定格式输出表达式
 
@@ -278,6 +288,10 @@ awk '/3/{getline}{print $0}' 1.txt：此时和next用法一直：直接过滤掉
 
 ---
 # 附加内容
+## 参考
+* centos下的gawk man文档
+* ubuntu下的mawk man文档
+
 ## 时间格式
 | 格式符 |                            含义                           |           范例           |
 |--------|-----------------------------------------------------------|--------------------------|
