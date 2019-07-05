@@ -37,6 +37,7 @@ categories: linux
 ## awk模式
 * BEGIN/END：
     - BEGIN和END模式不对输入进行测试【也即不需要源文件也能使用BEGIN和END】，BEGIN在读取输入之前执行，END在所有输入都被处理完毕后执行
+    - BEGIN模式通常被用来改变内建变量，如OFS，RS，FS等，也可以用于初始化自定义变量值，或打印输出标题
     - BEGIN和END模式必须有action部分
     - 所有BEGIN模式的action部分会合并执行，END模式也是如此；但是BEGIN和END模式不与模式匹配中的表达式合并。
 * BEGINFILE/ENDFILE：BEGINFILE是在读取命令行的每个文件中的第一行记录之前执行的模式；相应的，ENDFILE是读取命令行的每个文件中最后一行记录之后执行的模式
@@ -88,13 +89,14 @@ categories: linux
 * NF【number of field】：输入记录的字段总数
 * OFMT【output format】：数字输出格式，默认"%.6g"
 * RT【record terminator】：记录终止符，awk将RT设置为与RS相匹配的字符或正则表达式匹配的文本
+* IGNORECASE：在正则表达式和字符串操作中关闭大小写敏感【当IGNORECASE内置变量的值为非0时，表示在进行字符串操作和处理正则表达式时关闭大小写敏感。】
 
 ## 数据类型
 * 字符串常量
     - `\n`：换行符
     - `\t`：制表符
     - `\\`：反斜杠
-* 数字：新增的变量默认字符串类型，但是数字类型字符串进行格式化或数字运算时会转换为数字类型
+* 数字：在awk中变量无须定义即可使用，变量在赋值时即已经完成了定义。变量的类型可以是数字、字符串。根据使用的不同，未初始化变量的值为0或空白字符串" "，这主要取决于变量应用的上下文。
 * 字符串：由双引号包围
 * 数组
     - 删除数组成员：delete array[index]
@@ -158,6 +160,9 @@ categories: linux
         + 自定义格式：`awk 'BEGIN{OFMT="%.2f";a=1.23456789;print a}'`
 * print expr-list：打印表达式，表达式直接以OFS分隔，输出记录以ORS定义的值结束
 * print expr-list >file：打印表达式到文件，文件名使用双引号
+    - 被打开的文件先被清空
+    - 文件会持续打开，直到文件被明确关闭(close)或awk程序结束
+* print ... >> file：输出追加到文件
 * printf fmt, expr-list：格式化输出
     - 范例：
         + 显示日期的每一个字段：`date|awk '{for(i=1;i<=NF;i++)printf("%s\n",$i)}'`
@@ -165,7 +170,6 @@ categories: linux
 * printf fmt, expr-list >file：格式化输出到文件
 * system(cmd-line)：执行命令并返回退出状态【不适用于非unix系统】
 * `fflush([file])`：刷新所有输出文件或管道的buffer，如果文件丢失或为空则刷新所有输出文件或管道
-* print ... >> file：追加输出到文件
 * print ... | command：输出写入管道
 * print ... |& command：打印输出并写入管道
 
