@@ -3,6 +3,7 @@ title: linux命令-查找替换
 tags:
   - find
   - sort
+  - grep
 categories:
   - linux
 date: 2019-06-30 10:40:22
