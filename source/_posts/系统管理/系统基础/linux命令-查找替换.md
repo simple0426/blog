@@ -4,13 +4,14 @@ tags:
   - find
   - sort
   - grep
+  - sed
 categories:
   - linux
 date: 2019-06-30 10:40:22
 ---
 
 # 命令列表
-* sed
+* [sed](#sed)
 * [grep](#grep)
 * [find](#find)
 * wc
@@ -102,64 +103,123 @@ find . -maxdepth 0 -type d -name "*8056" -mtime +119|xargs rm -rf {}
 * 2：搜索时发生错误【可使用-qs屏蔽错误及静默输出】
 
 # sed
+## 简介
 * 含义：用于文本过滤和替换的流编辑器【输入数据源可以是文件或管道】
-* 原理：
-  - sed把当前处理的行存在在临时缓冲区【模式空间pattern space】中，一旦sed完成对模式空间的处理，模式空间中的行就被送到屏幕输出；
-  - 行被处理完毕后，被模式空间移除，程序读入下一行进行处理
+* 原理：sed把当前处理的行存在临时缓冲区【模式空间pattern space】中，一旦sed完成对模式空间的处理，模式空间中的行就被送到屏幕输出；行被处理完毕后，被模式空间移除，程序读入下一行进行处理
+* 语法：sed [命令选项](命令选项) ‘脚本([行选择](行选择)+[操作命令](#操作命令))’ 待操作源文件
 
 ## 命令选项
-* -n 【--silent --quit】抑制模式空间【pattern space】自动输出
-* -e 【--expression】script：添加命令将要执行的脚本文本
+* -n 【--silent --quit】抑制模式空间(pattern space)自动输出，只显示匹配行的内容
+* -e 【--expression】script：添加命令将要执行的脚本文本【允许多次处理文本行】
+  - 范例：`sed -e '1,3d' -e 's/Hemenway/Jones/' testfile `【删除1到3行后，替换Hemenway为Jones】
 * -f 【--file】script-file：添加命令将要执行的脚本文件
-* -i 【--in-place】：在模式空间中编辑文件
+* -i`[suffix]` 【--in-place`[=suffix]`】：在模式空间中编辑文件，
+  - 如果提供suffix后缀，则会使用suffix后缀对文件备份后再进行编辑
 * -r【--regexp-extended】：在脚本中使用扩展的正则表达式
 * -u【-unbuffered】：从输入文件加载最少量的数据并更频繁地刷新输出缓冲区
 
-## 脚本选项
-### 需要0或1个地址的命令
-* = 打印当前行号
-* a\ text 在文本行之后的新行添加内容
-* i\ text 在文本行之前的新行添加内容
-* q：立即退出sed脚本而不处理新行，但如果没有禁用自动打印功能，则会输出模式空间内容
-* Q：立即退出sed脚本而不处理新行
-* r filename：将从filename文件读取的全部行内容追加到文本行之后
-* R filename：将从filename文件读取的一行内容追加到文本行之后，每次从filename中读取的行内容为上次读取行的下一行
-
-### 需要地址范围的命令
-* `{ }`：一个命令块
-* c\ text：使用文本内容替换文本行
-* d：删除模式空间内容，开始下一个循环
-* D：如果模式空间不包含换行符，则和d一样；如果包含换行符，则删除到第一个换行符之间的内容，然后启动循环而不读取新的内容。
-* h/H：复制或追加模式空间内容到暂存区
-* g/G：复制或追加暂存区内容到模式空间
-* l：显示当前行内容【包含隐藏内容，如换行符】
-* l width：显示当前行内容，以指定行宽度显示【超过宽度的行被截断为新行】
-* n/N：读取或追加下一行内容到模式空间
-* p：打印当前模式空间内容
-* P：打印模式空间第一个换行符之前的内容
-* s/regexp/replacement/：使用replacement内容替换正则表达式匹配的内容，replacement语句可以使用\1..\9进行分组引用
-* w filename：将模式空间内容写入filename文件
-* W filename：将模式空间的第一行内容写入filename文件
-* x：交换模式空间和暂存区内容
-* y/source/dest/：将目标中出现的字符替换为源中存在的字符
-
-### 地址
-#### 注意
-* 0地址表示对所有输入行进行处理
-* 1个地址表示仅对匹配的的行进行处理
-* 2个地址【addr1,addr2(地址间以逗号分隔)】表示对2个地址之间的行进行处理
-  - 2个地址中的第1个地址会一直起作用，即使第2个地址选择的行早于第1个
-  - 假如第2个地址是正则表达式，则不会对第一个地址进行测试
-* 在地址【或地址范围】之后，命令之前`!`用于对不匹配的行进行操作
-
-#### 地址
+## sed脚本
+### 行选择
+* 没有行定位信息表示对所有输入行进行处理
+* `!`用于地址【或地址范围】之后、命令之前，用于对不匹配的行进行操作
 * 数字：仅匹配指定行号的内容【命令行-s选项会跨文件累加行号，此时不适用于行号匹配】
 * first~step：从first开始，每次显示第step行内容
   - 范例：sed -n 1~2p ：从第一行开始，只显示奇数行内容
 * $：显示最后一行
+  - 范例：seq 10|sed -n '3,$p'【显示第3行到末尾行的内容】
 * /regexp/：匹配正则表达式匹配的行
 * \cregexpc：匹配正则表达式匹配的行：c可以是任意字符
-* addr1,+N：将匹配addr1及以后的N行
-* addr1,~N：将匹配addr1及以后到N的倍数的行
-* 0,addr1：addr1只能使用正则表达式，表示从第一行开始到匹配行的内容
-* 1,addr1：addr1可以是任意形式地址，表示从第一行开始到匹配行的内容
+* 以逗号分隔的2个地址【addr1,addr2】表示对2个地址之间的行进行处理
+  - addr1,addr2
+    + addr1会一直起作用，即使第addr2选择的行早于第1个
+    + 假如addr2是正则表达式，则不会对addr1匹配的行本身进行测试
+  - addr1,+N：将匹配addr1及以后的N行
+  - addr1,~N：将匹配addr1及以后到N的倍数的行
+  - 0,addr1：addr1只能使用正则表达式，表示从第一行开始到匹配行的内容
+  - 1,addr1：addr1可以是任意形式地址，表示从第一行开始到匹配行的内容
+
+### 操作命令
+>`{ }`：一个命令块，命令之间以分号分隔
+
+* s/regexp/replacement/：使用replacement内容替换正则表达式匹配的内容，
+  - regexp分组后，replacement语句可以使用\1..\9进行分组引用【`sed -n '/west/s/\(Charles\)/\1jingqi/p' testfile`】
+  - 默认只替换第一个出现的字符串，使用g标志可对行内进行全部替换【s/regexp/replacement/g】
+  - s后面的字符一定是分隔搜索字符串和替换字符串的分隔符，默认为斜杠；但是在s命令使用的情况下可以改变。不论什么字符紧跟着s命令都认为是新的分隔符。这个技术在搜索含斜杠的模板时非常有用
+  - 范例：sed -n '/west/s/Charles/jingqi/p' testfile 【过滤包含west的行后，将Charles替换为jingqi，最后显示该行内容】
+* `&`：引用替换命令【s/regexp/replacement/】中正则匹配到的部分
+  - 范例：sed -n '/west/s/Charles/&jingqi/p' testfile 【将Charles替换为Charlesjingqi】
+* a\ text 在文本行之后的新行添加内容
+* i\ text 在文本行之前的新行添加内容
+* c\ text：使用文本内容替换文本行
+* d：删除模式空间内容，开始下一个循环
+  - 范例：seq 10|sed '3d'【删除第3行，其他行默认输出屏幕】
+* D：如果模式空间不包含换行符，则和d一样；如果包含换行符，则删除到第一个换行符之间的内容，然后启动循环而不读取新的内容。
+* p：打印当前模式空间内容
+* P：打印模式空间第一个换行符之前的内容
+* = 打印当前行号
+* l：显示当前行内容【包含隐藏内容，如换行符】
+* l width：显示当前行内容，以指定行宽度显示【超过宽度的行被截断为新行】
+* n/N：读取或追加下一行内容到模式空间
+  - 范例：`sed -n '/^north /{n;s/central/ceshi/p}' testfile`【定位到north 开始行的下一行，替换字符串后并显示】
+* h/H：复制或追加模式空间内容到暂存区
+* g/G：使用暂存区内容替换模式空间内容，或在模式空间后追加暂存区内容
+* r filename：将从filename文件读取的全部行内容追加到文本行之后
+  - 范例：`sed '/^north/r update.txt' testfile`【在以north开始的行后插入update.txt中的内容】
+* R filename：将从filename文件读取的一行内容追加到文本行之后，每次从filename中读取的行内容为上次读取行的下一行
+* w filename：将模式空间内容写入filename文件
+  - 范例：`sed -n '/north/w newfile' testfile `【将包含north的行写入newfile文件中，同时只显示包含north的行】
+* W filename：将模式空间的第一行内容写入filename文件
+* x：交换模式空间和暂存区内容
+* y/source/dest/：将目标中出现的字符替换为源中存在的字符【不能使用正则表达式】
+* q：立即退出sed脚本而不处理新行，但如果没有禁用自动打印功能，则会输出模式空间内容
+  - 范例：`sed '2q' testfile`【打印到第2行后退出脚本】
+* Q：立即退出sed脚本而不处理新行
+
+## 范例
+* h与G：`sed -e '/^western/h' -e '$G;w newfile' testfile`
+  - 在第一个编辑模式中，将north开始的行从模式空间放入暂存区
+  - 在第二个编辑模式中，将暂存区中的内容追加到末尾行的模式空间，然后写入newfile中
+* sed中使用shell：里层使用双引号，外层使用单引号
+  - `sed -n '/eastern/s/4.5/'"$(date +%F)"'/p' testfile`：将4.5替换为当前时间
+  - `sed -n '/eastern/s/Savage/'"$USER"'/p' testfile`：将Savage替换为当前用户
+* 获取eth0网卡地址：
+  - sed：`ifconfig eth0|sed -n 's/^.*addr:\(.*\)\sBcast.*$/\1/p'`
+  - awk：`ifconfig eth0|awk -F '[: ]+' '/inet/{print $4}'`
+* 文本修改：将文本中的ver版本号替换为2.0.16，filename版本号替换为2.0.17_40
+
+  ```
+  Data ver="2.0.16" filenName="feng1_360_HD_2.0.15_39.apk"
+  Down ver="2.0.16" filenName="feng2_360_HD_2.0.15_39.apk"
+  Data ver="2.0.14" filenName="feng3_360_HD_2.0.14_38.apk"
+  Data ver="2.0.13" filenName="feng4_360_HD_2.0.16_40.apk"
+  ```
+
+  - sed方法：`sed -i-bak 's/2.0..*\" /2.0.16\" /;s/HD_.*\./HD_2.0.17_40./' 360test_apk.xml`
+  - awk方法：`awk '{gsub("\"2.0.[0-9][0-9]","\"2.0.16");gsub("HD_2.0.1[0-9]_[0-9][0-9]", "2.0.17_40");print}' 360test_apk.xml`
+
+* 文本修改：将文本1修改为文本2
+  - 文本1：【修改前】
+
+    ```
+    <html>
+    <title>Firest web</title>
+    <body>Hello the World<body>
+    h1helloh1
+    h2helloh2
+    h3helloh3
+    </html>
+    ```
+
+  - 文本2：【修改前】
+    
+    ```
+    <html>
+    <title>Firest web</title>
+    <body>Hello the World<body>
+    <h1>hello</h1>
+    <h2>hello</h2>
+    <h3>hello</h3>
+    </html>
+    ```
+
+  - 执行命令：`sed 's/^\(h[123]\)/<\1>/;s#\(h[123]\)$#</\1>#' test.txt`
