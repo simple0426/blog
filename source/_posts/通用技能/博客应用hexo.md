@@ -44,6 +44,7 @@ categories: ['skill']
 ### 站点配置
 * theme: next【主题】
 * language: zh-Hans【语言】
+* order_by: -updated【以文章修改时间排序】
 
 ### 主题配置
 * scheme: Mist【主题风格】
@@ -119,7 +120,7 @@ npm install hexo-deployer-git
 
 ### 主站配置
 ```
-url: http://blog.unforget.cn/
+url: http://blog.unlazy.cn/
 root: /
 deploy:
 - type: git
@@ -129,7 +130,7 @@ deploy:
 
 ### 自定义域名
 * 在source文件夹下建立CNAME文件
-* CNAME文件内容：blog.unforget.cn
+* CNAME文件内容：blog.unlazy.cn
 
 ### 部署github
 `hexo d -g`
