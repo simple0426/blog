@@ -3,56 +3,73 @@ title: linux常用命令
 tags:
 categories:
 ---
-# 目录
-## 进程
-* kill
-* killall
-* pkill
+# 进程
+* kill、pkill、killall
 * ps
 * fuser
+* nohup
+* jobs
+* fg
 
-## 文件管理
+# 硬件信息
+* 内存
+    - free
+* cpu
+    - top
+    - uptime
+* 磁盘
+    - iostat
+    - df
+* 网络
+    - iftop
+
+# 文件管理
 * cat
-* ls
-* df
+* ls、cd、pwd
 * du
-* mount
-* parted
-* cp
-* touch
-* rm
-* mkdir
-* cd
-* ln
+* mount、parted
+* cp、mv、rm
+* touch、mkdir、rename
 * rename
+* tar、gzip
+* tree
+* file、stat
+* dos2unix/unix2dos
+* fsck、e2fsck
+* dd
+* diff、vimdiff
 
-## 用户与权限
-* chattr
-* chmod
-* chown
-* useradd
-* userdel
-* usermod
+# 用户与权限
+* chattr、chmod、chown
+* useradd、userdel、usermod
 * passwd
-* setfacl
-* getfacl
-* group
-* gpasswd
-* sudo
-* su
+* setfacl、getfacl
+* group、gpasswd、groups
+* sudo、su
 
-## 系统管理
+# 系统管理
 * chkconfig
 * crond
 * date
-* uptime
-* echo
-* iostat
-* free
-* top
-* tar
+* echo、head、tail、seq
+* yum、apt、rpm、dpkg
+* man
+* xargs：把管道前面的处理结果按列表交给后面的命令处理
+* reboot、init、shutdown、poweroff、halt
+* history
+* which、locate
+* time：执行时间统计
+* watch：重复执行命令
+* alias、unalias
+* env
+
+# 系统状态
+* whoami：当前登录用户
+* users：所有登录用户
+* w、who：查看所有用户登录详情
+* id
+* last：查看系统最近登录情况
+* lastlog：显示最近登录的用户名，登录端口及时间
+* lastb：登录失败信息
+* dmesg：系统启动过程
 * uname
-* yum
-* apt
-* rpm
-* dpkg
