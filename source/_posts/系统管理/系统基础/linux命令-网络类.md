@@ -48,26 +48,26 @@ date: 2019-07-17 17:18:07
 
 # iptables
 * iptables是一个用于ipv4/ipv6包过滤和地址转换的管理工具
-* iptables语法主要由表、链、处理模块、处理动作构成
-* iptables语法：iptables 【-t 表】 【[链选项](#链选项) 链】 【[功能参数](#功能参数)】【 `[规则编号]` 规则([匹配模块](#匹配模块) 模块选项 -j [执行动作](#执行动作) 动作选项)】 
+* iptables语法主要由路由表、规则链、匹配规则、执行动作构成
+* iptables语法：iptables (-t 路由表) ([规则操作](#规则操作) 规则链) ([功能参数](#功能参数)) ([匹配规则](#匹配规则))  (-j [执行动作](#执行动作)) 
 
 ## 表和链
-iptables包含4个表和5个链，表是对数据包的不同类型的操作，链是在处理流程中的不同时间点进行的操作
+iptables包含4个表和5个链，路由表是对数据包的不同类型的操作，规则链是在处理流程中的不同时间点进行的操作
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif)
 
-* 表：优先级：raw > mangle > nat > filter
+* 路由表：优先级：raw > mangle > nat > filter
     * filter：一般的主机过滤功能，默认表
     * nat：一般用于网络地址转换（nat）
     * mangle：主要负责修改数据包中特殊的路由标记，如TTL、TOS、MARK等
     * raw，优先级最高，设置raw一般是为了不再让iptables做数据包的链接追踪处理，提高性能
-* 链
+* 规则链
     - PREROUTING：数据包进入路由表之前
     - INPUT：通过路由表后目的地为本机
     - FORWARD：通过路由表，目的地不是本机
     - OUTPUT：本计产生的数据包
     - POSTROUTING：发送到网卡接口前
 
-## 链选项
+## 规则操作
 * -A，--append chain rule-spec：在链的末尾添加规则
 * -D，--delete
     - -D chain rule-spec：删除特定的规则
@@ -91,7 +91,7 @@ iptables包含4个表和5个链，表是对数据包的不同类型的操作，�
 * --line-numbers：显示规则行号
 * --modprobe=command：当添加或插入规则时，加载必要的模块【targets、match extensions】
 
-## 匹配模块
+## 匹配规则
 `[!]`是对指定内容取反
 
 * `[!]` -p，--protocol protocol：只对特定协议(如tcp、udp、icmp)的数据包处理，默认为all
@@ -101,9 +101,9 @@ iptables包含4个表和5个链，表是对数据包的不同类型的操作，�
 * `[!]`-o，--out-interface name：将要发送数据包的网络接口【仅适用于FORWARD、OUTPUT、POSTROUTING链】
 * -j，--jump target：可以跳转到用户自定义的链处理；或直接使用内置处理规则【ACCEPT、DROP】处理数据包
 * -g，--got chain：转向到用户自定义的链处理
-* -m, --match match：匹配特定属性的扩展模块
+* -m, --match match：匹配特定属性的扩展规则模块
 
-### 扩展匹配模块
+### 扩展匹配规则
 * multiport：多端口匹配【这个模块可以一次性匹配多个源或目的端口，最多可以指定15个端口；地址范围(port:port)被当做是2个端口；只能跟在tcp、udp协议后。】
     - `[!] --source-ports,--sports port[,port|,port:port]`：源端口匹配
     - `[!] --destination-ports,--dports port[,port|,port:port]`：目的端口匹配
