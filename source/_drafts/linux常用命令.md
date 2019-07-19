@@ -23,22 +23,6 @@ categories:
 * 网络
     - iftop
 
-# 文件管理
-* cat
-* ls、cd、pwd
-* du
-* mount、parted
-* cp、mv、rm
-* touch、mkdir、rename
-* rename
-* tar、gzip
-* tree
-* file、stat
-* dos2unix/unix2dos
-* fsck、e2fsck
-* dd
-* diff、vimdiff
-
 # 用户与权限
 * chattr、chmod、chown
 * useradd、userdel、usermod
@@ -59,7 +43,7 @@ categories:
 * history
 * which、locate
 * time：执行时间统计
-* watch：重复执行命令
+* watch：周期性的执行程序，并同时全屏显示输出
 * alias、unalias
 * env
 
