@@ -3,26 +3,6 @@ title: linux常用命令
 tags:
 categories:
 ---
-# 进程
-* kill、pkill、killall
-* ps
-* fuser
-* nohup
-* jobs
-* fg
-
-# 硬件信息
-* 内存
-    - free
-* cpu
-    - top
-    - uptime
-* 磁盘
-    - iostat
-    - df
-* 网络
-    - iftop
-
 # 用户与权限
 * chattr、chmod、chown
 * useradd、userdel、usermod
@@ -57,3 +37,6 @@ categories:
 * lastb：登录失败信息
 * dmesg：系统启动过程
 * uname
+* free
+* uptime
+* top、htop
