@@ -1,5 +1,5 @@
 ---
-title: linux命令-网络类
+title: linux系统-网络管理
 tags:
   - curl
   - iptables
@@ -7,10 +7,8 @@ categories:
   - linux
 date: 2019-07-17 17:18:07
 ---
-
 # 命令列表
 * tcpdump
-* lsof
 * [curl](#curl)
 * [iptables](#iptables)
 * netstat
