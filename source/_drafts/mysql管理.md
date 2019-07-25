@@ -43,9 +43,14 @@ show charset;
     - 范例：alter table test1 modify name char(10) character set utf8 COLLATE utf8_general_ci; 
     - 查看字符字符集：SHOW FULL COLUMNS FROM tbl_name;
 
-
-
-
+# binlog处理
+* 设置日志过期变量：
+    - 查看：show variables like 'expire_logs_days';
+    - 设置：set global expire_logs_days = 3;
+* 手动删除日志
+    - 删除3天前：PURGE MASTER LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 3 DAY);
+    - 清除日志文件：PURGE MASTER LOGS TO 'MySQL-bin.010';
+    - 删除指定日期前：PURGE MASTER LOGS BEFORE '2008-06-22 13:00:00';
 
 [mysql-character]: https://blog.csdn.net/weixin_40539892/article/details/80564842
 
