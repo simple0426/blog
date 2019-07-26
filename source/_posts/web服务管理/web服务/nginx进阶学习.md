@@ -246,6 +246,29 @@ nginx -t
 * permanent 返回301永久重定向
 
 ## 范例
+### 网站改版
+>由于旧的url被搜索引擎收录，所以要实现：旧的url经过301跳转到新的url后，依然可以访问同一资源内容【网页内容一致】
+
+```
+location / {
+    if ($uri = "/overviewSystem.html"){
+            rewrite .* "/winTheTustomer.html" permanent;
+    }
+    root /data/font/www;
+    index  index.html index.htm;
+}
+location /dynamic/ {
+    if ($uri = "/dynamic/list/1.html"){
+        rewrite .* "/articleList/dynamic.html" permanent;
+    }
+    rewrite ^/dynamic(.*)$ $1 permanent;
+}
+```
+```
+1. 访问www.abc.com/overviewSystem.html重定向到www.abc.com/winTheTustomer.html
+2. 访问www.abc.com/dynamic/list/1.html重定向到www.abc.com/articleList/dynamic.html
+3. 访问www.abc.com/dynamic[url]重定向到www.abc.com[url]
+```
 ### user_agent判断
 ```
 if ($http_user_agent ~ MSIE) {
