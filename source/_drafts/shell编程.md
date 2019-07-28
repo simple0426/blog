@@ -14,7 +14,7 @@ categories:
 * cmd1&&cmd2 逻辑“与”连接两个命令，cmd1执行成功后才执行cmd2
 * cmd2||&&cmd2 逻辑“或”连接两个命令，cmd2执行不成功才执行cmd2
 
-# 括号与测试命令
+# 括号
 * (list)：开启一个子shell执行命令列表，$(list)表示list命令的输出结果（也可以使用反撇号执行命令），常用于a=$(list)这样的赋值语句
     - 其他开启子shell的方法：&（后台执行）、|（管道执行）
 * ((expression))：括号里的进行的是数字运算(因此可以用+、-、*、/、>、<等算术运算符)，同样的，$((expression))表示计算的结果
@@ -22,13 +22,29 @@ categories:
 * `[[ expression ]]`：表示里面进行的是逻辑运算，可以使用`!、&&、||`逻辑运算符
 * { list; }：内部分组，这个结构事实上创建了一个匿名函数。大括号内的命令不会开启一个子shell运行。括号内的命令用分号分隔，最后一个也要用分号，第一个命令和左括号之间必须要有一个空格。
 
-## 数学计算
+# 数学计算
+## 运算符
+* id++，id--：变量后加减
+* ++id，--id：变量先加减
+* +-：加减
+* & ^ | ~：位与、异或、同或、非
+* `**`：幂函数
+* */%：乘除取余
+* `<< >>`：向左位移、向右位移
+* `> >= <= <`：比较
+* == !=：等于、不等于
+* && ||  !：逻辑与、或、非
+* expr?expr:expr：三元表达式
+
+## 表达式
 * (())：echo $((5+4))
 * `expr 1 + 4`：空格分隔
 * declare：`declare -i i=2;i=i+3;echo $i`
 * let：`let a=3+2;echo $a`
 
-## test命令
+# 条件表达式
+>test或[命令使用
+
 * -a、-o 逻辑与、或
 * -n、-z 字符串长度不为0、为0
 * =、!= 字符串相等、不等
@@ -103,14 +119,17 @@ done < $1
 ```
 
 * break和continue
-    - 不能用于if语句
+    - 只能用于for、while、until、select循环
     - 单循环中：break终止循环；continue终止本次循环(不执行循环后语句)，继续下次循环
     - 双循环中：break跳出内循环，执行外循环语句；break 2直接跳出外循环。continue跳出内循环中的本次循环，继续下次内循环；continue 2跳出内循环，继续下次外循环。
+
+* exit `[n]`：以n退出脚本
 
 # 函数
 ## 定义
 * name () { cmd-list }
 * function name `[()]` { cmd-list }
+* 函数中定义局部变量：local
 
 ## 调用
 func_name
@@ -120,10 +139,6 @@ func_name
     - 特殊转义序列：`\t \n`
 * 单引号：保留字符字面含义
 * 双引号：可以解析变量及使用转移符
-
-# 特殊语法
-* `:`：冒号表示空语句
-* `#`：注释内容
 
 # 参数
 ## 位置参数
@@ -198,3 +213,46 @@ func_name
         + +(pattern-list)：匹配1或多个给定的模式
         + @(pattern-list)：匹配1个给定的模式
         + !(pattern-list)：不匹配模式列表中任何项
+
+# 重定向
+* 重定向标准输入：<word
+* 重定向输出：
+    - 标准输出：>word
+    - 错误输出：2>word
+* 追加重定向输出：`[n]`>>word
+* 同时重定向标准输出和错误输出：`&>word`或`>word 2>&1` 
+* 追加重定向标准输出和错误输出：`&>>word`或`>>word 2>&1`
+
+## 重定向多行输入
+```
+cmd << 分隔符
+文本
+分隔符
+```
+```
+cat << EOF > ceshi.txt
+he
+jing
+qi
+EOF
+# cat为接收文本的命令
+# EOF为分隔符【可以是任意的】
+# >ceshi.txt为cat命令的重定向输出
+# he jing qi 为输入文本
+```
+
+# 内置命令
+* `:`：冒号表示空语句，什么也不做
+* ./source：在当前shell环境执行脚本，变量可以回传值给shell
+* sh/bash：开启子shell执行脚本，变量不能回传值给父shell
+* declare：声明变量
+    - declare -r variable=value     声明只读变量.
+    - declare -a variable=(1 2 3 4)     声明数组
+    - declare -i aa                    声明整数型变量
+* echo：回显文本
+    - -e：支持特殊转义符：【\n \t等】
+    - -n：移除末尾换行
+* eval text：将text文本转换为shell命令执行，如【eval "echo text"】即为执行echo text命令
+* export：设置全局变量，如export PATH=/data/tomcat:$PATH
+* getopts：解析shell脚本位置参数
+* printf：格式化输出
