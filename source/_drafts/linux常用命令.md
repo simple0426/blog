@@ -21,11 +21,11 @@ categories:
 * man
 * xargs：把管道前面的处理结果按列表交给后面的命令处理
 * reboot、init、shutdown、poweroff、halt
-* history
+* history：查看命令历史【-c 清除命令历史】
 * which、locate
 * time：执行时间统计
 * watch：周期性的执行程序，并同时全屏显示输出
-* alias、unalias
+* alias、unalias：命令别名
 * env
 
 # 系统状态

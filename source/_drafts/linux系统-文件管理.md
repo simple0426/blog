@@ -5,7 +5,9 @@ categories:
 ---
 # 文件管理
 * cat
-* ls、cd、pwd
+* ls
+* pwd：显示当前绝对路径
+* cd：切换目录
 * du、df
 * mount、parted
 * cp、mv、rm
