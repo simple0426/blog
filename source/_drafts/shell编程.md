@@ -16,7 +16,6 @@ categories:
 
 # 括号
 * (list)：开启一个子shell执行命令列表，$(list)表示list命令的输出结果（也可以使用反撇号执行命令），常用于a=$(list)这样的赋值语句
-    - 其他开启子shell的方法：&（后台执行）、|（管道执行）
 * ((expression))：括号里的进行的是数字运算(因此可以用+、-、*、/、>、<等算术运算符)，同样的，$((expression))表示计算的结果
 * `[]`：条件表达式，其实是一个程序`/usr/bin/[`，相当于/usr/bin/test，后面多的那个`]`只是对称好看，所以`[`后要有空格
 * `[[ expression ]]`：表示里面进行的是逻辑运算，可以使用`!、&&、||`逻辑运算符
@@ -45,15 +44,15 @@ categories:
 # 条件表达式
 >test或[命令使用
 
-* -a、-o 逻辑与、或
-* -n、-z 字符串长度不为0、为0
-* =、!= 字符串相等、不等
+* -a、-o：逻辑与、或
+* -n、-z：字符串长度不为0、为0
+* =、!=：字符串相等、不等
 * -ne、-eq、-lt、-le、-gt、-ge：数字上的大【等】于、小【等】于、【不】等于
 * -e：文件存在
 
 # 流程控制
 * for列表循环：`for name [ [ in [ word ... ] ] ; ] do list ; done`：循环列表中的内容
-* for自增循环：`for((expr1;expr2;expr3))`：条件循环；expr1为初始值，expr2为终止条件，expr为循环条件。
+* for自增循环：`for((expr1;expr2;expr3))`：条件循环；expr1为初始条件，expr2为终止条件，expr为循环条件。
     - 范例：for((a=50;a>=0;a--));do echo $a;done
 * select循环：`select name [in word];do list;done`：交互式选择列表中的项目
     - 范例：`select name in a b c;do echo $name;done `
@@ -99,17 +98,19 @@ do
 done
 ```
 ```
-# 读取文件方式1
+1. 读取文件方式1
 exec < FILE
 while read line
 do
     cmd
 done
-# 读取文件方式2
+
+2. 读取文件方式2
 while read line
 do
     cmd
 done<FILE
+
 # 范例
 while read line
 do 
@@ -122,19 +123,29 @@ done < $1
     - 只能用于for、while、until、select循环
     - 单循环中：break终止循环；continue终止本次循环(不执行循环后语句)，继续下次循环
     - 双循环中：break跳出内循环，执行外循环语句；break 2直接跳出外循环。continue跳出内循环中的本次循环，继续下次内循环；continue 2跳出内循环，继续下次外循环。
-
 * exit `[n]`：以n退出脚本
+* return `[n]`：以n作为返回值退出函数
 
 # 函数
 ## 定义
 * name () { cmd-list }
 * function name `[()]` { cmd-list }
-* 函数中定义局部变量：local
+* 定义局部变量：local
 
 ## 调用
 func_name
-
+## 范例
+```
+定义：
+usage (){
+    echo "usage: $0 <git branch name>"
+}
+调用：
+usage
+```
 # 引用机制
+>是用于删除shell中某些特殊的字符或单词
+
 * 反斜杠：转移符，保留字面含义【当行尾有反斜杠时表示续行】
     - 特殊转义序列：`\t \n`
 * 单引号：保留字符字面含义
@@ -143,11 +154,11 @@ func_name
 # 参数
 ## 位置参数
 * $n表示shell脚本或shell函数的位置参数【n>=1】
-* 当数字n大于9时应该这样表示 ${12}
+* 当数字n大于9时应该这样表示：${12}
 
 ## 特殊参数
-* `$* $@`：所有位置参数
-    - `$*`：相当于“$1空格$2空格$3...”，即空格分隔多个位置参数同时作为一个字符串
+* `$* $@`：所有的位置参数
+    - `$*`：相当于“$1空格$2空格$3...”，即空格分隔多个位置参数同时整体作为一个字符串
     - `$@`：相当于"$1" "$2"...，即空格分隔多个位置参数并作为多个独立的字符串
 * `$#`：位置参数个数
 * `$?`：上一个shell命令执行状态
@@ -166,7 +177,7 @@ func_name
 * 查看数组某个元素(下标从0开始)：`${arry[0]}`
 * 查看全体元素：`${arry[*]}`
 * 查看数组某个元素长度：{% raw %}${#arry[0]}{% endraw %}
-* 查看全体元素个数：{% raw %}${#arry[*]}{% endraw %}
+* 查看数组元素个数：{% raw %}${#arry[*]}{% endraw %}
 * 数组元素替换：`${arry[*]/string/jing}`
 * 删除数组某个元素：`unset arry[0]`
 * 删除数组整体：`unset arry`
@@ -182,7 +193,7 @@ func_name
     - 逗号分隔的扩展：{1,5,a}
 * 波浪线：表示当前用户家目录
 * 变量扩展
-    - 赋值：将一个变量(值可能为空或不存在)的值赋值给另一个变量时的操作
+    - 赋值：将一个变量的值(值可能为空或不存在)赋值给另一个变量时的操作
     - 截取：
         + `${变量名:起始索引}`            显示起始索引开始的字符串
         + `${变量名:起始索引:长度}`   显示起始索引开始的指定长度字符串
@@ -243,16 +254,36 @@ EOF
 
 # 内置命令
 * `:`：冒号表示空语句，什么也不做
-* ./source：在当前shell环境执行脚本，变量可以回传值给shell
-* sh/bash：开启子shell执行脚本，变量不能回传值给父shell
+* ./source：在当前shell环境执行脚本，变量值可以回传给shell
+* sh/bash：开启子shell执行脚本，变量值不能回传给父shell
 * declare：声明变量
     - declare -r variable=value     声明只读变量.
     - declare -a variable=(1 2 3 4)     声明数组
     - declare -i aa                    声明整数型变量
-* echo：回显文本
-    - -e：支持特殊转义符：【\n \t等】
-    - -n：移除末尾换行
 * eval text：将text文本转换为shell命令执行，如【eval "echo text"】即为执行echo text命令
 * export：设置全局变量，如export PATH=/data/tomcat:$PATH
 * getopts：解析shell脚本位置参数
+* shift：解析shell脚本位置参数时用于移动参数位置
 * printf：格式化输出
+* set：显示所有shell变量
+    - -n：读取命令但不执行，此用于检测脚本语法【bash/sh -n file】
+    - -x：展开所有简单的命令，同时显示for、case、select的每一个循环，主要用于脚本调试
+        + 脚本内使用：set -x
+        + 命令行使用：sh -x file
+    - +x：关闭命令的展开显示：set +x
+* unset：删除变量或函数
+* env：显示环境变量
+
+# 随机数
+* awk随机数：awk 'BEGIN{srand();print rand()}'
+* uuid命令：uuidgen
+* md5命令：md5sum
+* openssl命令：openssl rand -base64 32
+
+# 变量定义
+* 当变量值为数字或路径时，可以不适用引号
+
+# 环境变量加载
+* 全局：/etc/profile
+* 用户bashrc：`~/.bashrc`
+* 用户bash_profile：`~/.bash_profile`

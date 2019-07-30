@@ -16,7 +16,15 @@ categories:
 * [crontab](#crontab)：周期性任务
 * at：一次性任务（使用较少）
 * date
-* echo、head、tail、seq
+* head、tail
+* echo：回显文本
+    - -e：支持特殊转义符：【\n \t等】
+    - -n：移除末尾换行
+* [read](#read)：从标准输入读取一行内容
+* seq `[start [step]]` end：打印数字序列
+    - -f printf格式
+    - -s 分隔符【默认\n】
+    - -w 列表前加0使宽度相等
 * yum、apt、rpm、dpkg
 * man
 * xargs：把管道前面的处理结果按列表交给后面的命令处理
@@ -26,7 +34,7 @@ categories:
 * time：执行时间统计
 * watch：周期性的执行程序，并同时全屏显示输出
 * alias、unalias：命令别名
-* env
+* ulimit：控制shell终端可使用的资源
 
 # 系统状态
 * whoami：当前登录用户
@@ -78,3 +86,15 @@ categories:
 * 定时任务结尾加>/dev/null 2>&1 【重定向所有输出到空设备】
 * 添加注释
 
+# read
+从标准输入读取一行内容，语法：read `[选项]` name-1 `[... name-n]`
+## 选项
+* -a：将空格分隔的多个字符串组成一个数组赋值给变量name
+* -d：定义行终止符【默认换行符\n】
+* -p：设置提示语
+* -s：隐藏输入内容【可用于密码输入】
+* -t：设置交互式超时时间
+
+## 范例
+* readline：`while read line;do echo $line;sleep 2;done < /etc/hosts`
+* read：`read -p 'pls input you name:' -t 30 -d \# -s name`
