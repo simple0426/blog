@@ -1,8 +1,12 @@
 ---
 title: shell编程
-tags: ['shell']
-categories: ['linux']
+tags:
+  - shell
+categories:
+  - linux
+date: 2019-07-30 18:05:31
 ---
+
 # 变量
 ## 变量定义
 * 当变量值为数字或路径时，可以不适用引号
