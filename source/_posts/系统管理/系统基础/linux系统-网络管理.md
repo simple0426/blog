@@ -19,6 +19,7 @@ date: 2019-07-17 17:18:07
 * wget
 * nc
 * socat
+* nmap
 
 # curl
 ## 响应
