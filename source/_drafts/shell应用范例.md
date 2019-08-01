@@ -87,8 +87,50 @@ case $2 in
     ;;
 esac
 ```
-# 1+...+100求和
+## 1+...+100求和
 * shell下for循环：for((i=0;i<=100;i++));do ((sum+=i));done;echo $sum
 * awk下for循环：awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'
 * seq与bc：seq -s + 100|bc
 * seq与awk：seq 100|awk '{sum+=$0}END{print sum}'
+
+## 产生随机数
+>输入英文单词，产生1-100之间的随机数
+
+```
+#!/bin/bash
+while true # 输入循环
+do
+    read -p "Please input your name:" name    # 交互式输入
+    echo "$name"|grep -E -q -w "^exit|^quit" && exit # 定义退出码
+    echo "$name"|grep -E -q -w "[a-zA-Z]+" || continue # 非字母则继续输入循环
+    [ ${#name} -eq 0 ] && continue # 为空继续输入循环
+    grep -E -w "$name" random.list 2>/dev/null && continue # 内容已存在则继续输入循环
+    while true # 随机数循环
+    do
+        random=$(awk 'BEGIN{srand();val=int(rand()*100);print val}') # 产生随机数
+        grep -E -w -q "$random" random.list 2>/dev/null && continue # 随机数存在则继续随机数循环产生新随机数
+        printf "$name\t$random\n"
+        printf "$name\t$random\n" >> random.list && break # 保存输入和随机数
+    done
+done
+```
+## 99乘法表
+```
+#!/bin/bash
+# 一、处理顺序：第1行1-9列 第2行1-9列 。。。
+# 二、1-外层循环:行  2-内层循环:列
+# 三、显示：列位置*行位置=乘积结果
+for ((i=1;i<=9;i++)) # 行
+do
+    for ((j=1;j<=9;j++)) # 列
+    do
+        if [ $j -lt $i ];then # 列小于行则输出
+            printf "$j*$i=$((j*i))\t"
+        elif [ $j -eq $i ];then  # 列等于行则换行
+            printf "$j*$i=$((j*i))\n"
+        else # 列大于行退出循环
+            break
+        fi
+    done
+done
+```
