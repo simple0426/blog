@@ -27,7 +27,11 @@ categories:
     - -w 列表前加0使宽度相等
 * yum、apt、rpm、dpkg
 * man
-* xargs：把管道前面的处理结果按列表交给后面的命令处理
+* xargs：从标准输入读取内容，构建并执行命令【一般用于不支持管道的命令，如ls；或一次无法处理过多参数的命令，如rm】
+    - -I `{}`：指定替换字符串（一般使用`{}`）：find . -type f|xargs -I {} mv {} ..
+    - -a file：从文件中读取内容：xargs -a /etc/hosts -I {} echo {}
+    - -d delimiter：定义输入分隔符【单字符，默认为换行符】
+* 把管道前面的处理结果按列表交给后面的命令处理
 * reboot、init、shutdown、poweroff、halt
 * history：查看命令历史【-c 清除命令历史】
 * which、locate
