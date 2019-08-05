@@ -143,3 +143,31 @@ deploy:
 [1]:http://blog.csdn.net/u012260238/article/details/52718416
 [2]: https://github.com/iissnan/hexo-theme-next/wiki/%E5%88%9B%E5%BB%BA%E5%88%86%E7%B1%BB%E9%A1%B5%E9%9D%A2
 [3]: https://github.com/iissnan/hexo-theme-next/wiki/%E5%88%9B%E5%BB%BA%E6%A0%87%E7%AD%BE%E4%BA%91%E9%A1%B5%E9%9D%A2
+
+## 特殊字符处理
+>特别注意的是小括号 ( ) 大括号 { } ,如果不小心写了,你执行hexo s –debug可能报一些莫名其妙的错误! 
+
+```
+! &#33; — 惊叹号Exclamation mark 
+” &#34; &quot; 双引号Quotation mark 
+# &#35; — 数字标志Number sign 
+$ &#36; — 美元标志Dollar sign 
+% &#37; — 百分号Percent sign 
+& &#38; &amp; Ampersand 
+‘ &#39; — 单引号Apostrophe 
+( &#40; — 小括号左边部分Left parenthesis 
+) &#41; — 小括号右边部分Right parenthesis 
+* &#42; — 星号Asterisk 
++ &#43; — 加号Plus sign 
+< &#60; &lt; 小于号Less than 
+= &#61; — 等于符号Equals sign 
+> &#62; &gt; 大于号Greater than 
+? &#63; — 问号Question mark 
+@ &#64; — Commercial at 
+[ &#91; --- 中括号左边部分Left square bracket 
+\ &#92; --- 反斜杠Reverse solidus (backslash) 
+] &#93; — 中括号右边部分Right square bracket 
+{ &#123; — 大括号左边部分Left curly brace 
+| &#124; — 竖线Vertical bar 
+} &#125; — 大括号右边部分Right curly brace 
+```
