@@ -68,7 +68,7 @@ for file in $(ls);do mv $file ${file/html/HTML};done
 
 ## 1+...+100求和
 * shell下for循环：for((i=0;i<=100;i++));do ((sum+=i));done;echo $sum
-* awk下for循环：awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'
+* awk下for循环：{% raw %}awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'{% endraw %}
 * seq与bc：seq -s + 100|bc
 * seq与awk：seq 100|awk '{sum+=$0}END{print sum}'
 
