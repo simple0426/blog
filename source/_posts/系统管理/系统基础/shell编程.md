@@ -276,9 +276,64 @@ done < $1
 * cmd1&&cmd2 逻辑“与”连接两个命令，cmd1执行成功后才执行cmd2
 * cmd2||&&cmd2 逻辑“或”连接两个命令，cmd2执行不成功才执行cmd2
 
-# 扩展
-## 随机数
-* awk随机数：awk 'BEGIN{srand();print rand()}'
-* uuid命令：uuidgen
-* md5命令：md5sum
-* openssl命令：openssl rand -base64 32
+# 应用范例
+其他范例参考：https://github.com/simple0426/sysadm/tree/master/shell
+## 菜单制作
+```
+#!/bin/bash
+menu_1 () {
+    echo -e "
+    ====================
+    1.\033[32minstall lamp\033[0m
+    2.\033[32minstall lnmp\033[0m
+    3.\033[31mexit\033[0m
+    please install your choice:
+    "
+}
+menu_1
+read num1
+echo $num1
+```
+## 产生随机数
+>输入英文单词，产生1-100之间的随机数
+
+```
+#!/bin/bash
+while true # 输入循环
+do
+    read -p "Please input your name:" name    # 交互式输入
+    echo "$name"|grep -E -q -w "^exit|^quit" && exit # 定义退出码
+    echo "$name"|grep -E -q -w "[a-zA-Z]+" || continue # 非字母则继续输入循环
+    [ ${#name} -eq 0 ] && continue # 为空继续输入循环
+    grep -E -w "$name" random.list 2>/dev/null && continue # 内容已存在则继续输入循环
+    while true # 随机数循环
+    do
+        random=$(awk 'BEGIN{srand();val=int(rand()*100);print val}') # 产生随机数
+        grep -E -w -q "$random" random.list 2>/dev/null && continue # 随机数存在则继续随机数循环产生新随机数
+        printf "$name\t$random\n"
+        printf "$name\t$random\n" >> random.list && break # 保存输入和随机数
+    done
+done
+```
+## 99乘法表
+```
+#!/bin/bash
+# 一、处理顺序：第1行1-9列 第2行1-9列 。。。
+# 二、1-外层循环:行  2-内层循环:列
+# 三、显示：列位置*行位置=乘积结果
+for ((i=1;i<=9;i++)) # 行
+do
+    for ((j=1;j<=9;j++)) # 列
+    do
+        if [ $j -lt $i ];then # 列小于行则输出
+            printf "$j*$i=$((j*i))\t"
+        elif [ $j -eq $i ];then  # 列等于行则换行
+            printf "$j*$i=$((j*i))\n"
+        else # 列大于行退出循环
+            break
+        fi
+    done
+done
+```
+
+

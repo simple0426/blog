@@ -2,15 +2,15 @@
 title: python正则表达式
 tags:
   - 正则表达式
+  - PCRE
 categories:
   - python
 date: 2018-05-13 22:33:34
 ---
-
 # 语法
 ## 介绍
-python re模块使用的是PCER(Perl Compatible Regular Expression)，即：Perl 兼容的正则表达式。  
-这应该是目前使用得最广泛的一种正则表达式，我们平时使用的就是这种正则表达式， 各种编程语言如 Java、Python、C#、JavaScript 实现的就是这种正则表达式。
+python re模块使用的是PCER(Perl Compatible Regular Expression)，即：Perl 兼容的正则表达式【可参考linux系统man pcre文档】。  
+我们平时使用的就是这种正则表达式， 各种编程语言如 Java、Python、C#、JavaScript 实现的就是这种正则表达式。
 ## 元字符
 | 表示法 |               含义               |         注意事项        |
 |--------|----------------------------------|-------------------------|
@@ -24,7 +24,7 @@ python re模块使用的是PCER(Perl Compatible Regular Expression)，即：Perl
 | 表示法 |        含义        | 注意事项 |
 |--------|--------------------|----------|
 | \w     | 任意字母数字下划线 | -        |
-| \W     | 非字母和数字       | -        |
+| \W     | 非字母数字下划线       | -        |
 | \d     | 数字               | -        |
 | \D     | 非数字             | -        |
 | \s     | 空白字符           | -        |

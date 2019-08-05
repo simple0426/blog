@@ -48,7 +48,6 @@ echo "*   soft   nofile  65536" >> /etc/security/limits.conf
 - 原因：文件被删除，但是使用这些文件的进程还在，造成空间不能释放
 - 解决：使用 lsof|grep deleted 查看占用删除文件的进程，重启或删除相关进程
 
-
 # 技巧
 ## 统计文件夹下所有文件数量 
 ls -lR|grep '^-'|wc -l 
@@ -56,6 +55,28 @@ ls -lR|grep '^-'|wc -l
 1. 建立空目录：mkdir /tmp/blank
 2. 使用rsync删除： rsync --delete-before -d /tmp/blank/ /var/spool/postfix/maildrop/ 
 3. rsync解释：-d 只同步目录【不递归同步】 --delete-before 同步前删除相关文件
+
+## 批量修改文件
+```
+touch {a..g}.html
+for file in $(ls);do mv $file ${file/html/HTML};done
+```
+## 判断变量是否为数字
+* grep过滤：`grep -E -w "[0-9]+"`
+* expr相加：`expr $a + 1`
+* 变量删除：`${b//[0-9]/}`
+
+## 1+...+100求和
+* shell下for循环：for((i=0;i<=100;i++));do ((sum+=i));done;echo $sum
+* awk下for循环：awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'
+* seq与bc：seq -s + 100|bc
+* seq与awk：seq 100|awk '{sum+=$0}END{print sum}'
+
+## 随机字符串
+* awk随机数：awk 'BEGIN{srand();print rand()}'
+* uuid命令：uuidgen
+* md5命令：md5sum
+* openssl命令：openssl rand -base64 32
 
 ## [多主机全互联][ssh-conn]
 0. [通过root创建普通用户][create-user]，并把它加到sudo中；修改ansible hosts使用普通用户连接目标主机。
