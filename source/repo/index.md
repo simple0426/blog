@@ -2,39 +2,40 @@
 title: repo
 date: 2019-06-24 21:54:01
 ---
-
-* shadowsocks一键安装：<https://teddysun.com/342.html>
-* jdk7下载：<https://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u80-oth-JPR>
+* nginx文档
+    - [淘宝tengine项目](http://tengine.taobao.org/)
+    - [淘宝nginx文档](http://tengine.taobao.org/nginx_docs/cn/docs/)
+* [shadowsocks一键安装](https://teddysun.com/342.html)
+* [jdk7下载](https://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u80-oth-JPR)
 * pypi阿里云配置
-    - 命令行：-i https://mirrors.aliyun.com/pypi/simple/
-    - 配置文件：
+    - 命令行设置：-i https://mirrors.aliyun.com/pypi/simple/
+    - 配置文件设置：
 
-    ```
-    ~/.pip/pip.conf
-    中添加或修改:
+```
+~/.pip/pip.conf
+中添加或修改:
 
-    [global]
-    index-url = https://mirrors.aliyun.com/pypi/simple/
+[global]
+index-url = https://mirrors.aliyun.com/pypi/simple/
 
-    [install]
-    trusted-host=mirrors.aliyun.com
-    ```
-* marven配置阿里云镜像
-    - 文件：apache-maven-3.6.1/conf/settings.xml
-    - 配置
+[install]
+trusted-host=mirrors.aliyun.com
+```
 
-    ```
-    <mirrors>
-       <mirror>
-         <id>nexus-aliyun</id>
-         <mirrorOf>central</mirrorOf>
-         <name>Nexus aliyun</name>
-         <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-       </mirror>
-     </mirrors>
-    ```
+* marven阿里云配置(conf/settings.xml)
+
+```
+<mirrors>
+   <mirror>
+     <id>nexus-aliyun</id>
+     <mirrorOf>central</mirrorOf>
+     <name>Nexus aliyun</name>
+     <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+   </mirror>
+ </mirrors>
+```
 
 * npm淘宝配置
-  - 命令行临时设置：--registry=https://registry.npm.taobao.org
-  - 永久设置：npm config set registry https://registry.npm.taobao.org
-    + 验证：npm config get registry
+    - 命令行临时设置：--registry=https://registry.npm.taobao.org
+    - 永久设置：npm config set registry https://registry.npm.taobao.org
+        + 验证：npm config get registry
