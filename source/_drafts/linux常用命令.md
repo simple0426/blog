@@ -26,19 +26,24 @@ categories:
     - -s 分隔符【默认\n】
     - -w 列表前加0使宽度相等
 * yum、apt、rpm、dpkg
-* man
+* man：查看命令man文档
 * xargs：从标准输入读取内容，构建并执行命令【一般用于不支持管道的命令，如ls；或一次无法处理过多参数的命令，如rm】
     - -I `{}`：指定替换字符串（一般使用`{}`）：find . -type f|xargs -I {} mv {} ..
     - -a file：从文件中读取内容：xargs -a /etc/hosts -I {} echo {}
     - -d delimiter：定义输入分隔符【单字符，默认为换行符】
-* 把管道前面的处理结果按列表交给后面的命令处理
-* reboot、init、shutdown、poweroff、halt
+* reboot、init、shutdown、poweroff、halt：服务器启停控制
 * history：查看命令历史【-c 清除命令历史】
-* which、locate
+* which：查看命令全路径
 * time：执行时间统计
 * watch：周期性的执行程序，并同时全屏显示输出
 * alias、unalias：命令别名
 * ulimit：控制shell终端可使用的资源
+* whatis：显示命令含义
+* logger：向syslog写入特定信息
+    - -i 在每行都记录进程ID
+    - -t logger_test 每行记录都加上“logger_test”这个标签
+    - -p local3.notice 设置记录的设备和级别
+    - 范例：echo "this is message"|logger -it logger_test -p local3.notice
 
 # 系统状态
 * whoami：当前登录用户

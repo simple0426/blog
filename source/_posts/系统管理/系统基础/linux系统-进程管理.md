@@ -13,11 +13,12 @@ date: 2019-08-06 11:48:27
 # 命令目录
 * [kill](#kill)：向进程发送信号
 * pkill、killall、pgrep：根据进程名称过滤进程id或杀死进程【可能有误、不建议使用】
-* [ps](#ps)
+* [ps](#ps)：查看进程状态的最近一个快照
 * fuser：显示打开文件或socket的进程
 * [nohup](#nohup)：运行一个免于挂起的命令，同时输出到非tty终端
 * [jobs、fg](#任务模式)
 * [lsof](#lsof)：进程打开的文件
+* top、htop：实时查看进程状态
 
 # 进程信号
 * 1(HUP)： 重启
