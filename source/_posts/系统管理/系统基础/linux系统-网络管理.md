@@ -11,15 +11,38 @@ date: 2019-07-17 17:18:07
 * tcpdump
 * [curl](#curl)
 * [iptables](#iptables)
-* netstat
-* ifconfig
-* route
-* ssh
+* netstat：显示网络链接
+    - -a：显示所有链接状态
+    - -n：以数字形式显示ip和端口
+    - -u：显示udp链接
+    - -t：显示tcp链接
+    - -p：显示建立链接的进程信息【PID】
+* [ifconfig](#ifconfig)：查看或临时设置网卡信息
+* [route](#route)：查看或临时设置路由信息
 * iftop
-* wget
-* nc
-* socat
+* [wget](#wget)
+* [nc](#nc)
 * nmap
+
+# ifconfig
+- ifconfig：查看处于开启状态的网卡信息
+- ifconfig -a：查看所有状态的网卡信息【包含down状态】
+- 设置网卡：
+    + Ifconfig eth0 192.168.1.1 netmask 255.255.255.0
+    + ifconfig eth0 192.168.1.1/24
+- 添加虚拟网卡：Ifconfig eth0:0 192.168.20.1/24
+- 打开或关闭网卡：ifconfig eth0 up/down
+
+# route
+* 查看路由表：route –n 
+* 添加默认网关：route add default gw 192.168.1.1 
+* 删除默认网关：route del default gw 192.168.1.1 
+* 添加默认路由(下一跳)：route add –net 10.0.0.0 netmask 255.0.0.0 gw 192.168.30.254 
+* 添加默认路由(本地出口)：route add –net 10.0.0.0 netmask 255.0.0.0   dev eth0
+* 添加主机路由(本地出口)：route add –host 11.22.22.3 dev eth0 
+* 添加主机路由(下一跳)：route add –host 1.2.3.4 gw 192.168.30.254 
+* 删除默认路由：route del –net 10.0.0.0 netmask 255.0.0.0 gw 192.168.30.254 
+* 删除默认路由：route del –net 10.0.0.0 netmask 255.0.0.0 dev eth0
 
 # curl
 ## 响应
@@ -44,6 +67,66 @@ date: 2019-07-17 17:18:07
 * -e, --referer指定上次访问的页面【可用于盗链】
     - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
 * -x 使用代理服务器
+
+# nc
+netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具
+## 常用选项
+* -l：开启监听模式
+* -p：nc使用的源端口
+* -s：发送数据使用的接口ip
+* -n：不要使用DNS反向查询IP地址的域名
+* -u：使用udp协议
+* -w：设置超时时间
+* -v：设置详情输出
+* -z：扫描时不发送任何数据
+
+## 主要功能
+### 监听和连接
+* 服务端：nc -l 1234
+* udp服务端：nc -ul 2345
+* 客户端(可用于测试服务端口是否开启)：nc 127.0.0.1 1234
+
+### 数据传输
+#### 文件传输
+* 服务端：nc -l 1234 > filename.out
+* 客户端：nc host.example.com 1234 < filename.in
+
+#### 文本传输
+* 与web服务器通信：printf "GET / HTTP/1.0\r\n\r\n" | nc host.example.com 80
+* 与snmp服务器通信：
+
+```
+nc [-C] localhost 25 << EOF
+HELO host.example.com
+MAIL FROM:<user@host.example.com>
+RCPT TO:<user2@host.example.com>
+DATA
+Body of email.
+.
+QUIT
+EOF
+```
+
+### 端口扫描
+* 范围扫描：nc -zv host.example.com 20-30
+* 列表扫描：nc -zv host.example.com 80 20 22
+
+# wget
+非交互式网络下载器，wget支持https、http、ftp下载
+## 选项
+* -O：另存为其他文件
+* -b：后台执行【查看下载进度：tail -f wget-log】
+* -c：支持断点续传
+* -i file：从文件中读取下载地址【一行一个】
+* --limit-rate： 限速【1M=限速1MB/s】
+* --spider：像spider一样只测试文件是否存在，而不是真正下载
+* --user-agent=agent-string：设置浏览器代理
+* --ftp-user/--ftp-password：ftp下载选项
+* --http-user/--http-password：http下载选项
+* --proxy-user=user/--proxy-password=password：proxy选项设置
+
+## 范例
+* wget -b -c --limit-rate=300K https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64 -O docker-compose.box
 
 # iptables
 * iptables是一个用于ipv4/ipv6包过滤和地址转换的管理工具
@@ -173,3 +256,4 @@ iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o eth1 -j MASQUERADE
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 #iptables -t nat -A PREROUTING -d 192.168.1.50 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 ```
+
