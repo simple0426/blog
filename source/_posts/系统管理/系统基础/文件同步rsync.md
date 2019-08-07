@@ -4,20 +4,20 @@ date: 2018-02-26 16:09:38
 tags: ['rsync']
 categories: ['linux']
 ---
-# name
+# 简介
 * 远程同步：remote synchronization
 * 是一个快速的、全能的远程或本地的文件复制工具
-* 只支持本地、本地与远程直接的文件拷贝，不支持俩个远程主机之间的文件拷贝
-* 当只有源没有目标指定时，命令类似于'ls -l'
+* 只支持本地、本地与远程之间的文件拷贝，不支持俩个远程主机之间的文件拷贝
+* 当只有源没有目标指定时，命令类似于【ls -l】
 
-# synopsis【概要】
+# 使用方式
 ## 本地模式
 rsync [OPTION...] SRC... [DEST]
-## 通过远程shell
+## 远程shell模式
 * Pull: rsync [OPTION...] [USER@]HOST:SRC... [DEST]
 * Push: rsync [OPTION...] SRC... [USER@]HOST:DEST
 
-## 通过rsync的daemon
+## 远程daemon模式
 * Pull
     - rsync [OPTION...] [USER@]HOST::SRC... [DEST]
     - rsync [OPTION...] rsync://[USER@]HOST[:PORT]/SRC... [DEST]
@@ -25,7 +25,7 @@ rsync [OPTION...] SRC... [DEST]
     - rsync [OPTION...] SRC... [USER@]HOST::DEST
     - rsync [OPTION...] SRC... rsync://[USER@]HOST[:PORT]/DEST
 
-# features【特性】
+# 主要功能
 * 支持拷贝链接、设备、属主、属组、权限
 * 类似于tar命令一样的排除选项
 * 类似于版本控制系统一样的排除模式
@@ -34,7 +34,7 @@ rsync [OPTION...] SRC... [DEST]
 * 最小花费的管道传输
 * 支持匿名和认证的rsync进程模式
 
-# options【命令选项】
+# 命令选项
 >目录末尾加斜线，则只拷贝目录内的内容；与此相反，没有斜线时，会拷贝目录本身以及目录下的内容。
 
 * -e 指定远程shell选项，如：-e 'ssh -p 50121'
@@ -65,26 +65,28 @@ rsync [OPTION...] SRC... [DEST]
 
 ## 范例
 ### include
-* 只同步部分目录及其下的目录和文件：rsync -azvP --include "pre/" --include "keyfile/" --exclude "/*" files/ test 
-* include-from：
-    - include_file.list
-    ```
-    + test1  
-    + test2  
-    ```
-    - rsync -azvP --include-from include_file.list --exclude "/*" python_scripts/ test11/  
+>只同步部分目录及其下的目录和文件
 
+* include：rsync -azvP --include "pre/" --include "keyfile/" --exclude "/*" files/ test 
+* include-from：rsync -azvP --include-from include_file.list --exclude "/*" python_scripts/ test11/
+
+```
+include_file.list文件
++ test1  
++ test2  
+```
 ### exclude
-* 排除部分不需要同步的目录：rsync -azvP --exclude "prod/" files/ test 
-* exclude-from：
-    - exclude_file.list
-    ```
-    - aa
-    - socket_tcp.py
-    - test1/test234
-    ```
-    - rsync -azvP --exclude-from exclude_file.list python_scripts/ test11/
+>排除部分不需要同步的目录
 
+* exclude：rsync -azvP --exclude "prod/" files/ test 
+* exclude-from：rsync -azvP --exclude-from exclude_file.list python_scripts/ test11/
+
+```
+exclude_file.list文件
+- aa
+- socket_tcp.py
+- test1/test234
+```
 # daemon模式
 ## 配置文件
 * rsyncd.conf
@@ -115,6 +117,8 @@ path = /share
 ```
 
 *  rsync.password
+    -  文件属主：chown rsync.rsync rsync.password
+    -  文件权限：chmod 0600 rsync.password
 
 ```
 tridge:mypass
