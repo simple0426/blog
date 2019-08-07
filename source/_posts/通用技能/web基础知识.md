@@ -4,7 +4,7 @@ tags:
   - 状态码
   - http报文
 categories:
-  - web
+  - skill
 date: 2019-06-11 18:08:44
 ---
 

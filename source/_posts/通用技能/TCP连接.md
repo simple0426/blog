@@ -3,9 +3,8 @@ title: TCP连接
 tags:
   - tcp
 date: 2018-04-18 11:01:51
-categories: ['linux']
+categories: ['skill']
 ---
-
 
 # 建立连接
 >三次握手
