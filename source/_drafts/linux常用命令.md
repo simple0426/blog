@@ -13,10 +13,13 @@ categories:
 
 # 系统管理
 * chkconfig
+* yum、apt、rpm、dpkg
 * [crontab](#crontab)：周期性任务
 * at：一次性任务（使用较少）
-* date
-* head、tail
+* head -n：显示前n行内容【默认10】
+* tail：末尾显示
+    - -n：显示末尾n行内容【默认10】
+    - -f：持续追踪末尾输出
 * echo：回显文本
     - -e：支持特殊转义符：【\n \t等】
     - -n：移除末尾换行
@@ -25,7 +28,6 @@ categories:
     - -f printf格式
     - -s 分隔符【默认\n】
     - -w 列表前加0使宽度相等
-* yum、apt、rpm、dpkg
 * man：查看命令man文档
 * xargs：从标准输入读取内容，构建并执行命令【一般用于不支持管道的命令，如ls；或一次无法处理过多参数的命令，如rm】
     - -I `{}`：指定替换字符串（一般使用`{}`）：find . -type f|xargs -I {} mv {} ..
@@ -55,9 +57,10 @@ categories:
 * lastb：登录失败信息
 * dmesg：系统启动过程
 * uname
-* free
-* uptime
-* top、htop
+* free：显示内存
+    - -m：以M为单位
+    - -h：以友好的单位
+* uptime：显示系统负载
 
 # crontab
 >周期性执行程序或命令
