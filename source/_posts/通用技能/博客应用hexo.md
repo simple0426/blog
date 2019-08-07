@@ -5,7 +5,7 @@ tags: ['hexo', 'Next']
 categories: ['skill']
 ---
 # 安装
-[安装参考](https://hexo.io/zh-cn/docs/)
+[参考](https://hexo.io/zh-cn/docs/)
 ## 安装前提
 * Node.js
 * Git
@@ -32,8 +32,21 @@ categories: ['skill']
     * Markdown 和 HTML 文件会被解析并放到 public 文件夹，而其他文件会被拷贝过去。
 * themes：主题 文件夹。Hexo 会根据主题来生成静态页面。
 
-# 配置
->见配置参考
+# 标签插件
+相当于在markdown文件中使用非markdown语法，  
+它是的hexo私有语法，不能被markdown解析，但可以被hexo解析  
+## 引入其他文章
+语法：{% raw %}{% post_link path/to/file [title] %}{% endraw %}  
+范例：{% raw %}{% post_link 系统管理/系统基础/shell编程 shell %}{% endraw %}  
+注意：post_link使用的路径为相对于source/posts的路径  
+## 引入代码
+语法：{% raw %}{% include [title] [lang:language] path/to/file %}{% endraw %}  
+范例：{% raw %}{% include_code python登录 lang:python login.py %}{% endraw %}  
+目录设置：  
+
+* 代码目录【code_dir】在主站config.yml中设置
+* 【code_dir：code】表示路径为source/code
+* 上述login.py表示的实际路径为source/code/login.py
 
 # Next主题
 ## 下载
