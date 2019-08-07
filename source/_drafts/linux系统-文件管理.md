@@ -26,5 +26,15 @@ categories:
 * 分区、格式化
 * 磁盘状态与故障定位
 
+# 文件共享
+* ftp
+* samba
+* nfs
+* autofs
+
+# 文件同步
+* rsync
+* inotify
+* union
 
 
