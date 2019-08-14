@@ -42,13 +42,6 @@ echo "*   hard   nofile  65536" >> /etc/security/limits.conf
 echo "*   soft   nofile  65536" >> /etc/security/limits.conf
 ```
 
-# 磁盘幽灵空间
-- 现象：df与du统计相差巨大
-- 原因：文件被删除，但是使用这些文件的进程还在，造成空间不能释放
-- 解决：使用 lsof|grep deleted 查看占用删除文件的进程，重启或删除相关进程
-
-# 统计文件数量 
-ls -lR|grep '^-'|wc -l 
 # 批量删除小文件
 1. 建立空目录：mkdir /tmp/blank
 2. 使用rsync删除： rsync --delete-before -d /tmp/blank/ /var/spool/postfix/maildrop/ 
