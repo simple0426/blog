@@ -24,7 +24,8 @@ categories:
 * [gzip、gunzip](#gzip)：打包、压缩文件或目录
 * dos2unix/unix2dos：windows与unix文件格式转换
 * tree
-* file、stat
+* file：查看文件类型【比如：链接、二进制、可执行等】
+* stat：文件状态查看【包含属主组、权限、大小、inode、block、时间戳等】
 * fsck、e2fsck
 * dd
 * diff、vimdiff
