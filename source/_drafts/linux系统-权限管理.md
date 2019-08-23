@@ -121,3 +121,8 @@ categories:
     - chown user file
     - chown .group file
     - chown :group file
+
+# setfacl
+>设置文件访问控制列表
+
+* 语法：`setfacl [-bkndRLPvh] [{-m|-x} acl_spec] [{-M|-X} acl_file] file ...`
