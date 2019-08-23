@@ -4,8 +4,8 @@ tags:
 categories:
 ---
 # 用户
-* useradd：添加用户
-* usermod：更改用户信息
+* [useradd](#useradd)：添加用户
+* [usermod](#usermod)：更改用户信息
 * userdel：删除用户【-r删除主目录】
 * id：查看用户id信息
 * passwd：设置或更改密码
@@ -22,8 +22,12 @@ categories:
 
 # 权限
 * sudo、su
-* chattr、chmod、chown
-* setfacl、getfacl
+* [chmod](#chmod)：设置文件的基本权限
+* [chown](#chown)：设置文件属主属组
+* [getfacl](#getfacl)：查看文件访问控制列表
+* [setfacl](#setfacl)：设置文件访问控制列表
+* [chattr](#chattr)：设置文件隐藏属性
+* [lsattr](#lsattr)：查看文件隐藏属性
 
 # 存储位置
 * 用户：/etc/passwd
@@ -122,7 +126,101 @@ categories:
     - chown .group file
     - chown :group file
 
+# getfacl
+>获取文件或目录的访问控制列表
+
+```
+1:  # file: somedir/
+2:  # owner: lisa
+3:  # group: staff
+4:  # flags: -s-
+5:  user::rwx
+6:  user:joe:rwx               #effective:r-x
+7:  group::rwx                 #effective:r-x
+8:  group:cool:r-x
+9:  mask::r-x
+10:  other::r-x
+11:  default:user::rwx
+12:  default:user:joe:rwx       #effective:r-x
+13:  default:group::r-x
+14:  default:mask::r-x
+15:  default:other::---
+```
+
+* 1-3表示文件名、属主、属组
+* 4显示特殊权限setuid (s), setgid (s), sticky (t)【3个权限都无时，不显示此行内容】
+* 5、7、10对应属主、属组、其他人的权限，表示基本的acl条目
+* 6、8是命名的用户和组的权限条目
+* 9是有效的权限掩码，针对所有的组和命名的用户【但不包含属主、其他人】
+* 11-15显示目录的默认权限【普通文件则没有】
+
 # setfacl
->设置文件访问控制列表
+>设置文件或目录的访问控制列表
 
 * 语法：`setfacl [-bkndRLPvh] [{-m|-x} acl_spec] [{-M|-X} acl_file] file ...`
+* 使用注意
+    - -m(--modify)、-M (--modify-file)：定义ACL权限，-m在命令行定义，-M从文件中或标准输入读取要定义的ACl
+    - -x(--remove)、-X (--remove-file)：移除ACl权限，-x在命令行移除，-X从文件中或标准输入读取要移除的ACL
+    - 命令行下操作权限时，多个ACL条目以逗号分隔
+    - 从文件中读取ACL时，最终会有getfacl式的结果输出
+    - 属主、属组、其他人这3个基本的权限条目不可移除，且只能有一个
+    - 当ACL包含命名的用户和组的条目时，必须包含有效的权限掩码
+
+## 参数
+* -b、--remove-all：移除所有扩展的ACL【不包含对3个基本条目修改的恢复】
+* -k、--remove-default：移除默认的ACL
+* -n, --no-mask：不计算掩码条目
+* --mask：计算掩码条目
+* -d、--default：使用默认ACL
+* --restore=file：从文件中恢复ACL【getfacl -R】
+* --test：测试模式
+* -R, --recursive：递归应用权限
+* -L, --logical：操作适用于符号链接关联的目录
+* -P, --physical：操作不适用于符号链接关联的目录
+
+## 权限条目
+* 用户权限：`[d[efault]:] [u[ser]:]uid [:perms]`：设置命名用户的权限，uid为空则表示属主的权限
+* 组权限：`[d[efault]:] g[roup]:gid [:perms]`：设置命名组的权限，gid为空则表示属组的权限
+* 权限掩码：`[d[efault]:] m[ask][:] [:perms]`
+* 其他人权限：`[d[efault]:] o[ther][:] [:perms]`
+
+## 范例
+* 默认权限：setfacl -m d:u:hjq:rwx test
+* 设置属主权限：setfacl -m u::r test/
+* 设置数组权限：setfacl -m g::rw test/
+* 设置权限掩码：setfacl -m d:m:rx test/
+* 移除所有扩展权限：setfacl -b test/
+
+# chattr
+>改变文件的隐藏属性
+
+* 用法：`chattr [ -RVf -v version ] [ mode ] files...`
+* 一般参数：
+    - -R：递归设置文件和目录
+    - -V：显示设置过程
+    - -f：屏蔽错误输出
+    - -v version：设置文件版本
+* 模式参数：`+-=[acdeijstuADST]`
+    - +表示增加模式
+    - -表示较少模式
+    - =表示只设置此种模式
+
+## 模式参数
+* a：只允许增加内容，不允许修改和删除
+* A：不修改atime时间戳
+* c：文件存储时压缩，读取时自动解压
+* d：dump程序启动备份时，不对此文件备份
+* i：不能被修改和删除
+* s：删除数据的同时将数据从磁盘删除
+* S：将数据同步写入磁盘【一般为异步】
+* u：与s相反，删除文件但磁盘上不删除【可以用于恢复】
+
+## 范例
+* 只许追加：chattr +a 12
+* 撤销追加属性：chattr -a 12
+
+## lsattr
+* -d：显示目录本身隐藏属性
+* -R：递归显示目录及目录下的隐藏属性
+
+查看文件的隐藏属性：lsattr 12
