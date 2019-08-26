@@ -9,6 +9,11 @@ date: 2019-07-17 17:18:07
 ---
 # 命令列表
 * tcpdump
+* ping：测试网络连通性
+* traceroute：路由追踪
+* nslookup：域名解析【ip与mac对应关系】
+    - dns设置：/etc/resolv.conf 
+* arp：地址解析协议
 * [curl](#curl)
 * [iptables](#iptables)
 * netstat：显示网络链接
@@ -18,6 +23,7 @@ date: 2019-07-17 17:18:07
     - -t：显示tcp链接
     - -p：显示建立链接的进程信息【PID】
 * [ifconfig](#ifconfig)：查看或临时设置网卡信息
+* ethtool：查看网口信息
 * [route](#route)：查看或临时设置路由信息
 * iftop
 * [wget](#wget)
@@ -25,13 +31,16 @@ date: 2019-07-17 17:18:07
 * nmap
 
 # ifconfig
+>永久修改网卡信息：/etc/sysconfig/network-scripts/ifcfg-eth0
+
 - ifconfig：查看处于开启状态的网卡信息
 - ifconfig -a：查看所有状态的网卡信息【包含down状态】
 - 设置网卡：
-    + Ifconfig eth0 192.168.1.1 netmask 255.255.255.0
+    + ifconfig eth0 192.168.1.1 netmask 255.255.255.0
     + ifconfig eth0 192.168.1.1/24
 - 添加虚拟网卡：Ifconfig eth0:0 192.168.20.1/24
 - 打开或关闭网卡：ifconfig eth0 up/down
+    + 启用/禁用网络接口：ifup/ifdown eth0
 
 # route
 * 查看路由表：route –n 
