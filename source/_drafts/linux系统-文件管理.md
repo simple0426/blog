@@ -29,8 +29,11 @@ categories:
 * fsck、e2fsck
 * dd
 * diff、vimdiff
-* du、df
-* mount、parted
+* [du](#du)
+* [df](#df)
+* mount
+* parted
+* fdisk
 
 # ls
 ## 参数
@@ -131,3 +134,64 @@ categories:
 * -X, --exclude-from=FILE
 * --exclude=PATTERN【与rsync类似】
     - 范例：tar czvf conf.tar.gz * --exclude "10-*"
+
+# df
+>统计文件系统的磁盘空间和inode使用情况
+
+* -h：以可理解的换算单位输出文件系统占用磁盘情况
+* -i：显示inode使用情况
+* -t：显示指定类型文件系统使用情况【ext4、iso9660等】
+* -x：排除指定类型的文件系统
+* -T：显示文件系统类型
+
+# du
+>统计文件占用磁盘空间大小
+
+* -a：显示目录下所有文件大小【默认以k为单位】
+* -s：统计目录大小
+* -h：单位换算显示：du -sh backup/
+
+# 分区fdisk
+>linux分区表维护
+
+* fdisk -l：查看磁盘分区情况
+* fdisk /dev/sda：磁盘分区
+    - n：新建
+    - p：主分区
+    - t：查看分区表
+    - w：将变动写入分区表
+    - q：退出
+    - d：删除分区
+
+# 格式化
+* 主分区【文件系统】
+    - mkfs –t 分区类型  /dev/sdb1（设备）
+    - mkfs.分区类型  /dev/sdb1(设备)
+* 交互分区【虚拟内存】：mkswap  /dev/sdb5(设备)
+
+# 交互分区
+* 启用：swapon (-a 所有) /dev/sdb5 
+* 关闭：swapoff (-a 所有) /dev/sdb5
+
+# 文件系统挂载mount
+* 挂载：mount（–t 文件类型）/dev/设备   目录文件夹
+* 范例：mount  -o  loop  iso文件  目录
+* 卸载：umount 设备 
+    -  卸载前必须先停用设备
+    -  在fstab中配置后也可以umount目录
+
+# 自动挂载
+>/etc/fstab
+
+```
+/kernel.iso   /iso       iso9660  defaults,loop      0 0
+/dev/sdb1   /sdb/sdb1  ext4     defaults          0 0
+/dev/sdb5   swap      swap    defaults          0 0
+设备     挂载目录  文件类型  默认规则   dup转储/系统扫描（1是0非）
+设备可以是UUID【如UUID=8a184dfc-5944-4552-ae89-d3a050c45997】，由命令blkid产生
+```
+
+# LVM
+>(logical volume manage)逻辑卷管理
+>/boot用于存放引导文件，不能用于lvm机制
+
