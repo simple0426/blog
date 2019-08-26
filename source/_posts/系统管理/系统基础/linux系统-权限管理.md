@@ -1,9 +1,15 @@
 ---
 title: linux系统-权限管理
 tags:
+  - 权限
 categories:
+  - linux
+date: 2019-08-26 15:37:39
 ---
-# 用户
+
+# 命令
+* [文件权限示例](#ll输出)
+* [权限表示法](#权限表示法)
 * [useradd](#useradd)：添加用户
 * [usermod](#usermod)：更改用户信息
 * userdel：删除用户【-r删除主目录】
@@ -19,21 +25,14 @@ categories:
     - -M：多用户添加【逗号分隔】
     - -d：删除组用户
     - 范例：gpasswd -a user group
-
-# 权限
-* sudo、su
 * [chmod](#chmod)：设置文件的基本权限
 * [chown](#chown)：设置文件属主属组
 * [getfacl](#getfacl)：查看文件访问控制列表
 * [setfacl](#setfacl)：设置文件访问控制列表
 * [chattr](#chattr)：设置文件隐藏属性
 * [lsattr](#lsattr)：查看文件隐藏属性
-
-# 存储位置
-* 用户：/etc/passwd
-* 用户密码：/etc/shadow
-* 组：/etc/group
-* 组密码：/etc/gshadow
+* [sudo](#sudo)：权限提升
+* [su](#su)：切换用户
 
 # useradd
 >默认使用/etc/default/useradd配置
@@ -48,7 +47,7 @@ categories:
 * -u：设置用户uid
 
 # usermod
->不能更改在线使用者的信息
+>注意：不能更改在线使用者的信息
 
 * -d：指定用户新的家目录，有-m参数时则将原有家目录内容移动至新家目录
 * -g/-G：指定基本组、附加组
@@ -57,9 +56,7 @@ categories:
 * -e mm/dd/yy：指定账号过期时间
 
 # ll输出
--rw-r--r-- 2 root root 5 8月  14 19:55 1.txt
-
-空格分隔后的字段含义：
+【-rw-r--r-- 2 root root 5 8月  14 19:55 1.txt】空格分隔后的字段含义：
 
 * -：说明此为普通文件
 * rw-：属主权限
@@ -110,7 +107,7 @@ categories:
 * 范例：
     - 数字式设置权限：chmod nnnn file
     - 字母式增加/减少/精确设置权限：chmod u+r,g-w,o=rwx file
-    - 所有用户权限设置：chmod a+/-/=r/w/x file
+    - 所有用户权限设置：chmod a+/-/=rwx file
     - 特殊权限设置：chmod u+s,g+s,o+t file
 
 # chown
@@ -159,20 +156,20 @@ categories:
 
 * 语法：`setfacl [-bkndRLPvh] [{-m|-x} acl_spec] [{-M|-X} acl_file] file ...`
 * 使用注意
-    - -m(--modify)、-M (--modify-file)：定义ACL权限，-m在命令行定义，-M从文件中或标准输入读取要定义的ACl
-    - -x(--remove)、-X (--remove-file)：移除ACl权限，-x在命令行移除，-X从文件中或标准输入读取要移除的ACL
     - 命令行下操作权限时，多个ACL条目以逗号分隔
     - 从文件中读取ACL时，最终会有getfacl式的结果输出
     - 属主、属组、其他人这3个基本的权限条目不可移除，且只能有一个
     - 当ACL包含命名的用户和组的条目时，必须包含有效的权限掩码
 
 ## 参数
+* -m(--modify)、-M (--modify-file)：定义ACL权限，-m在命令行定义，-M从文件中或标准输入读取要定义的ACl
+* -x(--remove)、-X (--remove-file)：移除ACl权限，-x在命令行移除，-X从文件中或标准输入读取要移除的ACL
 * -b、--remove-all：移除所有扩展的ACL【不包含对3个基本条目修改的恢复】
 * -k、--remove-default：移除默认的ACL
 * -n, --no-mask：不计算掩码条目
 * --mask：计算掩码条目
 * -d、--default：使用默认ACL
-* --restore=file：从文件中恢复ACL【getfacl -R】
+* --restore=file：从文件中恢复ACL【使用getfacl -R备份的文件】
 * --test：测试模式
 * -R, --recursive：递归应用权限
 * -L, --logical：操作适用于符号链接关联的目录
@@ -187,7 +184,7 @@ categories:
 ## 范例
 * 默认权限：setfacl -m d:u:hjq:rwx test
 * 设置属主权限：setfacl -m u::r test/
-* 设置数组权限：setfacl -m g::rw test/
+* 设置属组权限：setfacl -m g::rw test/
 * 设置权限掩码：setfacl -m d:m:rx test/
 * 移除所有扩展权限：setfacl -b test/
 
@@ -224,3 +221,56 @@ categories:
 * -R：递归显示目录及目录下的隐藏属性
 
 查看文件的隐藏属性：lsattr 12
+
+# su
+* su：切换用户【默认切换到root】
+* su -：切换用户的同时切换环境变量
+* sudo：权限提升，一般为切换为root
+
+# sudo
+## 基础
+* 命令
+    - visudo -c：语法检查
+    - visudo -f：加载指定配置文件
+    - sudo -l【查看用户sudo权限】
+* 文件：/etc/sudoers
+* 环境设置：
+    - `Defaults    env_reset`【执行命令时环境变量被重置】
+    - `Defaults:muker !requiretty`【允许用户远程执行sudo命令】
+
+## 语法
+* 范例：
+    - 单用户设置：`admin   ALL=(ALL)       /usr/sbin/useradd`
+    - 用户组设置：`%admin          ALL=(ALL)       NOPASSWD: ALL`
+* 语法：用户或组+来源主机+可以切换到的用户+可以执行的命令
+    - 用户或组：admin
+    - 来源主机：ALL
+    - 可以切换的用户：ALL
+    - 可以执行的命令：/usr/sbin/useradd
+        + 命令需要使用全路径
+        + 命令前使用`！`表示取反【`admin   ALL=NOPASSWD:/sbin/*, !/sbin/fdisk`】，禁止命令需要放在允许命令之后
+        + 命令前`NOPASSWD`表示执行sudo时无需输入密码
+        + 多个命令之间逗号分隔，且逗号与下个命令之间要有空格
+
+## 别名
+>可以对sudo语法中的4个主要条目设置别名  
+>别名必须使用大写字母，%表示引用组名
+
+* 用户：`User_Alias ADMINS = admin, baby, %admin`
+* 来源主机：`Host_Alias     MAILSERVERS = smtp, smtp2`
+* 可切换用户：`Runas_Alias  OP = root, admin`
+* 可执行命令：`Cmnd_Alias SOFTWARE = /bin/rpm, /usr/bin/up2date, /usr/bin/yum`
+
+# 案例
+## 故障现象
+* 修改密码时报错 passwd: Authentication token manipulation error
+* 添加用户报错：unable to lock password file
+
+## 分析
+* 检查相关配置文件权限正常：/etc/passwd 和/etc/shadow
+* df查看硬盘空间正常
+* 使用命令strace -f passwd 追踪分析原因，看到关键报错信息：“No space left on device”，可是df查看硬盘空间没问题，有可能是inode满了，使用df –i查看inode使用情况，确实/var/spool/clientmqueue占用大量的inode
+* /var/spool/clientmqueue 生成的文件占用完inode，此目录下文件的产生原因主要是crontab里面的命令没有添加“>/dev/null 2>&1”标准输出、错误输出信息都输出到标准输出，以文件形似存储在clientmqueue
+
+## 解决
+删除文件后正常，将crontab命令后面添加“>/dev/null 2>&1”
