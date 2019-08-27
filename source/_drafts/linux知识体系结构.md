@@ -11,6 +11,11 @@ categories:
 
 # 磁盘与文件管理
 * iostat【磁盘状态】
+    - tps：每秒钟收到的io请求数
+    - kB_read/s：每秒钟读的字节数
+    - kB_wrtn/s：每秒钟写的字节数
+    - kB_read：读取字节总数
+    - kB_wrtn：写字节总数
 
 # 网络【网络类命令】
 * iftop
