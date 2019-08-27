@@ -4,8 +4,6 @@ date: 2019-08-27 15:39:33
 tags: ['文件']
 categories: ['linux']
 ---
-
-# 文件管理
 * cat：显示文件内容
     - -n：显示行号
     - -b：忽略空白行，显示行号
@@ -234,9 +232,7 @@ categories: ['linux']
     + intr    持续挂载时允许中断
     + rsize/wsize 一次写的块大小，一次读的块大小
     + bg/fg   背景执行、前景执行
-
-# 自动挂载
->/etc/fstab
+* 自动挂载【编辑/etc/fstab】
 
 ```
 /kernel.iso   /iso       iso9660  defaults,loop      0 0
@@ -245,5 +241,3 @@ categories: ['linux']
 设备     挂载目录  文件类型  默认规则   dup转储/系统扫描（1是0非）
 设备可以是UUID(由命令blkid产生)【如UUID=8a184dfc-5944-4552-ae89-d3a050c45997】，
 ```
-
-
