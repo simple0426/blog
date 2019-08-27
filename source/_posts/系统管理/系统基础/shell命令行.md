@@ -1,10 +1,12 @@
 ---
 title: shell命令行
-tags:
-categories:
+date: 2019-08-27 15:38:54
+tags: ['命令行']
+categories: ['linux']
 ---
+
 # 系统管理
-* [crontab](#crontab)：周期性任务
+* [crontab](#crontab)：设置周期性任务
 * at：一次性任务（使用较少）
 * head -n：显示前n行内容【默认10】
 * tail：末尾显示
@@ -27,7 +29,7 @@ categories:
 * history：查看命令历史【-c 清除命令历史】
 * which：查看命令全路径
 * time：执行时间统计
-* watch：周期性的执行程序，并同时全屏显示输出
+* watch：周期性的执行程序，同时全屏显示输出
 * alias、unalias：命令别名
 * ulimit：控制shell终端可使用的资源
 * whatis：显示命令含义
@@ -36,8 +38,6 @@ categories:
     - -t logger_test 每行记录都加上“logger_test”这个标签
     - -p local3.notice 设置记录的设备和级别
     - 范例：echo "this is message"|logger -it logger_test -p local3.notice
-
-# 登录状态
 * whoami：当前登录用户
 * users：所有登录用户
 * w、who：查看所有用户登录详情
@@ -47,18 +47,32 @@ categories:
 * dmesg：系统启动过程
 * uname：显示系统信息
 * dmidecode：查询bios信息
+* [date](#时间)：时间
 
 # 软件管理
-* [chkconfig](#chkconfig)：启动管理【centos6】
+* [chkconfig](#chkconfig)：自启动管理【centos6】
 * [systemctl](#systemctl)：服务控制【centos7】
-* [rpm](#rpm)
+* [rpm](#rpm)：rpm包安装、卸载、查询
 * [yum](#yum)
 * [dpkg](#dpkg)
 * [apt](#apt)
 
-# crontab
->周期性执行程序或命令
+## 系统服务管理
+* sysV是centos6之前控制系统服务的工具
+    - chkconfig是管理系统各个运行级别下服务的启停
+    - service则控制系统服务的启停
+* system是centos7控制系统服务的工具
+    - systemctl
+* 系统运行级别：
+    - 0：关机
+    - 1：单用户模式
+    - 2：无网络多用户命令行模式
+    - 3：有网络多用户命令行模式
+    - 4：不可用
+    - 5：带图形界面的多用户模式
+    - 6：重启
 
+# crontab
 ## 配置文件
 * /etc/cron.deny：不允许使用cron的用户
 * /var/spool/cron：所有用户cron文件存放的目录
@@ -105,7 +119,7 @@ categories:
 * readline：`while read line;do echo $line;sleep 2;done < /etc/hosts`
 * read：`read -p 'pls input you name:' -t 30 -d \# -s name`
 
-# 系统时间
+# 时间
 ## BIOS与系统时间
 系统每次启动时会读取BIOS时间，将之赋给系统时间；之后系统时间将独立运行。
 
@@ -139,15 +153,7 @@ categories:
 * ntpd在实际同步时间时是一点点的校准过来时间的，最终把时间慢慢的校正对。
 * ntpdate不会考虑其他程序是否会阵痛，直接调整时间。
 
-# 源码安装步骤
-* 解压源码：tar  xzvf/xjvf  .tar.gz/tar.bz2  –C  /local
-* 配置安装参数：./configure  –prefix =/local
-* 编译：make
-* 安装：make install
-
 # rpm
->rpm包安装、卸载、查询
-
 * -qa：查询软件是否安装【grep】
 * -qf：查询文件属于哪个软件包
 * -ql：查询软件包的展开文件列表
@@ -195,22 +201,7 @@ gpgcheck=0          ---》不进行md5校验
 ## 软件源
 设置/etc/apt/sources.list
 
-# 系统服务管理
-* sysV是centos6之前控制系统服务的工具
-    - chkconfig是管理系统各个运行级别下服务的启停
-    - service则控制系统服务的启停
-* system是centos7控制系统服务的工具
-    - systemctl
-* 运行级别：
-    - 0：关机
-    - 1：单用户模式
-    - 2：无网络多用户命令行模式
-    - 3：有网络多用户命令行模式
-    - 4：不可用
-    - 5：带图形界面的多用户模式
-    - 6：重启
-
-## chkconfig
+# chkconfig
 * --add：添加服务，Chkconfig确保每个运行级别都有一项启动（S）或者停止（K）入口。若有缺少，则会从缺省的init脚本中自动创建。
     - 范例：chkconfig --add httpd
 * --del：删除服务，不再由chkconfig指令管理，并同时在系统启动的叙述文件中（`/etc/rc[0-6].d`）删除相关数据
@@ -220,7 +211,7 @@ gpgcheck=0          ---》不进行md5校验
 * --level：对指定运行级别下的指定服务进行操作（开启、关闭或初始化）；不加参数时，对于【on】或【off】命令，系统默认只对级别2,3,4,5进行操作；
     - 范例：chkconfig --level httpd 2345 on
 
-## systemctl
+# systemctl
 * 查看已经启动的服务：systemctl list-units --type=service
 * 查看所有服务：systemctl list-units --type=service --all
 * 开机启动设置：systemctl enable crond

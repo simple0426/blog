@@ -9,6 +9,16 @@ date: 2019-07-17 17:18:07
 ---
 # 命令列表
 * tcpdump
+    - -i eth0：指定监听的网络接口
+    - tcp port 3306：监听本机tcp协议3306端口
+    - icmp：监听icmp协议
+    - ip host 192.168.100.2：监听指定来源的主机
+    - -t：不显示时间戳
+    - -n：补办ip解析成域名
+    - -nn：不把端口转换成对应的协议
+    - -c：只抓取多少行数据
+    - dst：指定数据流向【到本机还是离开本机】
+        + 范例：tcpdump -i eth1 -tnn dst port 80 -c 100
 * ping：测试网络连通性
 * traceroute：路由追踪
 * nslookup：域名解析【ip与mac对应关系】
