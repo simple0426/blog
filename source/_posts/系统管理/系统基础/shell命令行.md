@@ -38,12 +38,6 @@ categories: ['linux']
     - -t logger_test 每行记录都加上“logger_test”这个标签
     - -p local3.notice 设置记录的设备和级别
     - 范例：echo "this is message"|logger -it logger_test -p local3.notice
-* whoami：当前登录用户
-* users：所有登录用户
-* w、who：查看所有用户登录详情
-* last：查看系统最近登录情况
-* lastlog：显示最近登录的用户名，登录端口及时间
-* lastb：登录失败信息
 * dmesg：系统启动过程
 * uname：显示系统信息
 * dmidecode：查询bios信息

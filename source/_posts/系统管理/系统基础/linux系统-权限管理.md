@@ -14,10 +14,10 @@ date: 2019-08-26 15:37:39
 * [usermod](#usermod)：更改用户信息
 * userdel：删除用户【-r删除主目录】
 * id：查看用户id信息
-* passwd：设置或更改密码
+* [passwd](#密码过期范例)：设置或更改密码
     - -l：锁定用户
     - -u：解锁用户
-* chage：设置密码过期信息
+* [chage](#密码过期范例)：设置密码过期信息
 * groupadd、groupdel、groupmod：添加、删除、变更组
 * groups：查看用户组信息
 * gpasswd：向组添加用户
@@ -33,6 +33,11 @@ date: 2019-08-26 15:37:39
 * [lsattr](#lsattr)：查看文件隐藏属性
 * [sudo](#sudo)：权限提升
 * [su](#su)：切换用户
+* users：所有登录用户
+* w、who：查看所有用户登录详情
+* last：查看系统最近登录情况
+* lastlog：显示最近登录的用户名，登录端口及时间
+* lastb：登录失败信息
 
 # useradd
 >默认使用/etc/default/useradd配置
@@ -229,6 +234,7 @@ date: 2019-08-26 15:37:39
 
 # sudo
 ## 基础
+* 时间：5分钟内无需再次输入密码
 * 命令
     - visudo -c：语法检查
     - visudo -f：加载指定配置文件
@@ -261,6 +267,14 @@ date: 2019-08-26 15:37:39
 * 可切换用户：`Runas_Alias  OP = root, admin`
 * 可执行命令：`Cmnd_Alias SOFTWARE = /bin/rpm, /usr/bin/up2date, /usr/bin/yum`
 
+## 远程sudo
+配置文件requiretty参数和命令行ssh -t参数的差异
+
+* 以客户端角度看：ssh以-t参数远程运行命令(ssh -t host sudo comand)，无论requiretty如何配置都可以远程sudo执行
+* 以服务端角度看
+    - 【!requiretty】不要求有tty终端，【ssh host sudo comand】命令可以执行（ansible的sudo方式也可以执行）
+    - 【requiretty】要求有tty终端，【ssh host sudo comand】无法执行执行
+
 # 案例
 ## 故障现象
 * 修改密码时报错 passwd: Authentication token manipulation error
@@ -274,3 +288,8 @@ date: 2019-08-26 15:37:39
 
 ## 解决
 删除文件后正常，将crontab命令后面添加“>/dev/null 2>&1”
+
+# 密码过期范例
+* 要求：要求oldboy用户7天内不能更改密码，60天以后必须修改密码，过期前10天通知oldboy用户，过期后30天后禁止用户登陆
+* passwd实现：passwd -n 7 -x 60 -w 10 -i 30 oldboy
+* chage实现：chage -m 7 -M 60 -W 10 -I 30 oldboy
