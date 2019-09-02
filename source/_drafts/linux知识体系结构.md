@@ -8,6 +8,11 @@ categories:
 * 分区
 * 格式化
 * 文件系统
+    - nfs
+    - ftp
+    - 分布式文件系统
+        + hdfs
+        + ceph
 * 系统启动
 
 # 权限管理

@@ -4,6 +4,7 @@ tags:
 categories:
 ---
 # 文件系统
+实质：组织和存储数据的一种机制
 ## 文件类型
 >以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建
 
@@ -71,8 +72,13 @@ Sector size (logical/physical): 512 bytes / 512 bytes
     - 缩写式：柱面大小(units)\*柱面数(cylinders)
 * 数据三维地址：磁头、柱面/磁道、扇区
 
+## 读写
+* 读写原理：将磁粒子的极性转换为电脉冲信号
+* 读写流程：从盘片的边缘向里依次从0磁道开始读写
+
 # 分区
 * 分区实质：划分起止柱面号
+* 格式化实质：创建文件系统
 * 分区工具：fdisk【小于2T】和pated【大于2T】
 
 ## MBR
@@ -80,10 +86,12 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 
 * MBR(广义)：每个磁盘只有一个主引导扇区，它不属于任何分区【所以格式化不能清除mbr】
 * 物理位置：位于0柱面，0磁道，1扇区
-* 组成：主引导程序（mbr）、硬盘分区表、硬盘有效标志（55AA）
-    + 主引导程序（mbr）占用446个字节
+* 组成：主引导程序、硬盘分区表、硬盘有效标志
+    + 主引导程序（boot-loader）占用446个字节
+        * 包含开机管理程序，直接指向可开机的程序区段，引导操作系统启动
+        * 提供多重引导选项，将控制权移交到其他boot-loader
     + 分区表（DPT）占用64字节，每个分区表项长16个字节，一共4个，所以最多4个主分区(磁盘限制)或扩展分区（操作系统显示只能有一个扩展分区）
-    + 硬盘有效标志（MN）占2字节
+    + 硬盘有效标志（MN）占2字节，内容：55AA
 
 ## 分区构成
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png)
@@ -91,7 +99,9 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 * 组成(格式化后分区构成)：启动扇区（boot sector）和数个块组（block group）
     - 启动扇区(boot sector)
         + 每个分区都有一个启动扇区
-        + 可以装载开机管理程序，以用于多重引导
+        + 可以装载开机管理程序【boot-loader】，以用于多重引导
+            * 对linux来说，安装时默认在分区boot-sector保存一份boot-loader，可选择是否在MBR保存另一份
+            * 对windows来说，强制在MBR和分区boot-sector各保存一份boot-loader【所以双os需先安装windows后linux】
     - 块组（block group）
 * 块组（block group）
     - super block：存储block和inode的大小、已用、未用数量，分区的挂载与否，挂载时间等【每个分区只有一个super block，块组中第一个块组包含超级块，其他块组可能包含super block，但只是作为第一个超级块的备份】
@@ -103,5 +113,47 @@ Sector size (logical/physical): 512 bytes / 512 bytes
         + 区块(block)是文件系统读写的最小单位（windows下为簇）
         + block大小应当适量：block过大浪费磁盘空间；block过小则影响读写速度。
 
+## 注意
+* 安装linux时强制将/boot设为主分区，以使/boot分区位于磁盘的最前面
+* swap分区非必需的，内存较大负载不高时可以不分。
+
+# 开机过程
+>centos6系统启动过程
+
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.bmp)
+
+* BIOS开机自检：检测硬件是否存在故障；根据bios设置确定引导次序
+* MBR引导：bios读取MBR中的boot-loader（grub程序）
+* grub引导【可选】：grub程序读取grub配置(grub.conf)，显示grub菜单选项（将开机管理功能转交给其他loader（boot sector）负责）
+* 加载kernel(此时kernel从bios取得系统控制权,并再次扫描硬件情况)和initrd，挂载根文件系统rootfs，并切换到根目录
+    - initrd：虚拟文件系统，在内存中仿真成根目录；它包含一个可执行程序，能够帮助kenel加载真实根文件系统rootfs所需驱动程序
+* 启动init进程，读取配置文件【/etc/inittab或/etc/init目录下所有文件】，确定启动级别
+* 读取/etc/rc.sysinit文件，完成系统初始化设定
+    - 激活udev和selinux
+    - 设置内核参数/etc/sysctl.conf
+    - 设置系统时钟
+    - 设置网卡
+    - 启用交换分区
+    - 加载键盘映射
+    - 激活RAID和lvm逻辑卷
+    - 挂载额外的文件系统/etc/fstab
+    - 设置环境变量
+* 根据启动级别加载相应级别/etc/rc*.d下的服务脚本
+* 执行/etc/rc.local中用户自定义脚本
+* 使用Mingetty命令调出tty终端或使用prefdm调出x-windows供终端用户登录
+
+## 启动级别
+* 0   关机
+* 1   单用户模式
+* 2   无网络多用户命令行模式
+* 3   有网络多用户命令行模式
+* 4   不可用
+* 5   带图形界面的多用户模式
+* 6   重启
+
+## grub.conf配置
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-grub_conf.png)
+## inittab详解
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-inittab.png)
 # 参考
 * [MBR和启动扇区](https://blog.csdn.net/Apollon_krj/article/details/77869770)
