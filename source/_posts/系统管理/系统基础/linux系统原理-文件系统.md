@@ -1,20 +1,39 @@
 ---
 title: linux系统原理-文件系统
 tags:
+  - 磁盘
+  - 分区
 categories:
+  - linux
+date: 2019-09-03 15:45:09
 ---
+
 # 文件系统
 实质：组织和存储数据的一种机制
 ## 文件类型
 >以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建
 
-* 普通文件：首字符显示为"-"，如：`-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt`【lsof.txt文件】
-* 目录：首字符显示为“d”，如：`drwxrwxr-x  7 muker muker  4096 Jun 21 17:31 roles/`【roles目录】
-* 符号链接：首字符显示为"l"，表示软连接，如：`lrwxrwxrwx. 1 root root 7 Oct 15  2017 /bin/python -> python2`
-* 套接字文件：首字符显示为“s”，用于网络通信，如`srwx------ 1 root root 0 May 22 14:33 /var/run/supervisor/supervisor.sock`【supervisor程序的socket文件】
-* 字符设备文件：首字符显示为”c“，表示串行端口设备，如：`crw--w---- 1 muker tty 136, 0 Jul 19 09:16 /dev/pts/0`【表示pts远程虚拟终端】
-* 块设备文件：首字符显示为”b“，表示提供存储功能的设备，如：`brw-rw---- 1 root disk 253, 0 May 22 17:12 /dev/vda`【vda磁盘】
-* FIFO文件(命名管道文件)：首字符显示为“p”，区别于“|”这种无名管道(管道运行完即销毁，同时也是单向通道)，FIFO这种方式为双向通道，任何程序任何时间都可以通过此管道进行双向通信
+* 普通文件：文本文件、二进制文件、数据文件
+    - ll表示：首字符显示为"-"
+    - 范例：lsof.txt文件：`-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt`
+* 目录
+    - ll表示：首字符显示为“d”
+    - 范例：roles目录：`drwxrwxr-x  7 muker muker  4096 Jun 21 17:31 roles/`
+* 符号链接：表示软连接
+    - ll表示：首字符显示为"l"
+    - 范例：`lrwxrwxrwx. 1 root root 7 Oct 15  2017 /bin/python -> python2`
+* 套接字文件：用于网络通信
+    - ll表示：首字符显示为“s”
+    - 范例：supervisor程序的socket文件：`srwx------ 1 root root 0 May 22 14:33 /var/run/supervisor/supervisor.sock`
+* 字符设备文件：表示串行端口设备、管道类型设备，提供输入输出功能
+    - ll表示：首字符显示为”c“
+    - 范例：pts虚拟终端：`crw--w---- 1 muker tty 136, 0 Jul 19 09:16 /dev/pts/0`
+* 块设备文件：表示提供存储功能的设备
+    - ll表示：首字符显示为”b“
+    - 范例：vda磁盘：`brw-rw---- 1 root disk 253, 0 May 22 17:12 /dev/vda`
+* FIFO文件：命名管道文件，提供双向通信
+    - ll表示：首字符显示为“p”
+    - 管道的不同区别：FIFO是命名的双向通道，任何程序任何时间都可以通过此管道进行双向通信；而“|”是无名的单向通道，管道运行完即销毁
 
 ## 软链接与硬链接
 * 实质：
@@ -37,19 +56,9 @@ categories:
     + 解决：使用 lsof|grep deleted 查看占用删除文件的进程，重启或删除相关进程
 * 范例：web服务日志写满磁盘，删除日志后，磁盘空间依然充满未被释放；此时重启apache服务，磁盘空间释放，日志可重新写入。
 
-## 文件权限
-* 执行权限：普通用户需要同时有读权限才能执行
-* 删除文件：文件名放在上级目录的block中，删除文件是对上级目录的操作，需要有对上级目录的写权限
-* 默认权限：权限掩码umask设置【默认0002】
-    - root用户：目录755 文件644
-    - 普通用户：目录775 文件664
-
-## 目录
-* 逻辑上，所有目录都挂载在根目录下
-* 不同目录可以挂载在不同设备和分区
-
 # 磁盘
-## fdisk -l命令结果
+>fdisk -l命令结果
+
 ```
 Disk /dev/sda: 120.0 GB, 120034123776 bytes
 255 heads, 63 sectors/track, 14593 cylinders
@@ -96,11 +105,11 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 ## 分区构成
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png)
 
-* 组成(格式化后分区构成)：启动扇区（boot sector）和数个块组（block group）
+* 组成(格式化后分区构成)：启动扇区、数个块组
     - 启动扇区(boot sector)
         + 每个分区都有一个启动扇区
         + 可以装载开机管理程序【boot-loader】，以用于多重引导
-            * 对linux来说，安装时默认在分区boot-sector保存一份boot-loader，可选择是否在MBR保存另一份
+            * 对linux来说，安装时默认在分区boot-sector保存一份boot-loader，可选择是否在MBR保存另一份【只安装linux系统时，则必须在mbr也安装一份】
             * 对windows来说，强制在MBR和分区boot-sector各保存一份boot-loader【所以双os需先安装windows后linux】
     - 块组（block group）
 * 块组（block group）
@@ -109,7 +118,7 @@ Sector size (logical/physical): 512 bytes / 512 bytes
     - block映射表：显示区块号是否被使用
     - inode映射表：显示inode号是否被使用
     - inode table：显示文件属性（不包含文件名），显示文件实际存储的block号，常用大小256字节；每个文件一个inode号(指向数据实际存储区域)
-    - data block：用于实际存储数据，块由扇区组成，常用块大小4K；文件根据大小数量不等的block
+    - data block：用于实际存储数据，块由扇区组成，常用块大小4K；文件根据大小占用数量不等的block
         + 区块(block)是文件系统读写的最小单位（windows下为簇）
         + block大小应当适量：block过大浪费磁盘空间；block过小则影响读写速度。
 
