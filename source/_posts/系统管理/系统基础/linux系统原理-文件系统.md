@@ -112,7 +112,7 @@ Sector size (logical/physical): 512 bytes / 512 bytes
             * 对linux来说，安装时默认在分区boot-sector保存一份boot-loader，可选择是否在MBR保存另一份【只安装linux系统时，则必须在mbr也安装一份】
             * 对windows来说，强制在MBR和分区boot-sector各保存一份boot-loader【所以双os需先安装windows后linux】
     - 块组（block group）
-* 块组（block group）
+* 块组（block group）：可通过dumpe2fs查看分区superblock和block group信息
     - super block：存储block和inode的大小、已用、未用数量，分区的挂载与否，挂载时间等【每个分区只有一个super block，块组中第一个块组包含超级块，其他块组可能包含super block，但只是作为第一个超级块的备份】
     - 文件系统描述：说明block group、block bitmap、inode bitmap、inode table等的起止block号
     - block映射表：显示区块号是否被使用

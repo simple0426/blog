@@ -22,7 +22,7 @@ categories: ['linux']
 * touch：改变文件时间戳，没有则创建
 * mkdir：创建目录
     - -p 存在不报错，根据需要创建父目录
-* [tar](#)：建立归档文件
+* [tar](#tar)：建立归档文件
 * [zip、unzip](#zip)：压缩文件
 * [gzip、gunzip](#gzip)：打包、压缩文件或目录
 * dos2unix/unix2dos：windows与unix文件格式转换
@@ -35,13 +35,15 @@ categories: ['linux']
 * [df](#df)：显示磁盘空间使用情况
 * [fdisk](#fdisk)：MBR分区工具
 * [parted](#parted)：GPT分区工具
-* mkfs：格式化
-    - 主分区【文件系统】：(mkfs –t 分区类型/mkfs.分区类型)  /dev/sdb1(设备)
-    - 交互分区【虚拟内存】：mkswap  /dev/sdb5(设备)
-        + 启用交互分区：swapon (-a 所有) /dev/sdb5 
-        + 关闭交互分区：swapoff (-a 所有) /dev/sdb5
 * [mount](#mount)：文件系统挂载
 * fsck、e2fsck：文件系统检查与修复
+* badblocks：检查磁盘是否有坏道（等同于mke2fs -c）
+* dumpe2fs：显示分区superblock和blocks group信息
+* 格式化：
+    - 格式化主分区(建立文件系统)-mkfs：(mkfs –t 分区类型/mkfs.分区类型)  /dev/sdb1(设备)
+    - 格式化交互分区(建立swap)-mkswap：mkswap  /dev/sdb5(设备)
+        + 启用交互分区：swapon (-a 所有) /dev/sdb5 
+        + 关闭交互分区：swapoff (-a 所有) /dev/sdb5
 
 # dd
 ## 参数
@@ -163,7 +165,7 @@ categories: ['linux']
 * -h：跟随软链接，打包真实数据
 * -X, --exclude-from=FILE
 * --exclude=PATTERN【与rsync类似】
-    - 范例：tar czvf conf.tar.gz * --exclude "10-*"
+    - 范例：`tar czvf conf.tar.gz * --exclude "10-*"`
 
 # df
 >统计文件系统的磁盘空间(block)和inode使用情况
@@ -213,12 +215,16 @@ categories: ['linux']
 * 标准语法：mount -t type -o option device dir
     - 范例：mount  -o  loop  iso文件  目录
 * 其他语法：
-    - mount device/dir：挂载fstab已存在的设备
-    - mount --bind olddir newdir：挂载一个目录到另一个目录
-* 卸载：umount 设备/目录
-    -  卸载前必须先停用设备
-    -  在fstab中配置后也可以umount目录
-* 挂载选项：
+    - 简单语法：mount device/dir：挂载fstab已存在的设备
+    - 挂载目录：mount --bind olddir newdir：挂载一个目录到另一个目录
+    - 卸载：umount 设备/目录【在fstab中配置后也可以卸载目录】
+* 文件系统类型【-t】
+    - ext2/3/4
+    - iso9660：iso文件
+    - vfat：U盘
+    - nfs
+    - cifs：samba文件系统
+* 挂载选项【-o】
     + rw/ro   读写、只读
     + async/sync  异步、同步
     + remount 重新挂载
