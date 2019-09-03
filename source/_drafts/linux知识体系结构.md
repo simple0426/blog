@@ -8,8 +8,8 @@ categories:
 * 分区
 * 格式化
 * 文件系统
-    - nfs
-    - ftp
+    - nfs【废弃】
+    - autofs【废弃】
     - 分布式文件系统
         + hdfs
         + ceph
@@ -38,3 +38,20 @@ categories:
 * iftop
 
 # shell编程和文本处理
+
+# 监控与报警
+* nagios+cacti【废弃】
+* zabbix
+* open-falcon【重点】
+
+# vpn分类
+* 远程拨入办公区
+* 站点之间网络互连
+* 翻墙代理类
+
+# 辅助开发服务
+* ftp
+* samba
+* bind
+* git
+* vpn
