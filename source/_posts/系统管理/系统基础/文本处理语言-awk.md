@@ -257,6 +257,7 @@ isarray(x)：如果x是数组则返回为真
 # awk范例
 ## getline与next
 ```
+# 源文本
 1
 2
 3
@@ -269,9 +270,9 @@ isarray(x)：如果x是数组则返回为真
 7
 11
 12
-# next
+# next用法示例
 awk '/3/{next}{print $0}' 1.txt：直接过滤掉包含3的记录
-# getline
+# getline用法示例
 awk '/3/{getline;print $0}' 1.txt：对包含3的记录进行处理：读取下一行内容后直接打印
 awk '/3/{getline}{print $0}' 1.txt：此时和next用法一直：直接过滤掉包含3的记录
 ```
