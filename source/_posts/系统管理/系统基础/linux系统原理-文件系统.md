@@ -85,6 +85,38 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 * 读写原理：将磁粒子的极性转换为电脉冲信号
 * 读写流程：从盘片的边缘向里依次从0磁道开始读写
 
+# raid
+* 简介：RAID(redundant arrays of independed disk)：廉价且具有冗余功能的磁盘阵列
+* 功能：提供比单个物理磁盘更大的存储容量及不同级别的数据冗余备份
+
+## raid0
+>生产中使用单盘也要做成raid0，否则无法使用
+
+* 原理：将连续的数据交叉存储在多个磁盘上（stripe-条带存储），
+* 容量计算：最少需要1个磁盘，总容量=各盘容量之和
+* 优点：磁盘利用率高【100%】
+* 缺点：无冗余备份，1块磁盘损坏raid就不能使用
+
+## raid1
+* 原理：将数据分成完全一样的两份写入两块磁盘【mirror-镜像存储】
+* 容量计算：2个磁盘，总容量=最小的那块磁盘
+* 优点：有冗余备份，安全性好
+* 缺点：磁盘利用率低【50%】，成本高
+
+## raid5
+* 原理：将数据和数据的奇偶校验码交叉存储在不同的磁盘
+* 容量计算：最少需要3个磁盘，总容量=最小磁盘容量*（磁盘数-1）
+* 优点：兼顾安全性和成本【可以损坏1块磁盘，当损坏磁盘大于等于2块时，数据彻底损坏】
+* 热备盘【hot spare】：当阵列中的某颗磁盘损毁时，spare disk被主动拉进阵列，坏磁盘被移除阵列，实时进行数据重建
+
+## raid10
+>也有raid01，但是服务器常用只有raid10
+
+* 原理：先组成raid1，再组成raid0
+* 容量计算：最少需要4个磁盘，且为偶数个磁盘，总容量=所有盘容量之和的一般
+* 优点：安全性好
+* 缺点：磁盘利用率低【50%】，成本高
+
 # 分区
 * 分区实质：划分起止柱面号
 * 格式化实质：创建文件系统
@@ -125,6 +157,74 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 ## 注意
 * 安装linux时强制将/boot设为主分区，以使/boot分区位于磁盘的最前面
 * swap分区非必需的，内存较大负载不高时可以不分。
+
+# LVM
+* LVM(logical volume manage)逻辑卷管理，一个灵活的扩展分区管理工具
+
+## 新建LVM
+### 新建LVM分区
+* 新建分区：fdisk /dev/sdb   n,p,w
+* 更改分区类型为lvm：t   8e
+
+### 新建物理卷
+* 新建：pvcreate /dev/sdb1、pvcreate /dev/sdc1
+* 物理卷命令：
+    - pvcreate  ：将实体 partition 建立成为 PV；
+    - pvscan  ：搜寻目前系统里面任何具有 PV 的磁盘
+    - pvdisplay  ：显示出目前系统上面的 PV 状态；
+    - pvremove  ：将 PV 属性移除，让该 partition不具有PV属性。
+
+### 新建卷组
+* 新建：vgcreate -s 8M cipan /dev/sdb1 /dev/sdc1【在磁盘分区sdb1，sdc1上创建pe大小为8M，名称为cipan的卷组】
+* 卷组命令：
+    - vgcreate  ：就是主要建立 VG 的指令
+    - vgscan  ：搜寻系统上面是否有 VG 存在
+    - vgdisplay  ：显示目前系统上面的 VG 状态
+    - vgextend  ：在 VG 内增加额外的 PV  
+    - vgreduce  ：在 VG 内移除 PV 
+    - vgchange  ：设定 VG 是否启动 (active) 
+    - vgremove  ：移除一个 VG 
+
+### 新建逻辑卷
+* 新建：lvcreate -L 5G -n juan1 cipan【在卷组cipan中添加大小为5G名称为juan1的逻辑卷】
+* 逻辑卷命令：
+    - lvcreate  ：建立 LV 啦
+    - lvscan  ：查询系统上面的 LV 
+    - lvdisplay  ：显示系统上面的 LV 状态啊
+    - lvextend  ：在 LV 里面增加容量
+    - lvreduce  ：在 LV 里面减少容量
+    - lvremove  ：移除一个 LV  
+    - lvresize  ：对 LV 迚行容量大小的调整
+
+### 格式化
+```
+mkfs.ext4 /dev/cipan/juan1 
+mkdir /juan
+mount /dev/cipan/juan1 /juan/
+df -h
+```
+
+## LVM扩容
+* 新建分区：fdisk /dev/sdd
+* 新建物理卷：pvcreate /dev/sdd1
+* 扩容卷组：vgextend  /dev/cipan  /dev/sdd1
+* 扩容逻辑卷：lvextend -L 8G /dev/cipan/juan1
+* 文件系统扩容：resize2fs -p /dev/cipan/juan1
+* 逻辑卷重新挂载：mount -o remount,rw /juan/
+
+## LVM减容
+* 卸载逻辑卷：umount /dev/cipan/juan1
+* 文件系统减容：resize2fs /dev/cipan/juan1 4G 
+    - 减容前 强制逻辑卷检查：fsck -f /dev/cipan/juan1
+* 逻辑卷减容：lvreduce -L 4G /dev/cipan/juan1
+* 挂载逻辑卷：mount /dev/cipan/juan1 /juan
+* 卷组减容【后续】：vgreduce /dev/cipan /dev/sdc1
+
+## 删除LVM
+* 卸载逻辑卷：umount /dev/cipan/juan1
+* 删除逻辑卷：lvremove juan1
+* 删除卷组：vgremove cipan
+* 删除物理卷：pvremove /dev/sdb1
 
 # 开机过程
 >centos6系统启动过程
