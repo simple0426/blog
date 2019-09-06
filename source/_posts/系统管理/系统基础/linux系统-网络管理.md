@@ -26,6 +26,7 @@ date: 2019-07-17 17:18:07
 * arp：地址解析协议
 * [curl](#curl)
 * [iptables](#iptables)
+* [tcp_wrapper](#tcp-wrapper)
 * netstat：显示网络链接
     - -a：显示所有链接状态
     - -n：以数字形式显示ip和端口
@@ -275,4 +276,47 @@ iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o eth1 -j MASQUERADE
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 #iptables -t nat -A PREROUTING -d 192.168.1.50 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 ```
+# tcp-wrapper
+## 简介
+* [tcp_wrapper](https://www.cnblogs.com/long-cnblogs/p/10716091.html)是一个类似于iptables的实现访问控制工具；但是，iptables是工作在内核中的，所以只要是一个网络服务经由内核中的TCP/IP协议栈就能够受到netfilter的控制
+* tcp_wrapper是基于库调用来实现其功能的。这就意味着只有那些在开发时调用了tcp_wrapper相关库（这个库叫libwrap）的应用，tcp_wrapper的控制才能生效。
 
+## 应用受控判断
+* 编译方式：一个程序在开发时如果调用了某个接口，它在编译时会有两种编译方式
+    - 动态编译：表示基于动态链接库的方式使用库
+    - 静态编译：表示把调用的库文件直接编译进应用程序内部
+* 应用是否支持tcp_wrapper，两种编译方式的判断如下
+    - 动态编译：使用ldd命令，显示出链接至libwrap，即表示支持tcp_wrapper功能；比如ssh服务：【ldd /usr/sbin/sshd】
+    - 静态编译：使用strings命令，显示结果中出现两个文件（hosts.allow和hosts.deny）表示支持tcp_wrapper
+
+## 配置文件
+* /etc/hosts.allow：允许访问的设置
+* /etc/hosts.deny：禁止访问的设置
+    - 范例：【vsftpd:192.168.241.1】vsftpd服务不允许192.168.241.1访问
+* 执行顺序：先检查hosts.allow，后检查hosts.deny【有相同条目时，allow生效】
+
+## 配置语法
+语法：daemon_list：client_list `：[option_list]`
+
+- daemon_list：服务列表
+    + 服务的二进制文件名【应用程序是通过二进制文件链接至libwrap库文件来完成访问控制的】
+    + 多个服务间逗号分隔
+- client_list：客户端地址
+    + ip地址
+    + 主机名：
+        * LOCAL 代表本机
+        * ALL 代表所有程序，所有ip
+    + 网络地址
+        * 格式1：172.16.0.0/255.255.0.0
+        * 格式2：172.16.【最后那个点不能省略】
+        * 不能是： ~~172.16.0.0/16~~
+- option_list：可选参数列表
+    + except：排除选项
+        * 范例要求：这个网络开放给172.16访问但是这个172.16.100.1不能访问
+        * 设置：【vsftpd:172.16. EXCEPT 172.16.100.1】
+    + deny：表示拒绝，用于host.allow文件中，在允许的文件中实现拒绝的功能【vsftpd:192.168.241. :deny】
+    + allow：表示允许，用于hosts.deny文件，实现allow的功能
+    + spawn：额外启动其它应用程序，完成一部分的管理或其它功能
+        * 范例要求：本地开放了ftp服务，一旦有人访问了，默认策略【allow或deny】执行后，将其记录到日志中
+        * 设置：【vsftpd:ALL :spawn /bin/echo `date` login attemp from %c to %s,%d >> /var/log/vsftpd.deny.log】
+        * 参数注解：%c表示client ip,客户端地址，%s表示server ip，服务器端地址，%d为daomon name即访问的是服务器上的哪个守护进程；
