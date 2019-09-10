@@ -77,15 +77,6 @@ for file in $(ls);do mv $file ${file/html/HTML};done
 4. 将authorized_keys传送至目标主机： ansible all -m copy -a "src=authorized_keys dest=~/.ssh/ mode=0600" 
 5. 修改目标主机ssh客户端配置，使首次登录的用户没有yes/no的询问【可选】： ansible all -m lineinfile -a "path=/etc/ssh/ssh_config line='\t\tStrictHostKeyChecking no'" -b 
 
-# socat命令
-* 类似于netcat的工具，名字来由是” Socket CAT”，可以看作是netcat的N倍加强版  
-* 主要特点就是在两个数据流之间建立通道
-
-## haproxy应用
-* help信息：echo ""|sudo socat stdio /var/run/haproxy.sock
-* 状态查看：echo "show stat"|sudo socat stdio /var/run/haproxy.sock
-* 启停server：echo "enable server service_marketinfo/172.17.134.60"|sudo socat stdio /var/run/haproxy.sock
-
 [ssh-conn]: https://github.com/simple0426/sysadm/tree/master/ansible/playbook/ssh_conn_all
 [merge-pubkey]: https://github.com/simple0426/sysadm/blob/master/ansible/playbook/ssh_conn_all/join_sshkey.py
 [create-user]: https://github.com/simple0426/sysadm/blob/master/ansible/playbook/ssh_conn_all/create_user.yml

@@ -28,21 +28,28 @@ date: 2019-06-11 18:08:11
     - 代理服务器中的设置：proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     - 此变量是把请求头中的X-Forwarded-For与$remote_addr用逗号合起来，每经过一个反向代理就在请求头X-Forwarded-For后追加反向代理IP，形如：real client ip, proxy ip 1。。。proxy ip N
 
-## proxy设置
-*  upstream参数
+## upstream参数
+>upstream用于nginx代理多个相同功能的后端服务器，在nginx层实现对后端服务器的高可用和负载均衡
 
-```
-# http下，与server同级
-    upstream  server {
-        server   192.168.100.1 weight=1 max_fails=2 fail_timeout=30s;
-        server   192.168.100.3 weight=1 max_fails=2 fail_timeout=30s;
-        }
-```
+* upstream在http区块下，与server同级
+* server语法：
+    - weight：服务器的权重，默认为1
+    - max_fails：失败重试次数，默认为1，0为不重试
+    - fail_timeout：与服务器通信的超时时间【此时认为服务器不可达】。默认为10s。
+    - backup：标记作为备份服务器，当主服务器不可达时被启用
+    - down：标记服务器永久不可用；可以和ip_hash指令一起用；当服务器被标记为down状态时，nginx和后端服务器已经建立的连接并不会被移除，只会阻止建立新的连接，因此可以用于nginx后端的软下线。
+* 负载均衡算法
+    - 默认情况，请求通过权重轮询算法被分配给服务器
+    - ip_hash用于将客户端请求基于客户端ip地址分发给后端服务器【一个客户端的所有请求只会发给一个后端服务器】；在ip_hash模式下，当一台服务器需要被临时移除，为了保持客户端ip地址的hash值，应当为此服务器标记down参数。
+* 范例：
+    ```
+        upstream  server {
+            server   192.168.100.1 weight=1 max_fails=2 fail_timeout=30s;
+            server   192.168.100.3 weight=1 max_fails=2 fail_timeout=30s;
+            }
+    ```
 
-* proxy参数
-    - proxy_redirect：是否对后端服务器的“Location”响应头和“Refresh”响应头,默认为default，即使用代理服务器的location替换后端服务器的location；off为关闭替换
-    - 
-
+## proxy参数设置
 ```
 # http, server, location
 proxy_redirect off;
@@ -326,37 +333,22 @@ rewrite ^(.*)$  https://$host$1 permanent;【与下面return301效果相同】
 ```
 
 ## lua使用
-### [waf][waf]功能简介(config.lua)
+### [waf][waf]功能简介([config.lua][config.lua])
 ```
- --waf status    
  config_waf_enable = "on"   #是否开启配置
- --log dir 
  config_log_dir = "/tmp/waf_logs"    #日志记录地址
- --rule setting 
  config_rule_dir = "/usr/local/nginx/conf/waf/rule-config"         #匹配规则所放地址
- --enable/disable white url 
  config_white_url_check = "on"  #是否开启url检测
- --enable/disable white ip 
  config_white_ip_check = "on"   #是否开启IP白名单检测
- --enable/disable block ip 
  config_black_ip_check = "on"   #是否开启ip黑名单检测
- --enable/disable url filtering 
  config_url_check = "on"      #是否开启url过滤
- --enalbe/disable url args filtering 
  config_url_args_check = "on"   #是否开启参数检测
- --enable/disable user agent filtering 
  config_user_agent_check = "on"  #是否开启ua检测
- --enable/disable cookie deny filtering 
  config_cookie_check = "on"    #是否开启cookie检测
- --enable/disable cc filtering 
  config_cc_check = "on"   #是否开启防cc攻击
- --cc rate the xxx of xxx seconds 
  config_cc_rate = "10/60"   #允许一个ip60秒内只能访问10次
- --enable/disable post filtering 
  config_post_check = "on"   #是否开启post检测
- --config waf output redirect/html 
  config_waf_output = "html"  #action一个html页面，也可以选择跳转
- --if config_waf_output ,setting url 
  config_waf_redirect_url = "http://www.baidu.com" 
  config_output_html=[[  #下面是html的内容
  <html> 
@@ -391,13 +383,11 @@ http {
         }
     }
 ```
-### 修改lua脚本
-config.lua：config_rule_dir = "/home/zj-ops/nginx/conf/waf/rule-config"
 ### 功能测试
-1. 防sql注入测试：curl http://127.0.0.1/q.sql
-2. cc防护测试：ab -c 100 -n 100  http://127.0.0.1/
+* 防sql注入测试：curl http://127.0.0.1/q.sql
+* cc防护测试：ab -c 100 -n 100  http://127.0.0.1/
 
-## lua使用redis
+## lua集成redis
 [lua-resty-redis][lua-redis]提供一个lua语言版的redis API，使用socket（lua sock）和redis通信。
 ### nginx配置
 ```
@@ -476,7 +466,7 @@ close_redis(redis_instance)
 返回：【msg : hello world】说明redis可用
 ```
 
-### lua使用redis实现cc防护
+### 实现cc防护
 ```
 -- access_by_lua_file '/opt/ops/lua/access_limit.lua'
 local function close_redis(red)
@@ -539,18 +529,15 @@ close_redis(red)
 
 ---
 
-# 其他功能
+# 其他功能与参考
 * [nginx限制连接模块-limit](https://blog.51cto.com/storysky/642970)
 * [NGINX 结合 lua 动态修改upstream](https://blog.csdn.net/force_eagle/article/details/51966333)
     - 模块代码：https://github.com/openresty/lua-upstream-nginx-module#set_peer_down
 * [Nginx+Tomcat+SSL 识别 https还是http](https://blog.csdn.net/woshizhangliang999/article/details/51861998)
 * [高并发之系统限流](https://blog.csdn.net/lzw_2006/article/details/51768935)
-
-# 参考
-1. [Nginx + Lua + Redis 已安装成功(非openresty 方式安装)](http://www.cnblogs.com/tinywan/p/6534151.html)
-2. [nginx + lua + redis 防刷和限流](http://blog.csdn.net/fenglvming/article/details/51996406)
-3. [nginx 不中断服务 平滑升级][nginx-upgrade]
-
+* [Nginx + Lua + Redis 已安装成功(非openresty 方式安装)](http://www.cnblogs.com/tinywan/p/6534151.html)
+* [nginx + lua + redis 防刷和限流](http://blog.csdn.net/fenglvming/article/details/51996406)
+* [nginx 不中断服务 平滑升级][nginx-upgrade]
 
 [1]:http://nginx.org/download/nginx-1.12.0.tar.gz
 [2]: http://luajit.org/download/LuaJIT-2.0.5.tar.gz
@@ -564,6 +551,7 @@ close_redis(red)
 [waf]: https://github.com/unixhot/waf.git
 [lua-redis]: https://github.com/openresty/lua-resty-redis.git
 [nginx-rewrite]: http://tengine.taobao.org/nginx_docs/cn/docs/http/ngx_http_rewrite_module.html#rewrite
+[config.lua]: https://github.com/simple0426/sysadm/blob/master/config/web/nginx/conf/waf/config.lua
 
 
 
