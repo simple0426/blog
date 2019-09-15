@@ -1,15 +1,19 @@
 ---
 title: 负载均衡器-LVS
 tags:
+  - lvs
 categories:
+  - linux
+date: 2019-09-15 22:50:02
 ---
+
 # 原理
 [LVS][linuxvirtualserver]的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。
 
 ## lvs技术实现
 * 四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以定义一些规则来管理内核中的ipvs，就像iptables和netfilter的关系一样。这也是本文介绍的功能。
-* 七层负载均衡：基于内容请求分发的内核Layer-7交换机KTCPVS(功能尚不完善，使用的人不多)
-* 集群管理软件：redhat公司在从其6.1发行版起已包含LVS代码，他们开发了一个LVS集群管理工具叫Piranha，用于控制LVS集群，并提供了一个图形化的配置界面。【但此工具已被Redhat官方废弃，相应功能已使用[haproxy和keepalived][piranha]代替】
+* 七层负载均衡：基于内容请求分发的内核Layer-7交换机KTCPVS【功能尚不完善，使用的人不多】
+* 集群管理软件：redhat公司从其6.1发行版起已包含LVS代码，他们开发了一个LVS集群管理工具叫Piranha，用于控制LVS集群，并提供了一个图形化的配置界面。【但此工具已被Redhat官方废弃，相应功能已使用[haproxy和keepalived][piranha]代替】
 
 ## ipvs技术术语
 * LB：负载均衡器所在服务器
@@ -20,10 +24,10 @@ categories:
 * VIP（virtual IP）：负载均衡器（director）上用于向客户端提供服务的ip地址
 
 ## ipvs的工作模式
-当用户的请求到达负载调度器后，调度器如何将请求发送到提供服务的Real Server节点，而Real Server节点如何返回数据给用户，它是IPVS实现的重点技术，IPVS实现负载均衡的机制有三种:
+当用户的请求到达负载调度器后，调度器如何将请求发送到提供服务的Real Server节点，而Real Server节点如何返回数据给用户，这正是IPVS实现的重点技术，IPVS实现负载均衡的机制有三种:
 
 * VS/NAT（virtual server via network address translation）：通过网络地址转换将一组服务器构成一个高性能、高可用的虚拟服务器
-* VS/TUN（vertual server via tunneling）：在分析VS/NAT的缺点和网络服务的非对称性的基础上我们提出通过ip隧道实现虚拟服务器
+* VS/TUN（vertual server via tunneling）：在分析VS/NAT的缺点和网络服务的非对称性的基础上提出的通过ip隧道实现虚拟服务器
 * VS/DR（vertual server via director routing）：通过直接路由实现虚拟服务器
 * FULLNAT：淘宝开源实现的模式，数据包进入LB时，同时对源地址和目标地址进行转换，从而实现RS可以跨VLAN通信，RS只需要连接内网，这样可以保证安全性。进站和出站的LB不一定是同一台机器。
 
@@ -74,15 +78,15 @@ IPVS在内核中的负载均衡调度是以连接为粒度的。在HTTP协议（
 * 轮叫调度（Round-Robin Scheduling，rr）
 * 加权轮叫调度（Weighted Round-Robin Scheduling，wrr），按照权重比例作为轮询标准
 * 目标地址散列调度（Destination Hashing Scheduling，dh），目标地址哈希，对于同一目标IP的请求总是发往同一服务器；
-* 源地址散列调度（Source Hashing Scheduling，sh），源地址哈希，在一定时间内，只要是来自同一个客户端的请求，就发送至同一个realserver；源地址散列调度和目标地址散列调度可以结合使用在防火墙集群中，它们可以保证整个系统的唯一出入口。
+* 源地址散列调度（Source Hashing Scheduling，sh），源地址哈希，在一定时间内，只要是来自同一个客户端的请求，就发送至同一个realserver。源地址散列调度和目标地址散列调度可以结合使用在防火墙集群中，它们可以保证整个系统的唯一出入口。
 
 ### 动态反馈调度
 >根据RS的繁忙程度反馈，计算出下一个连接应该调度谁(动态反馈负载均衡算法考虑服务器的实时负载和响应情况，不断调整服务器间处理请求的比例，来避免有些服务器超载时依然收到大量请求，从而提高整个系统的吞吐率)。
 
 * 最小连接调度（Least-Connection Scheduling，lc），调度器需要记录各个服务器已建立连接的数目，当一个请求被调度到某服务器，其连接数加1；当连接中止或超时，其连接数减1。当各个服务器的处理能力不同时，该算法不理想。
-* 加权最小连接调度（Weighted Least-Connection Scheduling，wlc），ipvs默认调度算法
+* 加权最小连接调度（Weighted Least-Connection Scheduling，wlc）：ipvs默认调度算法
 * 基于本地的最少连接（Locality-Based Least Connections Scheduling，lblc）
-* 带复制的基于局部性最少连接（Locality-Based Least Connections with Replication Scheduling，lblcr），目前主要用于Cache集群系统；因为在Cache集群中客户请求报文的目标IP地址是变化的。
+* 带复制的基于局部性最少连接（Locality-Based Least Connections with Replication Scheduling，lblcr）：目前主要用于Cache集群系统；因为在Cache集群中客户请求报文的目标IP地址是变化的。
 
 ### 综合负载
 计算算综合负载时，我们主要使用两大类负载信息：输入指标和服务器指标  
@@ -97,11 +101,11 @@ IPVS在内核中的负载均衡调度是以连接为粒度的。在HTTP协议（
 * 反之，若所有服务器的权值都接近于SCALE*DEFAULT_WEIGHT，则说明当前系统的负载都比较轻。
 
 # 源码安装
-由于官方文档及网络均无ubuntu下源码安装参考，所以此处源码安装特指centos下的源码安装
-## 下载地址
-* lvs官方下载地址：http://www.linuxvirtualserver.org/software/ipvs.html
-* 最新版本ipvsadm：https://mirrors.edge.kernel.org/pub/linux/utils/kernel/ipvsadm/
-* centos系列编译安装参考：http://kb.linuxvirtualserver.org/wiki/Compiling_ipvsadm_on_different_Linux_distributions#Red_Hat_Enterprise_Linux_6
+>由于官方文档及网络均无ubuntu下源码安装参考，所以此处源码安装特指centos下的源码安装
+
+* [lvs官方下载地址](http://www.linuxvirtualserver.org/software/ipvs.html)
+* [最新版本ipvsadm](https://mirrors.edge.kernel.org/pub/linux/utils/kernel/ipvsadm/)
+* [centos系列编译安装参考](http://kb.linuxvirtualserver.org/wiki/Compiling_ipvsadm_on_different_Linux_distributions#Red_Hat_Enterprise_Linux_6)
 
 ## 依赖安装
 * 安装内核源码【lvs使用内核源码里的头文件,即include目录】
@@ -149,186 +153,11 @@ watch --interval=2 ipvsadm -Ln【watch持续监控LB状态】
 * ipvsadm -d                   删除配置条目
 
 ## 控制脚本
-* DR模式-LB节点控制脚本
-
-```
-#!/bin/sh
-# chkconfig: 345 50 80
-. /etc/init.d/functions
-VIP=192.168.100.10
-RIP=(
-192.168.100.1
-192.168.100.2
-)
-start() {
-        ifconfig eth0:0 ${VIP}/24 up
-        ipvsadm --clear
-        ipvsadm --set 30 5 60
-        ipvsadm -A -t ${VIP}:80 -s wrr
-for ((i=0;i<${#RIP[*]};i++))
-do
-        ipvsadm -a -t ${VIP}:80 -r ${RIP[$i]}:80 -g
-done
-}
-stop() {
-        ifconfig eth0:0 ${VIP}/24 down
-        ipvsadm -D -t ${VIP}:80
-        arping -c 1 -I eth0 -s $VIP 192.168.100.254 >/dev/null 2>&1
-}
-case "$1" in
-        start)
-        start 
-        action "ipvsd is starting" /bin/true
-        ;;
-        stop)
-        stop 
-        action "ipvsd is stoping" /bin/true
-        ;;
-        *)
-        echo "Usage:$0 {start|stop}"
-esac
-```
-
-* DR模式-RS节点控制脚本
-
-```
-#!/bin/sh
-. /etc/init.d/functions
-VIP=(
-192.168.100.10
-192.168.100.11
-)
-start () {
-for ((i=0;i<${#VIP[*]};i++))
-do
-ifconfig lo:$i ${VIP[$i]}/32 up
-route add -host ${VIP[$i]} eth0
-done
-echo 1 >/proc/sys/net/ipv4/conf/lo/arp_ignore 
-echo 2 >/proc/sys/net/ipv4/conf/lo/arp_announce
-echo 1 >/proc/sys/net/ipv4/conf/all/arp_ignore 
-echo 2 >/proc/sys/net/ipv4/conf/all/arp_announce
-}
-stop () {
-for ((i=0;i<${#VIP[*]};i++))
-do
-ifconfig lo:$i ${VIP[$i]}/32 down
-route del -host ${VIP[$i]} eth0
-done
-echo 0 >/proc/sys/net/ipv4/conf/lo/arp_ignore 
-echo 0 >/proc/sys/net/ipv4/conf/lo/arp_announce
-echo 0 >/proc/sys/net/ipv4/conf/all/arp_ignore 
-echo 0 >/proc/sys/net/ipv4/conf/all/arp_announce
-}
-case "$1" in
-        start)
-        start
-        action "RS is starting" /bin/true
-        ;;
-        stop)
-        stop
-        action "RS is stoping" /bin/true
-        ;;
-        *)
-        echo "Usage:$0 [start|stop]"
-esac
-```
-
-* TUN模式-RS节点控制脚本
-
-```
-#!/bin/sh
-
-. /etc/init.d/functions
-
-VIP=192.168.100.10
-
-start () {
-ifconfig tunl0 ${VIP} broadcast $VIP netmask 255.255.255.255 up
-route add -host ${VIP[$i]} dev tunl0
-
-echo 1 >/proc/sys/net/ipv4/conf/tunl0/arp_ignore 
-echo 2 >/proc/sys/net/ipv4/conf/tunl0/arp_announce
-echo 0 >/proc/sys/net/ipv4/conf/tunl0/rp_filter
-echo 1 >/proc/sys/net/ipv4/conf/tunl0/forwarding
-echo 1 >/proc/sys/net/ipv4/conf/all/arp_ignore 
-echo 2 >/proc/sys/net/ipv4/conf/all/arp_announce
-}
-stop () {
-ifconfig tunl0 ${VIP} broadcast $VIP netmask 255.255.255.255 down
-route del -host ${VIP[$i]} dev tunl0
-
-echo 0 >/proc/sys/net/ipv4/conf/tunl0/arp_ignore
-echo 0 >/proc/sys/net/ipv4/conf/tunl0/arp_announce
-echo 0 >/proc/sys/net/ipv4/conf/tunl0/rp_filter
-echo 0 >/proc/sys/net/ipv4/conf/tunl0/forwarding
-echo 0 >/proc/sys/net/ipv4/conf/all/arp_ignore
-echo 0 >/proc/sys/net/ipv4/conf/all/arp_announce
-}
-
-case "$1" in
-        start)
-        start
-        action "RS is starting" /bin/true
-        ;;
-        stop)
-        stop
-        action "RS is stoping" /bin/true
-        ;;
-        *)
-        echo "Usage:$0 [start|stop]"
-esac
-```
-
-* 主LB对RS节点执行健康检查
-
-```
-#!/bin/sh
-
-VIP=192.168.100.10
-
-RIP=(
-192.168.100.1
-192.168.100.2
-)
-
-while true
-do
-  for ((i=0;i<${#RIP[*]};i++))
-  do
-        port_count=$(nmap -p 80 ${RIP[$i]} 2>/dev/null|grep open|wc -l)
-        if [ $port_count -ne 1 ];then
-                if [ `ipvsadm -L|grep -w ${RIP[$i]}|wc -l` -ne 0 ];then
-                ipvsadm -d -t $VIP:80 -r ${RIP[$i]}:80 >/dev/null 2>&1
-                fi
-        else
-                if [ `ipvsadm -L|grep -w ${RIP[$i]}|wc -l` -ne 1 ];then
-                ipvsadm -a -t $VIP:80 -r ${RIP[$i]}:80 >/dev/null 2>&1
-                fi
-        fi
-  done
-  sleep 2
-done
-```
-
-* 在备LB上实现对主LB的健康检查和接管【类似keepalived】
-
-```
-#!/bin/sh
-
-ip=192.168.100.3
-
-while true
-do
-        ping -c 2 $ip >/dev/null 2>&1
-        if [ $? -ne 0 ];then
-            /etc/init.d/ipvsd start &> /dev/null
-        else
-            /etc/init.d/ipvsd stop &> /dev/null
-        fi
-        sleep 2
-done
-```
+* [DR模式-LB节点控制脚本](https://github.com/simple0426/sysadm/blob/master/shell/lvs/dr-lb.sh)
+* [DR模式-RS节点控制脚本](https://github.com/simple0426/sysadm/blob/master/shell/lvs/dr-rs.sh)
+* [TUN模式-RS节点控制脚本](https://github.com/simple0426/sysadm/blob/master/shell/lvs/tun-rs.sh)
+* [主LB对RS节点执行健康检查](https://github.com/simple0426/sysadm/blob/master/shell/lvs/MasterLb-chk-rs.sh)
+* [在备LB上实现对主LB的健康检查和接管](https://github.com/simple0426/sysadm/blob/master/shell/lvs/SlaveLb-chk-MasterLb.sh)【类似keepalived】
 
 # 故障与排查
 * 负载不均
@@ -342,6 +171,7 @@ done
 * 辅助排查工具tcpdump、ping
 
 ---
+
 本文参考：https://www.cnblogs.com/wyzhou/p/9741790.html
 
 [piranha]: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.0_release_notes/sect-red_hat_enterprise_linux-7.0_release_notes-clustering-keepalived_and_haproxy_replace_piranha_as_load_balancer
