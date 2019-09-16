@@ -1,5 +1,5 @@
 ---
-title: 负载均衡器-LVS
+title: 负载均衡器-lvs
 tags:
   - lvs
 categories:
@@ -105,20 +105,18 @@ IPVS在内核中的负载均衡调度是以连接为粒度的。在HTTP协议（
 
 * [lvs官方下载地址](http://www.linuxvirtualserver.org/software/ipvs.html)
 * [最新版本ipvsadm](https://mirrors.edge.kernel.org/pub/linux/utils/kernel/ipvsadm/)
-* [centos系列编译安装参考](http://kb.linuxvirtualserver.org/wiki/Compiling_ipvsadm_on_different_Linux_distributions#Red_Hat_Enterprise_Linux_6)
 
 ## 依赖安装
-* 安装内核源码【lvs使用内核源码里的头文件,即include目录】
-    - 安装：yum install kernel-devel -y
-    - 设置软链接：ln -s /usr/src/kernels/2.6.32-358.el6.x86_64 /usr/src/linux
-* 安装依赖：`yum install libnl* popt* -y`
+* 依赖安装：`yum install gcc* make kernel-devel libnl* popt* -y`
+    - [编译安装参考](http://kb.linuxvirtualserver.org/wiki/Compiling_ipvsadm_on_different_Linux_distributions#Red_Hat_Enterprise_Linux_6)
+* 设置内核软链接：ln -s /usr/src/kernels/$(uname -r) /usr/src/linux
 
 ## 编译安装
 * tar xzf ipvsadm.tar.gz
 * make 
 * make install
 
-## 测试
+## 安装结果测试
 * 命令是否存在：ipvsadm
 * 模块是否存在：lsmod |grep ip_vs
 
