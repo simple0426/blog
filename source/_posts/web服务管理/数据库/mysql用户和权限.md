@@ -1,5 +1,5 @@
 ---
-title: mysql权限
+title: mysql用户和权限
 tags:
   - 权限
 categories:
@@ -54,6 +54,8 @@ date: 2019-08-23 13:05:39
 * 主机名可以是主机名或者ipv4/ipv6的地址。Localhost代表本机，127.0.0.1代表ipv4的 本机地址，::1代表ipv6的本机地址
 * 允许使用%和_两个匹配字符，比如'%'代表所有主机，'%.mysql.com'代表 来自mysql.com这个域名下的所有主机，'192.168.1.%'代表所有来自192.168.1网段的主机
 
+## 查看权限
+show grants for ‘用户名’@‘ip地址’;
 ## 创建和授权
 * 方式1：
     - 创建用户：`CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass';` 
