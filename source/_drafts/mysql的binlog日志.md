@@ -44,6 +44,15 @@ categories: ['mysql']
 * statement：执行 mysqlbinlog /path/bin-log.000001，可以直接看到原始执行的 SQL 语句
 * row：则可读性没有那么好，但仍可通过参数使文档更加可读 mysqlbinlog -v /path/bin-log.000001
 
+# binlog日志删除
+* 设置日志过期变量：
+    - 查看：show variables like 'expire_logs_days';
+    - 设置：set global expire_logs_days = 3;
+* 手动删除日志
+    - 删除3天前：PURGE MASTER LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 3 DAY);
+    - 清除日志文件：PURGE MASTER LOGS TO 'MySQL-bin.010';
+    - 删除指定日期前：PURGE MASTER LOGS BEFORE '2008-06-22 13:00:00';
+
 # mysqlbinlog其他参数
 * --base64-output=DECODE-ROWS：将base64编码的内容解码，以便于查看内容
 * -start-datetime --stop-datetime 解析某一个时间段内的 binlog
