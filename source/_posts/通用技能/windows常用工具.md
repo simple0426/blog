@@ -13,11 +13,11 @@ date: 2019-05-11 12:24:02
 
 # 软件列表
 ## 办公类
-* [beyondCompare](#beyondCompare):文本比较工具
-* [git](#git):windows下git工具（一般作为windows下的linux命令行使用）
+* beyondCompare：文本比较工具
+* [git](#git)：windows下git工具（一般作为windows下的linux命令行使用）
 * [pycharm](#pycharm)：python集成开发工具
 * [sublimeText3](#sublimetext3)：文本编辑工具
-* [xmind8](#xmind8):思维导图工具
+* xmind8：思维导图工具
 * secureCRT：linux系统远程连接工具
 * Postman：接口调试工具
 * navicat：数据库连接工具
@@ -45,43 +45,15 @@ date: 2019-05-11 12:24:02
     - 书签同步
     - 网站账号云同步
 
-# beyondCompare
-## 适用版本
-BCompare-zh-3.3.13.18981
-## key信息
-```
---- BEGIN LICENSE KEY ---
-***REMOVED***
-***REMOVED***
-***REMOVED***
---- END LICENSE KEY -----
-```
 # git
 ## 下载地址
 https://git-scm.com/download/win
 ## 配置
 在环境变量PATH中添加路径【C:\Git\bin；C:\Git\usr\bin】以方便适用其中的linux命令
-# xmind8
-破解参考：https://blog.csdn.net/qq_42863682/article/details/82416153
-## 配置
-1. 破解包XMindCrack.jar放置xmind安装根目录
-2. 编辑XMind.ini，在末尾追加`-javaagent:自己的路径\XMindCrack.jar`
-3. 打开xmind8输入序列号【帮助--》序列号】
-
-```
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-```
 
 # pycharm
-## 使用版本
-JetBrains PyCharm 2019.1.2 x64
-## 激活参考
-https://zhile.io/2018/08/26/jetbrains-license-server-crack.html
-## 常用设置
-### 设置py文件默认头部信息
+>设置py文件默认头部信息
+
 ```
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
@@ -92,24 +64,6 @@ https://zhile.io/2018/08/26/jetbrains-license-server-crack.html
 # @Software: ${PRODUCT_NAME}
 ```
 # sublimetext3
-## 版本
-Sublime Text Build 3143 x64 Setup
-## 激活码
-```
-—– BEGIN LICENSE —–
-TwitterInc
-200 User License
-EA7E-890007
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-—— END LICENSE ——
-```
 ## 安装packagecontrol
 * 安装地址：http://packagecontrol.cn/installation#st3
 * 执行命令：通过 ctrl+` 或 View > Show Console打开控制台，将Python代码粘贴到控制台，回车。
@@ -194,5 +148,3 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
     "update_check": false
 }
 ```
-
-
