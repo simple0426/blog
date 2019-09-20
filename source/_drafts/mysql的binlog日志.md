@@ -7,12 +7,12 @@ categories: ['mysql']
 * [MySQL 通过 binlog 恢复数据](https://learnku.com/articles/20628)
 
 # 日志分类
-* 错误日志：mysql运行过程中的错误信息
-    - 功能开关：无
-    - 文件位置：log_error
 * 一般日志：记录 mysql 正在运行的语句，包括查询、修改、更新等的每条 sql
     - 功能开关：general_log=OFF
     - 文件位置：general_log_file
+* 错误日志：mysql运行过程中的错误信息
+    - 功能开关：无
+    - 文件位置：log_error
 * 慢查询日志：记录查询比较耗时的 SQL 语句
     - 功能开关：slow_query_log=OFF
     - 阈值设置：long_query_time
