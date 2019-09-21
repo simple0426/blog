@@ -119,6 +119,7 @@ git config –global core.quotepath false
 
 # 故障收集
 * git bash乱码：git config --global core.quotepath false
+<<<<<<< HEAD:source/_posts/系统管理/辅助开发/版本库命令-git.md
 
 # 清除污点提交或大文件
 ## 前言
@@ -134,3 +135,5 @@ git config –global core.quotepath false
 * 克隆仓库：git clone --mirror git@github.com:OpenFibers/openfibers.github.com.git
 * 移除文件【可以是下列任意一个操作】：
 
+=======
+>>>>>>> fcc5027033424d5215a6877e3ec9b60c02d8e002:source/_posts/系统管理/linux命令/linux命令-git.md
