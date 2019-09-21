@@ -119,3 +119,18 @@ git config –global core.quotepath false
 
 # 故障收集
 * git bash乱码：git config --global core.quotepath false
+
+# 清除污点提交或大文件
+## 前言
+* git库的提交内容有时候会包含大文件或密码这样的隐私信息，当使用正常的git提交等措施删除文件或密码信息后，仍然可以从历史提交记录中找到这些内容。对于删除的大文件而言，它会占用仓库存储空间；对于密码等隐私内容来说，隐私内容依然存在。
+* git自带的工具git-filter-branch可以清除历史提交信息，但是操作比较复杂
+* 可以使用第三方工具[BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/)方便的处理文件和密码的历史提交信息
+
+## 工具
+* bfg是一个jar文件，下载地址：https://search.maven.org/classic/remote_content?g=com.madgag&a=bfg&v=LATEST
+* 以下命令bfg就是【java -jar bfg.jar】的别名
+
+## 操作步骤
+* 克隆仓库：git clone --mirror git@github.com:OpenFibers/openfibers.github.com.git
+* 移除文件【可以是下列任意一个操作】：
+
