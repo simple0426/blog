@@ -119,21 +119,30 @@ git config –global core.quotepath false
 
 # 故障收集
 * git bash乱码：git config --global core.quotepath false
-<<<<<<< HEAD:source/_posts/系统管理/辅助开发/版本库命令-git.md
 
 # 清除污点提交或大文件
 ## 前言
-* git库的提交内容有时候会包含大文件或密码这样的隐私信息，当使用正常的git提交等措施删除文件或密码信息后，仍然可以从历史提交记录中找到这些内容。对于删除的大文件而言，它会占用仓库存储空间；对于密码等隐私内容来说，隐私内容依然存在。
+* git库提交内容有时候会包含大文件或密码这样的隐私信息，当使用正常的git提交等措施删除文件或密码信息后，仍然可以从历史提交记录中找到这些内容。对于删除的大文件而言，它会占用仓库存储空间；对于密码等隐私内容来说，隐私内容依然存在。
 * git自带的工具git-filter-branch可以清除历史提交信息，但是操作比较复杂
 * 可以使用第三方工具[BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/)方便的处理文件和密码的历史提交信息
 
-## 工具
-* bfg是一个jar文件，下载地址：https://search.maven.org/classic/remote_content?g=com.madgag&a=bfg&v=LATEST
+## 工具介绍
+* bfg是一个jar文件，[下载地址](https://search.maven.org/classic/remote_content?g=com.madgag&a=bfg&v=LATEST)
 * 以下命令bfg就是【java -jar bfg.jar】的别名
 
 ## 操作步骤
-* 克隆仓库：git clone --mirror git@github.com:OpenFibers/openfibers.github.com.git
+* 克隆仓库元数据：git clone --mirror git@github.com:my-account/my-repo.git
 * 移除文件【可以是下列任意一个操作】：
-
-=======
->>>>>>> fcc5027033424d5215a6877e3ec9b60c02d8e002:source/_posts/系统管理/linux命令/linux命令-git.md
+    - 删除所有文件id_rsa或id_dsa：bfg --delete-files id_{dsa,rsa}  my-repo.git
+    - 删除目录.git：bfg --delete-folders .git --delete-files .git  --no-blob-protection  my-repo.git
+    - 删除大于1M的文件：bfg --strip-blobs-bigger-than 1M  my-repo.git
+    - 删除密码等文本：bfg --replace-text banned.txt  my-repo.git
+        + 在指定的文件【比如：banned.txt】中一行定义一个要删除的密码等隐私信息，执行删除后，密码信息会被【REMOVED】关键词替换
+        + 比如在banned.txt中包含原来密码信息【426hx118】，则在执行操作时会将历史记录中=的【426hx118】替换为REMOVED
+* 将本地修改推送到远程
+    1. cd my-repo.git
+    2. git reflog expire --expire=now --all && git gc --prune=now --aggressive
+    3. git push
+* 将远程元数据信息同步到本地
+    1. cd my-repo
+    2. git pull
