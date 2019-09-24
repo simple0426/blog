@@ -8,9 +8,12 @@ date: 2018-05-14 16:13:01
 ---
 
 # 库操作
-* 建数据库：create database db1 default charset utf8;
+* 查看存在的库：show databases;
+* 建数据库：create database olgboy_utf8 default character set utf8 collate utf8_general_ci;
+    - 不存在再建立：create database if not exists oldboy_default; 
 * 进入数据库：use db1
 * 删除数据库： drop database db1;
+    - 存在才删除：drop database if exists test1;
 
 # 数据类型
 ## 数字
@@ -52,6 +55,9 @@ create table tb1(
     gender char(1)
     )engine=innodb default charset='utf8' comment='跟进表（基于客户、联系人、询盘）';
 ```
+```
+create table test1(id int not null,name char(20),sex char(3),primary key(id),index k_name(name)); #建表时添加索引
+```
 ## 字段
 | 字段名 |                    数据类型                   |   是否为空  | 是否为[主键](#主键) |   是否有默认值  | 是否[自增](#自增) | [外键约束](#外键) |
 |--------|-----------------------------------------------|-------------|---------------------|-----------------|-------------------|-------------------|
@@ -70,11 +76,27 @@ create table tb1(
 * 语法：constraint 约束名称 foreign key(本表字段名) references 外表(外表字段名)
 
 # 修改表
-* 修改表名：alter table 表名 rename 新表名;
-* 增加字段：alter table 表名 add 列名 列类型;
-* 删除字段：alter table 表名 drop 列名;
+## 表名修改
+alter table 表名 rename 新表名;
+## 字段类型修改
 * 修改字段类型：alter table 表名 modify 列名 列类型;
 * 修改字段名及字段类型：alter table 表名 change 列名 新列名 列类型;
+
+## 增加字段
+* 增加字段到其他字段末尾【默认】：alter table 表名 add 列名 列类型 
+* 添加字段为第一个字段：alter table 表名 add 列名 列类型 FIRST
+* 在指定的字段后添加字段：alter table 表名 add 列名 列类型  AFTER col_name
+
+## 删除字段
+alter table 表名 drop 列名;
+
+## 索引
+* 添加索引：alter table test add index index_name(column1,column2...);
+* 删除索引：alter table test DROP INDEX index_name
+
+## 默认值
+* 设置字段默认值：ALTER TABLE tbl_name ALTER col_name SET DEFAULT literal
+* 删除字段默认值：ALTER TABLE tbl_name ALTER col_name  DROP DEFAULT
 
 # 删除表
 * 删除空表：drop table tb1;
@@ -83,7 +105,8 @@ create table tb1(
 * 清空表：truncate table tb1;
     - 物理删除，速度快，重新计算ID
 
-# 查看表结构
+# 查看表
+* 查看存在的表：show tables;
 * 表结构：desc tb_name;
 * 建表语句：show create table tb_name;
 

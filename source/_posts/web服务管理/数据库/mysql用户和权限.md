@@ -82,12 +82,10 @@ DROP USER 'jeffrey'@'localhost';
     - flush privileges;
 * 方式3：SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass');
     - 变更自身：SET PASSWORD = PASSWORD('mypass');
-* 方式4(shell)：mysqladmin -u user_name -h host_name password "new_password"
+* 方式4(mysqladmin)：mysqladmin -u user_name -h host_name password "new_password"
 
-## 免交互登录设置
-```
-# 文件~/.my.cnf设置
-[client]
-user='kingold'
-password='zjht098_kingold'
-```
+## 忘记密码
+* 跳过授权表启动：mysqld_safe --defaults-file=my.cnf --skip-grant-tables &
+* [变更密码](#变更密码)
+* 刷新权限：flush privileges;
+* 退出安全启动模式，以正常方式启动
