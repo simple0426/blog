@@ -62,16 +62,19 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/application/mysql \
 * 变更目录权限：chown -R mysql.mysql /application/mysql
 
 ## 变更为系统服务
-- cp support-files/mysql.server /etc/init.d/mysqld
-- chmod 700 /etc/init.d/mysqld
+- cp /application/mysql/support-files/mysql.server /etc/init.d/mysqld
+- chmod +x /etc/init.d/mysqld
 - sed -i '/^basedir=/s#=#&/application/mysql#' /etc/init.d/mysqld
 - sed -i '/^datadir=/s#=#&/application/mysql/data#' /etc/init.d/mysqld 
-- 开机启动
-    + sysv-rc-conf mysqld on【ubuntu】
-    + systemctl enable mysqld【centos】
-
-## 默认配置文件
-cp support-files/my-default.cnf /etc/my.cnf
+- 添加为系统服务：systemctl daemon-reload
+- 设置开机启动
+    + systemctl enable mysqld
+    + systemctl is-enabled mysqld
+- 变更pid文件位置（/etc/init.d/mysqld）
+    + 示例：mysqld_pid_file_path=/application/mysql/mysqld.pid
+    + 用法：sed -i '/^mysqld_pid_file_path/s#=#&/application/mysql/mysqld.pid#' /etc/init.d/mysqld
+    + 系统重载配置：systemctl daemon-reload
+    + 正常启停控制：systemctl start mysql
 
 ## 配置环境变量
 * echo "export PATH=/application/mysql/bin:\$PATH" >> /etc/profile
@@ -118,88 +121,44 @@ cp support-files/my-default.cnf /etc/my.cnf
 # 主从复制从配置：https://dev.mysql.com/doc/refman/5.6/en/replication-options-slave.html
 [client]
 default-character-set = utf8               
-port    = 3306
-socket = /data/mysql_home/data/mysql.sock
-user="root"
-password="root
+socket = /application/mysql/mysqld.sock
+# user="root"
+# password="root
 
 [mysqld]
-# 杂项设置
-character_set_server = utf8 #字符集
-collation_server = utf8_general_ci
-lower_case_table_names = 1 #表名大小写：0大小写敏感 1大小写不敏感【小写存储，混合对比】
+# 杂项
+lower_case_table_names = 0 #表名大小写敏感
 
 # 连接
-port = 3306
-bind-address = 0.0.0.0
-basedir = /data/mysql_home
-datadir = /data/mysql_home/data
-socket = /data/mysql_home/data/mysql.sock
-pid_file = /var/run/mysqld/mysqld.pid
+basedir = /application/mysql/
+datadir = /application/mysql/data
+socket = /application/mysql/mysqld.sock
+pid_file = /application/mysql/mysqld.pid
 back_log = 300 #操作系统监听队列保持的连接数【默认50 + (max_connections / 5)】
-max_connections = 3000 # mysql允许的连接数
-max_connect_errors = 30 # mysql允许单个客户端最大错误允许数量
+max_connections = 300 # mysql允许的连接数
 
 # 日志
-log_error = /data/mysql_home/log/mysqld.err
+# log_err 自定义设置有bug：mysqld_safe error: log-error set to
+# https://bugs.mysql.com/bug.php?id=84427
+log_error = /application/mysql/mysqld.err
+slow_query_log = 1
 long_query_time = 1
-slow_query_log_file = /data/mysql_home/log/slow.log
+slow_query_log_file = /application/mysql/slow.log
 
 # binlog设置
-expire_logs_days = 10 #保留的日志天数
-log—bin = mysql-bin
+# expire_logs_days = 10 #保留的日志天数
+log-bin = mysql-bin
 log-bin-index = mysql-bin.index
 binlog_format = statement # binlog格式
-binlog_cache_size = 4M #一个事务中为了记录sql状态所持有的cache大小
-max_binlog_cache_size = 64M
-max_binlog_size = 100M #单个binlog文件大小
-
-# 线程及文件数
-table_open_cache = 4096 # 所有线程打开表的数量
-open_files_limit = 1024  #需要为临时表和文件保留一些额外的文件描述符。
-thread_cache_size = 8  # 在cache中保留多少线程用于重用
-thread_concurrency = 8 # 允许的线程数据【核数*2】
-max_allowed_packet = 64M # server端能够接受的单个连接的最大的数据包大小
-thread_stack = 192K# 限定用于每个数据库线程的栈大小。默认设置足以满足大多数应用
-
-# 缓存设置
-sort_buffer_size = 1M
-read_buffer_size = 1M
-read_rnd_buffer_size = 4M
-join_buffer_size = 262144
-query_cache_size = 16M # 查询结果缓存大小
-query_cache_limit = 1M # 小于此值的查询结果才会被缓冲
-bulk_insert_buffer_size = 1M # 批量插入的缓冲区大小
-
-# 内存表
-max_heap_table_size = 16M
-tmp_table_size = 16M
-
-# innodb设置
-default-storage-engine = InnodB
-transaction_isolation = READ-COMMITTED # 设定默认的事务隔离级别
-innodb_data_home_dir = /usr/local/mysql/data # 表空间文件位置
-innodb_data_file_path = ibdata1:128M:autoextend # 表空间文件自增设置
-innodb_file_per_table = 0 # 表空间文件每个表一个文件存储
-innodb_additional_mem_pool_size = 4M #这个参数用来设置 InnoDB 存储的数据目录信息和其它内部数据结构的内存池大小
-innodb_buffer_pool_size = 32M # 缓存数据和索引的缓存大小
-innodb_file_io_threads = 4 # 文件IO的线程数，一般为 4
-innodb_thread_concurrency = 8  # 在Innodb核心内的允许线程数量.
-innodb_flush_log_at_trx_commit = 1 # innodb事务日志数据刷新到磁盘的策略【1为每次事务提交都刷新到磁盘】
-innodb_log_buffer_size = 2M # 事务日志写缓冲区大小
-innodb_log_file_size = 4M # 事务日志ib_logfile单个文件的大小
-innodb_log_files_in_group = 3 # 事务日志ib_logfile文件数
-innodb_max_dirty_pages_pct = 90  # Buffer_Pool中Dirty_Page所占的数量，直接影响InnoDB的关闭时间。
-innodb_lock_wait_timeout = 120 # 指示 MySQL在允许其他事务修改那些最终受事务回滚的数据之前要等待多长时间(秒数)
 
 # 复制操作从配置
 server-id = 1 
-replicate-ignore-db = mysql #忽略库mysql更新   
-replicate-ignore-table=db_name.tbl_name #忽略表db_name.tbl_name更新                            
-log-slave-updates # 默认从库不写binlog；但，从库作为其他从库的主库时，需开启binlog写入【配合log-bin设置】
-read-only=yes # 只读设置
-slave-skip-errors = 1032,1062,126,1114,1146,1048,1396  #从库更新时跳过指定错误
-relay-log-index = /usr/local/mysql/log/relaylog.index # relay-log设置
-relay-log-info-file = /usr/local/mysql/log/relaylog.info
-relay-log = /usr/local/mysql/log/relaylog
+# replicate-ignore-db = mysql #忽略库mysql更新   
+# replicate-ignore-table=db_name.tbl_name #忽略表db_name.tbl_name更新                            
+# log-slave-updates # 默认从库不写binlog；但，从库作为其他从库的主库时，需开启binlog写入【配合log-bin设置】
+# read-only=yes # 只读设置
+# slave-skip-errors = 1032,1062,126,1114,1146,1048,1396  #从库更新时跳过指定错误
+# relay-log-index = /usr/local/mysql/log/relaylog.index # relay-log设置
+# relay-log-info-file = /usr/local/mysql/log/relaylog.info
+# relay-log = /usr/local/mysql/log/relaylog
 ```
