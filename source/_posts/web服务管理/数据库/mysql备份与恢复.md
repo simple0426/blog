@@ -17,6 +17,9 @@ date: 2019-09-25 17:52:05
 * --default-character-set  设置导出的字符集
 * -F, --flush-logs  在每个数据库备份前，刷新binlog日志
 * --compact 去除注释部分
+* --master-data：主要用于主从复制，--single-transaction会覆盖此选项
+    - 在导出数据前，对所有表添加读锁【turn --lock-all-tables on】；
+    - 导出数据后，自动解锁【turns --lock-tablesoff】，并显示binlog文件名和文件内的position信息【CHANGE MASTER】。
 * --single-transaction      适用于innodb，保持数据一致性，隔离级别为：repeatable-read
 * -A, --all-databases 备份所有库，等同于--databases DB1 DB2 。。。
 * -B, --databases  导出多个数据库
