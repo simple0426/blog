@@ -363,6 +363,7 @@ vars:
 ## when
 * 一次性判断  
 * when中直接使用变量名，不需要使用双大括号
+* 多条件复杂逻辑关系可使用括号分组，如：【project_alias == "tomcat-crm" and (flag is changed or exe is defined)】
 * 多个条件为and关系时可以使用列表形式
 
 ```
