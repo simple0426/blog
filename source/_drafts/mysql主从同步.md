@@ -3,41 +3,40 @@ title: mysql主从同步
 tags:
 categories:
 ---
-# 复制功能优势
+# 复制简介
+## 复制功能优势
 * 横向扩展解决方案：更新和写操作在主库，读操作在从库
 * 数据安全性：从库可以停止同步、延迟同步、执行数据备份
 * 离线数据分析
 * 远距离数据分发
 
-# 数据同步方案
-* 默认，复制操作是单向的、异步的
-* 同步解决方案：NDB集群：https://dev.mysql.com/doc/refman/5.6/en/mysql-cluster.html
-* 半同步：主库事务的提交必须保证至少有一个从库也执行了相应操作：https://dev.mysql.com/doc/refman/5.6/en/replication-semisync.html
-* 延迟复制【从库操作】：https://dev.mysql.com/doc/refman/5.6/en/replication-delayed.html
-    - STOP SLAVE
-    - CHANGE MASTER TO MASTER_DELAY = N;【seconds】
-    - START SLAVE
-
-# 复制日志的格式
+## binlog日志格式
 * SBR（Statement Based Replication）：复制全部的sql语句，默认方式
+    - 复制存储过程和触发器时，可能会有问题
+    - binlog文件记录的内容少，备份和还原也更快
+    - 记录原始的sql语句，可以用于安全审计
 * RBR（Row Based Replication）：复制变更的字段内容
+    - 可以精确记录表和字段是如何更改的，因此binlog文件记录的内容较多
+    - 不能直观的看到sql执行历史，解析binlog时：【mysqlbinlog --base64-output=DECODE-ROWS --verbose】
 * MBR（Mixed Based Replication）：前两种方式的变种组合
-* GUIDs ：基于GUID的复制方式，不必直接基于binlog文件和文件中的position：https://dev.mysql.com/doc/refman/5.6/en/replication-gtids.html
+* [GUIDs][replication-gtids] ：基于GUID的复制方式，不必直接基于binlog文件和文件中的position
 
-# 主从复制的角色定位
+## 主从复制的角色定位
 * 主：只能开启binlog功能，并将全部事件（不能指定事件类型）记录在binlog中
 * 从：
     - 记录已经在从库上读取并执行的binlog文件名和文件内的偏移信息（position）
     - 可以决定只执行binlog的部分内容【只同步部分库表，或不同步部分库表】
     - 可以决定：断开、重连、恢复同步动作
 
+## [复制原理和细节][replication-implementation-details]
+* 主库配置log-bin后等待从机连接
+* 从机使用change master命令配置链接信息【存储在master.info文件】，使用start slave开启复制
+    - master.info文件中也保存slave的IO线程从主机上读取binlog的位置：文件名和文件内的position信息
+* 从机的io线程和主机的binlog dump线程通信，传输binlog
+* 从机的io线程将收到的binlog存入relay-log文件中
+* 从机的sql线程读取relay-log中的日志，并在数据库中执行相应的sql操作【状态信息保存在relay-log.info】
 
-# 复制原理和细节：https://dev.mysql.com/doc/refman/5.6/en/replication-notes.html
-# 管理和监控：https://dev.mysql.com/doc/refman/5.6/en/replication-administration.html
-# 复制选项和参数：https://dev.mysql.com/doc/refman/5.6/en/replication-options.html
-
-# 操作步骤
-参考：https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html
+# [操作步骤][replication-howto]
 ## 主配置【主】
 >配置后需要重启server
 
@@ -64,16 +63,15 @@ grant replication slave on *.* to 'repl'@'172.16.0.215' identified by 'repl20190
 * 锁表【会话终端1】： FLUSH TABLES WITH READ LOCK；
 * 导出数据【会话终端2】：mysqldump
 * 查看同步信息【会话终端1】：SHOW MASTER STATUS;
-* 在解锁【会话终端1中unlock tables或直接退出会话终端1】
+* 解锁【会话终端1中unlock tables或直接退出会话终端1】
 
 ### 逻辑导出-一键方式
->mysqldump自动处理锁表解锁、显示同步信息（导出的sql文件中）等
+>mysqldump使用--master-data参数时，会自动处理锁表解锁、显示同步信息（导出的sql文件中）等
 
 mysqldump --all-databases --master-data > dbdump.db
 
-### 物理导出
-* 适用于数据量较多的数据库
-* 参考：https://dev.mysql.com/doc/refman/5.6/en/replication-howto-rawdata.html
+### [物理导出][replication-howto-rawdata]
+适用于数据量较多的数据库
 
 ## 导入数据【从】
 >从库已有同步时，则使用--skip-slave-start启动server，或stop slave停止同步
@@ -85,29 +83,36 @@ mysqldump --all-databases --master-data > dbdump.db
 * 连接主库
 
 ```
- mysql> CHANGE MASTER TO
-    ->     MASTER_HOST='master_host_name',
-    ->     MASTER_USER='replication_user_name',
-    ->     MASTER_PASSWORD='replication_password',
-    ->     MASTER_LOG_FILE='recorded_log_file_name',
-    ->     MASTER_LOG_POS=recorded_log_position;
+mysql> CHANGE MASTER TO
+->     MASTER_HOST='master_host_name',
+->     MASTER_USER='replication_user_name',
+->     MASTER_PASSWORD='replication_password',
+->     MASTER_LOG_FILE='recorded_log_file_name',
+->     MASTER_LOG_POS=recorded_log_position;
 ```
 
 * 开启同步：START SLAVE;
 
 ## 查看同步状态【从】
-* SHOW SLAVE STATUS\G
+* SHOW SLAVE STATUS\G;
+    - Slave_IO_State：io线程状态
     - Slave_IO_Running：io线程是否在运行
     - Slave_SQL_Running：sql线程是否在运行
     - Seconds_Behind_Maste：主从延迟
 
-# 从库信息
-## 包含的文件
-* relay log：由slave IO线程写入，包含从主库读取的binlog
-* master info：包含连接主库的信息
-* relay log info：从库relay log的执行情况
+# [复制解决方案][replication-solutions]
+* 异步复制【默认】
+    - 级联复制【操作如下】
+        + 主：开启binlog
+        + 主的从：开启binlog、log_slave_updates
+        + 从的从：正常配置
+    - [延迟复制][replication-delayed]【操作如下】
+        + STOP SLAVE
+        + CHANGE MASTER TO MASTER_DELAY = N;【seconds】
+        + START SLAVE
+* 同步复制：[NDB集群][mysql-cluster]
+* [半同步][replication-semisync]：主库事务的提交必须保证至少有一个从库也执行了相应操作【阿里云rds高可用即采用此种方式】
 
-# 复制解决方案：https://dev.mysql.com/doc/refman/5.6/en/replication-solutions.html
 ## 备份只读库的设置
 * 锁表： FLUSH TABLES WITH READ LOCK;
 * 全局只读：SET GLOBAL read_only = ON;
@@ -115,24 +120,53 @@ mysqldump --all-databases --master-data > dbdump.db
 * 全局读解锁：SET GLOBAL read_only = OFF;
 * 解锁表：UNLOCK TABLES;
 
-## 只复制某些库表或忽略某些库表【只适用于基于row格式的binlog】
-* Replicate_Do_DB
-* Replicate_Ignore_DB
-* Replicate_Do_Table
-* Replicate_Ignore_Table
-* Replicate_Wild_Do_Table
-* Replicate_Wild_Ignore_Table
+## 过滤库表的复制选项
+* 数据库级别的设置【do-db、ignore-db】会由于binlog格式SBR和RBR的不同产生不同效果
+    - --replicate-do-db
+    - --replicate-ignore-db
+* 表级别的设置，则不会因binlog格式不同产生不同效果，因此要尽量使用table级别设置
+    - --replicate-do-table
+    - --replicate-ignore-table
+    - --replicate-wild-ignore-table
+    - --replicate-wild-do-table
 
-## 1主多从主故障处理
-* 可以提升为主的从机要求：配置log-bin，没有配置log_slave_updates【作为从机时，要写binlog只能开启log_slave_updates】
+## 提升复制性能
+* 级联复制
+* 其他提升复制性能操作
+    - 数据文件、binlog文件、relay-log文件放到不同物理磁盘
+    - 将实例的不同数据库同步到不同从机
+    - 如果从机不作为其他从机的主，可以注释log_slave_updates，避免从机写binlog文件
+
+## 主故障切换
+* 从提升为主的配置：配置log-bin，禁止log_slave_updates
+    - 从机开启log-bin参数不会写binlog，同时配置log_slave_updates则会写binlog
+    - 禁止log_slave_updates：当从机【slave-1】配置log_slave_updates，如果主故障，需要切换此从机【slave-1】为主机时，其他从机【slave-2】会在已接收过原master的binlog更新的同时，也接收新master【slave-1】的binlog更新，此时会出现重复操作
+* 所有从机停止io线程【STOP SLAVE IO_THREAD】，并确认sql线程已经完全读取并执行relay-log中的信息【show proceslist】
 * slave1【提升为master】
     - STOP SLAVE
-    -  RESET MASTER
+    - RESET MASTER
 * slave2、slave3【其他从机】
     - STOP SLAVE
     - CHANGE MASTER TO MASTER_HOST='Slave1'【user, password, port】
     - START SLAVE 
 
+## 读写分离
+## 主高可用
+# 故障处理
+* 确认master开启binlog【show master status】
+* 确认master和slave的server-id不一样
+* 确认slave的 Slave_IO_Running和Slave_SQL_Running状态正常【show slave status】
+* 确认slave没有手动写入数据，造成数据不一致
+* 如果确认可以忽略部分不一致，可以跳过部分事件
+    - 语法：SET GLOBAL sql_slave_skip_counter = N;
+    - N表示跳过的事件数【事务类的一条事务，非事务类的一条sql语句】
 
-# 参考信息
-https://dev.mysql.com/doc/refman/5.6/en/replication.html
+---
+[replication-howto]: https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html
+[replication-howto-rawdata]: https://dev.mysql.com/doc/refman/5.6/en/replication-howto-rawdata.html
+[replication-solutions]: https://dev.mysql.com/doc/refman/5.6/en/replication-solutions.html
+[replication-gtids]: https://dev.mysql.com/doc/refman/5.6/en/replication-gtids.html
+[mysql-cluster]: https://dev.mysql.com/doc/refman/5.6/en/mysql-cluster.html
+[replication-semisync]: https://dev.mysql.com/doc/refman/5.6/en/replication-semisync.html
+[replication-delayed]: https://dev.mysql.com/doc/refman/5.6/en/replication-delayed.html
+[replication-implementation-details]: https://dev.mysql.com/doc/refman/5.6/en/replication-implementation-details.html
