@@ -1,14 +1,66 @@
 ---
 title: mysql主从同步
 tags:
+  - 主从复制
 categories:
+  - mysql
+date: 2019-09-29 16:28:50
 ---
+
 # 复制简介
 ## 复制功能优势
 * 横向扩展解决方案：更新和写操作在主库，读操作在从库
 * 数据安全性：从库可以停止同步、延迟同步、执行数据备份
 * 离线数据分析
 * 远距离数据分发
+
+## 复制方式
+* 异步复制
+    - 一般结构【默认】
+        + 特点：单层结构、所有slave直接连接master
+    - 级联复制【操作如下】
+        + 主：开启binlog
+        + 主的从：开启binlog、log_slave_updates
+        + 从的从：正常配置
+    - [延迟复制][replication-delayed]【操作如下】
+        + STOP SLAVE
+        + CHANGE MASTER TO MASTER_DELAY = N;【seconds】
+        + START SLAVE
+    - [双向复制][master-master-mysql]【官方无此说明】：正向、反向各做一次主从同步操作，配置文件如下：
+        ```
+        # server-A
+        server-id=1
+        log-bin="mysql-bin"
+        log_slave_updates   = 1
+        binlog-ignore-db=test
+        binlog-ignore-db=information_schema
+        replicate-ignore-db=test
+        replicate-ignore-db=information_schema
+        relay-log="mysql-relay-log"
+        auto-increment-increment = 2
+        auto-increment-offset = 1
+        expire_logs_days    = 10
+        max_binlog_size     = 100M
+        
+        # server-B
+        server-id=2
+        log-bin="mysql-bin"
+        log_slave_updates   = 1
+        binlog-ignore-db=test
+        binlog-ignore-db=information_schema
+        replicate-ignore-db=test
+        replicate-ignore-db=information_schema
+        relay-log="mysql-relay-log"
+        auto-increment-increment = 2
+        auto-increment-offset = 2
+        expire_logs_days    = 10
+        max_binlog_size     = 100M
+        ```
+        - 问题
+            + 需要避免在两主上同时对一个表数据进行修改
+            + 不能解决磁盘io压力
+* 同步复制：[NDB集群][mysql-cluster]
+* [半同步][replication-semisync]：主库事务的提交必须保证至少有一个从库也执行了相应操作【阿里云rds高可用即采用此种方式】
 
 ## binlog日志格式
 * SBR（Statement Based Replication）：复制全部的sql语句，默认方式
@@ -30,8 +82,7 @@ categories:
 
 ## [复制原理和细节][replication-implementation-details]
 * 主库配置log-bin后等待从机连接
-* 从机使用change master命令配置链接信息【存储在master.info文件】，使用start slave开启复制
-    - master.info文件中也保存slave的IO线程从主机上读取binlog的位置：文件名和文件内的position信息
+* 从机使用change master命令配置连接和复制状态信息【存储在master.info文件】，使用start slave开启复制
 * 从机的io线程和主机的binlog dump线程通信，传输binlog
 * 从机的io线程将收到的binlog存入relay-log文件中
 * 从机的sql线程读取relay-log中的日志，并在数据库中执行相应的sql操作【状态信息保存在relay-log.info】
@@ -42,7 +93,6 @@ categories:
 
 * server-id=1
 * log-bin=mysql-bin
-* skip_networking=0 【默认已开启网络连接，这是一个只读变量，只能在配置文件设置】
 * 以下为保持innodb事务一致性的设置：
     - innodb_flush_log_at_trx_commit=1
     - sync_binlog=1
@@ -100,31 +150,16 @@ mysql> CHANGE MASTER TO
     - Slave_SQL_Running：sql线程是否在运行
     - Seconds_Behind_Maste：主从延迟
 
-# [复制解决方案][replication-solutions]
-* 异步复制【默认】
-    - 级联复制【操作如下】
-        + 主：开启binlog
-        + 主的从：开启binlog、log_slave_updates
-        + 从的从：正常配置
-    - [延迟复制][replication-delayed]【操作如下】
-        + STOP SLAVE
-        + CHANGE MASTER TO MASTER_DELAY = N;【seconds】
-        + START SLAVE
-* 同步复制：[NDB集群][mysql-cluster]
-* [半同步][replication-semisync]：主库事务的提交必须保证至少有一个从库也执行了相应操作【阿里云rds高可用即采用此种方式】
+# [其他复制选项][replication-solutions]
+## 防止从库写操作
+* 从库配置read-only=yes参数【此时只允许从服务器线程或super权限用户执行更新操作】
+* 复制忽略mysql、information_schema库，主从建立单独的应用连接用户，从库建立的用户只授予读权限（select）
 
-## 备份只读库的设置
-* 锁表： FLUSH TABLES WITH READ LOCK;
-* 全局只读：SET GLOBAL read_only = ON;
-* 备份：mysqldump
-* 全局读解锁：SET GLOBAL read_only = OFF;
-* 解锁表：UNLOCK TABLES;
-
-## 过滤库表的复制选项
-* 数据库级别的设置【do-db、ignore-db】会由于binlog格式SBR和RBR的不同产生不同效果
+## 过滤库表
+* 数据库级别的设置(do-db、ignore-db)：会由于binlog格式SBR和RBR的不同产生不同效果
     - --replicate-do-db
     - --replicate-ignore-db
-* 表级别的设置，则不会因binlog格式不同产生不同效果，因此要尽量使用table级别设置
+* 表级别的设置：不会因binlog格式不同产生不同效果，因此要尽量使用table级别设置
     - --replicate-do-table
     - --replicate-ignore-table
     - --replicate-wild-ignore-table
@@ -150,16 +185,17 @@ mysql> CHANGE MASTER TO
     - CHANGE MASTER TO MASTER_HOST='Slave1'【user, password, port】
     - START SLAVE 
 
-## 读写分离
-## 主高可用
 # 故障处理
 * 确认master开启binlog【show master status】
 * 确认master和slave的server-id不一样
 * 确认slave的 Slave_IO_Running和Slave_SQL_Running状态正常【show slave status】
 * 确认slave没有手动写入数据，造成数据不一致
-* 如果确认可以忽略部分不一致，可以跳过部分事件
+* 跳过来自主服务器的下一个语句【事件：事务类的一条事务，非事务类的一条sql语句】
     - 语法：SET GLOBAL sql_slave_skip_counter = N;
-    - N表示跳过的事件数【事务类的一条事务，非事务类的一条sql语句】
+    - N=1的情况：来自主服务器的下一个语句不使用AUTO_INCREMENT或LAST_INSERT_ID()
+    - N=2的情况：使用AUTO_INCREMENT或LAST_INSERT_ID()时，此时它们从主服务器的二进制日志中取两个事件
+* 配置跳过指定的错误号【比如：由于重复造成的不能入库】
+    - 语法：slave-skip-errors=1032,1062,1007
 
 ---
 [replication-howto]: https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html
@@ -170,3 +206,4 @@ mysql> CHANGE MASTER TO
 [replication-semisync]: https://dev.mysql.com/doc/refman/5.6/en/replication-semisync.html
 [replication-delayed]: https://dev.mysql.com/doc/refman/5.6/en/replication-delayed.html
 [replication-implementation-details]: https://dev.mysql.com/doc/refman/5.6/en/replication-implementation-details.html
+[master-master-mysql]: https://dinfratechsource.com/2018/11/11/configure-master-master-mysql-database-replication/

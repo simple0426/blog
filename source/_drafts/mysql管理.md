@@ -1,7 +1,10 @@
 ---
 title: mysql管理
 tags:
-categories:
+  - 存储过程
+  - mysqladmin
+  - 锁表
+categories: ['mysql']
 ---
 # mysqladmin
 服务端mysqld的管理工具，帮助信息：mysqladmin --help
@@ -11,51 +14,24 @@ categories:
 * help：帮助信息
 * show `[full]`processlist;：进程列表
 * show variables;：变量信息
-* show `[global]` status;：状态和统计信息
+* show `[func_name]` status;：状态和统计信息
 
-# 存储过程与函数
-## 查看
-* 查看自定义函数：show function status;
-* 查看存储过程：show procedure status;
+# 使用优化
+* 能用定长char的就不用varchar
+* 查询时，尽量不要使用select \*，同时要用where条件匹配
+* 尽量使用批量插入
 
-## 定义存储过程
->批量建表的范例
+# 锁表处理
+## 情景1
+* 现象与解释：mysql命令行执行时，sql挂起；使用show processlist查看，该sql线程状态为【waiting for table metadata lock】；这是由于该表有正在执行的其他长事务（sql），进而阻塞了同表的后续操作。
+* 处理
+    - 使用【show processlist】查看长事务的线程id
+    - 使用kill命令杀死改线程
 
-```
-delimiter // -- 定义分界符
-drop procedure if exists create_batch_table; -- 删除已经存在的存储过程
-create procedure create_batch_table() -- 创建存储过程
-begin -- 开始存储过程
-declare i int; -- 定义变量类型
-set i = 2001; -- 设置变量
-while i < 2005 do -- 循环开始
-  set @create=CONCAT('create table c_fu_', i , ' like c_fu_2000;'); -- 定义创建表的语句
-  select @create; -- 显示建表语句
-   prepare tmt from @create; -- 预编译sql语句
-   execute tmt; -- 执行sql语句
-   deallocate prepare tmt;  -- 收回sql游标cursor
-  set i = i + 1; -- 循环自增
-end while; -- 循环结束
-end // -- 结束存储过程
-call create_batch_table(); -- 调用存储过程
-```
-
-## 导出存储过程与函数
->必须结合数据的导出
-
-mysqldump crm_test -R > crm_test.sql
-
-# 日志分类
-* 一般日志：记录 mysql 正在运行的语句，包括查询、修改、更新等的每条 sql
-    - 功能开关：general_log=OFF
-    - 文件位置：general_log_file
-* 错误日志：mysql运行过程中的错误信息
-    - 功能开关：无
-    - 文件位置：log_error
-* 慢查询日志：记录查询比较耗时的 SQL 语句
-    - 功能开关：slow_query_log=OFF
-    - 阈值设置：long_query_time
-    - 文件位置：slow_query_log_file
-* binlog日志：记录数据修改记录，包括创建表、数据更新等
-    - 功能开关：log_bin=ON
-    - 文件位置：log_bin_index、log_bin_basename
+## 情景2
+* 现象和解释：对该表进行操作时，客户端显示锁表（比如：java客户端中出现错误【Lock wait timeout exceeded; try restarting transaction】，但是通过show processlist命令看不到该表的任何操作；实际上该表存在未提交的事务，可以在
+information_schema.innodb_trx中查看到。
+* 处理
+    - 使用【select * from information_schema.innodb_trx\G】查找相关表的线程id
+    - 使用kill命令杀死该线程【由于是事务类型操作，杀死线程后，事务会回滚】
+  

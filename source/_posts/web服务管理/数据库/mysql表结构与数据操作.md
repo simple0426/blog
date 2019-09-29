@@ -1,7 +1,9 @@
 ---
-title: mysql表操作
+title: mysql表结构与数据操作
 tags:
   - mysql
+  - 索引
+  - 存储过程
 categories:
   - mysql
 date: 2018-05-14 16:13:01
@@ -48,15 +50,28 @@ date: 2018-05-14 16:13:01
 # 新建表
 ## 范例
 ```
+CREATE TABLE subject_comment_manager (
+  subject_comment_manager_id bigint(12) NOT NULL auto_increment COMMENT '主键',
+  subject_type tinyint(2) NOT NULL COMMENT '素材类型',
+  subject_primary_key varchar(255) NOT NULL COMMENT '素材的主键（词条是名称，文章是iden，组图是id，视频是MD5）',
+  subject_title varchar(255) NOT NULL COMMENT '素材的名称',
+  edit_user_nick varchar(64) default NULL COMMENT '修改人',
+  edit_user_time timestamp NULL default NULL COMMENT '修改时间',
+  edit_comment varchar(255) default NULL COMMENT '修改的理由',
+  state tinyint(1) NOT NULL default '1' COMMENT '0代表关闭，1代表正常',
+  PRIMARY KEY  (subject_comment_manager_id),
+  KEY IDX_PRIMARYKEY (subject_primary_key(32)), 
+  KEY IDX_SUBJECT_TITLE (subject_title(32)),
+  KEY index_nick_type (edit_user_nick(32),subject_type)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+```
+```
 create table tb1(
     id int not null auto_increment primary key, 
     name char(20),
     age int default 18,
     gender char(1)
     )engine=innodb default charset='utf8' comment='跟进表（基于客户、联系人、询盘）';
-```
-```
-create table test1(id int not null,name char(20),sex char(3),primary key(id),index k_name(name)); #建表时添加索引
 ```
 ## 字段
 | 字段名 |                    数据类型                   |   是否为空  | 是否为[主键](#主键) |   是否有默认值  | 是否[自增](#自增) | [外键约束](#外键) |
@@ -75,6 +90,22 @@ create table test1(id int not null,name char(20),sex char(3),primary key(id),ind
 * 约束：只能是某个表中已经存在的字段
 * 语法：constraint 约束名称 foreign key(本表字段名) references 外表(外表字段名)
 
+## 批量建表
+>使用like语法创建结构一样的表：create table tb_name1 like tb_name2
+
+```
+import pymysql
+
+tb_list = ['c_fu', 'c_fu_file', 'e_email', 'e_email_body', 'e_email_file', 'e_email_to', 'e_email_track', 'f_mem_upload']
+conn = pymysql.connect(host='127.0.0.1', user='user', password='pass_str', database='crm_big3', charset='utf8')
+for index in range(2001, 2003):
+    for table in tb_list:
+        cursor = conn.cursor(cursor=pymysql.cursors.Cursor)
+        cursor.execute('create table %s_%s like %s_2000' % (table, index, table))
+        cursor.close()
+conn.close()
+```
+
 # 修改表
 ## 表名修改
 alter table 表名 rename 新表名;
@@ -89,10 +120,6 @@ alter table 表名 rename 新表名;
 
 ## 删除字段
 alter table 表名 drop 列名;
-
-## 索引
-* 添加索引：alter table test add index index_name(column1,column2...);
-* 删除索引：alter table test DROP INDEX index_name
 
 ## 默认值
 * 设置字段默认值：ALTER TABLE tbl_name ALTER col_name SET DEFAULT literal
@@ -248,10 +275,53 @@ select sid,sname from student union select tid,tname
     - `<=`
     - `=`
 
-# mysql与python
+# 索引
+## 介绍
+* 一般对select查询的where条件列建立索引
+* 可以对多个字段、一个字段、一个字段的前n个字符建立索引
+* 由于复合索引的前缀特性，索引内的字段顺序很重要【一般将常用的列放在前边】
+* 不应当建立索引的情况
+  - 频繁更新的字段【数据插入时，也需要更新索引，这会降低更新操作性能】
+  - 数据量小的表，或字段内容较少的字段（如性别、旗标）
+  - 字段值为空【此时，查询不走索引】
+  - 字段为主键【主键创建时默认会创建索引】
+
+## 管理
+* 建立索引：
+  - create table test1(id int not null,name char(20),sex char(3),primary key(id),index k_name(name(2))); 
+  - alter table test add index index_name(column1,column2...);
+  - create index index_name on test(name); 
+* 删除索引
+  - alter table test DROP INDEX index_name
+  - drop index index_Sage on student;
+* 查询是否有索引：show crate table tb_name
+* 查询是否使用索引：explain select \* 。。。
+
+# 存储过程
+>批量建表的范例
+
+```
+delimiter // -- 定义分界符
+drop procedure if exists create_batch_table; -- 删除已经存在的存储过程
+create procedure create_batch_table() -- 创建存储过程
+begin -- 开始存储过程
+declare i int; -- 定义变量类型
+set i = 2001; -- 设置变量
+while i < 2005 do -- 循环开始
+  set @create=CONCAT('create table c_fu_', i , ' like c_fu_2000;'); -- 定义创建表的语句
+  select @create; -- 显示建表语句
+   prepare tmt from @create; -- 预编译sql语句
+   execute tmt; -- 执行sql语句
+   deallocate prepare tmt;  -- 收回sql游标cursor
+  set i = i + 1; -- 循环自增
+end while; -- 循环结束
+end // -- 结束存储过程
+call create_batch_table(); -- 调用存储过程
+```
+# python使用
 >pymysql模块
 
-```python
+```
 import pymysql
 
 conn = pymysql.connect(host='127.0.0.1', user='kingold', password='zjht098_kingold',

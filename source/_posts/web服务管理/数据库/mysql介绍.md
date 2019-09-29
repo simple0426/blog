@@ -122,12 +122,6 @@ mysql命令行下默认设置下，事务都是自动提交的；开启事务有
 * release savepoint identifier：删除一个事务保存点
 * rollback to identifier：把事务回滚到保存点
 
-# SQL操作分类
-* DDL(数据定义语言)：create、alter、drop
-* DML(数据修改语言)：insert、delete、update
-* DQL(数据查询语言)：select、order by、group by、having
-* DCL(数据控制语言)：create user、grant、revoke、drop user
-
 # 字符集
 ## 概念
 * 字符集（character set）：字符和编码对组成的集合
@@ -205,6 +199,27 @@ mysql命令行下默认设置下，事务都是自动提交的；开启事务有
 * 新增字段设置：ALTER TABLE test_table ADD COLUMN char_column VARCHAR(25) CHARACTER SET utf8;
 * 修改当前字段：`alter table table_name modify column column_attr character set character_name [COLLATE ...]`
     - 范例：alter table test1 modify name char(10) character set utf8 COLLATE utf8_general_ci; 
+
+# 日志分类
+* 一般日志：记录 mysql 正在运行的语句，包括查询、修改、更新等的每条 sql
+    - 功能开关：general_log=OFF
+    - 文件位置：general_log_file
+* 错误日志：mysql运行过程中的错误信息
+    - 功能开关：无
+    - 文件位置：log_error
+* 慢查询日志：记录查询比较耗时的 SQL 语句
+    - 功能开关：slow_query_log=OFF
+    - 阈值设置：long_query_time
+    - 文件位置：slow_query_log_file
+* binlog日志：记录数据修改记录，包括创建表、数据更新等
+    - 功能开关：log_bin=ON
+    - 文件位置：log_bin_index、log_bin_basename
+
+# SQL操作分类
+* DDL(数据定义语言)：create、alter、drop
+* DML(数据修改语言)：insert、delete、update
+* DQL(数据查询语言)：select、order by、group by、having
+* DCL(数据控制语言)：create user、grant、revoke、drop user
 
 ---
 # 参考

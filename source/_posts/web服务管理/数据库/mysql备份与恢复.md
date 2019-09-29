@@ -68,6 +68,13 @@ do
     fi
 done
 ```
+## 导出存储过程与函数
+* 注意事项：必须结合数据的导出
+* 查看存储过程与函数
+    - 查看自定义函数：show function status;
+    - 查看存储过程：show procedure status;
+* 操作：mysqldump crm_test -R > crm_test.sql
+
 # 备份选项
 ## 全量备份与增量备份
 * 全量备份：使用mysqldump命令导出的数据
