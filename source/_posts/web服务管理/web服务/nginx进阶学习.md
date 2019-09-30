@@ -303,6 +303,17 @@ rewrite ^(.*)$  https://$host$1 permanent;【与下面return301效果相同】
 * 如果replacement字符串包括新的请求参数，以往的请求参数会添加到新参数后面。如果不希望这样，在replacement字符串末尾加一个问号“？”，就可以避免，比如：`rewrite ^/users/(.*)$ /show?user=$1? last;`
 * 如果正则表达式中包含字符“}”或者“;”，整个表达式应该被包含在单引号或双引号的引用中。
 
+# 跨域设置
+```
+add_header Access-Control-Allow-Methods '*';  # 指定允许跨域的方法，*代表所有
+add_header Access-Control-Max-Age 3600;   # 预检命令的缓存，如果不缓存每次会发送两次请求
+add_header Access-Control-Allow-Credentials 'true';   # 带cookie请求需要加上这个字段，并设置为true
+add_header Access-Control-Allow-Origin $http_origin;  # 表示允许这个域跨域调用（客户端发送请求的域名和端口）  $http_origin动态获取请求客户端请求的域 不用*的原因是带cookie的请求不支持*号
+add_header Access-Control-Allow-Headers $http_access_control_request_headers;  # 表示请求头的字段动态获取
+if ($request_method = 'OPTIONS'){  # OPTIONS预检命令，预检命令通过时才发送请求，检查请求的类型是不是预检命令【因为是判断url变量，所以此选项位于location下】
+    return 200;
+}
+```
 # 与lua集成设置
 ## 依赖软件下载
 * [nginx][1]
