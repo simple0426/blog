@@ -11,6 +11,7 @@ categories:
     - LVM
 * 格式化
 * 文件系统
+    - drbd【distribute replication block device】：分布式块设备同步
     - nfs【废弃】
     - autofs【废弃】
     - 分布式文件系统
@@ -48,16 +49,10 @@ categories:
 * zabbix
 * open-falcon【重点】
 
-# vpn分类
-* 远程拨入办公区
-* 站点之间网络互连
-* 翻墙代理类
-    - openvpn已废弃【配置麻烦、需要客户端、只能全局代理】
-    - shadowsocks：见相关参考
-
-# 辅助开发服务
+# 辅助开发及部署
+* 跨互联网站点间vpn
 * ftp
 * samba
-* bind
+* dns【bind9】
 * git
 * vpn
