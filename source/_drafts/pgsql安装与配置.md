@@ -1,21 +1,20 @@
 ---
 title: pgsql安装与配置
-tags:
-categories:
+tags: postgresql
+categories: ['postgresql']
 ---
 # 依赖安装
 * make
 * gcc
-* libreadline6 libreadline6-dev【用于sql命令行提示】
-* zlib1g zlib1g-dev【备份和恢复时压缩】
+* readline：libreadline6 libreadline6-dev【用于sql命令行提示】
+* zlib：zlib1g zlib1g-dev【备份和恢复时压缩】
 * libpython2.7 libpython2.7-dev libpython3.5 libpython3.5-dev【python语言支持】
-* OpenSSL【连接加密】
-* libxslt1.1 libxslt1-dev【xlst与xml2支持】
-* libxml2 libxml2-dev【添加xml支持】
+* ssl：OpenSSL【连接加密】
 
 # 安装
-* 编译配置：./configure --with-python --with-openssl --with-libxml --with-libxslt
-* 编译与安装：make && sudo make install
+* ./configure --with-python --with-openssl --with-libxml --with-libxslt
+* make 
+* sudo make install
 
 # 链接库设置
 * 实时设置链接库【官方】
@@ -51,9 +50,21 @@ psql test
 
 # postgis安装
 >postgis:PostgreSQL的空间和地理对象
-## 依赖安装
-http://www.postgis.net/docs/postgis_installation.html#install_requirements
-# 安装
-./configure --with-pgconfig=/usr/lib/postgresql/9.3/bin/pg_config  --without-topology
-sudo make
-sudo make install
+## [依赖安装](http://www.postgis.net/docs/postgis_installation.html#install_requirements)
+* PostgreSQL9.4以上
+* gcc
+* make
+* proj4：proj-bin
+* geos：libgeos-c1v5 libgeos-dev 
+* xml2：libxml2 libxml2-dev
+* json-c：libjson-c2 libjson-c-dev
+* gdal：libgdal20 gdal-bin libgdal-dev 
+* llvm：llvm-6.0 llvm-6.0-dev 
+
+## 安装
+* ./configure --with-pgconfig=/usr/local/pgsql/bin/pg_config --without-topology
+* make
+* sudo make install
+
+## 开启postgis
+psql -d test -c "CREATE EXTENSION postgis;"
