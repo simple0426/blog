@@ -1,5 +1,5 @@
 ---
-title: pgsql安装与配置
+title: pgsql-安装
 tags: postgresql
 categories: ['postgresql']
 ---
@@ -62,9 +62,10 @@ psql test
 * llvm：llvm-6.0 llvm-6.0-dev 
 
 ## 安装
-* ./configure --with-pgconfig=/usr/local/pgsql/bin/pg_config --without-topology
+* ./configure --with-pgconfig=/usr/local/pgsql/bin/pg_config
 * make
 * sudo make install
 
 ## 开启postgis
-psql -d test -c "CREATE EXTENSION postgis;"
+* postgis：psql -d test -c "CREATE EXTENSION postgis;"
+* postgis_topology:psql -d test -c "CREATE EXTENSION postgis_topology;"
