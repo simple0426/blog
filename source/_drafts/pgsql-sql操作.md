@@ -100,5 +100,48 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on sequences to xiu;
 * 恢复：psql -h 10.150.10.40 -p 5432 -U postgres showba < /home/db/db
 
 # 系统管理
-* 查看当前会话连接：elect * from pg_stat_activity;
-* 终止一个会话：pg_terminate_backend(pidint)
+* 会话管理
+    - 查看当前会话连接：select * from pg_stat_activity;
+    - 取消一个查询：pg_cancel_backend(pid int)
+    - 终止一个会话：pg_terminate_backend(pidint)
+* 变量
+    - 查询：select current_setting(setting_name)或show var
+    - 设置：select set_config(setting_name, new_value, is_local)或【SET var TO val;】
+        + 如果 is_local 设置为 true，那么新数值将只应用于当前事务。 如果你希望新的数值应用于当前会话，那么应该使用 false。
+* 数据库对象存储位置
+    - pg_relation_filenode(relation regclass)：获取指定对象的文件节点编号(通常为对象的oid值)。
+    - pg_relation_filepath(relation regclass)：获取指定对象的完整路径名。
+
+```
+showba=# select pg_relation_filenode('auth_group');
+pg_relation_filenode
+----------------------
+                16388
+select pg_relation_filepath('auth_group');
+pg_relation_filepath
+----------------------
+base/16387/16388
+```
+
+* 数据库对象尺寸大小
+    - pg_column_size(any)
+    - pg_tablespace_size(oid/name)
+    - pg_relation_size(oid/name)
+    - pg_database_size(oid/name)
+    - pg_size_pretty(bigint):把字节计算的尺寸转换成一个人类易读的尺寸单位
+        + select pg_size_pretty(pg_database_size('test'));
+* 备份管理
+    - 设置开始执行备份：pg_start_backup(label_text text)：pg_start_backup 接受一个参数，这个参数可以是任意用户为备份定义的标签。 （通常这是备份转储文件存放所在的名字。）这个函数向数据库集群的数据目录写入一个备份标签文件， 然后以文本方式返回备份的起始 WAL 偏移。（用户不需要注意这个结果值，提供他只为了万一需要的场合。）
+    - 完成执行的在线备份：pg_stop_backup()：pg_stop_backup 删除 pg_start_backup 创建的标签文件， 并且在 WAL 归档区里创建一个备份历史文件。这个历史文件包含给予 pg_start_backup 的标签， 备份的起始与终止 WAL 偏移量，以及备份的起始和终止时间。返回值是备份的终止 WAL 偏移 （同样也可能没有什么用）。
+
+# 表空间
+* 功能：可以指定数据库对象的存储位置，方便扩展存储空间
+* 创建：
+    - 语法：CREATE TABLESPACE tb_space LOCATION '/home/postgres/db0/tb_space';
+    - 说明：os_path必须是空的、postgresql帐号有权的目录。创建表空间的用户必须是superuser，创建完表空间之后，可以将表空间的create权限赋给普通用户使用！
+* 使用：
+    - 可使用对象：表、index、数据库：在创建这些对象时，可以显式的指定tablespace tals_name子句指示对象使用的表空间。
+    - 说明：
+        + postgresql允许通过符号链接简化表空间的实施，那在不支持符号链接的os上就无法简化，只能显式的创建所需的表空间了！
+        + 表空间是和单个数据库无关的，他被所有的数据库使用。因为，表空间只有没有任何对象使用时，才能drop掉
+    - 语法：create database test tablespace tb_space;
