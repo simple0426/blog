@@ -4,14 +4,20 @@ tags: postgresql
 categories: ['postgresql']
 ---
 # 依赖安装
+>示例ubuntu16.04下的软件包
+
 * make
 * gcc
 * readline：libreadline6 libreadline6-dev【用于sql命令行提示】
 * zlib：zlib1g zlib1g-dev【备份和恢复时压缩】
 * libpython2.7 libpython2.7-dev libpython3.5 libpython3.5-dev【python语言支持】
 * ssl：OpenSSL【连接加密】
+* xml2：libxml2 libxml2-dev
+* xslt：libxslt1.1  libxslt1-dev
 
 # 安装
+>软件版本：v9.6.15
+
 * ./configure --with-python --with-openssl --with-libxml --with-libxslt
 * make 
 * sudo make install
@@ -20,7 +26,7 @@ categories: ['postgresql']
 * 实时设置链接库【官方】
     - 【普通用户】LD_LIBRARY_PATH=/usr/local/pgsql/lib;export LD_LIBRARY_PATH
     - 【root】/sbin/ldconfig /usr/local/pgsql/lib
-* 静态化设置：echo usr/local/pgsql/lib >> /etc/ld.so.conf;ldconfig
+* 静态化设置：echo /usr/local/pgsql/lib >> /etc/ld.so.conf;ldconfig
 
 # 环境变量设置
 ```

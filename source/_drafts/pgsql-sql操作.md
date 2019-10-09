@@ -62,43 +62,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on tables to xiu;
 ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on sequences to xiu; 
 ```
 
-# 备份和恢复
-## pg_dump命令
-* -F：指定输出备份格式
-    - 默认为明文格式，只能使用psql命令恢复
-    - custom格式使用pg_restore命令恢复
-* -a：只导出库数据
-* -s：只导出数据库结构
-* -t：备份指定表
-* -T：不备份特定表
-* -C：包含创建数据库命令
-* -f：指定备份输出文件或目录
-* -d：需要备份的数据库
-
-## 备份范例
-* 备份数据库结构 pg_dump –Fc –s –f test.sql test
-* 备份数据库 pg_dump –Fc –f test.all test
-* 备份表数据 pg_dump –Fc –a –t xuji –f xuji.db test
-* 备份表    pg_dump –Fc –t xuji –f xuji.all test
-
-## pg_restore命令
-* -a：只恢复库数据
-* -s：只恢复数据库结构
-* -t：只恢复指定表
-* -d：连接的数据库
-
-## 恢复范例
-* 恢复数据库结构 pg_restore –s –d test test.sql
-* 恢复数据库数据 pg_restore –a –d test test.db
-* 恢复数据库 pg_restore  –d test test.all
-* 恢复表结构 pg_restore –s –t xuji –d test xuji.sql
-* 恢复表数据 pg_restore –a –t xuji –d test xuji.db
-* 恢复表  pg_restore –t xuji –d test xuji.all
-
-## 明文导出的备份和恢复
-* 备份：pg_dump -h 10.150.10.210 -p 5432 -U postgres showba > showba
-* 恢复：psql -h 10.150.10.40 -p 5432 -U postgres showba < /home/db/db
-
 # 系统管理
 * 会话管理
     - 查看当前会话连接：select * from pg_stat_activity;
