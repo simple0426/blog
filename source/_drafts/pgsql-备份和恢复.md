@@ -71,12 +71,21 @@ categories:
 * 由于此"快照"是在服务运行时的数据，当此数据目录快照在执行恢复时会认为服务没有正常关闭，服务会应用上次checkpoint之后WAL日志【即，此时数据恢复也需要pg_xlog目录下的wal日志】；
 * 在获取快照前，执行CHECKPOINT可以减少恢复时间。
 
-# 持续归档和基于时间点恢复
+# [归档备份和恢复][continuous-archiving]
+## 注意事项
+* wal文件不包含索引信息，所以索引需要手动处理
+* 基础备份进行中，如果有 CREATE DATABASE执行会出现意料之外的事
+* 创建表空间时，使用的是字面意思的绝对路径，在跨主机恢复会有问题
+
 ## 归档设置
 * 参数设置【postgresql.conf】
     - wal_level = replica
     - archive_mode = on
     - archive_command = 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
+    - 【pg_baseback命令】max_wal_senders = 5
+    - 【pg_baseback命令】wal_keep_segments = 10
+* 【pg_baseback命令】添加复制用户（pg_hba.conf） 
+    - 【local   replication     postgres                                trust】
 * 建立归档目录，并设置目录权限为pg server运行用户
 * 重启数据库
 * 测试归档是否正常
@@ -99,6 +108,32 @@ categories:
 
 ### 备份实践
 * 备份数据目录：tar czf /home/postgres/backup/data_$(date +%F).tar.gz     data/ --exclude=pg_xlog >/dev/null 2>&1
-* 跨主机备份：rsync -C -a --delete -e ssh --exclude pg_log --exclude pg_xlog --exclude recovery.conf --exclude recovery.done data/ 10.150.10.41:~/db0/data/
+* 跨主机同步数据目录：rsync -C -a --delete -e ssh --exclude pg_log --exclude pg_xlog --exclude recovery.conf --exclude recovery.done data/ 10.150.10.41:~/db0/data/
 * 删除无用归档文件： find ./ -mtime +1 -type f|xargs -i rm -f {} \;
-* 跨主机同步归档文件：rsync -C -a --delete -e ssh archive/ 10.150.10.41:/home/postgres/db0/archive/
+* 跨主机同步归档目录：rsync -C -a --delete -e ssh archive/ 10.150.10.41:/home/postgres/db0/archive/
+
+## 恢复数据
+* 停止服务
+* 保留并转储pg_xlog目录内容，因为它们可能包含系统宕机时还没有归档的日志
+* 删除数据目录及表空间根目录下的内容
+* 从基础备份中恢复数据目录
+* 删除基础备份中的pg_xlog的文件【因为它们可能比当前的数据陈旧】
+* 将转储的pg_xlog文件复制到数据目录
+* 在数据目录创建recovery.conf文件，并设置策略阻止普通用户连接并使用服务【pg_hba.conf或iptables】
+* 【恢复过程】：此时将使用上次基础备份依赖的归档wal文件，及当期pg_xlog目录下的wal文件用于恢复数据
+    - 归档目录不存在的内容将认为存在于pg_xlog中，这样就允许使用最近没有归档的wal文件
+    - 归档目录中存在的内容优先于pg_xlog被应用
+    - 恢复时将不会覆盖现有pg_xlog下的内容
+* 恢复完成后，服务会自动将recovery.conf重命名为recovery.done
+* 确认恢复完成后，开启对外服务
+
+### recovery.conf
+* 可以在安装目录的share目录下找到recovery.conf.sample作为范例
+* 文件选项
+    - 恢复命令【必选】：restore_command = 'cp /mnt/server/archivedir/%f %p'
+    - 恢复截止时间：recovery_target_time (timestamp)
+    - 是否包含截止点：recovery_target_inclusive (boolean)
+        + 默认为true，包含截止点，即在截止点停止
+        + false，不包含截止点，在截止点之前停止
+
+[continuous-archiving]: https://www.postgresql.org/docs/9.6/continuous-archiving.html
