@@ -69,7 +69,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on sequences to xiu;
     - 终止一个会话：pg_terminate_backend(pidint)
 * 变量
     - 查询：select current_setting(setting_name)或show var
-    - 设置：select set_config(setting_name, new_value, is_local)或【SET var TO val;】
+    - 设置：select set_config(setting_name, new_value, is_local)或【SET old_var TO new_val;】
         + 如果 is_local 设置为 true，那么新数值将只应用于当前事务。 如果你希望新的数值应用于当前会话，那么应该使用 false。
 * 数据库对象存储位置
     - pg_relation_filenode(relation regclass)：获取指定对象的文件节点编号(通常为对象的oid值)。
