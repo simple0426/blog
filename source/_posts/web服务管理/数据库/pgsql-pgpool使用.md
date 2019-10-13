@@ -1,17 +1,23 @@
 ---
 title: pgsql-pgpool使用
 tags:
+  - pgpool
 categories:
+  - pgsql
+date: 2019-10-13 17:58:10
 ---
+
 # pgpool简介
-* 连接池功能
+pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：
+
+* 连接池
 * 复制功能：可以实时的把数据备份到单独的磁盘
 * 负载均衡：将查询语句拆分到多台后端数据库
 * 限制过量的连接：将超过限制的连接排队，但不直接返回错误
-* 看门狗功能：在两个pgpool节点执行高可用，通过vip偏移执行高可用
+* 看门狗功能：同时在两个节点部署pgpool，通过vip偏移执行高可用
 * 基于内存的查询缓存
 
-# 安装
+# 软件安装
 ./configure --prefix=/usr/local/pgpool --with-pgsql=/usr/local/pgsql/
 make
 make install
@@ -22,8 +28,8 @@ $ cd pgpool-II-x.x.x/src/sql/pgpool-recovery
 $ make
 $ make install
 $ psql -f pgpool-recovery.sql template1
-编辑postgresql.conf：pgpool.pg_ctl = '/usr/local/pgsql/bin/pg_ctl'
-重载配置：pg_ctl reload -D /usr/local/pgsql/data
+$ 【vim postgresql.conf】：pgpool.pg_ctl = '/usr/local/pgsql/bin/pg_ctl'
+$ pg_ctl reload -D /usr/local/pgsql/data
 
 ## pgpool-regclass
  PostgreSQL 9.4 or later可以省略
@@ -160,16 +166,19 @@ md5密码产生：pg_md5 123456
 # 配置pool_hba.conf
 * pool_hba和pg_hba类似，是客户端连接pgpool的认证
 * 当pgpool使用pg原生模式或只有一个后端服务器时，可以不使用pool_hba
-* 从数据库中查询用户及密码：select rolpassword from pg_authid where rolname='pgtest'; 
-* 建立文件pool_passwd，并写入查询到的账号信息：【pgtest:md5adbe22045e9d4ebb5254ed06a0987528】
+* 配置：
+    - 从数据库中查询用户及密码：select rolpassword from pg_authid where rolname='pgtest'; 
+    - 建立文件pool_passwd，并写入查询到的账号信息：【pgtest:md5adbe22045e9d4ebb5254ed06a0987528】
 
 # 服务启停控制
-* 启动：pgpool
+* 启动服务：pgpool
     - 前台debug模式：pgpool -n -d
-* 停止：pgpool 【-m smart|fast|immediate】stop
+* 停止服务：pgpool 【-m smart|fast|immediate】stop
 * 重载配置：pgpool reload
 
 # 服务状态查看
+sql命令行下执行如下命令：
+
 * 节点状态：show pool_nodes;
 * 进程池：show pool_processes;
 * 配置信息：show pool_status;
@@ -180,7 +189,7 @@ md5密码产生：pg_md5 123456
 * 添加节点：pcp_attach_node -h 127.0.0.1 -p 9898 -n 1
 * 恢复节点为可用状态：pcp_recovery_node【配合pgpool.conf中的ONLINE RECOVERY配置】
 
-# [故障自动切换][pgpool-failover]
+# [故障自动切换配置][pgpool-failover]
 * failover_command = '/usr/local/pgpool/failover.sh'
 * failover.sh
 
