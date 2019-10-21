@@ -12,3 +12,12 @@ categories:
 * 所有匹配：redis-cli keys '*'|xargs -I {} redis-cli del {}
 * 特定匹配：redis-cli keys 'fxx*'|xargs -I {} redis-cli del {}
 
+# 数据类型
+* 列表
+    - 添加：rpush message wo
+    - 查看：lrange message 0 2
+* k/v
+    - 设置：set he 2
+    - 获取：set he 2
+* HyperLogLog
+    - 应用参考：https://www.cnblogs.com/ysuzhaixuefei/p/4052110.html

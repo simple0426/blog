@@ -14,3 +14,21 @@ categories:
 * [将redis作为缓存使用](https://redis.io/topics/lru-cache)
     - maxmemory 2mb
     - maxmemory-policy allkeys-lru
+
+# 慢日志
+## 格式
+* 日志条目id
+* 日志记录时间戳
+* 执行时间（微秒）
+* 执行命令数组
+* 客户端ip和端口（4.0版本）
+* 通过client setname设置的客户端名称（4.0版本）
+
+## 配置参数
+* slowlog-log-slower-than：执行时间阈值
+* slowlog-max-len：记录日志条数
+
+## 控制命令
+* 查看（指定数目）日志：slowlog get （number）
+* 查看日志记录总数：slowlog len
+* 清空日志：slowlog reset
