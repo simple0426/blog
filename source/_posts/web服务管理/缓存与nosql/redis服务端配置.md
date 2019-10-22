@@ -1,3 +1,43 @@
+---
+title: redis服务端配置
+tags:
+  - redis.conf
+  - 慢日志
+categories:
+  - redis
+date: 2019-10-22 21:26:56
+---
+
+# 服务端配置方法
+* 文件指令格式：keyword argument1 argument2 ... argumentN
+    - 使用引号处理包含的空格：requirepass "hello world"
+* 命令行传参：./redis-server --port 6380 --slaveof 127.0.0.1 6379
+* 运行状态下变更配置：
+    - 获取配置：config get keyword
+    - 设置参数：config set keyword value
+    - 将运行配置写入文件：config rewrite
+
+# 专项配置
+## 慢日志
+### 格式
+* 日志条目id
+* 日志记录时间戳
+* 执行时间（微秒）
+* 执行命令数组
+* 客户端ip和端口（4.0版本）
+* 通过client setname设置的客户端名称（4.0版本）
+
+### 配置参数
+* slowlog-log-slower-than：执行时间阈值
+* slowlog-max-len：记录日志条数
+
+### 控制命令
+* 查看（指定数目）日志：slowlog get （number）
+* 查看日志记录总数：slowlog len
+* 清空日志：slowlog reset
+
+# 配置文件redis.conf
+```
 # redis.conf必须作为第一个参数，例如：./redis-server /path/to/redis.conf
 
 # 涉及内存时的计量单位
@@ -139,9 +179,9 @@ slave-read-only yes
 
 # rdb文件传输方式（复制同步策略）：
 # 有盘方式：主开启写进程在本地写rdb文件，在rdb文件阶段性写完后，
-#	就可以和（多个）从机通信，然后由父进程传输文件到从机
+#   就可以和（多个）从机通信，然后由父进程传输文件到从机
 # 无盘方式（网络）：主开启写进程直接将rdb文件写入从机网络socket，
-#	当阶段性写操作完成后，主和另一个从机通信进行复制操作
+#   当阶段性写操作完成后，主和另一个从机通信进行复制操作
 #
 # 无盘复制同步要点：
 # 1.无盘模式当前是实验性功能
@@ -203,7 +243,7 @@ slave-priority 100
 
 # 客户端最大连接数
 # 如果redis不能设置最大文件描述符数量，
-#	则maxclients被设置为当前最大文件描述符数量减32（redis保留部分描述符供内部使用）
+#   则maxclients被设置为当前最大文件描述符数量减32（redis保留部分描述符供内部使用）
 # maxclients 10000
 
 ############################## MEMORY MANAGEMENT ################################
@@ -530,3 +570,4 @@ aof-rewrite-incremental-fsync yes
 
 # 碎片整理占用的最大cpu使用率
 # active-defrag-cycle-max 75
+```

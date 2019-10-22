@@ -1,11 +1,15 @@
 ---
-title: redis学习
+title: redis简介与客户端redis-cli
 tags:
+  - redis-cli
 categories:
+  - redis
+date: 2019-10-22 21:27:30
 ---
+
 # [简介][redis-intro]
 * redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof）
-* 可以被当做数据库、缓存、消息代理使用；
+* 可以被当做数据库、缓存、消息代理使用
 * 使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用[microsoft实现的版本][windows-redis]在windows上运行
 
 # 内置功能
@@ -14,9 +18,9 @@ categories:
 * 数据过期策略：LRU
 * 事务
 * 数据持久化策略：rdb、aof
-* 高可用-Redis Sentinel 
-* 自动分区-redis Cluster
-* 发布、订阅、取消订阅：Pub/Sub【消息代理】
+* 高可用：Redis Sentinel 
+* 自动分区：redis Cluster
+* 发布、订阅、取消订阅（消息代理）：Pub/Sub
 
 # 数据类型
 * strings：字符串
