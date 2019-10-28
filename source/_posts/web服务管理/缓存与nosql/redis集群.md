@@ -103,7 +103,7 @@ done
 * 手动故障切换(主从状态切换)：cluster failover（在从节点执行）
 * 添加主节点：
     - 命令行方式：redis-trib  add-node  new_host:new_port existing_host:existing_port
-    - 交互式命令行：CLUSTER MEET ip port 
+    - 交互式命令行：cluster meet ip port 
 * 添加从节点：
     - 命令行方式：redis-trib  add-node --slave --master-id new_host:new_port existing_host:existing_port【不指定master-id时，默认将其随机添加到具有最少从节点的主节点】
     - 交互式命令行：cluster replicate master-id
@@ -112,16 +112,10 @@ done
 * 删除节点：
     - 删除方式：
         + 命令行：redis-trib del-node host:port node_id
-        + 交互式命令行：CLUSTER FORGET node_id
+        + 交互式命令行：cluster forget node_id
     - 主从处理：
         + 从节点可以直接删除
         + 主节点没有数据时才可以删除
-
-# 故障处理
-* 交互式迁移报错
-    - 报错：[ERR] Calling MIGRATE: ERR Syntax error, try CLIENT (LIST | KILL | GETNAME | SETNAME | PAUSE | REPLY)
-    -  原因：官方bug
-    -  解决：安装低版本gem redis：gem install redis -v 3.3.5
 
 # 可用性预处理
 为了提高系统可用性，事先在每个实体机上预留1~2个多余的从节点作为备份，当某个主节点或从节点挂掉时，多余的从节点可以自动的迁移(cluster-migration-barrier)过来以达到集群所有主节点至少有一个从节点。
@@ -154,3 +148,21 @@ done
 * 5.0版本内置迁移命令：redis-cli --cluster import
     - 支持将一个运行中的实例数据迁移到一个预先搭建好的集群中（同时会删除源实例中的数据）
     - 当2.8版本作为源实例时，由于没有实现迁移连接缓存，迁移过程会很慢，解决方案是使用3.x版本实例加载源数据
+
+# 故障处理
+* 交互式迁移报错
+    - 报错：[ERR] Calling MIGRATE: ERR Syntax error, try CLIENT (LIST | KILL | GETNAME | SETNAME | PAUSE | REPLY)
+    -  原因：官方bug
+    -  解决：安装低版本gem redis：gem install redis -v 3.3.5
+* 节点状态不一致
+    - 现象
+        + 连接不同的节点，获取cluster nodes输出不一致
+        + 使用./redis-trib [check|fix]命令得到如下报错：【 Nodes don't agree about configuration】，并显示个别slot处于importing状态
+        + 由于状态不一致，所以不能进行slot迁移【不能使用reshard命令】
+    - 解决：由于只是个别节点状态不一致，只需处理个别节点即可
+    - 步骤
+        + 手动设置异常节点的slot：for i in {5461..10922};do redis-cli -h 172.29.88.117 -p 7004 -c cluster setslot $i node ca4757c010e6b6c028006bb4b8c1cd0852ab3033;done
+            * 5461...10922为状态异常的slot
+            * -h/-p  连接异常节点
+            * ca4757c0... 为这些slot的正确节点id【根绝大多数节点返回获得】
+        + 修复异常节点状态（循环：每次修复一个slot）：for i in {5461..10922};do ./redis-trib.rb fix 172.29.88.117:7004;done

@@ -111,3 +111,7 @@ date: 2019-10-25 11:29:57
     - omem：已使用的输出缓冲区大小
     - cmd：最近执行的命令
 * client kill：关闭客户端连接
+
+# 主从架构高可用
+* 中文参考：http://redisdoc.com/topic/sentinel.html
+* 官方参考：https://redis.io/topics/sentinel
