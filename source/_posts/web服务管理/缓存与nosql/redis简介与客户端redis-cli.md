@@ -23,13 +23,13 @@ date: 2019-10-22 21:27:30
 * 发布、订阅、取消订阅（消息代理）：Pub/Sub
 
 # 数据类型
-* strings：字符串
-* hash：哈希【字典】
-* lists：列表
-* sets：集合
-* sorted sets：带范围查询的排序集合
-* bitmaps
-* hyperloglogs
+* strings：二进制安全的字符串
+* hash：是由字段和其值构成的映射，字段和值都是字符串；和ruby、pyhon中的字典类似
+* lists：根据插入顺序排序的字符串元素的集合
+* sets：由独一无二的、未排序的元素构成的集合
+* sorted sets：排序的集合，每个字符串成员都关联一个浮点数值用于排序
+* bitmaps：位图，可以处理字符串中的每一位(设置、清除)，找到第一个设置或未设置的位
+* hyperloglogs：这是一个概率数据结构，用于估计集合的基数
 * streams
 * geospatial indexes
 
