@@ -1,5 +1,5 @@
 ---
-title: redis简介与客户端redis-cli
+title: redis客户端redis-cli
 tags:
   - redis-cli
 categories:
@@ -7,52 +7,7 @@ categories:
 date: 2019-10-22 21:27:30
 ---
 
-# [简介][redis-intro]
-* redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof）
-* 可以被当做数据库、缓存、消息代理使用
-* 使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用[microsoft实现的版本][windows-redis]在windows上运行
-
-# 内置功能
-* 主从异步复制
-* lua脚本
-* 数据过期策略：LRU
-* 事务
-* 数据持久化策略：rdb、aof
-* 高可用：Redis Sentinel 
-* 自动分区：redis Cluster
-* 发布、订阅、取消订阅（消息代理）：Pub/Sub
-
-# 数据类型
-* strings：二进制安全的字符串
-* hash：是由字段和其值构成的映射，字段和值都是字符串；和ruby、pyhon中的字典类似
-* lists：根据插入顺序排序的字符串元素的集合
-* sets：由独一无二的、未排序的元素构成的集合
-* sorted sets：排序的集合，每个字符串成员都关联一个浮点数值用于排序
-* bitmaps：位图，可以处理字符串中的每一位(设置、清除)，找到第一个设置或未设置的位
-* hyperloglogs：这是一个概率数据结构，用于估计集合的基数
-* streams
-* geospatial indexes
-
-# 支持的原子操作
-* 字符串追加
-* 增加hash中的值
-* 向列表中添加元素
-* 计算集合的交集、并集、差集
-* 获取排序集合中最高排名的成员
-
-# 下载与安装
-* 下载：http://download.redis.io/releases/redis-4.0.14.tar.gz
-* 安装
-
-```
-$ wget http://download.redis.io/releases/redis-5.0.5.tar.gz
-$ tar xzf redis-5.0.5.tar.gz
-$ cd redis-5.0.5
-$ make
-```
-
-# [redis-cli][rediscli]
-## 非交互模式
+# 非交互模式
 * 命令行使用：redis-cli incr mycounter
     - 重定向输出：redis-cli incr mycounter > /tmp/output.txt
     - 额外信息控制：
@@ -79,7 +34,7 @@ $ make
 * 批量插入：--pipe【cat data.txt | redis-cli --pipe】
 * 导出csv格式：--csv【redis-cli --csv lrange mylist 0 -1】
 
-## 交互模式
+# 交互模式
 >默认可以浏览历史命令、命令补全功能
 
 - 选择数据库：select 2
@@ -89,10 +44,21 @@ $ make
 - 执行命令n次：n command
 - 帮助信息：
     + 分类帮助：`help @<category>`
+        * @generic
+        * @list
+        * @set
+        * @sorted_set
+        * @hash
+        * @pubsub
+        * @transactions
+        * @connection
+        * @server
+        * @scripting
+        * @hyperloglog
     + 特定命令帮助：help command
 - 清屏：clear
 
-## 特殊模式
+# 特殊模式
 * 状态监控
     - 参数：--stat （-i interval）
     - 范例：redis-cli --stat
@@ -124,6 +90,4 @@ $ make
     - 参数：--lru-test sample-number
     - 范例：./redis-cli --lru-test 10000000
 
-[windows-redis]: https://github.com/microsoftarchive/redis
 [rediscli]: https://redis.io/topics/rediscli
-[redis-intro]:https://redis.io/topics/introduction

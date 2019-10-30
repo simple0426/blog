@@ -1,11 +1,57 @@
 ---
-title: redis管理
+title: redis简介与管理
 tags:
   - 管理
 categories:
   - redis
 date: 2019-10-25 11:29:57
 ---
+
+# [简介][redis-intro]
+* redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof）
+* 可以被当做数据库、缓存、消息代理使用
+* 使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用在windows上运行
+    - [microsoft实现的3.0版本](https://github.com/microsoftarchive/redis)
+    - [第三方实现的4/5版本](https://github.com/tporadowski/redis)
+
+## 内置功能
+* 主从异步复制
+* lua脚本
+* 数据过期策略：LRU
+* 事务
+* 数据持久化策略：rdb、aof
+* 高可用：Redis Sentinel 
+* 自动分区：redis Cluster
+* 发布、订阅、取消订阅（消息代理）：Pub/Sub
+
+## 数据类型
+* strings：二进制安全的字符串
+* hash：是由字段和其值构成的映射，字段和值都是字符串；和ruby、pyhon中的字典类似
+* lists：根据插入顺序排序的字符串元素的集合
+* sets：由独一无二的、未排序的元素构成的集合
+* sorted sets：排序的集合，每个字符串成员都关联一个浮点数值用于排序
+* bitmaps：位图，可以处理字符串中的每一位(设置、清除)，找到第一个设置或未设置的位
+* hyperloglogs：这是一个概率数据结构，用于估计集合的基数
+* streams
+* geospatial indexes
+
+## 支持的原子操作
+* 字符串追加
+* 增加hash中的值
+* 向列表中添加元素
+* 计算集合的交集、并集、差集
+* 获取排序集合中最高排名的成员
+
+## 下载与安装
+* 下载：http://download.redis.io/releases/redis-4.0.14.tar.gz
+* 安装
+
+```
+$ wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+$ tar xzf redis-5.0.5.tar.gz
+$ cd redis-5.0.5
+$ make
+```
 
 # [复制操作](https://redis.io/topics/replication)
 ## 同异步
@@ -115,3 +161,5 @@ date: 2019-10-25 11:29:57
 # 主从架构高可用
 * 中文参考：http://redisdoc.com/topic/sentinel.html
 * 官方参考：https://redis.io/topics/sentinel
+
+[redis-intro]:https://redis.io/topics/introduction
