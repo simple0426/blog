@@ -11,12 +11,9 @@ date: 2019-11-01 18:31:24
 
 # 使用对比
 ## 与python中的queue
-* 线程queue：同一个进程下进程间的交互
+* 线程queue：同一个进程下不同线程间的交互
 * 进程Queue：父子进程交互，或同属于一个进程下的多个子进程间交互
-* 不同程序间的交互选择：
-    - socket
-    - disk
-    - 消息中间件（比如rabbitmq）
+* 消息中间件(rabbitmq)：不同程序间的交互
 
 ## 同类产品对比
 * RabbitMQ
@@ -33,7 +30,7 @@ date: 2019-11-01 18:31:24
 * broker：简单来说就是消息队列服务器实体
 * Exchange：消息交换机，它指定消息按什么规则，路由到哪个队列；目前支持的规则类型
     - Direct：精确匹配，完全根据key进行消息投递
-    - Topic：模式匹配，对key进行模式匹配后进行消息投递（符 号"#"匹配一个或多个词，符号"*"匹配正好一个词。例如"abc.#"匹配"abc.def.ghi"，"abc.*"只匹配"abc.def"）
+    - Topic：模式匹配，对key进行模式匹配后进行消息投递（符 号"#"匹配一个或多个词，符号"\*"匹配正好一个词。例如"abc.#"匹配"abc.def.ghi"，"abc.\*"只匹配"abc.def"）
     - fanout：广播功能，不需要key，此时会把所有发送到该exchange的消息路由到与它绑定的Queue中
 * Queue：消息队列载体，每个消息都会被投入到一个或多个队列
 * Binding：绑定，它的作用就是把exchange和queue按照路由规则绑定起来
@@ -43,39 +40,39 @@ date: 2019-11-01 18:31:24
 * consumer：消息消费者，就是接受消息的程序
 * channel：消息通道，在客户端的每个连接里，都可以建立多个channel，每个channel代表一个会话任务
 
-# 使用过程
-* 客户端连接到消息队列服务器（vhost、账号、密码），打开一个channel
-* 客户端声明一个exchange，并设置相关属性
-* 客户端声明一个queue，并设置相关属性
-* 客户端使用routing key，在exchange和queue之间建立绑定关系
-* 客户端投递消息到exchange
-
-# 消息持久化
-rabbitMQ支持消息持久化，持久化包含三个部分
-
-* exchange：声明时指定durable 
-* queue：声明时指定durable
-* message：在投递时指定delivery_mode =》2（1是非持久化）
-
-只有exchange和queue都是持久化的，那么他们的binding才是持久化的；如果两者，一个持久化，一个非持久化，就不允许建立绑定。
-
-# 安装
+# 软件安装
 * ubuntu/centos仓库安装：install rabbitmq-server
 * 自定义版本安装
     - 安装erlang语言
     - 下载指定格式rabbitmq-server软件包
 
-# 管理
+# 配置管理
+## 基本设置
 * rabbitmqctl add_vhost celery     添加虚拟机
 * rabbitmqctl add_user ever01 Theistyle     添加用户
 * `rabbitmqctl set_permissions -p celery ever01 ".*" ".*" ".*"`   对虚拟机进行用户授权【后面三个".*"代表ever01用户拥有对celery的配置、写、读全部权限】
 * rabbitmqctl list_queues --vhost celery：查看队列信息及数量
 
-## console管理
+## web界面管理
 * 开启console：rabbitmq-plugins enable rabbitmq_management
 * 建立管理用户：rabbitmqctl add_user full_access qaz123
 * 管理用户设置权限：rabbitmqctl set_user_tags full_access administrator
 * url访问：http://127.0.0.1:15672
+
+## 持久化设置
+rabbitMQ支持消息持久化，持久化包含三个部分：  
+* exchange：声明时指定durable 
+* queue：声明时指定durable
+* message：在投递时指定delivery_mode =》2（1是非持久化）
+
+只有exchange和queue都是持久化的，那么他们的binding才是持久化的；如果两者之一不能持久化，就不允许建立绑定。
+
+# 使用方式
+* 客户端连接到消息队列服务器（vhost、账号、密码），打开一个channel
+* 客户端声明一个exchange，并设置相关属性
+* 客户端声明一个queue，并设置相关属性
+* 客户端使用routing key，在exchange和queue之间建立绑定关系
+* 客户端投递消息到exchange
 
 # python客户端-pika
 * 生产者producer
@@ -198,7 +195,7 @@ celery+rabbitmq+redis
 * 配置mq和redis
 * 安装python模块celery、celery-with-redis
 
-## 开启一个任务
+## 开启一个任务调度进程
 ```
 from celery import Celery
 
