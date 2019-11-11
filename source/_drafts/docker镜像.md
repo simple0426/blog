@@ -8,8 +8,12 @@ categories:
 * 从registry获取镜像：docker pull centos:7
 * 查看本地镜像列表：docker images
 * 删除本地镜像：docker rmi ubuntu
-* 导出镜像：docker save -o ubuntu-ruby.tar ubuntu:ruby 
-* 导入镜像：docker load < ubuntu-ruby.tar 
+* 导出tar包
+    - 从容器导出tar包：docker export adb102099609 > adb102099609.tar
+    - 从镜像导出tar包：docker save -o ubuntu-ruby.tar ubuntu:ruby 
+* 导入tar包创建镜像
+    - load方式：docker load < ubuntu-ruby.tar 
+    - import方式：cat adb102099609.tar |sudo docker import - ubuntu:temp
 
 # 镜像制作
 ## 创建Dockerfile方式
