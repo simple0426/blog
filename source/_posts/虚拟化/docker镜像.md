@@ -1,8 +1,12 @@
 ---
 title: docker镜像
 tags:
+  - 镜像
 categories:
+  - 虚拟化
+date: 2019-11-11 22:17:20
 ---
+
 # 相关命令
 * 查询registry中的镜像：docker search registry
 * 从registry获取镜像：docker pull centos:7

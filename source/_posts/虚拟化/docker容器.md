@@ -1,8 +1,12 @@
 ---
-title: 容器技术docker
+title: docker容器
 tags:
+  - 容器
 categories:
+  - 虚拟化
+date: 2019-11-11 22:14:02
 ---
+
 # 虚拟化技术
 * OpenStack：整体数据中心的管理方案
 * kvm：基于内核实现的虚拟化解决方案，一般用于多租户计算资源管理；KVM整体效率最高
@@ -18,20 +22,26 @@ categories:
     - 容器是从镜像创建的运行实例，它可以被开始、停止、删除。
     - 每个容器都是相互隔离的
     - 可以把容器看做是一个简易的linux环境和运行在其中的应用程序
-    - 镜像是只读的，容器在启动时会创建一个可写层作为多层文件系统的最上层
 * 镜像：容器运行所需的所有文件集合，它是一个只读模板，用来创建容器
+    - 容器在启动时会创建一个可写层作为多层文件系统的最上层
 * 镜像仓库：存放镜像文件的场所
+
+## 容器核心技术
+* 资源视图隔离：namespace
+* 资源使用限制(cpu、内存)：cgroups
+* 独立文件系统：chroot（linux下的解决方案）
 
 ## 分层文件系统
 1. 镜像拆分成多个模块，可以并行下载，提高分发效率
 2. 镜像数据是共享的，每次下载或构建镜像时，可以复用已存在的部分数据，此时，只需存储本地不存在的数据。
 
-# docker产品分类
+# 产品分类
+## 相关产品
 * moby：是继承了原先的docker的项目，是社区维护的的开源项目，谁都可以在moby的基础打造自己的容器产品
 * docker-ce是docker公司维护的开源项目，是一个基于moby项目的免费的容器产品
 * docker-ee是docker公司维护的闭源产品，是docker公司的商业产品。
 
-# docker工具集
+## 工具集
 * [compose](https://github.com/docker/compose)：简单的多容器部署工具，通过简单的命令和配置，管理服务于某个应用的多个容器
 * [machine](https://github.com/docker/machine)：将docker安装在指定主机，比如虚拟机、本地、远端云主机
 * [kitematic](https://github.com/docker/kitematic)：桌面版的docker客户端
@@ -44,25 +54,11 @@ categories:
     - Oracle VirtualBox
 * swarm：容器编排工具
 
-# linux安装
+# 软件安装
 * 阿里云安装参考：https://yq.aliyun.com/articles/110806
-* centos安装注意
-    - 关闭firewall：systemctl stop firewalld
-    - 安装并开启iptables：systemctl start|enable iptables
 
-# 容器
-## 容器核心技术
-* 资源视图隔离：namespace
-* 资源使用限制(cpu、内存)：cgroups
-* 独立文件系统：chroot（linux下的解决方案）
-
-## 容器运行
-* 下载镜像(本地不存在时，自动从远程仓库下载)：docker pull centos:7
-* 查看镜像列表：docker images
-* 选择镜像并运行（run）
-    - 范例1：docker run -idt -m 100m --memory-swap=100m ubuntu /bin/bash
-
-## run命令
+# 容器操作
+## 运行命令-run
 ### 常用参数
 >docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0.5 -p 10086:22 sshd
 
@@ -83,11 +79,11 @@ categories:
 * -P：将主机的49000~49900的端口随机映射到内部容器的开放端口
 * --link name:alias：链接容器【容器名称：别名】，这种链接关系可以在容器hosts文件看到
 
-### publish与expose
+## publish与expose的区别
 * publish：将容器端口映射到宿主机【命令行参数-p或-P】
 * expose：曝露端口用于容器间的访问【Dockerfile文件中的关键字EXPOSE】
 
-## 其他管理命令
+## 管理命令
 * start、stop：启动、停止一个容器
 * create、rm：创建、删除容器
 * pause/unpause：挂起、恢复容器内的所有进程
