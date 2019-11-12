@@ -140,6 +140,11 @@ date: 2019-11-11 22:14:02
     - 建立卷容器（容器无需一直运行）：◦docker run -d -v ~/dbdata:/dbdata --name dbdata ubuntu echo data-only
     - 其他容器挂载使用：◦docker run -idt --volumes-from dbdata --name db2 ubuntu /bin/bash
 
+# 图形化
+* 使用软件：portainer
+* 启动：docker run -d -p 9000:9000 --restart=always -v /var/run/docker.sock:/var/run/docker.sock --name portainer portainer/portainer
+* web访问：http://ip:9000
+
 # 常见问题
 ## 问题1
 * 现象：通过路由实现跨主机docker容器互联，如果ping对端容器出现：Dest Unreachable, Unknown Code: 10或Destination Host Prohibited
