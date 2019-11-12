@@ -167,6 +167,7 @@ categories: ['linux']
 * yum remove|groupremove：移除单个软件、包组
 * yum clean all：清除yum缓存
 * yum makecache：生成yum缓存
+* yum provides */command：查询包含命令command的软件包
 
 ## 软件源设置
 >文件必须位于/etc/yum.repos.d下
