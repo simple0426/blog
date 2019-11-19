@@ -5,7 +5,7 @@ categories:
 ---
 # 学习目录
 * 容器技术和docker简介
-* docker环境环境
+* docker安装环境
 * docker镜像和容器
 * docker网络
 * docker的持久化存储和数据共享

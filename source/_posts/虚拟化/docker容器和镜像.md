@@ -1,13 +1,63 @@
 ---
-title: docker镜像
+title: docker容器和镜像
 tags:
+  - 容器
   - 镜像
 categories:
   - 虚拟化
-date: 2019-11-11 22:17:20
+date: 2019-11-11 22:14:02
 ---
 
-# 相关命令
+# 容器管理
+* start、stop：启动、停止一个容器
+* create、rm：创建、删除容器
+* pause/unpause：挂起、恢复容器内的所有进程
+* port：端口映射查看
+* logs [-f]：日志查看，-f相当于tailf效果
+* exec：在容器中执行命令：docker exec -it 5c8f798e206e /bin/bash
+* ps [-a]：查看运行中的容器，-a查看所有存在的容器
+* inspect：查看容器或镜像信息
+* stats：查看容器资源使用情况
+* top：查看进程列表
+
+# 容器运行-run
+## 常用参数
+>docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0.5 -p 10086:22 sshd
+
+* -t：分配一个伪终端tty
+* -i：保持容器的标准输入一直打开
+* -d：让容器以后台方式运行
+* -v /home/Logs/:/root/Logs:ro（可多次使用）：映射宿主机/home/Logs到容器/root/Logs并设置为只读
+* -m 100m --memory-swap=100m：设置容器内存为100m、内存和swap总和也是100m
+* --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
+* -p 10086:22（可多次使用）：映射宿主机端口10086到容器端口22
+    - publish：将容器端口映射到宿主机【命令行参数-p或-P】
+    - expose：曝露端口用于容器间的访问【Dockerfile文件中的关键字EXPOSE】
+
+## 其他参数
+* --cidfile：把容器id写入一个文件
+* --name：给运行的容器绑定一个名称
+* --rm：容器存在就删除【运行一次性容器，运行后立即删除】
+* -h：配置容器主机名
+* --dns：配置容器dns
+* -P：将主机的49000~49900的端口随机映射到内部容器的开放端口
+* --link name:alias：链接容器【容器名称：别名】，这种链接关系可以在容器hosts文件看到
+
+# volume管理
+## 使用原因
+* 原因：docker存储引擎device mapper、aufs等实现的copy on write机制，在高频写操作下性能不高
+* 优势：使用volume，可以直接写磁盘；可以实现目录持久化；可以实现宿主机与容器、容器之间的数据共享
+
+## 使用方式
+* 映射宿主机目录到容器：◦docker run -idt --name test1 -v ~/nginx:/webapps ubuntu /bin/bash
+* 数据卷使用
+    - 建立数据卷：docker volume create hello
+    - 其他容器使用数据卷：docker run -d -v hello:/world busybox ls /world
+* 卷容器使用
+    - 建立卷容器（容器无需一直运行）：◦docker run -d -v ~/dbdata:/dbdata --name dbdata ubuntu echo data-only
+    - 其他容器挂载使用：◦docker run -idt --volumes-from dbdata --name db2 ubuntu /bin/bash
+
+# 镜像管理
 * 查询registry中的镜像：docker search registry
 * 从registry获取镜像：docker pull centos:7
 * 查看本地镜像列表：docker images
