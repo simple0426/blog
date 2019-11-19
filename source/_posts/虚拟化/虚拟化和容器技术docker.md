@@ -142,3 +142,13 @@ date: 2019-11-19 23:24:32
 * 解决
     - 确定net.ipv4.conf.all.forwarding=1
     - 重启docker服务【单独重启即可】
+
+### 问题3
+* 现象：禁止普通用户使用docker命令
+```
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/json: dial unix /var/run/docker.sock: connect: permission denied
+```
+* 解决：
+    + 将当前用户加入docker组中：gpasswd -a python docker
+    + 重启docker进程：systemctl restart docker
+    + 重新登录服务器终端
