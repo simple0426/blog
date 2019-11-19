@@ -133,7 +133,7 @@ date: 2019-11-19 23:24:32
 * web访问：http://ip:9000
 
 ## 常见问题
-## 问题1
+### 问题1
 * 现象：通过路由实现跨主机docker容器互联，如果ping对端容器出现：Dest Unreachable, Unknown Code: 10或Destination Host Prohibited
 * 解决：则是由于对端宿主机开启防火墙或iptables原因导致
 
