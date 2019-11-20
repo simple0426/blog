@@ -126,7 +126,7 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 {
     "color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
     "expand_tabs_on_save": true,
-    "font_face": "YouYuan",
+    "font_face": "微软雅黑",
     "font_size": 12,
     "ignored_packages":
     [

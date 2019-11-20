@@ -56,3 +56,59 @@ echo "mongodb-org-tools hold" | sudo dpkg --set-selections
     - 日志目录：systemLog.path
 * 启停：service mongod start/stop/restart
 * 客户端连接：mongo
+
+# 结构操作
+## 库操作
+* db：显示当前数据库
+* show dbs：查看所有数据库
+* use db：切换数据库（不存在则创建）
+* db.dropDatabase()：删除当前库
+
+## 集合操作
+* 查看库的所有集合： show collections
+* 创建集合：
+    - 单独创建一个一个资源受限的集合(超过限制则删除最早的数据)：
+    - 语法：db.createCollection("profile",{size: 1024, capped: true, max: 5})
+        + size：使用空间大小限制
+        + capped：是否开显示
+        + max：最多保存多少条数据
+* 删除集合：db.collection.drop()
+* 重命名集合：db.collection.renameCollection("new_name")
+
+# 数据操作
+## 增加
+* 插入数据：db.collection.insert()
+```
+db.inventory.insert({"item": "test", "qty": 11, "status": "B", "size": {"h": 12, "w": 2, "uom": "cm"}, "tags": ["orange"]})
+```
+* 批量插入数据(不存在则创建)：db.collection.insertMany()
+```
+db.inventory.insertMany([
+   { item: "journal", qty: 25, status: "A", size: { h: 14, w: 21, uom: "cm" }, tags: [ "blank", "red" ] },
+   { item: "notebook", qty: 50, status: "A", size: { h: 8.5, w: 11, uom: "in" }, tags: [ "red", "blank" ] },
+   { item: "paper", qty: 10, status: "D", size: { h: 8.5, w: 11, uom: "in" }, tags: [ "red", "blank", "plain" ] },
+   { item: "planner", qty: 0, status: "D", size: { h: 22.85, w: 30, uom: "cm" }, tags: [ "blank", "red" ] },
+   { item: "postcard", qty: 45, status: "A", size: { h: 10, w: 15.25, uom: "cm" }, tags: [ "blue" ] }
+]);
+// MongoDB adds an _id field with an ObjectId value if the field is not present in the document
+```
+
+## 删除
+* 语法：db.collection.remove()
+* db.inventory.remove({"item": "test"})
+
+## 修改
+* 语法：db.collection.update( 查询条件, 更新内容,不存在时是否添加(默认false),是否更新多行(默认false,只更新第一行))
+* 更新内容与范例：
+    + 设置字段内容：$set：db.inventory.update({"status": "A"}, {$set: {"qty": 35}},false,true)
+    + 字段值增减：$inc：db.inventory.update({"status": "A"}, {$inc: {"qty": -34}})
+
+## 查询
+* 查询所有内容： db.collection.find() 
+    - 格式化输出(pretty)：db.inventory.find({}).pretty()
+* 精确查询：
+    - db.inventory.find( { "size.uom": "in" } )
+* 指定返回字段(默认返回id)
+    - 语法：db.collection.find(【查询字段】, 【返回字段】)
+        - 返回字段定义：值为1表示返回此字段，值为0表示排除此字段
+        - 范例：db.inventory.find({},{_id:0, item:1, status:1})
