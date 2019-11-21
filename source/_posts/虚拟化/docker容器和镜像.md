@@ -15,7 +15,12 @@ date: 2019-11-11 22:14:02
 * port：端口映射查看
 * logs [-f]：日志查看，-f相当于tailf效果
 * exec：在容器中执行命令：docker exec -it 5c8f798e206e /bin/bash
-* ps [-a]：查看运行中的容器，-a查看所有存在的容器
+* ps：查看运行中的容器
+    - 参数
+        + -a：查看所有存在的容器
+        + -q：只显示容器id
+        + -f：根据条件过滤容器
+    - 批量操作范例：docker rm $(docker ps -qf "status=exited")
 * inspect：查看容器或镜像信息
 * stats：查看容器资源使用情况
 * top：查看进程列表
@@ -58,10 +63,11 @@ date: 2019-11-11 22:14:02
     - 其他容器挂载使用：◦docker run -idt --volumes-from dbdata --name db2 ubuntu /bin/bash
 
 # 镜像管理
-* 查询registry中的镜像：docker search registry
-* 从registry获取镜像：docker pull centos:7
-* 查看本地镜像列表：docker images
-* 删除本地镜像：docker rmi ubuntu
+* docker search [image]：查询registry中的镜像
+* docker pull [image]：从registry获取镜像
+* docker images：查看本地镜像列表
+* docker rmi [image]：删除本地镜像
+* docker history [image]：查看镜像制作历史(分层文件系统)
 * 导出tar包
     - 从容器导出tar包：docker export adb102099609 > adb102099609.tar
     - 从镜像导出tar包：docker save -o ubuntu-ruby.tar ubuntu:ruby 
@@ -92,27 +98,36 @@ date: 2019-11-11 22:14:02
     - 下载rootfs：sudo debootstrap --arch amd64 trusty ubuntu14
     - 导入镜像：sudo tar -C ubuntu14 -c .|sudo docker import - ubuntu:14.04.03
 
-# Dockerfile
+# [Dockerfile](https://docs.docker.com/engine/reference/builder/)
 ## 语法
 * FROM image：使用的基础镜像
-* MAINTAINER name：维护者信息
-* RUN command 或 RUN ["executable", "param1", "param2"]
-    - 在创建镜像的过程中执行的命令
-    - Dockerfile中可以写多条RUN指令
-    - 前者在终端中执行，后者使用exec执行
-* CMD ['executable', 'param1', 'param2']：指定容器启动时执行的命令，使用exec执行，只可添加一条
-* ENTRYPOINT ['excutable', 'param1', 'param2']：
-    - 运行容器时执行的指令，只可添加一条
-    - 此命令不可被docker run提供的覆盖，但可通过【--entrypoint="..."】覆盖
-* EXPOSE port：告诉宿主机容器暴露的端口
+    - FROM scratch【scratch是一个基础的空镜像】
+* LABEL key=value：标签信息
+    - maintainer="istyle.simple@gmail.com"
+    - version="1.0"
+    - description="This is simple"
 * ENV key value：设置环境变量，它会被后续RUN命令使用，并在容器运行时保持
-* COPY src dest：复制本地主机的src到容器的dest
+* WORKDIR /path：为后续的RUN、CMD指定工作目录(建议使用绝对目录)，没有则创建
+* CMD command param1 param2：在创建镜像的过程中执行的命令
+    - 有shell、exec两种执行方式，示例为shell方式
+    - Dockerfile中可以写多条RUN指令，但是为了避免一次RUN增加一层文件层，应当将多条命令合并到一行中执行
+        + 使用&&连接多个命令
+        + 过长的行使用反斜线续行
+* CMD command param1 param2：指定容器启动时执行的命令
+    - 有shell、exec两种执行方式，示例为shell方式
+    - 如果docker run指定了其他命令，CMD命令被忽略
+    - 定义了多个命令时，只有最后一条被执行
+* ENTRYPOINT ['excutable', 'param1', 'param2']：容器启动后运行的服务
+    - 有shell、exec两种执行方式，示例为exec方式
+    - 让容器以应用程序或者服务的形式运行，只可添加一条
+    - 此命令默认不被docker run提供命令的覆盖，但可通过[--entrypoint]覆盖
+* COPY src dest：复制本地主机的src到容器的dest，
 * ADD src dest：
-    - 该指令将复制指定的src到容器的dest【或者解压src到dest】
+    - add和copy功能类似(复制指定的src到容器的dest)，优先使用copy
+    - 额外功能：解压src到dest
     - 其中src可以是Dockerfile所在目录的相对路径，也可以是一个url
+* EXPOSE port：告诉宿主机容器暴露的端口
 * VOLUME ["/data"]：创建一个可从本地主机或其他容器挂载的挂载点
-* USER daemon：创建容器运行时的用户名或UID
-* WORKDIR /path：为后续的RUN、CMD指定工作目录
 * ONBULID [instruction]：当所创建的镜像作为其他镜像的基础镜像时，所执行的命令
 
 ## 范例
