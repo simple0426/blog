@@ -60,4 +60,4 @@ mongod="numactl --interleave=all /usr/local/mongod/bin/mongod"
 
 # 时钟同步
 * 目的：为了保证mongodb组件或集群成员之间保证正常工作，应该开启ntp服务以同步主机时间
-* 错误实例：【waited 189s for distributed lock configUpgrade for upgrading config database to new format v5】
+* 错误示例：【waited 189s for distributed lock configUpgrade for upgrading config database to new format v5】
