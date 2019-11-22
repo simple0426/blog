@@ -161,7 +161,7 @@ service是一个集合，它包含一个engine以及一个或多个connector组�
 # JVM调优
 按照存储数据的内容，将内存分配为堆区(heap)和非堆区(non-heap)
 
-* 堆区：通过new的方式创建的对象(类实例)占用的内存空间，java的垃圾回收机制可以回收堆区占用的内存，调优参数如下
+* 堆区：通过new的方式创建的对象(类实例)占用的内存空间，mv的垃圾回收机制可以回收堆区占用的内存，调优参数如下
     * [-Xms n][2]：设置初始java堆【JVM】大小
         - 默认，JVM初始大小是物理内存的1/64，
         - 最小是8MB
@@ -170,8 +170,8 @@ service是一个集合，它包含一个engine以及一个或多个connector组�
         - 【server模式下】最大值是32GB【此时内存大于等于128GB】
         - 【client模式下】最大值是256MB【大于等于1GB都被当做1GB处理】
 * 非堆区：代码、常量、外部访问(文件访问占用的资源流)等，调优参数如下
-        + -XX:PermSize=n：非堆区初始内存大小
-        + -XX:MaxPermSize=n：非堆区最大可用内存
+        + -XX:MaxMetaspaceSize=n：设置metaspace的最大大小
+        + 【-XX:PermSize和-XX:MaxPermSize】在java8中已被遗弃
 
 # 更多参考
 * java性能调优书籍：《Java Performance: The Definitive Guide》
