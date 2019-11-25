@@ -1,5 +1,5 @@
 ---
-title: mongodb应用实践
+title: mongodb部署建议
 tags:
 categories:
 ---
@@ -44,9 +44,14 @@ mongod="numactl --interleave=all /usr/local/mongod/bin/mongod"
 * cpu：默认的线城池数量和cpu核心数相关
 
 # 磁盘和存储
-* 系统设置swap分区
+* 系统设置swap分区，并设置swap【低度使用swap】
+    - cat /proc/sys/vm/swappiness
+    - sysctl vm.swappiness=1
+* 文件系统
+    - 尽量使用xfs文件系统
+    - 不建议使用NFS等远程文件系统
+    - 使用的文件系统支持目录级别fsync()【HGFS、virtualbox的共享目录不支持此操作】
 * 建议使用RAID-10. RAID-5 
-* 不建议使用NFS等远程文件系统
 * 将数据、预写日志、日志、索引存放在不同磁盘以改善性能，mongodb支持目录的软链接
 
 # 架构
@@ -61,3 +66,9 @@ mongod="numactl --interleave=all /usr/local/mongod/bin/mongod"
 # 时钟同步
 * 目的：为了保证mongodb组件或集群成员之间保证正常工作，应该开启ntp服务以同步主机时间
 * 错误示例：【waited 189s for distributed lock configUpgrade for upgrading config database to new format v5】
+
+# 系统参数
+* 设置文件描述符：ulimit
+* 禁用Transparent Huge Pages
+* 禁用NUMA选项
+* 关闭selinux
