@@ -66,6 +66,11 @@ date: 2019-11-11 22:14:02
 * docker search [image]：查询registry中的镜像
 * docker pull [image]：从registry获取镜像
 * docker images：查看本地镜像列表
+    - 根据label过滤：docker images -f 'label=maintainer=istyle.simple@gmail.com'
+    - 根据镜像名称过滤：docker images -f reference='p*/*:latest'【用户/镜像:标签】
+    - 根据某个镜像的前后时间：docker images -qf "before=portainer/portainer"
+        + before：早于此镜像
+        + since：此镜像之后
 * docker rmi [image]：删除本地镜像
 * docker history [image]：查看镜像制作历史(分层文件系统)
 * 导出tar包
@@ -159,3 +164,21 @@ command=/usr/sbin/sshd -D
 autostart=true
 autorestart=true
 ```
+
+# 镜像的推送和自动化构建
+## 可选仓库
+* [阿里云容器镜像服务][aliyun-docker-repo]
+* [docker hub][docker-hub]
+
+## push方式
+* 本地打包：docker build -t registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest .
+* 登录阿里云仓库：docker login --username=perfect_0426@qq.com registry.cn-hangzhou.aliyuncs.com
+* 推送镜像到仓库：docker push registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest
+
+## 自动化构建
+* 将dockerfile等文件放入代码库管理，比如：https://github.com/simple0426/docker-registry.git
+* 在镜像仓库新建镜像，配置自动化构建关联到代码仓库(具体关联到Dockerfile所在目录)
+* 只要Dockerfile所在仓库有代码变动，镜像仓库就会自动构建新的镜像
+
+[docker-hub]: https://hub.docker.com/repositories
+[aliyun-docker-repo]: https://cr.console.aliyun.com/cn-hangzhou/instances/repositories
