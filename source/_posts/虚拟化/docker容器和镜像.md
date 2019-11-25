@@ -14,7 +14,9 @@ date: 2019-11-11 22:14:02
 * pause/unpause：挂起、恢复容器内的所有进程
 * port：端口映射查看
 * logs [-f]：日志查看，-f相当于tailf效果
-* exec：在容器中执行命令：docker exec -it 5c8f798e206e /bin/bash
+* exec：在容器中执行命令：
+    - 进入bash环境：docker exec -it 5c8f798e206e /bin/bash
+    - 查看ip地址：docker exec -it flask ip a
 * ps：查看运行中的容器
     - 参数
         + -a：查看所有存在的容器
