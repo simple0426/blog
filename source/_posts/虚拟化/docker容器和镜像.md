@@ -37,6 +37,7 @@ date: 2019-11-11 22:14:02
 * -v /home/Logs/:/root/Logs:ro（可多次使用）：映射宿主机/home/Logs到容器/root/Logs并设置为只读
 * -m 100m --memory-swap=100m：设置容器内存为100m、内存和swap总和也是100m
 * --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
+    - --cpu-shares int：设置多个容器使用cpu的相对权重
 * -p 10086:22（可多次使用）：映射宿主机端口10086到容器端口22
     - publish：将容器端口映射到宿主机【命令行参数-p或-P】
     - expose：曝露端口用于容器间的访问【Dockerfile文件中的关键字EXPOSE】
@@ -184,3 +185,54 @@ autorestart=true
 
 [docker-hub]: https://hub.docker.com/repositories
 [aliyun-docker-repo]: https://cr.console.aliyun.com/cn-hangzhou/instances/repositories
+
+# 应用运行
+## 镜像内固定运行参数
+* Dockerfile
+```
+FROM python:2.7
+LABEL maintainer="istyle.simple@gmail.com"
+RUN pip install flask
+COPY app.py /app/
+WORKDIR /app
+EXPOSE 5000
+CMD ["python", "app.py"]
+```
+* app.py
+```
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def hello():
+    return "hello docker"
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
+```
+
+## 容器运行时指定参数
+* Dockerfile
+```
+FROM ubuntu:xenial
+COPY sources.list /etc/apt/sources.list 
+RUN apt update && apt install -y stress
+ENTRYPOINT ["/usr/bin/stress"] #基础运行命令
+CMD [] #指定可添加参数
+```
+* sources.list
+```
+deb http://mirrors.aliyun.com/ubuntu/ xenial main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+```
+* 容器运行
+    - 前台：docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s
+    - 后台：docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose
