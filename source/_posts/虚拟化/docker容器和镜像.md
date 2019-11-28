@@ -27,13 +27,19 @@ date: 2019-11-11 22:14:02
 * stats：查看容器资源使用情况
 * top：查看进程列表
 
-# 容器运行-run
-## 常用参数
->docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0.5 -p 10086:22 sshd
-
+# 容器运行
+## 范例
+docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0.5 -p 10086:22 sshd
+## 运行参数
 * -t：分配一个伪终端tty
 * -i：保持容器的标准输入一直打开
 * -d：让容器以后台方式运行
+* -e key=value：在容器内设置环境变量
+* --cidfile：把容器id写入一个文件
+* --name：给运行的容器绑定一个名称
+* -h：配置容器主机名
+* --dns：配置容器dns
+* --rm：容器存在就删除【运行一次性容器，运行后立即删除】
 * -v /home/Logs/:/root/Logs:ro（可多次使用）：映射宿主机/home/Logs到容器/root/Logs并设置为只读
 * -m 100m --memory-swap=100m：设置容器内存为100m、内存和swap总和也是100m
 * --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
@@ -41,13 +47,6 @@ date: 2019-11-11 22:14:02
 * -p 10086:22（可多次使用）：映射宿主机端口10086到容器端口22
     - publish：将容器端口映射到宿主机【命令行参数-p或-P】
     - expose：曝露端口用于容器间的访问【Dockerfile文件中的关键字EXPOSE】
-
-## 其他参数
-* --cidfile：把容器id写入一个文件
-* --name：给运行的容器绑定一个名称
-* --rm：容器存在就删除【运行一次性容器，运行后立即删除】
-* -h：配置容器主机名
-* --dns：配置容器dns
 * -P：将主机的49000~49900的端口随机映射到内部容器的开放端口
 * --link name:alias：链接容器【容器名称：别名】，这种链接关系可以在容器hosts文件看到
 

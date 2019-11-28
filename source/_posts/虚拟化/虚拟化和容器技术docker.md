@@ -113,19 +113,12 @@ date: 2019-11-19 23:24:32
 * registry-mirrors：公有registry或加速器地址
 * insecure-registries：私有registry地址
 * data-root：容器、镜像等资源的存储位置
-* bridge：所有docker容器的网络地址
+* bridge：设置docker容器的默认网络地址
+  - 绑定网络地址(docker engine启动参数)：--bip 172.18.0.1
+  - 绑定网桥(docker engine启动参数)：-b, --bridge bridage_name
 * storage-driver：容器存储驱动
 * storage-opts：存储驱动的选项
     - dm.basesize=5G：限制容器磁盘的最大容量
-
-## 网络设置
-* 绑定网络地址：--bip 172.18.0.1
-* 绑定网桥：-b, --bridge bridage_name
-    - 查看网桥：brctl show
-    - 添加网桥
-        + brctl addbr bridge0
-        + ip addr add 172.19.0.1/24 dev bridge0
-        + ip link set dev bridge0 up
 
 ## 图形化
 * 使用软件：portainer
