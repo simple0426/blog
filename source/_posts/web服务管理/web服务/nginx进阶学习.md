@@ -189,7 +189,9 @@ real_ip_recursive   on;
 只需configure和make，不需要make install
 ## 二进制文件替换 
 * 备份旧的nginx二进制文件
-* 复制新的nginx二进制文件：、/bin/cp obj/nginx
+* 复制新的nginx二进制文件：cp objs/nginx /usr/local/nginx/sbin/nginx
+    - 异常(提示文件被占用)：cp: cannot create regular file ‘/usr/local/nginx/sbin/nginx’: Text file busy
+    - 处理(强制覆盖)：cp -rfp objs/nginx /usr/local/nginx/sbin/nginx
 
 ## 配置文件语法检测
 nginx -t
@@ -302,6 +304,7 @@ rewrite ^(.*)$  https://$host$1 permanent;【与下面return301效果相同】
 ## 注意
 * 如果replacement字符串包括新的请求参数，以往的请求参数会添加到新参数后面。如果不希望这样，在replacement字符串末尾加一个问号“？”，就可以避免，比如：`rewrite ^/users/(.*)$ /show?user=$1? last;`
 * 如果正则表达式中包含字符“}”或者“;”，整个表达式应该被包含在单引号或双引号的引用中。
+* apache的rewrite转换为nginx的rewrite：[Try use $uri or $request_uri instead $0](https://stackoverflow.com/questions/20870220/whats-0-in-nginx-mod-rewrite)
 
 # 跨域设置
 ```

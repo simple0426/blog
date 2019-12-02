@@ -29,4 +29,3 @@ angular是用typescript编写的，所以先安装typescript，再安装angularj
 * ng build报错:  JavaScript heap out of memory
     - 原因：项目build时需要的内存不足
     - 解决：export NODE_OPTIONS=--max_old_space_size=4096
-

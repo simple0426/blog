@@ -39,3 +39,8 @@ trusted-host=mirrors.aliyun.com
     - 命令行临时设置：--registry=https://registry.npm.taobao.org
     - 永久设置：npm config set registry https://registry.npm.taobao.org
         + 验证：npm config get registry
+* docker镜像地址(registry-mirrors)
+    - 阿里云：https://2x97hcl1.mirror.aliyuncs.com
+    - 163：http://hub-mirror.c.163.com
+    - docker-cn：https://registry.docker-cn.com
+    - daocloud：http://f1361db2.m.daocloud.io

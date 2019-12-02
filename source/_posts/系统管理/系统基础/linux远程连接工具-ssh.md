@@ -64,3 +64,6 @@ ssh 选项 user@host `command`
 * -P：设置连接端口
 * -p：保留文件时间戳
 * -r：递归复制目录下内容
+
+# 其他参考
+* [Centos 6.5升级openssh到7.9p1](https://blog.csdn.net/qq_25934401/article/details/83419849)

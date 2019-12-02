@@ -15,7 +15,6 @@ categories:
     - 回滚
 * docker
 * jenkins
-* vagrant
 * 阿里云：<https://docs.ansible.com/ansible/latest/scenario_guides/guide_alicloud.html>
 * web界面awx【社区版tower】：https://github.com/ansible/awx【官方只支持容器部署】
     - 基于角色的访问控制
