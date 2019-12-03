@@ -53,16 +53,24 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 # volume管理
 ## 使用原因
 * 原因：docker存储引擎device mapper、aufs等实现的copy on write机制，在高频写操作下性能不高
-* 优势：使用volume，可以直接写磁盘；可以实现目录持久化；可以实现宿主机与容器、容器之间的数据共享
+* 优势：
+    - 使用volume，可以直接写磁盘
+    - 可以实现数据持久化
+    - 可以实现宿主机与容器、容器之间的数据共享
 
 ## 使用方式
-* 映射宿主机目录到容器：◦docker run -idt --name test1 -v ~/nginx:/webapps ubuntu /bin/bash
-* 数据卷使用
+* 映射宿主机目录到容器（bind Mounting）
+    - 作用：可以实现宿主机和容器相关目录内容的同步更新，方便开发环境的实时调试
+    - 范例：docker run -idt --name test1 -v ~/nginx:/webapps ubuntu /bin/bash
+* 数据卷使用（data volume）
+    - 作用：此时建立的数据卷不随容器的销毁而消失
     - 建立数据卷：docker volume create hello
-    - 其他容器使用数据卷：docker run -d -v hello:/world busybox ls /world
+    - 查看数据卷列表：docker volume ls
+    - 使用数据卷(使用未创建的数据卷时docker会自动创建)：docker run -d -v hello:/world busybox ls /world
+    - 删除数据卷：docker volume remove hello
 * 卷容器使用
-    - 建立卷容器（容器无需一直运行）：◦docker run -d -v ~/dbdata:/dbdata --name dbdata ubuntu echo data-only
-    - 其他容器挂载使用：◦docker run -idt --volumes-from dbdata --name db2 ubuntu /bin/bash
+    - 建立卷容器（容器无需一直运行）：docker run -d -v ~/dbdata:/dbdata --name dbdata ubuntu echo data-only
+    - 其他容器挂载使用：docker run -idt --volumes-from dbdata --name db2 ubuntu /bin/bash
 
 # 镜像管理
 * docker search [image]：查询registry中的镜像
@@ -134,7 +142,9 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     - 额外功能：解压src到dest
     - 其中src可以是Dockerfile所在目录的相对路径，也可以是一个url
 * EXPOSE port：告诉宿主机容器暴露的端口
-* VOLUME ["/data"]：创建一个可从本地主机或其他容器挂载的挂载点
+* VOLUME ["/data"]：容器运行时，自动创建一个绑定到特定目录的数据卷
+    - 这是为了保证某些数据(比如mysql等数据库)不随容器销毁而丢失
+    - 可以通过run -v参数覆盖相关目录
 * ONBULID [instruction]：当所创建的镜像作为其他镜像的基础镜像时，所执行的命令
 
 ## 范例
