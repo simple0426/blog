@@ -78,8 +78,10 @@ date: 2019-07-17 17:18:07
 
 ## 请求
 * -X 指定请求方法【默认get】
-* -d 指定post请求数据
+* -d/--data 指定post请求数据
     - curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python
+* -H/--header 指定要发送的header信息
+    - curl -H "Content-Type: application/json" -X POST  --data '{"userID":10001}' http://localhost:8085/GetUserInfo
 * -A 指定user-agent信息
     - curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -o page.html  https://www.linuxidc.com
 * -b, --cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串
