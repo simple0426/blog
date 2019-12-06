@@ -43,9 +43,9 @@ categories: ['python']
 * 反之，如果我们从网络或磁盘读取了字节流，需要使用decode方法将数据由bytes类型转换为str类型
 
 ## 单字符的编码
-* ord()函数获取字符的整数表示
+* ord(ordinals)：获取单字符的unicode编码(整数)
     - print(ord('中'))
-* chr()函数把编码转换为对应的字符
+* chr(character)：把Unicode编码(整数)转换为对应的字符
     - print(chr(20013))
 
 # 字符串方法
@@ -112,37 +112,25 @@ print(name.encode('utf-8'))
 print(name.encode('gbk'))
 ```
 
-* format：格式化[ke/value传递]
-* format_map：字典传递
+* format：字符串格式化【关键字(key=value)方式传递值】
+* format_map：字符串格式化【字典({key: value})方式传递值】
 
 ```python
 ori = 'my name is {name}, my age is {age}'
-a = {'name': 'he', 'age': 28}
-ori.format_map(a)
+# new = ori.format(name='he', age=12)
+new = ori.format_map({'name': 'he', 'age': 12})
+print(new)
 ```
 
-* maketrans/translate：翻译和替换
+* join：join拼接可以迭代的字符(串)对象，比如字符串、列表等，调用此方法的字符串插入给定的字符串之间
 
-```python
-m = str.maketrans('123', 'abc')
-v = '12345'
-n = v.translate(m)
-print(n)
-```
-
-* join：拼接
-
-```python
-a = '123'
-b = '23' 
-c = a.join(b)
-d = a + b #字符串拼接
-e = a*2 #重复a字符串2次
-```
-```python
-# join拼接可以迭代的对象，比如字符串、列表等 
-In [22]: '|'.join(['ab', 'dd', 'cf']) 
-Out[22]: 'ab|dd|cf'  
+```python 
+a = '0'
+d = ['1', '2', '3']
+c = 'xyz'
+e = a.join(d)
+h = a.join(c)
+print(e, h)
 ```
 # 子串判断
 ```python
@@ -159,11 +147,11 @@ print(a[1], a[::2]) # 取第2个元素；从第一次元素开始，每隔一个
 
 # 格式化
 ## 占位符
-* %d 十进制整数
-* %s 字符串
-* %f 浮点数
-* %x 十六进制数
-* %o 八进制数
+* %d 十进制整数(decimal)
+* %s 字符串(string)
+* %f 浮点数(float)
+* %x 十六进制数(hex)
+* %o 八进制数(octal)
 
 ## 百分号方式
 ```python

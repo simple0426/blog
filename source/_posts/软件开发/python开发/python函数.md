@@ -183,9 +183,9 @@ print(list(result))
 
 ## reduce
 ### 语法
-* 在python3中，reduct函数已经被从全局名字空间中移除了，它被放置在functools模块里，用的话需要先引入
+* 在python3中，reduce函数已经被从全局名字空间中移除了，它被放置在functools模块里，用的话需要先引入
 * reduce函数接收两个参数，一个是函数且必需有两个参数，一个是迭代器
-* reduct会把相邻的两个元素使用函数处理后，再把处理的结果和相邻的元素进行处理，以此类推。
+* reduce会把相邻的两个元素使用函数处理后，再把处理的结果和相邻的元素进行处理，以此类推。
 
 ```python
 from functools import reduce
