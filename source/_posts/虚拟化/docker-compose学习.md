@@ -1,8 +1,12 @@
 ---
 title: docker-compose学习
 tags:
+  - docker-compose
 categories:
+  - 虚拟化
+date: 2019-12-10 00:39:53
 ---
+
 # 介绍
 docker compose是一个用于定义和管理多容器的docker工具，  
 可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），
