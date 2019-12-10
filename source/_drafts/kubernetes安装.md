@@ -13,7 +13,8 @@ categories:
 * kubectl windows安装：https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-windows
 
 # minikube安装
-* 启动命令：minikube start --image-mirror-country=cn --registry-mirror=https://fer7fge6.mirror.aliyuncs.com
+* 启动命令：minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://registry.docker-cn.com
+    - 因为需要操作网卡，所以需要root权限（windows下使用管理员身份启动）
 * 停止命令：minikube stop
 * 浏览器查看集群信息：minikube dashboard
 * 使用kubectl查看集群信息：kubectl config view、kubectl cluster-info
