@@ -173,8 +173,16 @@ config.vm.provider "virtualbox" do |vb|
     vb.customize ["storageattach", "test", "--storagectl", "SATA Controller", "--port", "1", "--type", "hdd", "--medium", "vd1.vdi"]
 end
 ```
-# FAQ
-## 错误1
+# 问题汇总
+## win10启动错误
+* 现象
+```
+Stderr: VBoxManage.exe: error: Call to WHvSetupPartition failed: ERROR_SUCCE
+VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component ConsoleWrap, interface IConsole
+```
+* 解决：关闭windows系统的虚拟化相关程序【程序和功能-》启动或关闭windows功能】，如：containers、hyper-v、windows沙盒、虚拟机平台
+
+## 虚拟机无法挂载文件系统
 * 错误
 ```
 Failed to mount folders in Linux guest. This is usually because the "vboxsf" file system is not available.   
@@ -186,7 +194,7 @@ The error output from the last command was: stdin: is not a tty /sbin/mount.vbox
   - 虚拟机安装软件：sudo apt-get install virtualbox-guest-utils
   - 重启虚拟机：vagrant reload
 
-## 错误2
+## 虚拟机连接超时
 * 错误
 ```
 default: Error: Connection timeout. Retrying...
@@ -197,7 +205,7 @@ vboxmanage list runningvms
 vboxmanage controlvm new_3_default_1446007372853_19687 keyboardputscancode 1c
 ```
 
-## 参考
+# 参考
 * [linux下用vmware-mount挂载vmdk虚拟硬盘分区][4]
 *  [如何访问vmdk磁盘上的lvm分区][5]
 

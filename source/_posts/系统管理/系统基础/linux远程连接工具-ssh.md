@@ -65,5 +65,13 @@ ssh 选项 user@host `command`
 * -p：保留文件时间戳
 * -r：递归复制目录下内容
 
+# 常见问题
+* 只允许秘钥登录
+  - 现象：Permission denied (publickey)
+  - 解决：变更配置sshd_config 【PasswordAuthentication yes】
+* 不允许root登录
+  - 现象：ssh使用root登录时，密码正确但是拒绝登陆
+  - 解决：变更配置sshd_config【PermitRootLogin yes】
+
 # 其他参考
 * [Centos 6.5升级openssh到7.9p1](https://blog.csdn.net/qq_25934401/article/details/83419849)

@@ -56,6 +56,22 @@ date: 2019-09-03 15:45:09
     + 解决：使用 lsof|grep deleted 查看占用删除文件的进程，重启或删除相关进程
 * 范例：web服务日志写满磁盘，删除日志后，磁盘空间依然充满未被释放；此时重启apache服务，磁盘空间释放，日志可重新写入。
 
+## tmpfs
+### 简介
+默认系统就会启用tmpfs，以实现特殊功能，如保存系统运行状态；tmpfs是临时文件系统，是一种基于内存的文件系统，  
+它和虚拟磁盘ramdis比较类似，但不完全相同。和ramdisk一样，tmpfs可以使用RAM，但它也可以使用swap分区来存储；  
+ramdisk是个传统的块设备，需要使用mkfs格式化后才能使用；tmpfs是一个文件系统，直接挂载就可以使用。  
+### 使用
+* 查看使用情况：df -h
+* fstab设置：`tmpfs                   /dev/shm                tmpfs   defaults,size=64g        0 0`
+    - 卸载：umount /dev/shm
+    - 加载：mount /dev/shm
+* 实时修改tmpfs大小：mount -o remount,size=64G /dev/shm
+
+### 范例
+* oracle启动错误：`ORA-00845: MEMORY_TARGET not supported on this system`
+* 原因与解决：tmpfs管理下的物理内存或swap不足，此时可通过增加tmpfs大小解决问题（首先增加swap大小）
+
 # 磁盘
 >fdisk -l命令结果
 

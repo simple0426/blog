@@ -49,7 +49,7 @@ categories: ['linux']
 ## 参数
 * if=文件名：输入文件名
 * of=文件名：输出文件名
-* bs=bytes：同时设置输入/输出的块大小【默认bytes】
+* bs=bytes：同时设置输入/输出的块大小【默认bytes，可选单位(k)K/M/G】
     - ibs：输入块大小
     - obs：输出块大小
 * count=blocks：复制的块个数
@@ -58,7 +58,7 @@ categories: ['linux']
 * 备份磁盘：dd if=/dev/hdb of=/dev/hdd
 * 备份MBR【磁盘的前512个字节】：dd if=/dev/hda of=/root/image count=1 bs=512
 * 建立swap分区【使用0字符建立空文件】
-    - 建立空文件：dd if=/dev/zero of=/swapfile bs=4096 count=512k
+    - 建立空文件：dd if=/dev/zero of=/home/swap bs=1024M count=2
     - 格式化：mkswap /home/swapfile
     - 挂载交互分区：swapon /home/swapfile
 * 销毁磁盘【使用随机字符覆盖数据】：dd if=/dev/urandom of=/dev/hda1

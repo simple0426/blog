@@ -208,11 +208,16 @@ gpgcheck=0          ---》不进行md5校验
     - 范例：chkconfig --level httpd 2345 on
 
 # systemctl
+## systemd添加服务
+* 将服务控制文件放入/usr/lib/systemd/system/
+* systemd服务重载配置：systemctl daemon-reload
+
+## systemd管理
 * 查看已经启动的服务：systemctl list-units --type=service
 * 查看所有服务：systemctl list-units --type=service --all
-* 开机启动设置：systemctl enable crond
+* 开机启动：systemctl enable crond
 * 关闭开启启动：systemctl disable crond
-* 检查是否开机启动：systemctl is-enabled crond
+* 是否开机启动：systemctl is-enabled crond
 * 服务状态：systemctl status crond
 * 开启服务：systemctl start crond
 * 关闭服务：systemctl stop crond

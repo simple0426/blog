@@ -5,8 +5,10 @@ date: 2019-06-24 21:54:01
 * nginx文档
     - [淘宝tengine项目](http://tengine.taobao.org/)
     - [淘宝nginx文档](http://tengine.taobao.org/nginx_docs/cn/docs/)
-* [shadowsocks一键安装](https://teddysun.com/342.html)
+* [shadowsocks一键安装](https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh)
 * [jdk7下载](https://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u80-oth-JPR)
+* [BeyondCompare/xmind8/pycharm/sublimetext3破解](https://github.com/simple0426/key_store/blob/master/key.md)
+* [jetbrains系列破解资源包(pycharm)](https://pan.baidu.com/s/1RAijfj89uf1oY7zazB1Umg)
 * pypi阿里云配置
     - 命令行设置：-i https://mirrors.aliyun.com/pypi/simple/
     - 配置文件设置：

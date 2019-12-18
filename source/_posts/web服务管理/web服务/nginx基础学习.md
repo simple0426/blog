@@ -203,7 +203,7 @@ ssl自定义证书设置
 2.使用openssl产生证书【pem格式】和私钥【pem格式】
 openssl req -x509 -nodes -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 ```
-## 认证授权与状态查看
+## auth与status
 ```
 # 编译参数：--with-http_stub_status_module
 server {
@@ -225,6 +225,17 @@ auth_basic是Nginx的一种认证机制。auth_basic_user_file用来指定认证
 因此需要用Apache的htpasswd命令来生成密码文件，例如要添加一个webadmin用户，可以使用下面方式生成密码文件：
 htpasswd -c htpasswd webadmin
 此命令会在当前目录生产一个文件htpasswd，其中用户名webadmin
+```
+## [websocket支持](http://nginx.org/en/docs/http/websocket.html)
+>nginx1.3.13之后，nginx内置支持websocket代理
+
+```
+location /chat/ {
+    proxy_pass http://backend;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
 ```
 
 # server配置

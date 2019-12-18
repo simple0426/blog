@@ -162,3 +162,7 @@ server-id = 1
 # relay-log-info-file = /usr/local/mysql/log/relaylog.info
 # relay-log = /usr/local/mysql/log/relaylog
 ```
+
+# 启动错误
+* 现象：【Can't start server : Bind on unix socket: Permission denied】
+* 解决：查看my.cnf文件，找到.sock文件设置的路径，给此文件所在文件夹更改为mysql的用户所有，并且增加所有用户的读写权限
