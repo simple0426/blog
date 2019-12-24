@@ -87,14 +87,20 @@ ansible是用于远程系统管理、软件部署的工具，类似工具有fabr
 | scp_if_ssh                   | 如果有跳板机，则需设置为True                            |
 | retry_files_enabled          | 关闭因playbook无法执行而产生的retry文件                 |
 | deprecation_warnings = False | 关闭警告信息                                            |
+| stdout_callback              | 定义屏幕输出格式为yaml(json格式输出遇到换行时不直观)                                                        |
 
 ## 范例
 ```
 [defaults]
-inventory = ./hosts
+inventory      = ./hosts
+remote_port    = 22
 host_key_checking = False
-log_path= ./ansible.log
-deprecation_warnings = False
+stdout_callback = yaml
+callback_whitelist = timer
+command_warnings = False
+fact_caching = jsonfile
+fact_caching_connection=/tmp
+fact_caching_timeout = 86400
 retry_files_enabled = False
 ```
 
