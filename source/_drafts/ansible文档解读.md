@@ -21,7 +21,6 @@ categories:
     - 作业调度
     - 集成通知
     - 图形化主机资源
-    - centos7安装：http://yallalabs.com/devops/how-to-install-ansible-awx-without-docker-centos-7-rhel-7/
 
 # 自定义开发
 ## 动态inventory
