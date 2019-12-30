@@ -214,6 +214,12 @@ db.createUser(
 # 备份和恢复
 * 用户授权：`db.grantRolesToUser("user_admin",[{role: "backup", db: "admin"},{role: "restore", db: "admin"}])`
 * 备份数据：`mongodump --port 30001 -u user_admin -p user_admin --authenticationDatabase=admin -d test -o ./backup/`
+* 导出数据：mongoexport
+    - 命令参数
+        + -f：指定要导出的字段
+        + --type：指定导出格式，默认json格式，也可指定csv
+        + -d：数据库  -c：集合
+    - mongoexport --host=host.com --port=3717 -u root -p passwd --authenticationDatabase=admin -d fubu -c fubu_forum -f username,phone,qq,email,homepage,recently_posted,last_reply_time --type=csv -o ./fubu_forum.csv
 * 恢复数据：`mongorestore --port 30001 -u user_admin -p user_admin --authenticationDatabase=admin -d test --dir=./backup/test`
 
 # 操作日志
