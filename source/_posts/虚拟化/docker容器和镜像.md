@@ -77,7 +77,8 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * docker pull [image]：从registry获取镜像
 * docker images：查看本地镜像列表
     - 根据label过滤：docker images -f 'label=maintainer=istyle.simple@gmail.com'
-    - 根据镜像名称过滤：docker images -f reference='p*/*:latest'【用户/镜像:标签】
+    - 根据镜像名称过滤：`docker images -f reference='p*/*:latest'`【用户/镜像:标签】
+    - 根据是否有tag过滤(删除不完整的image)：docker images -qf "dangling=true"
     - 根据某个镜像的前后时间：docker images -qf "before=portainer/portainer"
         + before：早于此镜像
         + since：此镜像之后

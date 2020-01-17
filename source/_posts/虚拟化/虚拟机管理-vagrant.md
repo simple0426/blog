@@ -52,6 +52,16 @@ date: 2019-11-18 21:24:01
 * vagrant suspend：挂起一个虚拟机
 * vagrant validate：检测Vagrantfile语法
 
+# 插件管理-scp
+* 查看已安装插件列表：vagrant plugin list
+* 安装插件(scp)：vagrant plugin install vagrant-scp
+* scp命令使用
+  - vagrant scp ..\docker-k8s-devops node1:~/docker-k8s-devops
+  - 注解：vagrant scp 源文件或目录名 虚拟机名称(Vagrantfile包含多机时):目标文件或目录名
+  - 注意事项：
+    + windows下不支持将跨盘符的文件或目录复制到虚拟机
+    + 不在当前目录进行复制操作时，需要指定复制的目标文件或目录名（不指定时，复制的目标文件或目录名会包含源路径）
+
 # Vagrantfile
 ## 网络设置
 * 端口转发（宿主机4567映射虚拟机80）：config.vm.network :forwarded_port, guest: 80, host: 4567
