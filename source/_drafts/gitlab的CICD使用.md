@@ -29,7 +29,7 @@ docker是自动化构建的基础环境，当然自动化构建也可以直接�
     - 标签信息：标识这个runner，可以让.gitlab-ci.yml中的job使用指定的runner运行任务
     - 执行环境：命令执行的环境，可以是docker【python27、python34、maven等环境】、shell等
 
-# gitlab-ci使用
+# gitlab-ci入门范例
 * 项目源代码的根目录下创建.gitlab-ci.yml文件
 ```
 # 定义构建的步骤
@@ -56,7 +56,7 @@ job2:
 ```
 * 默认，项目代码库有变动，CICD--》pipeline就会执行
 
-# gitlab-ci应用范例
+# gitlab-ci综合范例
 * [学习示例代码](https://github.com/imooc-course/docker-cloud-flask-demo)
 * gitlab-ci.yml示例
 ```
@@ -118,7 +118,7 @@ docker-build:
     - tags
 ```
 
-# gitlab-ci实践建议
-* 保护master分支，只允许其他分支merge，不允许直接push
-* 分支合并到master时，必须通过pipeline检测
-* 在项目的readme文件中添加项目的pipeline状态信息【settings-》CICD--》General pipelines--》Pipeline status】
+# gitlab-ci使用建议
+* 保护master分支，只允许其他分支merge，不允许直接push【settings--》repository--》Protected Branches--》allow to push(no one)】
+* 分支合并到master时，必须通过pipeline检测【settings--》general--》merge request--》pipeline must succeed】
+* 在项目的readme文件中添加项目的pipeline实时状态信息【settings-》CICD--》General pipelines--》Pipeline status】
