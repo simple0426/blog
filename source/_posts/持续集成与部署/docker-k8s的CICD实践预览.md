@@ -1,8 +1,14 @@
 ---
-title: 持续集成与部署
+title: docker-k8s的CICD实践预览
 tags:
-categories: ['CICD']
+  - gitlab
+  - harbor
+  - jenkins
+categories:
+  - CICD
+date: 2020-01-18 12:10:00
 ---
+
 # [docker/k8s的CICD实现](https://blog.csdn.net/AIfurture/article/details/100668771)
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/docker-k8s-cicd.png)
 
