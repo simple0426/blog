@@ -45,3 +45,38 @@ sudo apt-get install jenkins
     - 密码
     - 发送测试【如果设置的邮件为163，则收件人和发件人一样；否则会显示为垃圾邮件不能发送】
     - 测试用户邮箱地址
+
+# 节点管理
+>添加slave节点(SSH Slaves插件)
+
+- 远程工作目录
+- 设置启动方式（ssh）
+- 设置环境变量：JAVA_HOME
+
+# Pipeline
+>安装pipeline插件
+
+jenkinsfile范例
+```
+pipeline {
+   agent any
+
+   stages {
+      stage('build') {
+         steps {
+            echo 'build stage'
+         }
+      }
+      stage('test') {
+         steps {
+            echo 'test stage'
+         }
+      }
+      stage('deploy') {
+         steps {
+            echo 'deploy stage'
+         }
+      }
+   }
+}
+```
