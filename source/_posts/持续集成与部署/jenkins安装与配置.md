@@ -32,6 +32,21 @@ sudo apt-get install jenkins
         + 错误：ERROR: No Java executable found in current PATH: /bin:/usr/bin:/sbin:/usr/sbin
         + 解决：ln -s /usr/local/jdk1.8.0_241/bin/java /usr/bin/
 
+### docker部署
+* 镜像：使用预装blueocean的【jenkinsci/blueocean】
+* 启动参数：docker run --name jenkinsci-blueocean -u root --rm -d -p 7005:8080 -p 50000:50000 -v /data/jenkins/:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin jenkinsci/blueocean
+* 参数详解：
+    - --name：设置容器名称
+    - -u：以root启动，防止出现权限问题
+    - --rm：运行结束即删除
+    - -d：后台运行
+    - -p 7005:8080：映射服务端口【容器8080-》宿主机7005】
+    - -p 50000:50000：agent连接master的端口
+    - -v /data/jenkins/:/var/jenkins_home：jenkins主目录持久化存储
+    - -v /var/run/docker.sock:/var/run/docker.sock：确保jenkins容器内可以操作宿主机的docker
+    - -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin：挂载宿主机maven到jenkins容器
+* 初始化密码：/data/jenkins/secrets/initialAdminPassword
+
 # web设置
 * 访问地址：http://JENKINS_URL:8080
 * 使用国内镜像中心的步骤
