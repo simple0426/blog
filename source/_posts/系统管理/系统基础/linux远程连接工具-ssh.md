@@ -25,6 +25,8 @@ date: 2019-08-07 13:35:14
 PermitRootLogin no # 是否允许root登录
 PermitEmptyPasswords no # 是否允许无密码登录
 Port 22 # 端口设置
+ClientAliveInterval 60 #server每隔60秒发送一次请求给client，然后client响应，从而保持连接
+ClientAliveCountMax 3 #server发出请求后，client没有响应次数达到3，就自动断开连接，一般client会响应。
 ```
 
 ## 客户端配置
