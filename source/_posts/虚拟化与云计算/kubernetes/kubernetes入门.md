@@ -126,13 +126,19 @@ spec: #资源的详细定义
 * [下载安装minikube](https://github.com/kubernetes/minikube)
     - minikube是类似于vagrant的工具，需要借助本地虚拟化的支持（hyper-v、virtualbox）
 * [下载安装kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-windows)
-* 启动命令：`minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com`
+
+## 注意
+* minikube命令和minikube项目存储位置(MINIKUBE_HOME，也即.minikube的上级目录)应该在同一分区上(例如都在c盘或d盘),否则minikube启动会找不到minikube的iso文件
+* 默认项目存储位置(MINIKUBE_HOME)在用户家目录(如C:\Users\simple)，可以设置MINIKUBE_HOME变量改变
+* 项目启动时会下载minikube的iso文件、kubectl、kubelet、kubeadm等组件，它们都是从[境外](https://storage.googleapis.com)下载的，为了快速下载，应该在23点之后进行首次下载并缓存
+
+## 管理命令
+* 启动命令：`minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.7.3.iso`
     - start其他配置选项
         + --cpus=2：为minikube虚拟机配置的cpu数量
         + --disk-size='20000mb'：为minikube虚拟机配置的磁盘大小
         + --memory='2000mb'：为minikube虚拟机分配的内存
         + --kubernetes-version='v1.16.2'：minikube使用的kubernetes版本
-    - 因为需要操作网卡，所以需要root权限（windows下使用管理员身份启动）
 * 停止命令：minikube stop
 * 浏览器查看集群信息：minikube dashboard
 * 使用kubectl查看集群信息：kubectl config view、kubectl cluster-info
