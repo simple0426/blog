@@ -3,9 +3,8 @@ title: 虚拟化和容器技术docker
 tags:
   - 虚拟化
   - 容器
-  - docker
 categories:
-  - 虚拟化
+  - docker
 date: 2019-11-19 23:24:32
 ---
 

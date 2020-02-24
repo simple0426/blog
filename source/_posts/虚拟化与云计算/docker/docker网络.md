@@ -7,7 +7,7 @@ tags:
   - etcd
   - ovs
 categories:
-  - 虚拟化
+  - docker
 date: 2019-12-02 23:51:37
 ---
 

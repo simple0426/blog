@@ -2,7 +2,7 @@
 title: docker镜像仓库-harbor
 date: 2018-03-20 16:39:21
 tags: ['harbor']
-categories: ['虚拟化']
+categories: ['docker']
 ---
 # [harbor架构][5]
 ## 存储

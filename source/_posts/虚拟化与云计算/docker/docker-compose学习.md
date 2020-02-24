@@ -3,7 +3,7 @@ title: docker-compose学习
 tags:
   - docker-compose
 categories:
-  - 虚拟化
+  - docker
 date: 2019-12-10 00:39:53
 ---
 

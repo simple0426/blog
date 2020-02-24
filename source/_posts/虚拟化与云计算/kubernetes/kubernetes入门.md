@@ -4,7 +4,7 @@ tags:
   - kubernetes
   - k8s
 categories:
-  - 虚拟化
+  - kubernetes
 date: 2018-04-03 10:28:44
 ---
 
@@ -126,7 +126,7 @@ spec: #资源的详细定义
 * [下载安装minikube](https://github.com/kubernetes/minikube)
     - minikube是类似于vagrant的工具，需要借助本地虚拟化的支持（hyper-v、virtualbox）
 * [下载安装kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-windows)
-* 启动命令：minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://registry.docker-cn.com
+* 启动命令：`minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com`
     - start其他配置选项
         + --cpus=2：为minikube虚拟机配置的cpu数量
         + --disk-size='20000mb'：为minikube虚拟机配置的磁盘大小

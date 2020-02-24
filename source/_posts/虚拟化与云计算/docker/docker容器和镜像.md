@@ -4,7 +4,7 @@ tags:
   - 容器
   - 镜像
 categories:
-  - 虚拟化
+  - docker
 date: 2019-11-11 22:14:02
 ---
 

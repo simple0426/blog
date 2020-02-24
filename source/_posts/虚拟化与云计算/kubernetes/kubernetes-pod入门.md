@@ -1,10 +1,10 @@
 ---
-title: kubernetes-pod学习
+title: kubernetes-pod入门
 tags:
   - sidecar
   - pod
 categories:
-  - 虚拟化
+  - kubernetes
 date: 2020-02-17 01:33:24
 ---
 
