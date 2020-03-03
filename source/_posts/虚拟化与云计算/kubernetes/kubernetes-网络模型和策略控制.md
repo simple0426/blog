@@ -135,7 +135,7 @@ sed -i -e "s?192.168.0.0/16?$POD_CIDR?g" calico.yaml
 * 执行清单创建资源：kubectl apply -f calico.yaml
 
 # 网络策略控制
-用于定义pod资源之间的访问控制策略，包含流入(Ingress)和流出(Egress)两个方向的控制规则
+控制pod到pod、node、外接网络的访问限制，包含流入(Ingress)和流出(Egress)两个方向的控制规则
 ## 默认规则
 * 默认情况下，所有pod处于非隔离状态，所有方向的流量都可以自由流动
 * 一旦有策略应用于pod，那么所有未明确声明允许的流量都将被拒绝
@@ -283,10 +283,10 @@ spec:
 * myapp和nginx都可以与kube-system名称空间内的任意pod通信
 
 ## 运行应用
-* myapp：kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=1 --namespace=testing --port 80 --expose --labels app=myapp
-* nginx：kubectl run nginx --image=nginx:alpine --replicas=1 --namespace=testing --port 80 --expose --labels app=nginx
-* 调试客户端：kubectl run debug --namespace=default --rm -it --image=nicolaka/netshoot -- sh
-* 为kube-system添加标签：kubectl label namespace kube-system ns=kube-system
+* myapp：`kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=1 --namespace=testing --port 80 --expose --labels app=myapp`
+* nginx：`kubectl run nginx --image=nginx:alpine --replicas=1 --namespace=testing --port 80 --expose --labels app=nginx`
+* 调试客户端：`kubectl run debug --namespace=default --rm -it --image=nicolaka/netshoot -- sh`
+* 为kube-system添加标签：`kubectl label namespace kube-system ns=kube-system`
 
 ## 配置清单
 ```
