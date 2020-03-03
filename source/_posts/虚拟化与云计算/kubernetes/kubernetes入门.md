@@ -121,7 +121,7 @@ spec: #资源的详细定义
      ports:
      - containerPort: 80
 ```
-# 简单使用-minikube
+# 简单使用-[minikube](https://minikube.sigs.k8s.io/)
 ## 安装
 * [下载安装minikube](https://github.com/kubernetes/minikube)
     - minikube是类似于vagrant的工具，需要借助本地虚拟化的支持（hyper-v、virtualbox）
