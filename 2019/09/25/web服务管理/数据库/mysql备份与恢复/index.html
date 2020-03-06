@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="mysqlbinlog,mysqldump,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
+<meta name="keywords" content="mysqlbinlog,mysqldump">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql备份与恢复">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql备份与恢复">
+<meta name="twitter:description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/">
+
+
+
+
+
+  <title>mysql备份与恢复 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql备份与恢复</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-25T17:52:05+08:00">
+                2019-09-25
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="备份命令mysqldump"><a href="#备份命令mysqldump" class="headerlink" title="备份命令mysqldump"></a>备份命令mysqldump</h1><ul>
+<li>-u 用户名</li>
+<li>-p 密码</li>
+<li>-h 主机</li>
+<li>-P 端口</li>
+<li>-S 指定链接mysql的socket</li>
+<li>–default-character-set  设置导出的字符集</li>
+<li>-F, –flush-logs  在每个数据库备份前，刷新binlog日志</li>
+<li>–compact 去除注释部分</li>
+<li>–master-data：主要用于主从复制，–single-transaction会覆盖此选项<ul>
+<li>在导出数据前，对所有表添加读锁【turn –lock-all-tables on】；</li>
+<li>导出数据后，自动解锁【turns –lock-tablesoff】，并显示binlog文件名和文件内的position信息【CHANGE MASTER】。</li>
+</ul>
+</li>
+<li>–single-transaction      适用于innodb，保持数据一致性，隔离级别为：repeatable-read</li>
+<li>-A, –all-databases 备份所有库，等同于–databases DB1 DB2 。。。</li>
+<li>-B, –databases  导出多个数据库</li>
+<li>–ignore-table=database.table 备份库时忽略指定的表【可多次使用，每次一个表】</li>
+<li>-d, –no-data 导出表结构【不导出数据】</li>
+<li>-t, –no-create-info 导出数据【不添加create table语句】</li>
+<li>-R, –routines  导出存储过程和自定义函数</li>
+<li>-E, –events 导出事件</li>
+<li>–skip-triggers 不导出触发器【默认导出–triggers】</li>
+</ul>
+<h1 id="备份库表"><a href="#备份库表" class="headerlink" title="备份库表"></a>备份库表</h1><h2 id="备份所有库"><a href="#备份所有库" class="headerlink" title="备份所有库"></a>备份所有库</h2><p><code>mysqldump [OPTIONS] --all-databases [OPTIONS]</code></p>
+<h2 id="备份多个库"><a href="#备份多个库" class="headerlink" title="备份多个库"></a>备份多个库</h2><p><code>mysqldump [OPTIONS] --databases [OPTIONS] DB1 [DB2 DB3...]</code></p>
+<h2 id="备份单个库"><a href="#备份单个库" class="headerlink" title="备份单个库"></a>备份单个库</h2><p><code>mysqldump [OPTIONS] database [tables]</code></p>
+<ul>
+<li>第1个字符串为数据库</li>
+<li>第2个字符串及之后字符串为数据表</li>
+</ul>
+<h2 id="备份表"><a href="#备份表" class="headerlink" title="备份表"></a>备份表</h2><p>mysqldump db1 table1 &gt; db1_table1.sql</p>
+<h2 id="备份表数据"><a href="#备份表数据" class="headerlink" title="备份表数据"></a>备份表数据</h2><p>mysqldump db1 table1 -t &gt; db1_table1.sql</p>
+<h2 id="备份表结构"><a href="#备份表结构" class="headerlink" title="备份表结构"></a>备份表结构</h2><p>mysqldump db1 table1 -d &gt; db1_table1.sql</p>
+<h2 id="分库分表备份"><a href="#分库分表备份" class="headerlink" title="分库分表备份"></a>分库分表备份</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DB_NAME=`mysql -uadmin -pzjht0724# -e &quot;show databases;&quot;|sed &apos;1,2d&apos;`</span><br><span class="line">mkdir  /home/zj-db/backup/$(date +%F) -p</span><br><span class="line">cd /home/zj-db/backup/$(date +%F)</span><br><span class="line"># backup every database with every table</span><br><span class="line">for db in $DB_NAME</span><br><span class="line">do</span><br><span class="line">    if [[ &quot;$db&quot; != &apos;information_schema&apos; &amp;&amp; &quot;$db&quot; != &apos;performance_schema&apos; &amp;&amp; &quot;$db&quot; != &apos;mysql&apos; &amp;&amp; &quot;$db&quot; != &apos;sys&apos; ]];then</span><br><span class="line">        mkdir /home/zj-db/backup/$(date +%F)/$db -p</span><br><span class="line">            TB_NAME=`mysql -uadmin -pzjht0724# -e &quot;show tables from $db;&quot;|sed &apos;1d&apos;`</span><br><span class="line">            for tb in $TB_NAME</span><br><span class="line">            do</span><br><span class="line">                    mysqldump -uadmin -pzjht0724# --lock-tables=0 $db $tb &gt; /home/zj-db/backup/$(date +%F)/$&#123;db&#125;/$&#123;tb&#125;.sql</span><br><span class="line">            done</span><br><span class="line">        # 备份压缩及加密</span><br><span class="line">        zip -r -Pzjht1234 $&#123;db&#125;.zip $db</span><br><span class="line">        rm -rf $db</span><br><span class="line">    fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h2 id="导出存储过程与函数"><a href="#导出存储过程与函数" class="headerlink" title="导出存储过程与函数"></a>导出存储过程与函数</h2><ul>
+<li>注意事项：必须结合数据的导出</li>
+<li>查看存储过程与函数<ul>
+<li>查看自定义函数：show function status;</li>
+<li>查看存储过程：show procedure status;</li>
+</ul>
+</li>
+<li>操作：mysqldump crm_test -R &gt; crm_test.sql</li>
+</ul>
+<h1 id="备份选项"><a href="#备份选项" class="headerlink" title="备份选项"></a>备份选项</h1><h2 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h2><ul>
+<li>全量备份：使用mysqldump命令导出的数据</li>
+<li>增量备份：由于mysql的数据修改操作都记录在binlog中，执行日志文件切割轮转后，新增的binlog文件即视为增量备份<ul>
+<li>可以使用mysqldump -F或mysqladmin flush-logs切割轮转binlog文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="物理备份和逻辑备份"><a href="#物理备份和逻辑备份" class="headerlink" title="物理备份和逻辑备份"></a>物理备份和逻辑备份</h2><table>
+<thead>
+<tr>
+<th>逻辑备份</th>
+<th>物理备份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>导出sql语句</td>
+<td>直接复制数据文件</td>
+</tr>
+<tr>
+<td>mysqldump</td>
+<td>scp、cp、rsync等</td>
+</tr>
+<tr>
+<td>速度较慢</td>
+<td>速度较快</td>
+</tr>
+<tr>
+<td>支持server跨版本备份与恢复</td>
+<td>要求导入和导出的server版本尽量一致</td>
+</tr>
+<tr>
+<td>数据量小于100G使用逻辑备份</td>
+<td>数据量大于100G使用物理备份</td>
+</tr>
+</tbody>
+</table>
+<h2 id="备份策略"><a href="#备份策略" class="headerlink" title="备份策略"></a>备份策略</h2><ul>
+<li>每天凌晨做一个全量备份</li>
+<li>在全量备份的同时执行日志轮转切割【flush-logs】作为增量备份点</li>
+</ul>
+<h1 id="binlog介绍"><a href="#binlog介绍" class="headerlink" title="binlog介绍"></a>binlog介绍</h1><h2 id="binlog介绍-1"><a href="#binlog介绍-1" class="headerlink" title="binlog介绍"></a>binlog介绍</h2><ul>
+<li>数据恢复：当数据库误删或者发生不可描述的事情时，可以通过 binlog 恢复到某个时间点的数据。</li>
+<li>主从复制：当有数据库更新之后，主库通过 binlog 记录并通知从库进行更新，从而保证主从数据库数据一致；</li>
+</ul>
+<h2 id="binlog功能设置"><a href="#binlog功能设置" class="headerlink" title="binlog功能设置"></a>binlog功能设置</h2><ul>
+<li>功能开关及文件名设置：log_bin=mysql-bin</li>
+</ul>
+<ul>
+<li>binlog日志格式：binlog_format=statement，可选参数值如下<ul>
+<li>statement：记录数据库执行的原始 SQL 语句</li>
+<li>row：记录具体的行的修改，这个为目前默认值</li>
+<li>mixed ：因为上边两种格式各有优缺点，所以就出现了 mixed 格式</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>binlog文件切换条件<ul>
+<li>文件大小达到max_binlog_size参数大小</li>
+<li>执行 flush logs 命令</li>
+<li>重启 mysql 服务</li>
+</ul>
+</li>
+</ul>
+<h2 id="binlog删除"><a href="#binlog删除" class="headerlink" title="binlog删除"></a>binlog删除</h2><ul>
+<li>设置日志过期变量：<ul>
+<li>查看：show variables like ‘expire_logs_days’;</li>
+<li>设置：set global expire_logs_days = 3;</li>
+</ul>
+</li>
+<li>手动删除日志<ul>
+<li>删除全部：reset master;</li>
+<li>清除MySQL-bin.010之前的日志文件：PURGE MASTER LOGS TO ‘MySQL-bin.010’;</li>
+<li>删除3天前：PURGE MASTER LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 3 DAY);</li>
+<li>删除指定日期前：PURGE MASTER LOGS BEFORE ‘2008-06-22 13:00:00’;</li>
+</ul>
+</li>
+</ul>
+<h2 id="binlog查看"><a href="#binlog查看" class="headerlink" title="binlog查看"></a>binlog查看</h2><p>因为 binlog 是二进制文件，不能像其他文件一样，直接打开查看。但 mysql 提供了 binlog 查看工具 mysqlbinlog，可以解析二进制文件。<br>不同格式的binlog查看方式也有不同，具体如下：  </p>
+<ul>
+<li>statement：执行 mysqlbinlog /path/bin-log.000001，可以直接看到原始执行的 SQL 语句</li>
+<li>row：则可读性没有那么好，但仍可通过参数使文档更加可读 mysqlbinlog -v /path/bin-log.000001</li>
+</ul>
+<h1 id="binlog解析命令mysqlbinlog"><a href="#binlog解析命令mysqlbinlog" class="headerlink" title="binlog解析命令mysqlbinlog"></a>binlog解析命令mysqlbinlog</h1><ul>
+<li>-u, –user=name</li>
+<li>-h, –host=name </li>
+<li>-p, –password[=name]</li>
+<li>-P, –port=#</li>
+<li>-S, –socket=name</li>
+<li>-r, –result-file=name：导出内容到文件【重定向输出】</li>
+<li>–server-id=#：只导出指定server-id的内容</li>
+<li>–set-charset=name：设置字符集</li>
+<li>–base64-output=DECODE-ROWS：将base64编码的内容解码，以便于查看内容</li>
+<li>-d, –database=name 只导出指定数据库的内容</li>
+<li>-o, –offset=# 跳过开始的n行内容</li>
+<li>-start-datetime、–stop-datetime 解析两个时间点之间的 binlog，时间类型为DATETIME和TIMESTAMP<ul>
+<li>范例：mysqlbinlog mysql-bin.000001 -d seo -vv –base64-output=DECODE-ROWS –start-datetime=’2019-06-01 00:00:00’  –stop-datetime=’2019-07-01 00:00:00’ -r seo2.sql</li>
+</ul>
+</li>
+<li>-start-position、–stop-position 解析两个position 之间的 binlog【包含开始点，不包含结束点】<ul>
+<li>范例：mysqlbinlog mysql-bin.000001 -d seo -vv –base64-output=DECODE-ROWS –start-position=46301253  –stop-position=46328958 -r seo3.sql</li>
+</ul>
+</li>
+</ul>
+<h1 id="binlog恢复数据"><a href="#binlog恢复数据" class="headerlink" title="binlog恢复数据"></a>binlog恢复数据</h1><h2 id="指定库恢复"><a href="#指定库恢复" class="headerlink" title="指定库恢复"></a>指定库恢复</h2><p>将全量备份之后的binlog使用-d参数后导出指定数据库</p>
+<h2 id="指定表恢复"><a href="#指定表恢复" class="headerlink" title="指定表恢复"></a>指定表恢复</h2><ul>
+<li>在测试库上将指定表所在库的数据恢复</li>
+<li>将指定表的数据导出</li>
+<li>将导出的表数据恢复到指定的库</li>
+</ul>
+<h1 id="备份与恢复操作"><a href="#备份与恢复操作" class="headerlink" title="备份与恢复操作"></a>备份与恢复操作</h1><blockquote>
+<p>开启binlog，并且binlog不能有过期删除操作</p>
+</blockquote>
+<ul>
+<li>【备份】mysqldump备份数据【全量备份】，添加-F参数切换binlog文件，并获取备份后的第一个binlog文件名【增量备份】</li>
+<li>【问题】服务出现异常，查明是因为mysql出现问题操作</li>
+<li>【停止服务】停止mysql的对外服务【可通过iptables封禁3306端口】</li>
+<li>【保护现场】备份全量备份数据和所有的binlog文件，防止数据二次破坏</li>
+<li>【获取增量备份（删除问题sql）】找到全量备份后的所有binlog，并使用mysqlbinlog工具将binlog转换为sql，同时删除有问题的sql语句</li>
+<li>【恢复全量备份】</li>
+<li>【恢复增量备份】</li>
+<li>【开启服务】检查恢复结果，确认正常后，开启对外服务</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://learnku.com/articles/20628" target="_blank" rel="noopener">MySQL 通过 binlog 恢复数据</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysqlbinlog/" rel="tag"># mysqlbinlog</a>
+          
+            <a href="/tags/mysqldump/" rel="tag"># mysqldump</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/24/web服务管理/数据库/mysql安装与配置/" rel="next" title="mysql安装与配置">
+                <i class="fa fa-chevron-left"></i> mysql安装与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/29/web服务管理/数据库/mysql主从同步/" rel="prev" title="mysql主从同步">
+                mysql主从同步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#备份命令mysqldump"><span class="nav-number">1.</span> <span class="nav-text">备份命令mysqldump</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份库表"><span class="nav-number">2.</span> <span class="nav-text">备份库表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#备份所有库"><span class="nav-number">2.1.</span> <span class="nav-text">备份所有库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份多个库"><span class="nav-number">2.2.</span> <span class="nav-text">备份多个库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份单个库"><span class="nav-number">2.3.</span> <span class="nav-text">备份单个库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表"><span class="nav-number">2.4.</span> <span class="nav-text">备份表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表数据"><span class="nav-number">2.5.</span> <span class="nav-text">备份表数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表结构"><span class="nav-number">2.6.</span> <span class="nav-text">备份表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分库分表备份"><span class="nav-number">2.7.</span> <span class="nav-text">分库分表备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导出存储过程与函数"><span class="nav-number">2.8.</span> <span class="nav-text">导出存储过程与函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份选项"><span class="nav-number">3.</span> <span class="nav-text">备份选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全量备份与增量备份"><span class="nav-number">3.1.</span> <span class="nav-text">全量备份与增量备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物理备份和逻辑备份"><span class="nav-number">3.2.</span> <span class="nav-text">物理备份和逻辑备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份策略"><span class="nav-number">3.3.</span> <span class="nav-text">备份策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog介绍"><span class="nav-number">4.</span> <span class="nav-text">binlog介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog介绍-1"><span class="nav-number">4.1.</span> <span class="nav-text">binlog介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog功能设置"><span class="nav-number">4.2.</span> <span class="nav-text">binlog功能设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog删除"><span class="nav-number">4.3.</span> <span class="nav-text">binlog删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog查看"><span class="nav-number">4.4.</span> <span class="nav-text">binlog查看</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog解析命令mysqlbinlog"><span class="nav-number">5.</span> <span class="nav-text">binlog解析命令mysqlbinlog</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog恢复数据"><span class="nav-number">6.</span> <span class="nav-text">binlog恢复数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#指定库恢复"><span class="nav-number">6.1.</span> <span class="nav-text">指定库恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定表恢复"><span class="nav-number">6.2.</span> <span class="nav-text">指定表恢复</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份与恢复操作"><span class="nav-number">7.</span> <span class="nav-text">备份与恢复操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

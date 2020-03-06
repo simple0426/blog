@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="fabric,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="命令行选项 -l 显示任务名称 -f 指定fab入口文件，默认为fabfile.py -H 指定目标主机，多台主机以逗号分隔【当fab文件中只定义排除的主机列表时有效】 -x 排除指定主机【当fab文件中定义主机列表时有效，且列表形式必须一致，比如主机名，ip或同时包含用户名】 -u 目标主机用户名 -p 目标主机密码 -I 打开连接目标主机时的交互式提示 -P 以异步并行方式运行多主机任务，默认">
+<meta name="keywords" content="fabric">
+<meta property="og:type" content="article">
+<meta property="og:title" content="部署工具fabric">
+<meta property="og:url" content="http://blog.unlazy.cn/2018/04/20/系统管理/系统基础/部署工具fabric/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="命令行选项 -l 显示任务名称 -f 指定fab入口文件，默认为fabfile.py -H 指定目标主机，多台主机以逗号分隔【当fab文件中只定义排除的主机列表时有效】 -x 排除指定主机【当fab文件中定义主机列表时有效，且列表形式必须一致，比如主机名，ip或同时包含用户名】 -u 目标主机用户名 -p 目标主机密码 -I 打开连接目标主机时的交互式提示 -P 以异步并行方式运行多主机任务，默认">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.463Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="部署工具fabric">
+<meta name="twitter:description" content="命令行选项 -l 显示任务名称 -f 指定fab入口文件，默认为fabfile.py -H 指定目标主机，多台主机以逗号分隔【当fab文件中只定义排除的主机列表时有效】 -x 排除指定主机【当fab文件中定义主机列表时有效，且列表形式必须一致，比如主机名，ip或同时包含用户名】 -u 目标主机用户名 -p 目标主机密码 -I 打开连接目标主机时的交互式提示 -P 以异步并行方式运行多主机任务，默认">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2018/04/20/系统管理/系统基础/部署工具fabric/">
+
+
+
+
+
+  <title>部署工具fabric | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/04/20/系统管理/系统基础/部署工具fabric/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">部署工具fabric</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-20T16:52:38+08:00">
+                2018-04-20
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="命令行选项"><a href="#命令行选项" class="headerlink" title="命令行选项"></a>命令行选项</h1><ul>
+<li>-l 显示任务名称</li>
+<li>-f 指定fab入口文件，默认为fabfile.py</li>
+<li>-H 指定目标主机，多台主机以逗号分隔【当fab文件中只定义排除的主机列表时有效】</li>
+<li>-x 排除指定主机【当fab文件中定义主机列表时有效，且列表形式必须一致，比如主机名，ip或同时包含用户名】</li>
+<li>-u 目标主机用户名</li>
+<li>-p 目标主机密码</li>
+<li>-I 打开连接目标主机时的交互式提示</li>
+<li>-P 以异步并行方式运行多主机任务，默认为串行运行</li>
+<li>-R 指定role（角色），以角色名区分不同业务组设备</li>
+<li>–skip-bad-hosts 跳过不可达主机</li>
+<li>-t 设置目标主机连接超时时间（秒）</li>
+<li>-T 设置远程主机命令执行超时时间（秒）</li>
+<li>-w 当命令执行失败，发出警告，而非默认中止任务。</li>
+<li>–set=KEY=VALUE,…   以逗号分隔设置环境变量</li>
+<li>-z 设置并行执行时的进程数量</li>
+</ul>
+<h1 id="env设置"><a href="#env设置" class="headerlink" title="env设置"></a>env设置</h1><ul>
+<li>env.hosts 定义目标主机列表，可以是ip或主机名<ul>
+<li>此时可以只定义主机列表，形如：[‘172.17.20.12’, ‘172.17.20.13’]，此时所有主机将使用已定义好的用户名和密码连接目标主机</li>
+<li>当各主机的用户名不同时，在hosts里定义用户名，形如：[<a href="mailto:&#39;zj-ops@172.17.20.12" target="_blank" rel="noopener">&#39;zj-ops@172.17.20.12</a>‘, <a href="mailto:&#39;zj-ops@172.17.20.13" target="_blank" rel="noopener">&#39;zj-ops@172.17.20.13</a>‘]</li>
+</ul>
+</li>
+<li>env.exclude_hosts 排除指定主机</li>
+<li>env.user 定义目标主机用户名<ul>
+<li>仅限于所有主机使用相同用户名</li>
+<li>当没有定义user变量，同时hosts里也没有user选项时，将设置user为本地用户</li>
+</ul>
+</li>
+<li>env.password 定义目标主机密码<ul>
+<li>仅限于所有主机使用相同密码</li>
+<li>当没有定义password变量，同时passwords里没有定义密码时，将出现交互式的密码输入提示</li>
+</ul>
+</li>
+<li>env.passwords 定义目标主机密码组<ul>
+<li>passwords变量中的key中user、host、port必须同时设置，否则将依然提示输入密码</li>
+<li>范例：env.passwords = <a href="mailto:{&#39;user1@172.17.20.12" target="_blank" rel="noopener">{&#39;user1@172.17.20.12</a>:22’: ‘123’, <a href="mailto:&#39;user2@172.17.20.13" target="_blank" rel="noopener">&#39;user2@172.17.20.13</a>:22’: ‘456’, <a href="mailto:&#39;zj-ops@2.2.2.2" target="_blank" rel="noopener">&#39;zj-ops@2.2.2.2</a>:22’: ‘abc’}</li>
+</ul>
+</li>
+<li>env.gateway 定义网关设备【堡垒机、跳板机】，<ul>
+<li>网关设备的认证信息在passwords变量中定义</li>
+<li>当堡垒机的用户名与应用主机不同时，应当在此添加，如：env.gateway = <a href="mailto:&#39;zj-ops@2.2.2.2" target="_blank" rel="noopener">&#39;zj-ops@2.2.2.2</a>‘</li>
+</ul>
+</li>
+<li>env.roledefs 将主机分组<ul>
+<li>定义：env.roledefs = {‘test1’: [<a href="mailto:&#39;zj-ops@1.1.1.1" target="_blank" rel="noopener">&#39;zj-ops@1.1.1.1</a>‘], ‘test2’: [<a href="mailto:&#39;zj-web@1.1.1.2" target="_blank" rel="noopener">&#39;zj-web@1.1.1.2</a>‘], ‘test3’: [<a href="mailto:&#39;zj-ops@1.1.1.1" target="_blank" rel="noopener">&#39;zj-ops@1.1.1.1</a>‘, <a href="mailto:&#39;zj-web@1.1.1.2" target="_blank" rel="noopener">&#39;zj-web@1.1.1.2</a>‘]}</li>
+<li>使用：使用roles装饰器，表明仅某个主机组执行此任务，例如：@roles(‘test1’)</li>
+</ul>
+</li>
+</ul>
+<h1 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h1><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><ul>
+<li>with 上下文管理，与python的with类似<ul>
+<li>导入：from fabric.context_managers import *</li>
+</ul>
+</li>
+<li>run 运行远程命令</li>
+<li>cd 远程切换目录</li>
+<li>local 运行本地命令</li>
+<li>lcd 本地切换目录</li>
+<li>sudo 使用sudo执行远程命令</li>
+<li>put 上传本地文件至远程主机</li>
+<li>get 下载远程文件到本地主机</li>
+<li>prompt  获得用户输入信息，如：prompt(‘please input user password:’)<ul>
+<li>导入：from fabric.contrib.console import confirm, prompt</li>
+</ul>
+</li>
+<li>confirm  获得提示信息确认，如：confirm(‘Test failed,Continue[Y/N]?’)<ul>
+<li>导入：from fabric.contrib.console import confirm, prompt</li>
+</ul>
+</li>
+<li>yellow|green|red 输出带颜色字体<ul>
+<li>导入：from fabric.colors import *</li>
+</ul>
+</li>
+</ul>
+<h2 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h2><ul>
+<li>@task 定义任务可以通过命令行【fab -l】看到</li>
+<li>@runs_once 定义任务仅运行一次</li>
+<li>@roles(‘test1’, ‘test2’) 定义任务仅被主机组执行</li>
+<li>@hosts(<a href="mailto:&#39;zj-ops@172.17.20.12" target="_blank" rel="noopener">&#39;zj-ops@172.17.20.12</a>‘) 定义任务仅被此主机执行</li>
+<li>@parallel 在多个主机并行执行任务【默认串行】</li>
+</ul>
+<h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2018/4/16 17:08</span></span><br><span class="line"><span class="comment"># @Author  : simple0426</span></span><br><span class="line"><span class="comment"># @Email   : istyle.simple@gmail.com</span></span><br><span class="line"><span class="comment"># @File    : fabfile.py</span></span><br><span class="line"><span class="comment"># @Software: PyCharm</span></span><br><span class="line"><span class="comment"># @desc    : 功能如下</span></span><br><span class="line"><span class="comment"># 1.查看系统信息</span></span><br><span class="line"><span class="comment"># 2.部署nginx代码</span></span><br><span class="line"><span class="comment"># 3.回滚nginx代码</span></span><br><span class="line"><span class="comment"># 4.更新nginx配置【更新成功后自动重启，更新失败自动回滚配置】</span></span><br><span class="line"><span class="comment"># 5.查看nginx日志【分主机分项目】</span></span><br><span class="line"><span class="comment"># 6.登陆nginx主机【分主机】</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> fabric.contrib.console <span class="keyword">import</span> prompt</span><br><span class="line"><span class="keyword">from</span> fabric.colors <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> os, shutil</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">env.hosts = [<span class="string">'zj-ops@1.1.1.1'</span>, <span class="string">'zj-web@1.1.1.2'</span>]</span><br><span class="line">env.gateway = <span class="string">'zj-ops@2.2.2.2'</span></span><br><span class="line">env.passwords = &#123;</span><br><span class="line">    <span class="string">'zj-ops@1.1.1.1:22'</span>: <span class="string">'1213456'</span>,</span><br><span class="line">    <span class="string">'zj-web@1.1.1.2:22'</span>: <span class="string">'1213456'</span>,</span><br><span class="line">    <span class="string">'zj-ops@2.2.2.2:22'</span>: <span class="string">'1213456'</span>,</span><br><span class="line">&#125;</span><br><span class="line">env.roledefs = &#123;</span><br><span class="line">    <span class="string">'web1'</span>: [<span class="string">'zj-ops@1.1.1.1'</span>],</span><br><span class="line">    <span class="string">'web2'</span>: [<span class="string">'zj-web@1.1.1.2'</span>],</span><br><span class="line">    <span class="string">'webserver'</span>: [<span class="string">'zj-ops@1.1.1.1'</span>, <span class="string">'zj-web@1.1.1.2'</span>]</span><br><span class="line">&#125;</span><br><span class="line">project_dict = &#123;</span><br><span class="line">    <span class="string">'fop'</span>: &#123;<span class="string">'name'</span>: <span class="string">'fop'</span>, <span class="string">'log'</span>: <span class="string">'fop.abc.cn.log'</span>&#125;,</span><br><span class="line">    <span class="string">'kop'</span>: &#123;<span class="string">'name'</span>: <span class="string">'kop'</span>, <span class="string">'log'</span>: <span class="string">'kop.abc.cn.log'</span>&#125;,</span><br><span class="line">    <span class="string">'check'</span>: &#123;<span class="string">'name'</span>: <span class="string">'cloud-h5'</span>, <span class="string">'log'</span>: <span class="string">'check.fff.cn.log'</span>&#125;,</span><br><span class="line">    <span class="string">'open'</span>: &#123;<span class="string">'name'</span>: <span class="string">'cloud'</span>, <span class="string">'log'</span>: <span class="string">'open.fff.cn.log'</span>&#125;,</span><br><span class="line">    <span class="string">'www'</span>: &#123;<span class="string">'name'</span>: <span class="string">'kingold-web'</span>, <span class="string">'log'</span>: <span class="string">'www.fff.cn.log'</span>&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="meta">@parallel</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">df</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''查看所有主机的磁盘信息'''</span></span><br><span class="line">    <span class="keyword">print</span> yellow(run(<span class="string">'df -h'</span>))</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="meta">@roles('web1')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''只用于查看web1的内存'''</span></span><br><span class="line">    run(<span class="string">'free -m'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="meta">@hosts('zj-web@1.1.1.2')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uptime</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''只用于查看1.1.1.2的负载信息'''</span></span><br><span class="line">    <span class="keyword">print</span> green(run(<span class="string">'uptime'</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete_files</span><span class="params">(filename)</span>:</span></span><br><span class="line">    <span class="string">'''如果文件或目录存在则删除'''</span></span><br><span class="line">    dest_file = os.path.join(os.path.expanduser(<span class="string">'~'</span>), <span class="string">'deploy'</span>, filename)</span><br><span class="line">    <span class="keyword">if</span> os.path.exists(dest_file) <span class="keyword">and</span> os.path.isdir(dest_file):</span><br><span class="line">        shutil.rmtree(dest_file)</span><br><span class="line">    <span class="keyword">elif</span> os.path.exists(dest_file) <span class="keyword">and</span> os.path.isfile(dest_file):</span><br><span class="line">        os.remove(dest_file)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@runs_once</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tar_code</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''本地代码打包'''</span></span><br><span class="line">    project = prompt(<span class="string">'请输入要部署的项目:'</span>).strip()</span><br><span class="line">    <span class="keyword">print</span> yellow(<span class="string">'本地代码打包'</span>)</span><br><span class="line">    <span class="keyword">if</span> project <span class="keyword">not</span> <span class="keyword">in</span> project_dict.keys():</span><br><span class="line">        abort(<span class="string">'请输入正确的项目名称'</span>)</span><br><span class="line">    project_name = project_dict[project][<span class="string">'name'</span>]</span><br><span class="line">    delete_files(project_name)</span><br><span class="line">    delete_files(<span class="string">'%s.tar.gz'</span> % project_name)</span><br><span class="line">    <span class="keyword">with</span> lcd(<span class="string">'~/deploy'</span>):</span><br><span class="line">        local(<span class="string">'git clone git@10.10.10.164:kingold_app/%s.git'</span> %  project_name, capture=<span class="keyword">True</span>)</span><br><span class="line">        local(<span class="string">'tar czf %s.tar.gz %s'</span> % (project_name, project_name), capture=<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">return</span> project</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backup_code</span><span class="params">(project)</span>:</span></span><br><span class="line">    <span class="string">'''远程备份代码'''</span></span><br><span class="line">    <span class="keyword">print</span> yellow(<span class="string">'远程备份代码'</span>)</span><br><span class="line">    <span class="keyword">if</span> project <span class="keyword">not</span> <span class="keyword">in</span> project_dict.keys():</span><br><span class="line">        abort(<span class="string">'请输入正确的项目名称'</span>)</span><br><span class="line">    project_name = project_dict[project][<span class="string">'name'</span>]</span><br><span class="line">    <span class="keyword">with</span> cd(<span class="string">'~/nginx'</span>):</span><br><span class="line">        <span class="keyword">with</span> settings(warn_only=<span class="keyword">True</span>):</span><br><span class="line">            result = run(<span class="string">'rsync -az --delete %s/ %s.bak/'</span> % (project_name, project_name), quiet=<span class="keyword">True</span>)</span><br><span class="line">        <span class="keyword">if</span> result.succeeded:</span><br><span class="line">            <span class="keyword">print</span> green(<span class="string">'代码备份成功'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">push_code</span><span class="params">(project)</span>:</span></span><br><span class="line">    <span class="string">"""上传代码【传输压缩包】"""</span></span><br><span class="line">    <span class="keyword">print</span> yellow(<span class="string">'本地上传代码'</span>)</span><br><span class="line">    <span class="keyword">if</span> project <span class="keyword">not</span> <span class="keyword">in</span> project_dict.keys():</span><br><span class="line">        abort(<span class="string">'请输入正确的项目名称'</span>)</span><br><span class="line">    project_name = project_dict[project][<span class="string">'name'</span>]</span><br><span class="line">    result = put(<span class="string">'~/deploy/%s.tar.gz'</span> % project_name, <span class="string">'~/nginx/%s.tar.gz'</span> % project_name)</span><br><span class="line">    <span class="keyword">if</span> result.failed:</span><br><span class="line">        abort(<span class="string">"上传代码失败！"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">with</span> cd(<span class="string">'~/nginx'</span>):</span><br><span class="line">            run(<span class="string">'tar xzf %s.tar.gz'</span> % project_name, quiet=<span class="keyword">True</span>)</span><br><span class="line">            <span class="keyword">print</span> green(<span class="string">'代码部署成功'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateconf</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''更新配置文件目录'''</span></span><br><span class="line">    <span class="comment"># 备份</span></span><br><span class="line">    <span class="keyword">with</span> cd(<span class="string">'nginx'</span>):</span><br><span class="line">        run(<span class="string">'rsync -az --delete conf/ conf.bak/'</span>)</span><br><span class="line">    <span class="comment"># 上传</span></span><br><span class="line">    result = put(<span class="string">'~/deploy/conf'</span>, <span class="string">'~/nginx'</span>)</span><br><span class="line">    <span class="keyword">with</span> settings(warn_only=<span class="keyword">True</span>) <span class="keyword">and</span> cd(<span class="string">'nginx'</span>):</span><br><span class="line">        <span class="keyword">if</span> result.failed:</span><br><span class="line">            <span class="comment"># 回滚</span></span><br><span class="line">            run(<span class="string">'rsync -az --delete conf.bak/ conf/'</span>)</span><br><span class="line">            abort(<span class="string">'上传失败'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            res_conf = sudo(<span class="string">'~/nginx/sbin/nginx -t'</span>, quiet=<span class="keyword">True</span>)</span><br><span class="line">            <span class="comment"># 配置文件有效，重启nginx</span></span><br><span class="line">            <span class="keyword">if</span> res_conf.succeeded:</span><br><span class="line">                nginx_count = run(<span class="string">'ps aux|grep nginx|grep -v grep|wc -l'</span>)</span><br><span class="line">                <span class="keyword">if</span> nginx_count.stdout == <span class="string">'0'</span>:</span><br><span class="line">                    sudo(<span class="string">'~/nginx/sbin/nginx'</span>)</span><br><span class="line">                    <span class="keyword">print</span> green(<span class="string">'nginx启动成功'</span>)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    sudo(<span class="string">'~/nginx/sbin/nginx -s reload'</span>)</span><br><span class="line">                    <span class="keyword">print</span> green(<span class="string">'nginx重启成功'</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 配置文件无效，回滚配置</span></span><br><span class="line">                run(<span class="string">'rsync -az --delete conf.bak/ conf/'</span>)</span><br><span class="line">                <span class="keyword">print</span> red(res_conf.stdout)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rollback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''服务回滚'''</span></span><br><span class="line">    project = prompt(<span class="string">'请输入要回滚的项目:'</span>).strip()</span><br><span class="line">    <span class="keyword">print</span> yellow(<span class="string">'代码回滚'</span>)</span><br><span class="line">    <span class="keyword">if</span> project <span class="keyword">not</span> <span class="keyword">in</span> project_dict.keys():</span><br><span class="line">        abort(<span class="string">'请输入正确的项目名称'</span>)</span><br><span class="line">    project_name = project_dict[project][<span class="string">'name'</span>]</span><br><span class="line">    <span class="keyword">with</span> settings(warn_only=<span class="keyword">True</span>):</span><br><span class="line">        result = run(<span class="string">'rsync -az --delete %s.bak/ %s/'</span> % (project_name, project_name), quiet=<span class="keyword">True</span>)</span><br><span class="line">        <span class="keyword">if</span> result.succeeded:</span><br><span class="line">            <span class="keyword">print</span> green(<span class="string">'代码回滚成功'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">deploy</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''服务部署'''</span></span><br><span class="line">    project = tar_code()</span><br><span class="line">    backup_code(project)</span><br><span class="line">    push_code(project)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="meta">@runs_once</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">host</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''设置登陆主机'''</span></span><br><span class="line">    <span class="keyword">print</span> green(json.dumps(env.hosts, indent=<span class="number">4</span>))</span><br><span class="line">    host = prompt(<span class="string">'请输入要登陆的主机'</span>)</span><br><span class="line">    env.exclude_hosts.extend(env.hosts)</span><br><span class="line">    <span class="keyword">for</span> hostname <span class="keyword">in</span> env.hosts:</span><br><span class="line">        <span class="keyword">if</span> host <span class="keyword">in</span> hostname:</span><br><span class="line">            env.exclude_hosts.remove(hostname)</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''远程登陆[需设置登陆主机]'''</span></span><br><span class="line">    open_shell()</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''查看日志[需设置登陆主机]'''</span></span><br><span class="line">    <span class="keyword">print</span> green(json.dumps(project_dict.keys()))</span><br><span class="line">    project = prompt(<span class="string">'请输入要部署的项目:'</span>).strip()</span><br><span class="line">    project_log = project_dict[project][<span class="string">'log'</span>]</span><br><span class="line">    <span class="keyword">with</span> cd(<span class="string">'~/nginx/logs'</span>):</span><br><span class="line">        run(<span class="string">'tail -10f %s'</span> % project_log)</span><br></pre></td></tr></table></figure>
+<h1 id="QAQ"><a href="#QAQ" class="headerlink" title="QAQ"></a>QAQ</h1><ul>
+<li>安装：pip install fabric</li>
+<li><a href="http://www.cnblogs.com/aslongas/p/5961144.html" target="_blank" rel="noopener">参考</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/fabric/" rel="tag"># fabric</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/18/通用技能/TCP连接/" rel="next" title="TCP连接">
+                <i class="fa fa-chevron-left"></i> TCP连接
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/02/软件开发/python开发/python数据类型之字符串/" rel="prev" title="python数据类型之字符串">
+                python数据类型之字符串 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行选项"><span class="nav-number">1.</span> <span class="nav-text">命令行选项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#env设置"><span class="nav-number">2.</span> <span class="nav-text">env设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用API"><span class="nav-number">3.</span> <span class="nav-text">常用API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">3.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰器"><span class="nav-number">3.2.</span> <span class="nav-text">装饰器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#范例"><span class="nav-number">4.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QAQ"><span class="nav-number">5.</span> <span class="nav-text">QAQ</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

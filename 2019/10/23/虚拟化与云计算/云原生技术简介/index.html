@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="cncf,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="总览云原生以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行 官方支持CNCF：云原生基金会 云原生技术生态 云原生实现流程 即CNCF路线图Trail map   容器化 一般使用docker作为容器 任何程序及其依赖都可以容器化 使用微服务切割程序、开发新的功能  CI/CD 设置持续集成和持续部署（CI/CD）以使源代码的变更能自动反映在容器化的构建、测试，部署到准生产环境甚至">
+<meta name="keywords" content="cncf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云原生技术简介">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/23/虚拟化与云计算/云原生技术简介/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="总览云原生以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行 官方支持CNCF：云原生基金会 云原生技术生态 云原生实现流程 即CNCF路线图Trail map   容器化 一般使用docker作为容器 任何程序及其依赖都可以容器化 使用微服务切割程序、开发新的功能  CI/CD 设置持续集成和持续部署（CI/CD）以使源代码的变更能自动反映在容器化的构建、测试，部署到准生产环境甚至">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/CNCF-landscape.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/CNCF_TrailMap.png">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.479Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云原生技术简介">
+<meta name="twitter:description" content="总览云原生以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行 官方支持CNCF：云原生基金会 云原生技术生态 云原生实现流程 即CNCF路线图Trail map   容器化 一般使用docker作为容器 任何程序及其依赖都可以容器化 使用微服务切割程序、开发新的功能  CI/CD 设置持续集成和持续部署（CI/CD）以使源代码的变更能自动反映在容器化的构建、测试，部署到准生产环境甚至">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/CNCF-landscape.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/23/虚拟化与云计算/云原生技术简介/">
+
+
+
+
+
+  <title>云原生技术简介 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/23/虚拟化与云计算/云原生技术简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云原生技术简介</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-23T22:31:17+08:00">
+                2019-10-23
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><h2 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h2><p>以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行</p>
+<h2 id="官方支持"><a href="#官方支持" class="headerlink" title="官方支持"></a>官方支持</h2><p>CNCF：<a href="https://www.cncf.io/" target="_blank" rel="noopener">云原生基金会</a></p>
+<h2 id="云原生技术生态"><a href="#云原生技术生态" class="headerlink" title="云原生技术生态"></a>云原生技术生态</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/CNCF-landscape.png" alt=""></p>
+<h2 id="云原生实现流程"><a href="#云原生实现流程" class="headerlink" title="云原生实现流程"></a>云原生实现流程</h2><blockquote>
+<p>即CNCF路线图Trail map</p>
+</blockquote>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/CNCF_TrailMap.png" alt=""></p>
+<h3 id="容器化"><a href="#容器化" class="headerlink" title="容器化"></a>容器化</h3><ul>
+<li>一般使用docker作为容器</li>
+<li>任何程序及其依赖都可以容器化</li>
+<li>使用微服务切割程序、开发新的功能</li>
+</ul>
+<h3 id="CI-CD"><a href="#CI-CD" class="headerlink" title="CI/CD"></a>CI/CD</h3><ul>
+<li>设置持续集成和持续部署（CI/CD）以使源代码的变更能自动反映在容器化的构建、测试，部署到准生产环境甚至是生产环境</li>
+<li>设置自动发布、回滚、测试</li>
+</ul>
+<h3 id="编排和程序定义"><a href="#编排和程序定义" class="headerlink" title="编排和程序定义"></a>编排和程序定义</h3><ul>
+<li>kubernetes(成熟)是市场领先的编排解决方案</li>
+<li>应当选用一个认证的kubernetes发行版、主机平台、或安装器：cncf.io/ck</li>
+<li>Helm Charts(孵化中)可以实现定义、安装、升级大多数复杂的kubernetes应用</li>
+</ul>
+<h3 id="观察和分析"><a href="#观察和分析" class="headerlink" title="观察和分析"></a>观察和分析</h3><ul>
+<li>选取合适的监控、日志、调用链追踪解决方案</li>
+<li>考虑使用CNCF项目，Prometheus(成熟)作为监控、Fluentd(成熟)作为日志、jaeger(孵化中)作为调用链追踪的解决方案</li>
+<li>对于调用链追踪，寻找open-tracing(孵化中)兼容的实现方式，比如jaeger</li>
+</ul>
+<h3 id="以下为可选内容"><a href="#以下为可选内容" class="headerlink" title="以下为可选内容"></a>以下为可选内容</h3><h3 id="服务代理-发现-网格"><a href="#服务代理-发现-网格" class="headerlink" title="服务代理/发现/网格"></a>服务代理/发现/网格</h3><ul>
+<li>CoreDNS(成熟)是一个快速且富有弹性的工具，适用于服务发现</li>
+<li>Envoy(成熟)和Linkerd(孵化中)都可以开启服务网格编排</li>
+<li>它们也可以提供健康检查、路由和负载均衡功能</li>
+</ul>
+<h3 id="网络和策略"><a href="#网络和策略" class="headerlink" title="网络和策略"></a>网络和策略</h3><ul>
+<li>为了开启更富弹性的网络，可以使用CNI(Container Network Interface 成熟)兼容的网络项目，比如Calico、Flannel、Weave Net  </li>
+<li>Open Policy Agent(OPA 孵化中)是一个通用的策略引擎，可以用于授权、认证许可、数据过滤</li>
+</ul>
+<h3 id="分布式数据库和存储"><a href="#分布式数据库和存储" class="headerlink" title="分布式数据库和存储"></a>分布式数据库和存储</h3><ul>
+<li>如果想要从单一数据库之外获取更多的弹性和可扩展性，vitess(孵化中)是通过分片大规模运行mysql的好选择</li>
+<li>Rook(孵化中)是一个存储编排器，可将各种存储解决方案集成到kubernetes中</li>
+<li>作为kubernetes的大脑，etcd(孵化中)提供了跨主机的集群级别可靠数据存储</li>
+<li>TiKV(孵化中)使用Rust实现了一个高性能的分布式事务级别的KV存储</li>
+</ul>
+<h3 id="流和消息"><a href="#流和消息" class="headerlink" title="流和消息"></a>流和消息</h3><ul>
+<li>如果需要比JSON-REST更高的性能，考虑使用gRPC或者NATS</li>
+<li>gRPC(孵化中)是一个通用RPC框架</li>
+<li>NATS(孵化中)是一个多模式消息系统，包含请求/响应、发布/订阅、负载均衡队列</li>
+</ul>
+<h3 id="容器仓库和运行环境"><a href="#容器仓库和运行环境" class="headerlink" title="容器仓库和运行环境"></a>容器仓库和运行环境</h3><ul>
+<li>harbor(孵化中)是一个实现存储、鉴权、扫描内容的仓库</li>
+<li>也可以使用其他容器运行环境</li>
+<li>最常见的，containerd(成熟)和CRI-O(孵化中)都是符合OCI规范的</li>
+</ul>
+<h3 id="软件分发"><a href="#软件分发" class="headerlink" title="软件分发"></a>软件分发</h3><p>假如需要实现安全的软件分发，可以评估Notary(孵化中)，一个实现更新的框架</p>
+<h1 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h1><ul>
+<li>不可变基础设施：即容器镜像；</li>
+<li>应用编排理论：即容器设计模式，当前为kubernetes的内容</li>
+</ul>
+<h1 id="核心技术"><a href="#核心技术" class="headerlink" title="核心技术"></a>核心技术</h1><ul>
+<li>容器技术：<ul>
+<li>cgroups：google早期的容器技术</li>
+<li>docker：当前容器事实标准；docker是应用运行的最小单位，不依赖任何paas</li>
+</ul>
+</li>
+<li>容器编排技术<ul>
+<li>swarm，docker维护的项目，偏重生态；2017年，docker公司核心产品内置kubernetes服务，swarm项目停止维护</li>
+<li>mesos：技术较强</li>
+<li>kubernetes：兼顾生态和技术，在swarm停止维护后，从三者【swarm、mesos、k8s】竞争中胜出，是容器编排的事实标准</li>
+</ul>
+</li>
+</ul>
+<h1 id="技术范畴"><a href="#技术范畴" class="headerlink" title="技术范畴"></a>技术范畴</h1><ul>
+<li>应用定义和开发流程<ul>
+<li>应用定义与镜像制作</li>
+<li>CI/CD</li>
+<li>消息和流</li>
+<li>数据库</li>
+</ul>
+</li>
+<li>应用编排和管理【kubernetes关注的部分】<ul>
+<li>应用编排和调度</li>
+<li>服务发现治理</li>
+<li>远程调用</li>
+<li>API网关</li>
+<li>service mesh</li>
+</ul>
+</li>
+<li>监控和分析<ul>
+<li>监控</li>
+<li>日志收集</li>
+<li>tracing</li>
+<li>破坏性测试【即混沌工程】</li>
+</ul>
+</li>
+<li>底层技术：运行、存储、网络<ul>
+<li>容器运行时</li>
+<li>存储</li>
+<li>网络</li>
+</ul>
+</li>
+<li>工具集<ul>
+<li>流程自动化与配置管理</li>
+<li>镜像仓库</li>
+<li>安全技术</li>
+<li>云端密码管理</li>
+</ul>
+</li>
+<li>serverless<ul>
+<li>paas的特殊形态，是一种应用编写方式，包含faas和baas</li>
+<li>典型特点就是按实际使用计费</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/cncf/" rel="tag"># cncf</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/22/web服务管理/缓存与nosql/redis客户端redis-cli/" rel="next" title="redis客户端redis-cli">
+                <i class="fa fa-chevron-left"></i> redis客户端redis-cli
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/23/架构与安全/架构设计/" rel="prev" title="架构设计">
+                架构设计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#总览"><span class="nav-number">1.</span> <span class="nav-text">总览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#云原生"><span class="nav-number">1.1.</span> <span class="nav-text">云原生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方支持"><span class="nav-number">1.2.</span> <span class="nav-text">官方支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云原生技术生态"><span class="nav-number">1.3.</span> <span class="nav-text">云原生技术生态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云原生实现流程"><span class="nav-number">1.4.</span> <span class="nav-text">云原生实现流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#容器化"><span class="nav-number">1.4.1.</span> <span class="nav-text">容器化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CI-CD"><span class="nav-number">1.4.2.</span> <span class="nav-text">CI/CD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编排和程序定义"><span class="nav-number">1.4.3.</span> <span class="nav-text">编排和程序定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#观察和分析"><span class="nav-number">1.4.4.</span> <span class="nav-text">观察和分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以下为可选内容"><span class="nav-number">1.4.5.</span> <span class="nav-text">以下为可选内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务代理-发现-网格"><span class="nav-number">1.4.6.</span> <span class="nav-text">服务代理/发现/网格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络和策略"><span class="nav-number">1.4.7.</span> <span class="nav-text">网络和策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式数据库和存储"><span class="nav-number">1.4.8.</span> <span class="nav-text">分布式数据库和存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流和消息"><span class="nav-number">1.4.9.</span> <span class="nav-text">流和消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器仓库和运行环境"><span class="nav-number">1.4.10.</span> <span class="nav-text">容器仓库和运行环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件分发"><span class="nav-number">1.4.11.</span> <span class="nav-text">软件分发</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心思想"><span class="nav-number">2.</span> <span class="nav-text">核心思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心技术"><span class="nav-number">3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术范畴"><span class="nav-number">4.</span> <span class="nav-text">技术范畴</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

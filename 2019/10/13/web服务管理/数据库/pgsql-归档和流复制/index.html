@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="高可用,归档,流复制,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="文件级别备份限制条件 在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】 无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复  不停机处理 获取数据目录的一致性”快照”； 数据目录和WAL日志在不同磁盘，或表空间文件在不同文件系统时，获取一致">
+<meta name="keywords" content="高可用,归档,流复制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pgsql-归档和流复制">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="文件级别备份限制条件 在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】 无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复  不停机处理 获取数据目录的一致性”快照”； 数据目录和WAL日志在不同磁盘，或表空间文件在不同文件系统时，获取一致">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.400Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pgsql-归档和流复制">
+<meta name="twitter:description" content="文件级别备份限制条件 在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】 无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复  不停机处理 获取数据目录的一致性”快照”； 数据目录和WAL日志在不同磁盘，或表空间文件在不同文件系统时，获取一致">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/">
+
+
+
+
+
+  <title>pgsql-归档和流复制 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pgsql-归档和流复制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:45:14+08:00">
+                2019-10-13
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/pgsql/" itemprop="url" rel="index">
+                    <span itemprop="name">pgsql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="文件级别备份"><a href="#文件级别备份" class="headerlink" title="文件级别备份"></a>文件级别备份</h1><h2 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h2><ul>
+<li>在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】</li>
+<li>无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复</li>
+</ul>
+<h2 id="不停机处理"><a href="#不停机处理" class="headerlink" title="不停机处理"></a>不停机处理</h2><ul>
+<li>获取数据目录的一致性”快照”；<ul>
+<li>数据目录和WAL日志在不同磁盘，或表空间文件在不同文件系统时，获取一致性快照则比较困难</li>
+<li>可以使用归档备份【continuous archiving base backup】来获取一致性的数据</li>
+</ul>
+</li>
+<li>由于此”快照”是在服务运行时的数据，当此数据目录快照在执行恢复时会认为服务没有正常关闭，服务会应用上次checkpoint之后WAL日志【即，此时数据恢复也需要pg_xlog目录下的wal日志】；</li>
+<li>在获取快照前，执行CHECKPOINT可以减少恢复时间。</li>
+</ul>
+<h1 id="归档备份和恢复"><a href="#归档备份和恢复" class="headerlink" title="归档备份和恢复"></a><a href="https://www.postgresql.org/docs/9.6/continuous-archiving.html" target="_blank" rel="noopener">归档备份和恢复</a></h1><h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>wal文件不包含索引信息，所以索引需要手动处理</li>
+<li>基础备份进行中，如果有 CREATE DATABASE执行会出现意料之外的事</li>
+<li>创建表空间时，使用的是字面意思的绝对路径，在跨主机恢复会有问题</li>
+</ul>
+<h2 id="归档设置"><a href="#归档设置" class="headerlink" title="归档设置"></a>归档设置</h2><ul>
+<li>参数设置【postgresql.conf】<ul>
+<li>wal_level = replica</li>
+<li>archive_mode = on</li>
+<li>archive_command = ‘test ! -f /mnt/server/archivedir/%f &amp;&amp; cp %p /mnt/server/archivedir/%f’</li>
+<li>【pg_baseback命令使用】max_wal_senders = 5</li>
+<li>【pg_baseback命令使用】wal_keep_segments = 10</li>
+</ul>
+</li>
+<li>【pg_baseback命令使用】添加复制用户（pg_hba.conf） <ul>
+<li>【local   replication     postgres                                trust】</li>
+</ul>
+</li>
+<li>建立归档目录，并设置目录权限为pg server运行用户</li>
+<li>重启数据库</li>
+<li>测试归档是否正常<ul>
+<li>checkpoint;</li>
+<li>select pg_switch_xlog();</li>
+</ul>
+</li>
+</ul>
+<h2 id="基础备份"><a href="#基础备份" class="headerlink" title="基础备份"></a>基础备份</h2><ul>
+<li>方式1：使用pg_basebackup命令</li>
+<li>方式2：使用sql命令行下的API手动处理<ul>
+<li>开启归档设置</li>
+<li>打开强制检查点【保持会话连接】：SELECT pg_start_backup(‘label’, false, false);</li>
+<li>备份数据目录，并排除如下文件和目录<ul>
+<li>postmaster.pid、postmaster.opts</li>
+<li>recovery.conf、recovery.done</li>
+<li>pg_log</li>
+<li>pg_xlog</li>
+<li>pg_replslot</li>
+</ul>
+</li>
+<li>关闭强制检查点【同一会话】：SELECT * FROM pg_stop_backup(false);</li>
+<li>【可选】：删除检查点之前的归档文件</li>
+</ul>
+</li>
+</ul>
+<h3 id="手动模式备份实践"><a href="#手动模式备份实践" class="headerlink" title="手动模式备份实践"></a>手动模式备份实践</h3><ul>
+<li>备份数据目录：tar czf /home/postgres/backup/data_$(date +%F).tar.gz     data/ –exclude=pg_xlog &gt;/dev/null 2&gt;&amp;1</li>
+<li>跨主机同步数据目录：rsync -C -a –delete -e ssh –exclude pg_log –exclude pg_xlog –exclude recovery.conf –exclude recovery.done data/ 10.150.10.41:~/db0/data/</li>
+<li>跨主机同步归档目录：rsync -C -a –delete -e ssh archive/ 10.150.10.41:/home/postgres/db0/archive/</li>
+</ul>
+<h2 id="恢复数据"><a href="#恢复数据" class="headerlink" title="恢复数据"></a>恢复数据</h2><ul>
+<li>停止服务</li>
+<li>保留并转储pg_xlog目录内容，因为它们可能包含系统宕机时还没有归档的日志</li>
+<li>删除数据目录及表空间根目录下的内容</li>
+<li>从基础备份中恢复数据目录</li>
+<li>删除基础备份中的pg_xlog的文件【因为它们可能比当前的数据陈旧】</li>
+<li>将转储的pg_xlog文件复制到数据目录</li>
+<li>在数据目录创建recovery.conf文件，并设置策略阻止普通用户连接并使用服务【pg_hba.conf或iptables】</li>
+<li>【原理：恢复过程】：此时将使用上次基础备份以后的归档wal文件，及当前pg_xlog目录下的wal文件用于恢复数据<ul>
+<li>归档目录不存在的内容将认为存在于pg_xlog中，这样就允许使用最近没有归档的wal文件</li>
+<li>归档目录中存在的内容优先于pg_xlog被应用</li>
+<li>恢复时将不会覆盖现有pg_xlog下的内容</li>
+</ul>
+</li>
+<li>恢复完成后，服务会自动将recovery.conf重命名为recovery.done</li>
+<li>确认恢复完成后，开启对外服务</li>
+</ul>
+<h3 id="recovery-conf"><a href="#recovery-conf" class="headerlink" title="recovery.conf"></a>recovery.conf</h3><ul>
+<li>可以在安装目录的share目录下找到recovery.conf.sample作为范例</li>
+<li>文件选项<ul>
+<li>恢复命令【必选】：restore_command = ‘cp /mnt/server/archivedir/%f %p’</li>
+<li>恢复截止时间：recovery_target_time (timestamp)</li>
+<li>是否包含截止点：recovery_target_inclusive (boolean)<ul>
+<li>默认为true，包含截止点，即在截止点停止</li>
+<li>false，不包含截止点，在截止点之前停止</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="流复制"><a href="#流复制" class="headerlink" title="流复制"></a><a href="https://www.postgresql.org/docs/9.6/warm-standby.html" target="_blank" rel="noopener">流复制</a></h1><h2 id="前置要求"><a href="#前置要求" class="headerlink" title="前置要求"></a>前置要求</h2><ul>
+<li>表空间：如果使用表空间，因为表空间使用绝对路径的原因，需要主备可以建立相同的路径</li>
+<li>硬件方面：主备的硬件架构需要一致，比如都是32或64位系统</li>
+<li>软件版本：主备大版本要尽可能保持一致，备机小版本高于主是可以的，这是因为高版本可以读取低版本的wal文件</li>
+</ul>
+<h2 id="备机操作原理"><a href="#备机操作原理" class="headerlink" title="备机操作原理"></a>备机操作原理</h2><ul>
+<li>重放wal的顺序<ul>
+<li>归档目录中的文件</li>
+<li>pg_xlog中的文件</li>
+<li>连接主机获取的wal</li>
+</ul>
+</li>
+<li>备机转换为正常的可读写主机<ul>
+<li>使用命令：pg_ctl promote</li>
+<li>触发器文件：trigger_file</li>
+</ul>
+</li>
+</ul>
+<h2 id="主机配置"><a href="#主机配置" class="headerlink" title="主机配置"></a>主机配置</h2><ul>
+<li>归档目录可以被备机访问【如scp】，或直接在备机复制同样的归档文件</li>
+<li>流复制设置：<ul>
+<li>建立复制权限用户<ul>
+<li>sql—》create user repl replication password ‘repl-123456’;</li>
+<li>pg_hba.conf —》【host    replication     repl            172.16.0.0/24           password】</li>
+</ul>
+</li>
+<li>其他配置：<ul>
+<li>开启流复制线程【根据备机数量调整大小】：max_wal_senders </li>
+<li>保持主备一致的配置：hot_standby = on</li>
+</ul>
+</li>
+<li>【可选功能】 max_replication_slots</li>
+</ul>
+</li>
+</ul>
+<h2 id="备机配置"><a href="#备机配置" class="headerlink" title="备机配置"></a>备机配置</h2><ul>
+<li>【高可用】保持和主机相同的配置，如：归档、连接、授权等，其中archive_mode的设置参考如下<ul>
+<li>在非恢复模式时，on和always作用一样，都会产生归档文件</li>
+<li>在恢复模式时，on并不会起作用（提升为主时才起作用）；always只有则会产生自己的归档文件【处理复杂，不建议使用】</li>
+</ul>
+</li>
+<li>从主机恢复一个基础备份：pg_basebackup -h 172.16.0.215 -U ‘repl’ -D data/ -RP</li>
+<li>从主机复制归档文件：rsync -az -e ssh <a href="mailto:postgre@172.16.0.215" target="_blank" rel="noopener">postgre@172.16.0.215</a>:/usr/local/pgsql/archive archive</li>
+<li>创建配置文件 recovery.conf【pg_basebackup自动创建】<ul>
+<li>standby_mode = ‘on’</li>
+<li>primary_conninfo = ‘host=192.168.1.50 port=5432 user=foo password=foopass’</li>
+<li>restore_command = ‘cp /path/to/archive/%f %p’</li>
+<li>【从机可读设置】 hot_standby = ‘on’（postgresql.conf）</li>
+<li>【多备机故障切换设置】recovery_target_timeline=‘latest’</li>
+</ul>
+</li>
+</ul>
+<h2 id="状态监控"><a href="#状态监控" class="headerlink" title="状态监控"></a>状态监控</h2><ul>
+<li>【主】pg_current_xlog_location：产生的wal记录</li>
+<li>【备】pg_last_xlog_receive_location：已接收但未执行的wal记录</li>
+<li>【主】pg_stat_replication：wal发送进程列表<ul>
+<li>sent_location与pg_current_xlog_location的差异表明主处于高负载状态</li>
+<li>sent_location与pg_last_xlog_receive_location的差异表明主备的网络处于高负载，或从处于高负载状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="备升级为主"><a href="#备升级为主" class="headerlink" title="备升级为主"></a>备升级为主</h2><ul>
+<li>切换注意事项：需要保证同一时间只有一个主对外提供读写服务，通行的方案是heartbeat、vip偏移</li>
+<li>切换方式<ul>
+<li>方式1：设置 trigger_file（recovery.conf）</li>
+<li>方式2：使用 pg_ctl promote</li>
+</ul>
+</li>
+</ul>
+<h1 id="其他复制技术"><a href="#其他复制技术" class="headerlink" title="其他复制技术"></a>其他复制技术</h1><h2 id="复制槽"><a href="#复制槽" class="headerlink" title="复制槽"></a>复制槽</h2><ul>
+<li>作用：保护wal文件避免被轮转或删除，与wal_keep_segments、archive_command作用相同</li>
+<li>优势：相比其他两种凡是，它只保持最小量的wal文件</li>
+</ul>
+<h2 id="级联复制"><a href="#级联复制" class="headerlink" title="级联复制"></a>级联复制</h2><ul>
+<li>max_wal_senders</li>
+<li>hot_standby</li>
+<li>host-based authentication</li>
+</ul>
+<h2 id="同步复制"><a href="#同步复制" class="headerlink" title="同步复制"></a>同步复制</h2><ul>
+<li>原理与限制条件<ul>
+<li>主无需从库返回确认信息的情况<ul>
+<li>只读事务、事务回滚</li>
+<li>顶层的事务需要备库返回信息、而子事务不需要</li>
+<li>长时间运行的操作，包括数据加载、建立索引</li>
+</ul>
+</li>
+<li>主需要从库返回确认信息：两阶段的操作（prepare、commit）</li>
+<li>因为主库必须知道从库的状态信息，主库和从库必须直连，所以级联不能使用同步复制</li>
+<li>主服务器必须等待所有同步服务器返回事务确认信息，否则事务永远不会完成；但可以定义同步、半同步、异步服务器减弱这种影响（synchronous_standby_names）</li>
+<li>在事务等待返回信息时创建备用服务器，应当在运行pg_start_backup和pg_stop_backup的同一个会话中设置synchronous_commit = off，否则事务提交会一直等待新的备用服务器出现才会完成</li>
+</ul>
+</li>
+<li>配置<ul>
+<li>synchronous_standby_names：从库名称信息，由application_name（recover.conf）组成，逗号分隔<ul>
+<li>范例：synchronous_standby_names = ‘2 (s1, s2, s3)’</li>
+<li>解释：如果有s1, s2, s3 and s4 4个备用服务器，则s1，s2是主的同步服务器，s3是备主同步服务器（s1或s2出故障时被提升为主同步），s4为异步服务器【无需设置，默认为异步】</li>
+</ul>
+</li>
+<li>synchronous_commit：数据持久化级别【也可以在整个数据库级别、连接、事务级别指定数据持久化级别？？？】<ul>
+<li>on：默认设置，从库写一大块wal数据到磁盘</li>
+<li>remote_write：从库接收记录，并将内容写入操作系统，但不是持久化到磁盘</li>
+<li>remote_apply：从库已经应用接收的事务提交，但没有到数据写入阶段</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="高可用方案"><a href="#高可用方案" class="headerlink" title="高可用方案"></a>高可用方案</h1><ul>
+<li>共享存储：NAS</li>
+<li>块设备复制（文件系统级别）：DRBD</li>
+<li>事务日志传送：文件级别的日志传送、流复制</li>
+<li>基于触发器的主备复制：Slony-I </li>
+<li>基于语句复制的中间件：Pgpool-II</li>
+<li>异步多主复制：Bucardo </li>
+<li>同步多主复制：无</li>
+<li>商业解决方案</li>
+</ul>
+<h2 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h2><ul>
+<li>数据分区（Data Partitioning）：数据拆分后分布式存储，需要使用时再组合返回给终端</li>
+<li>并行查询【提高查询速度】<ul>
+<li>原理：将单个sql查询语句拆分成多个部分，分别交给不同后端处理，多个后端的查询结果经过聚合后返回给客户端</li>
+<li>实现：Pgpool-II、PL/Proxy</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/高可用/" rel="tag"># 高可用</a>
+          
+            <a href="/tags/归档/" rel="tag"># 归档</a>
+          
+            <a href="/tags/流复制/" rel="tag"># 流复制</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-sql操作/" rel="next" title="pgsql-sql操作">
+                <i class="fa fa-chevron-left"></i> pgsql-sql操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/" rel="prev" title="pgsql-pgpool使用">
+                pgsql-pgpool使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文件级别备份"><span class="nav-number">1.</span> <span class="nav-text">文件级别备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限制条件"><span class="nav-number">1.1.</span> <span class="nav-text">限制条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不停机处理"><span class="nav-number">1.2.</span> <span class="nav-text">不停机处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#归档备份和恢复"><span class="nav-number">2.</span> <span class="nav-text">归档备份和恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">2.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归档设置"><span class="nav-number">2.2.</span> <span class="nav-text">归档设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础备份"><span class="nav-number">2.3.</span> <span class="nav-text">基础备份</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#手动模式备份实践"><span class="nav-number">2.3.1.</span> <span class="nav-text">手动模式备份实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#恢复数据"><span class="nav-number">2.4.</span> <span class="nav-text">恢复数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#recovery-conf"><span class="nav-number">2.4.1.</span> <span class="nav-text">recovery.conf</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流复制"><span class="nav-number">3.</span> <span class="nav-text">流复制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置要求"><span class="nav-number">3.1.</span> <span class="nav-text">前置要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备机操作原理"><span class="nav-number">3.2.</span> <span class="nav-text">备机操作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主机配置"><span class="nav-number">3.3.</span> <span class="nav-text">主机配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备机配置"><span class="nav-number">3.4.</span> <span class="nav-text">备机配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态监控"><span class="nav-number">3.5.</span> <span class="nav-text">状态监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备升级为主"><span class="nav-number">3.6.</span> <span class="nav-text">备升级为主</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他复制技术"><span class="nav-number">4.</span> <span class="nav-text">其他复制技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#复制槽"><span class="nav-number">4.1.</span> <span class="nav-text">复制槽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#级联复制"><span class="nav-number">4.2.</span> <span class="nav-text">级联复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步复制"><span class="nav-number">4.3.</span> <span class="nav-text">同步复制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高可用方案"><span class="nav-number">5.</span> <span class="nav-text">高可用方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#其他解决方案"><span class="nav-number">5.1.</span> <span class="nav-text">其他解决方案</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

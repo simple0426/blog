@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="安装,my.cnf,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="官方参考参考手册：https://dev.mysql.com/doc/refman/5.6/en/ 源码安装依赖安装 cmake make OR gmake GCC 4.2.1 or later centos系列使用gcc*   SSL library ncurses ubuntu16：libncurses5-dev、libncurses5    预配置 groupadd mysql userad">
+<meta name="keywords" content="安装,my.cnf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql安装与配置">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/24/web服务管理/数据库/mysql安装与配置/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="官方参考参考手册：https://dev.mysql.com/doc/refman/5.6/en/ 源码安装依赖安装 cmake make OR gmake GCC 4.2.1 or later centos系列使用gcc*   SSL library ncurses ubuntu16：libncurses5-dev、libncurses5    预配置 groupadd mysql userad">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.387Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql安装与配置">
+<meta name="twitter:description" content="官方参考参考手册：https://dev.mysql.com/doc/refman/5.6/en/ 源码安装依赖安装 cmake make OR gmake GCC 4.2.1 or later centos系列使用gcc*   SSL library ncurses ubuntu16：libncurses5-dev、libncurses5    预配置 groupadd mysql userad">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/24/web服务管理/数据库/mysql安装与配置/">
+
+
+
+
+
+  <title>mysql安装与配置 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/24/web服务管理/数据库/mysql安装与配置/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql安装与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-24T16:39:59+08:00">
+                2019-09-24
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="官方参考"><a href="#官方参考" class="headerlink" title="官方参考"></a>官方参考</h1><p>参考手册：<a href="https://dev.mysql.com/doc/refman/5.6/en/" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.6/en/</a></p>
+<h1 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h1><h2 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/source-installation-prerequisites.html" target="_blank" rel="noopener">依赖安装</a></h2><ul>
+<li>cmake</li>
+<li>make OR gmake</li>
+<li>GCC 4.2.1 or later<ul>
+<li>centos系列使用gcc*</li>
+</ul>
+</li>
+<li>SSL library</li>
+<li>ncurses<ul>
+<li>ubuntu16：libncurses5-dev、libncurses5</li>
+</ul>
+</li>
+</ul>
+<h2 id="预配置"><a href="#预配置" class="headerlink" title="预配置"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/installing-source-distribution.html" target="_blank" rel="noopener">预配置</a></h2><ul>
+<li>groupadd mysql</li>
+<li>useradd -r -g mysql -s /bin/false mysql</li>
+<li>mkdir /application</li>
+</ul>
+<h2 id="软件解压"><a href="#软件解压" class="headerlink" title="软件解压"></a>软件解压</h2><p>tar zxvf mysql-VERSION.tar.gz</p>
+<h2 id="编译配置"><a href="#编译配置" class="headerlink" title="编译配置"></a>编译配置</h2><ul>
+<li>cd mysql-VERSION</li>
+<li>保持源码位置干净<ul>
+<li>mkdir bld</li>
+<li>cd bld</li>
+</ul>
+</li>
+<li><a href="https://dev.mysql.com/doc/refman/5.6/en/source-configuration-options.html" target="_blank" rel="noopener">编译配置</a>：<ul>
+<li>安装基础目录：-DCMAKE_INSTALL_PREFIX=/application/mysql</li>
+<li>数据存储目录：-DMYSQL_DATADIR=/application/mysql/data</li>
+<li>建立mysql库文件libmysqld ：-DWITH_EMBEDDED_SERVER=ON</li>
+<li>添加ssl支持：-DWITH_SSL=yes</li>
+<li>默认字符集：-DDEFAULT_CHARSET=utf8</li>
+<li>默认字符序：-DDEFAULT_COLLATION=utf8_general_ci</li>
+<li>开启debug支持：-DWITH_DEBUG=1</li>
+<li>显示当前编译变量列表及对应帮助信息：-LH</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cmake .. -DCMAKE_INSTALL_PREFIX=/application/mysql \</span><br><span class="line">-DMYSQL_DATADIR=/application/mysql/data \</span><br><span class="line">-DWITH_EMBEDDED_SERVER=ON \</span><br><span class="line">-DWITH_SSL=yes \</span><br><span class="line">-DDEFAULT_CHARSET=utf8 \</span><br><span class="line">-DDEFAULT_COLLATION=utf8_general_ci \</span><br><span class="line">-DWITH_DEBUG=1 \</span><br><span class="line">-LH</span><br></pre></td></tr></table></figure>
+<h2 id="编译与安装"><a href="#编译与安装" class="headerlink" title="编译与安装"></a>编译与安装</h2><ul>
+<li>make</li>
+<li>make install</li>
+</ul>
+<h2 id="初始化数据"><a href="#初始化数据" class="headerlink" title="初始化数据"></a>初始化数据</h2><ul>
+<li>初始化数据：/application/mysql/scripts/mysql_install_db –basedir=/application/mysql –datadir=/application/mysql/data/ –user=mysql</li>
+<li>变更目录权限：chown -R mysql.mysql /application/mysql</li>
+</ul>
+<h2 id="变更为系统服务"><a href="#变更为系统服务" class="headerlink" title="变更为系统服务"></a>变更为系统服务</h2><ul>
+<li>cp /application/mysql/support-files/mysql.server /etc/init.d/mysqld</li>
+<li>chmod +x /etc/init.d/mysqld</li>
+<li>sed -i ‘/^basedir=/s#=#&amp;/application/mysql#’ /etc/init.d/mysqld</li>
+<li>sed -i ‘/^datadir=/s#=#&amp;/application/mysql/data#’ /etc/init.d/mysqld </li>
+<li>添加为系统服务：systemctl daemon-reload</li>
+<li>设置开机启动<ul>
+<li>systemctl enable mysqld</li>
+<li>systemctl is-enabled mysqld</li>
+</ul>
+</li>
+<li>变更pid文件位置（/etc/init.d/mysqld）<ul>
+<li>示例：mysqld_pid_file_path=/application/mysql/mysqld.pid</li>
+<li>用法：sed -i ‘/^mysqld_pid_file_path/s#=#&amp;/application/mysql/mysqld.pid#’ /etc/init.d/mysqld</li>
+<li>系统重载配置：systemctl daemon-reload</li>
+<li>正常启停控制：systemctl start mysql</li>
+</ul>
+</li>
+</ul>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><ul>
+<li>echo “export PATH=/application/mysql/bin:\$PATH” &gt;&gt; /etc/profile</li>
+<li>source /etc/profile</li>
+</ul>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><h2 id="读取顺序"><a href="#读取顺序" class="headerlink" title="读取顺序"></a>读取顺序</h2><blockquote>
+<p>mysql不会读取其他人有写权限的配置文件【o+w】<br>读取顺序如下，但是后读取的文件有高优先级</p>
+</blockquote>
+<ul>
+<li>/etc/my.cnf、/etc/mysql/my.cnf</li>
+<li>SYSCONFDIR/my.cnf：默认是安装目录的etc子目录</li>
+<li>$MYSQL_HOME/my.cnf【服务端】：MYSQL_HOME为用户自定义设置，或BASEDIR、DATADIR</li>
+<li>defaults-extra-file： 命令行选项–defaults-extra-file</li>
+<li>~/.my.cnf：用户自定义</li>
+<li>~/.mylogin.cnf【客户端，较少使用】：用户登录类型配置定义</li>
+</ul>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
+<li>配置文件和命令行语法类似【mysqld –verbose –help】，但是不包含命令行选项前导的双横向</li>
+<li>井号#或分号<code>;</code>开始的行是注释，井号也可以出现在行中间</li>
+<li><code>[group]</code>：选项分组，分组名称和程序名称相同，如：<ul>
+<li><code>[mysqld]</code>：mysqld程序</li>
+<li><code>[mysql]</code>：mysql程序</li>
+<li><code>[client]</code>：所有客户端程序</li>
+<li><code>[mysqldump]</code>：mysqldump程序</li>
+</ul>
+</li>
+<li>opt_name：选项，与命令行–opt_name作用一样</li>
+<li>opt_name=value：与命令行–opt_name=value作用一样</li>
+<li>!include、!includedir：包含其他配置文件或目录</li>
+</ul>
+<h2 id="服务端配置项"><a href="#服务端配置项" class="headerlink" title="服务端配置项"></a>服务端配置项</h2><blockquote>
+<p>mysqld读取[mysqld] and [server]配置项，类似的mysqld_safe读取[mysqld], [server], [mysqld_safe], and [safe_mysqld] 配置项</p>
+</blockquote>
+<h3 id="运行时查看与设置"><a href="#运行时查看与设置" class="headerlink" title="运行时查看与设置"></a>运行时查看与设置</h3><ul>
+<li>查看变量：SHOW VARIABLES;</li>
+<li>设置变量：SET <code>[GLOBAL]</code> var_name = value;</li>
+<li>统计信息和状态值查看：SHOW STATUS;</li>
+</ul>
+<h3 id="配置文件设置"><a href="#配置文件设置" class="headerlink" title="配置文件设置"></a>配置文件设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"># 服务端配置包含以下内容</span><br><span class="line"># 命令选项：https://dev.mysql.com/doc/refman/5.6/en/server-options.html</span><br><span class="line"># 系统变量：https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html</span><br><span class="line"># innodb参数：https://dev.mysql.com/doc/refman/5.6/en/innodb-parameters.html</span><br><span class="line"># 主从复制从配置：https://dev.mysql.com/doc/refman/5.6/en/replication-options-slave.html</span><br><span class="line">[client]</span><br><span class="line">default-character-set = utf8               </span><br><span class="line">socket = /application/mysql/mysqld.sock</span><br><span class="line"># user=&quot;root&quot;</span><br><span class="line"># password=&quot;root</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line"># 杂项</span><br><span class="line">lower_case_table_names = 0 #表名大小写敏感</span><br><span class="line"></span><br><span class="line"># 连接</span><br><span class="line">basedir = /application/mysql/</span><br><span class="line">datadir = /application/mysql/data</span><br><span class="line">socket = /application/mysql/mysqld.sock</span><br><span class="line">pid_file = /application/mysql/mysqld.pid</span><br><span class="line">back_log = 300 #操作系统监听队列保持的连接数【默认50 + (max_connections / 5)】</span><br><span class="line">max_connections = 300 # mysql允许的连接数</span><br><span class="line"></span><br><span class="line"># 日志</span><br><span class="line"># log_err 自定义设置有bug：mysqld_safe error: log-error set to</span><br><span class="line"># https://bugs.mysql.com/bug.php?id=84427</span><br><span class="line">log_error = /application/mysql/mysqld.err</span><br><span class="line">slow_query_log = 1</span><br><span class="line">long_query_time = 1</span><br><span class="line">slow_query_log_file = /application/mysql/slow.log</span><br><span class="line"></span><br><span class="line"># binlog设置</span><br><span class="line"># expire_logs_days = 10 #保留的日志天数</span><br><span class="line">log-bin = mysql-bin</span><br><span class="line">log-bin-index = mysql-bin.index</span><br><span class="line">binlog_format = statement # binlog格式</span><br><span class="line"></span><br><span class="line"># 复制操作从配置</span><br><span class="line">server-id = 1 </span><br><span class="line"># replicate-ignore-db = mysql #忽略库mysql更新   </span><br><span class="line"># replicate-ignore-table=db_name.tbl_name #忽略表db_name.tbl_name更新                            </span><br><span class="line"># log-slave-updates # 默认从库不写binlog；但，从库作为其他从库的主库时，需开启binlog写入【配合log-bin设置】</span><br><span class="line"># read-only=yes # 只读设置</span><br><span class="line"># slave-skip-errors = 1032,1062,126,1114,1146,1048,1396  #从库更新时跳过指定错误</span><br><span class="line"># relay-log-index = /usr/local/mysql/log/relaylog.index # relay-log设置</span><br><span class="line"># relay-log-info-file = /usr/local/mysql/log/relaylog.info</span><br><span class="line"># relay-log = /usr/local/mysql/log/relaylog</span><br></pre></td></tr></table></figure>
+<h1 id="启动错误"><a href="#启动错误" class="headerlink" title="启动错误"></a>启动错误</h1><ul>
+<li>现象：【Can’t start server : Bind on unix socket: Permission denied】</li>
+<li>解决：查看my.cnf文件，找到.sock文件设置的路径，给此文件所在文件夹更改为mysql的用户所有，并且增加所有用户的读写权限</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/安装/" rel="tag"># 安装</a>
+          
+            <a href="/tags/my-cnf/" rel="tag"># my.cnf</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/19/web服务管理/数据库/mysql介绍/" rel="next" title="mysql介绍">
+                <i class="fa fa-chevron-left"></i> mysql介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/25/web服务管理/数据库/mysql备份与恢复/" rel="prev" title="mysql备份与恢复">
+                mysql备份与恢复 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#官方参考"><span class="nav-number">1.</span> <span class="nav-text">官方参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码安装"><span class="nav-number">2.</span> <span class="nav-text">源码安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖安装"><span class="nav-number">2.1.</span> <span class="nav-text">依赖安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预配置"><span class="nav-number">2.2.</span> <span class="nav-text">预配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件解压"><span class="nav-number">2.3.</span> <span class="nav-text">软件解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译配置"><span class="nav-number">2.4.</span> <span class="nav-text">编译配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译与安装"><span class="nav-number">2.5.</span> <span class="nav-text">编译与安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化数据"><span class="nav-number">2.6.</span> <span class="nav-text">初始化数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更为系统服务"><span class="nav-number">2.7.</span> <span class="nav-text">变更为系统服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置环境变量"><span class="nav-number">2.8.</span> <span class="nav-text">配置环境变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件"><span class="nav-number">3.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#读取顺序"><span class="nav-number">3.1.</span> <span class="nav-text">读取顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">3.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端配置项"><span class="nav-number">3.3.</span> <span class="nav-text">服务端配置项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时查看与设置"><span class="nav-number">3.3.1.</span> <span class="nav-text">运行时查看与设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件设置"><span class="nav-number">3.3.2.</span> <span class="nav-text">配置文件设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动错误"><span class="nav-number">4.</span> <span class="nav-text">启动错误</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

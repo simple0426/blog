@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="主从复制,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="复制简介复制功能优势 横向扩展解决方案：更新和写操作在主库，读操作在从库 数据安全性：从库可以停止同步、延迟同步、执行数据备份 离线数据分析 远距离数据分发  复制方式 异步复制  一般结构【默认】 特点：单层结构、所有slave直接连接master   级联复制【操作如下】 主：开启binlog 主的从：开启binlog、log_slave_updates 从的从：正常配置   延迟复制【操作如">
+<meta name="keywords" content="主从复制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql主从同步">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/29/web服务管理/数据库/mysql主从同步/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="复制简介复制功能优势 横向扩展解决方案：更新和写操作在主库，读操作在从库 数据安全性：从库可以停止同步、延迟同步、执行数据备份 离线数据分析 远距离数据分发  复制方式 异步复制  一般结构【默认】 特点：单层结构、所有slave直接连接master   级联复制【操作如下】 主：开启binlog 主的从：开启binlog、log_slave_updates 从的从：正常配置   延迟复制【操作如">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql主从同步">
+<meta name="twitter:description" content="复制简介复制功能优势 横向扩展解决方案：更新和写操作在主库，读操作在从库 数据安全性：从库可以停止同步、延迟同步、执行数据备份 离线数据分析 远距离数据分发  复制方式 异步复制  一般结构【默认】 特点：单层结构、所有slave直接连接master   级联复制【操作如下】 主：开启binlog 主的从：开启binlog、log_slave_updates 从的从：正常配置   延迟复制【操作如">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/29/web服务管理/数据库/mysql主从同步/">
+
+
+
+
+
+  <title>mysql主从同步 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/29/web服务管理/数据库/mysql主从同步/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql主从同步</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-29T16:28:50+08:00">
+                2019-09-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="复制简介"><a href="#复制简介" class="headerlink" title="复制简介"></a>复制简介</h1><h2 id="复制功能优势"><a href="#复制功能优势" class="headerlink" title="复制功能优势"></a>复制功能优势</h2><ul>
+<li>横向扩展解决方案：更新和写操作在主库，读操作在从库</li>
+<li>数据安全性：从库可以停止同步、延迟同步、执行数据备份</li>
+<li>离线数据分析</li>
+<li>远距离数据分发</li>
+</ul>
+<h2 id="复制方式"><a href="#复制方式" class="headerlink" title="复制方式"></a>复制方式</h2><ul>
+<li><p>异步复制</p>
+<ul>
+<li>一般结构【默认】<ul>
+<li>特点：单层结构、所有slave直接连接master</li>
+</ul>
+</li>
+<li>级联复制【操作如下】<ul>
+<li>主：开启binlog</li>
+<li>主的从：开启binlog、log_slave_updates</li>
+<li>从的从：正常配置</li>
+</ul>
+</li>
+<li><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-delayed.html" target="_blank" rel="noopener">延迟复制</a>【操作如下】<ul>
+<li>STOP SLAVE</li>
+<li>CHANGE MASTER TO MASTER_DELAY = N;【seconds】</li>
+<li>START SLAVE</li>
+</ul>
+</li>
+<li><p><a href="https://dinfratechsource.com/2018/11/11/configure-master-master-mysql-database-replication/" target="_blank" rel="noopener">双向复制</a>【官方无此说明】：正向、反向各做一次主从同步操作，配置文件如下：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># server-A</span><br><span class="line">server-id=1</span><br><span class="line">log-bin=&quot;mysql-bin&quot;</span><br><span class="line">log_slave_updates   = 1</span><br><span class="line">binlog-ignore-db=test</span><br><span class="line">binlog-ignore-db=information_schema</span><br><span class="line">replicate-ignore-db=test</span><br><span class="line">replicate-ignore-db=information_schema</span><br><span class="line">relay-log=&quot;mysql-relay-log&quot;</span><br><span class="line">auto-increment-increment = 2</span><br><span class="line">auto-increment-offset = 1</span><br><span class="line">expire_logs_days    = 10</span><br><span class="line">max_binlog_size     = 100M</span><br><span class="line"></span><br><span class="line"># server-B</span><br><span class="line">server-id=2</span><br><span class="line">log-bin=&quot;mysql-bin&quot;</span><br><span class="line">log_slave_updates   = 1</span><br><span class="line">binlog-ignore-db=test</span><br><span class="line">binlog-ignore-db=information_schema</span><br><span class="line">replicate-ignore-db=test</span><br><span class="line">replicate-ignore-db=information_schema</span><br><span class="line">relay-log=&quot;mysql-relay-log&quot;</span><br><span class="line">auto-increment-increment = 2</span><br><span class="line">auto-increment-offset = 2</span><br><span class="line">expire_logs_days    = 10</span><br><span class="line">max_binlog_size     = 100M</span><br></pre></td></tr></table></figure>
+<ul>
+<li>问题<ul>
+<li>需要避免在两主上同时对一个表数据进行修改</li>
+<li>不能解决磁盘io压力</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>同步复制：<a href="https://dev.mysql.com/doc/refman/5.6/en/mysql-cluster.html" target="_blank" rel="noopener">NDB集群</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-semisync.html" target="_blank" rel="noopener">半同步</a>：主库事务的提交必须保证至少有一个从库也执行了相应操作【阿里云rds高可用即采用此种方式】</li>
+</ul>
+<h2 id="binlog日志格式"><a href="#binlog日志格式" class="headerlink" title="binlog日志格式"></a>binlog日志格式</h2><ul>
+<li>SBR（Statement Based Replication）：复制全部的sql语句，默认方式<ul>
+<li>复制存储过程和触发器时，可能会有问题</li>
+<li>binlog文件记录的内容少，备份和还原也更快</li>
+<li>记录原始的sql语句，可以用于安全审计</li>
+</ul>
+</li>
+<li>RBR（Row Based Replication）：复制变更的字段内容<ul>
+<li>可以精确记录表和字段是如何更改的，因此binlog文件记录的内容较多</li>
+<li>不能直观的看到sql执行历史，解析binlog时：【mysqlbinlog –base64-output=DECODE-ROWS –verbose】</li>
+</ul>
+</li>
+<li>MBR（Mixed Based Replication）：前两种方式的变种组合</li>
+<li><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-gtids.html" target="_blank" rel="noopener">GUIDs</a> ：基于GUID的复制方式，不必直接基于binlog文件和文件中的position</li>
+</ul>
+<h2 id="主从复制的角色定位"><a href="#主从复制的角色定位" class="headerlink" title="主从复制的角色定位"></a>主从复制的角色定位</h2><ul>
+<li>主：只能开启binlog功能，并将全部事件（不能指定事件类型）记录在binlog中</li>
+<li>从：<ul>
+<li>记录已经在从库上读取并执行的binlog文件名和文件内的偏移信息（position）</li>
+<li>可以决定只执行binlog的部分内容【只同步部分库表，或不同步部分库表】</li>
+<li>可以决定：断开、重连、恢复同步动作</li>
+</ul>
+</li>
+</ul>
+<h2 id="复制原理和细节"><a href="#复制原理和细节" class="headerlink" title="复制原理和细节"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-implementation-details.html" target="_blank" rel="noopener">复制原理和细节</a></h2><ul>
+<li>主库配置log-bin后等待从机连接</li>
+<li>从机使用change master命令配置连接和复制状态信息【存储在master.info文件】，使用start slave开启复制</li>
+<li>从机的io线程和主机的binlog dump线程通信，传输binlog</li>
+<li>从机的io线程将收到的binlog存入relay-log文件中</li>
+<li>从机的sql线程读取relay-log中的日志，并在数据库中执行相应的sql操作【状态信息保存在relay-log.info】</li>
+</ul>
+<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html" target="_blank" rel="noopener">操作步骤</a></h1><h2 id="主配置【主】"><a href="#主配置【主】" class="headerlink" title="主配置【主】"></a>主配置【主】</h2><blockquote>
+<p>配置后需要重启server</p>
+</blockquote>
+<ul>
+<li>server-id=1</li>
+<li>log-bin=mysql-bin</li>
+<li>以下为保持innodb事务一致性的设置：<ul>
+<li>innodb_flush_log_at_trx_commit=1</li>
+<li>sync_binlog=1</li>
+</ul>
+</li>
+</ul>
+<h2 id="从配置【从】"><a href="#从配置【从】" class="headerlink" title="从配置【从】"></a>从配置【从】</h2><blockquote>
+<p>配置后需要重启server</p>
+</blockquote>
+<ul>
+<li>server-id=2</li>
+</ul>
+<h2 id="建立复制账号【主】"><a href="#建立复制账号【主】" class="headerlink" title="建立复制账号【主】"></a>建立复制账号【主】</h2><p>grant replication slave on <em>.</em> to ‘repl‘@’172.16.0.215’ identified by ‘repl20190926’;</p>
+<h2 id="导出数据【主】"><a href="#导出数据【主】" class="headerlink" title="导出数据【主】"></a>导出数据【主】</h2><ul>
+<li>为了保证数据一致性，在导出过程中需要锁表</li>
+<li>在mysql的终端会话中锁表，退出该会话会导致锁表失效；因此需要，在一个会话终端中锁表，在另一个会话终端中导出数据</li>
+</ul>
+<h3 id="逻辑导出-手动方式"><a href="#逻辑导出-手动方式" class="headerlink" title="逻辑导出-手动方式"></a>逻辑导出-手动方式</h3><ul>
+<li>锁表【会话终端1】： FLUSH TABLES WITH READ LOCK；</li>
+<li>导出数据【会话终端2】：mysqldump</li>
+<li>查看同步信息【会话终端1】：SHOW MASTER STATUS;</li>
+<li>解锁【会话终端1中unlock tables或直接退出会话终端1】</li>
+</ul>
+<h3 id="逻辑导出-一键方式"><a href="#逻辑导出-一键方式" class="headerlink" title="逻辑导出-一键方式"></a>逻辑导出-一键方式</h3><blockquote>
+<p>mysqldump使用–master-data参数时，会自动处理锁表解锁、显示同步信息（导出的sql文件中）等</p>
+</blockquote>
+<p>mysqldump –all-databases –master-data &gt; dbdump.db</p>
+<h3 id="物理导出"><a href="#物理导出" class="headerlink" title="物理导出"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-howto-rawdata.html" target="_blank" rel="noopener">物理导出</a></h3><p>适用于数据量较多的数据库</p>
+<h2 id="导入数据【从】"><a href="#导入数据【从】" class="headerlink" title="导入数据【从】"></a>导入数据【从】</h2><blockquote>
+<p>从库已有同步时，则使用–skip-slave-start启动server，或stop slave停止同步</p>
+</blockquote>
+<ul>
+<li>将导出的数据传送到从库所在主机</li>
+<li>从库导入数据：mysql &lt; all.sql </li>
+</ul>
+<h2 id="使用命令同步【从】"><a href="#使用命令同步【从】" class="headerlink" title="使用命令同步【从】"></a>使用命令同步【从】</h2><ul>
+<li>连接主库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CHANGE MASTER TO</span><br><span class="line">-&gt;     MASTER_HOST=&apos;master_host_name&apos;,</span><br><span class="line">-&gt;     MASTER_USER=&apos;replication_user_name&apos;,</span><br><span class="line">-&gt;     MASTER_PASSWORD=&apos;replication_password&apos;,</span><br><span class="line">-&gt;     MASTER_LOG_FILE=&apos;recorded_log_file_name&apos;,</span><br><span class="line">-&gt;     MASTER_LOG_POS=recorded_log_position;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>开启同步：START SLAVE;</li>
+</ul>
+<h2 id="查看同步状态【从】"><a href="#查看同步状态【从】" class="headerlink" title="查看同步状态【从】"></a>查看同步状态【从】</h2><ul>
+<li>SHOW SLAVE STATUS\G;<ul>
+<li>Slave_IO_State：io线程状态</li>
+<li>Slave_IO_Running：io线程是否在运行</li>
+<li>Slave_SQL_Running：sql线程是否在运行</li>
+<li>Seconds_Behind_Maste：主从延迟</li>
+</ul>
+</li>
+</ul>
+<h1 id="其他复制选项"><a href="#其他复制选项" class="headerlink" title="其他复制选项"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-solutions.html" target="_blank" rel="noopener">其他复制选项</a></h1><h2 id="防止从库写操作"><a href="#防止从库写操作" class="headerlink" title="防止从库写操作"></a>防止从库写操作</h2><ul>
+<li>从库配置read-only=yes参数【此时只允许从服务器线程或super权限用户执行更新操作】</li>
+<li>复制忽略mysql、information_schema库，主从建立单独的应用连接用户，从库建立的用户只授予读权限（select）</li>
+</ul>
+<h2 id="过滤库表"><a href="#过滤库表" class="headerlink" title="过滤库表"></a>过滤库表</h2><ul>
+<li>数据库级别的设置(do-db、ignore-db)：会由于binlog格式SBR和RBR的不同产生不同效果<ul>
+<li>–replicate-do-db</li>
+<li>–replicate-ignore-db</li>
+</ul>
+</li>
+<li>表级别的设置：不会因binlog格式不同产生不同效果，因此要尽量使用table级别设置<ul>
+<li>–replicate-do-table</li>
+<li>–replicate-ignore-table</li>
+<li>–replicate-wild-ignore-table</li>
+<li>–replicate-wild-do-table</li>
+</ul>
+</li>
+</ul>
+<h2 id="提升复制性能"><a href="#提升复制性能" class="headerlink" title="提升复制性能"></a>提升复制性能</h2><ul>
+<li>级联复制</li>
+<li>其他提升复制性能操作<ul>
+<li>数据文件、binlog文件、relay-log文件放到不同物理磁盘</li>
+<li>将实例的不同数据库同步到不同从机</li>
+<li>如果从机不作为其他从机的主，可以注释log_slave_updates，避免从机写binlog文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="主故障切换"><a href="#主故障切换" class="headerlink" title="主故障切换"></a>主故障切换</h2><ul>
+<li>从提升为主的配置：配置log-bin，禁止log_slave_updates<ul>
+<li>从机开启log-bin参数不会写binlog，同时配置log_slave_updates则会写binlog</li>
+<li>禁止log_slave_updates：当从机【slave-1】配置log_slave_updates，如果主故障，需要切换此从机【slave-1】为主机时，其他从机【slave-2】会在已接收过原master的binlog更新的同时，也接收新master【slave-1】的binlog更新，此时会出现重复操作</li>
+</ul>
+</li>
+<li>所有从机停止io线程【STOP SLAVE IO_THREAD】，并确认sql线程已经完全读取并执行relay-log中的信息【show proceslist】</li>
+<li>slave1【提升为master】<ul>
+<li>STOP SLAVE</li>
+<li>RESET MASTER</li>
+</ul>
+</li>
+<li>slave2、slave3【其他从机】<ul>
+<li>STOP SLAVE</li>
+<li>CHANGE MASTER TO MASTER_HOST=’Slave1’【user, password, port】</li>
+<li>START SLAVE </li>
+</ul>
+</li>
+</ul>
+<h1 id="故障处理"><a href="#故障处理" class="headerlink" title="故障处理"></a>故障处理</h1><ul>
+<li>确认master开启binlog【show master status】</li>
+<li>确认master和slave的server-id不一样</li>
+<li>确认slave的 Slave_IO_Running和Slave_SQL_Running状态正常【show slave status】</li>
+<li>确认slave没有手动写入数据，造成数据不一致</li>
+<li>跳过来自主服务器的下一个语句【事件：事务类的一条事务，非事务类的一条sql语句】<ul>
+<li>语法：SET GLOBAL sql_slave_skip_counter = N;</li>
+<li>N=1的情况：来自主服务器的下一个语句不使用AUTO_INCREMENT或LAST_INSERT_ID()</li>
+<li>N=2的情况：使用AUTO_INCREMENT或LAST_INSERT_ID()时，此时它们从主服务器的二进制日志中取两个事件</li>
+</ul>
+</li>
+<li>配置跳过指定的错误号【比如：由于重复造成的不能入库】<ul>
+<li>语法：slave-skip-errors=1032,1062,1007</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/主从复制/" rel="tag"># 主从复制</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/25/web服务管理/数据库/mysql备份与恢复/" rel="next" title="mysql备份与恢复">
+                <i class="fa fa-chevron-left"></i> mysql备份与恢复
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/30/web服务管理/数据库/mysql管理/" rel="prev" title="mysql管理">
+                mysql管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#复制简介"><span class="nav-number">1.</span> <span class="nav-text">复制简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#复制功能优势"><span class="nav-number">1.1.</span> <span class="nav-text">复制功能优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制方式"><span class="nav-number">1.2.</span> <span class="nav-text">复制方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog日志格式"><span class="nav-number">1.3.</span> <span class="nav-text">binlog日志格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主从复制的角色定位"><span class="nav-number">1.4.</span> <span class="nav-text">主从复制的角色定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制原理和细节"><span class="nav-number">1.5.</span> <span class="nav-text">复制原理和细节</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作步骤"><span class="nav-number">2.</span> <span class="nav-text">操作步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主配置【主】"><span class="nav-number">2.1.</span> <span class="nav-text">主配置【主】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从配置【从】"><span class="nav-number">2.2.</span> <span class="nav-text">从配置【从】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立复制账号【主】"><span class="nav-number">2.3.</span> <span class="nav-text">建立复制账号【主】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导出数据【主】"><span class="nav-number">2.4.</span> <span class="nav-text">导出数据【主】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑导出-手动方式"><span class="nav-number">2.4.1.</span> <span class="nav-text">逻辑导出-手动方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑导出-一键方式"><span class="nav-number">2.4.2.</span> <span class="nav-text">逻辑导出-一键方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物理导出"><span class="nav-number">2.4.3.</span> <span class="nav-text">物理导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入数据【从】"><span class="nav-number">2.5.</span> <span class="nav-text">导入数据【从】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用命令同步【从】"><span class="nav-number">2.6.</span> <span class="nav-text">使用命令同步【从】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看同步状态【从】"><span class="nav-number">2.7.</span> <span class="nav-text">查看同步状态【从】</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他复制选项"><span class="nav-number">3.</span> <span class="nav-text">其他复制选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#防止从库写操作"><span class="nav-number">3.1.</span> <span class="nav-text">防止从库写操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤库表"><span class="nav-number">3.2.</span> <span class="nav-text">过滤库表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提升复制性能"><span class="nav-number">3.3.</span> <span class="nav-text">提升复制性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主故障切换"><span class="nav-number">3.4.</span> <span class="nav-text">主故障切换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障处理"><span class="nav-number">4.</span> <span class="nav-text">故障处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="lvs,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原理LVS的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。 lvs技术实现 四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以">
+<meta name="keywords" content="lvs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="负载均衡器-lvs">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="原理LVS的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。 lvs技术实现 四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.368Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="负载均衡器-lvs">
+<meta name="twitter:description" content="原理LVS的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。 lvs技术实现 四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/">
+
+
+
+
+
+  <title>负载均衡器-lvs | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">负载均衡器-lvs</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-15T22:50:02+08:00">
+                2019-09-15
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p><a href="http://www.linuxvirtualserver.org/zh/index.html" target="_blank" rel="noopener">LVS</a>的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。</p>
+<h2 id="lvs技术实现"><a href="#lvs技术实现" class="headerlink" title="lvs技术实现"></a>lvs技术实现</h2><ul>
+<li>四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以定义一些规则来管理内核中的ipvs，就像iptables和netfilter的关系一样。这也是本文介绍的功能。</li>
+<li>七层负载均衡：基于内容请求分发的内核Layer-7交换机KTCPVS【功能尚不完善，使用的人不多】</li>
+<li>集群管理软件：redhat公司从其6.1发行版起已包含LVS代码，他们开发了一个LVS集群管理工具叫Piranha，用于控制LVS集群，并提供了一个图形化的配置界面。【但此工具已被Redhat官方废弃，相应功能已使用<a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.0_release_notes/sect-red_hat_enterprise_linux-7.0_release_notes-clustering-keepalived_and_haproxy_replace_piranha_as_load_balancer" target="_blank" rel="noopener">haproxy和keepalived</a>代替】</li>
+</ul>
+<h2 id="ipvs技术术语"><a href="#ipvs技术术语" class="headerlink" title="ipvs技术术语"></a>ipvs技术术语</h2><ul>
+<li>LB：负载均衡器所在服务器</li>
+<li>RS：提供真实服务的服务器</li>
+<li>CIP（client IP）：客户端ip地址</li>
+<li>RIP（realserver IP）：真实提供服务的服务器ip地址</li>
+<li>DIP（director IP）：负载均衡器（director）上转发数据包到realserver的网卡地址</li>
+<li>VIP（virtual IP）：负载均衡器（director）上用于向客户端提供服务的ip地址</li>
+</ul>
+<h2 id="ipvs的工作模式"><a href="#ipvs的工作模式" class="headerlink" title="ipvs的工作模式"></a>ipvs的工作模式</h2><p>当用户的请求到达负载调度器后，调度器如何将请求发送到提供服务的Real Server节点，而Real Server节点如何返回数据给用户，这正是IPVS实现的重点技术，IPVS实现负载均衡的机制有三种:</p>
+<ul>
+<li>VS/NAT（virtual server via network address translation）：通过网络地址转换将一组服务器构成一个高性能、高可用的虚拟服务器</li>
+<li>VS/TUN（vertual server via tunneling）：在分析VS/NAT的缺点和网络服务的非对称性的基础上提出的通过ip隧道实现虚拟服务器</li>
+<li>VS/DR（vertual server via director routing）：通过直接路由实现虚拟服务器</li>
+<li>FULLNAT：淘宝开源实现的模式，数据包进入LB时，同时对源地址和目标地址进行转换，从而实现RS可以跨VLAN通信，RS只需要连接内网，这样可以保证安全性。进站和出站的LB不一定是同一台机器。</li>
+</ul>
+<h3 id="NAT模式"><a href="#NAT模式" class="headerlink" title="NAT模式"></a>NAT模式</h3><ul>
+<li>原理：通过网络地址转换，调度器LB重写请求报文的目标地址，根据预设的调度算法，将请求分派给后端的真实服务器，真实服务器的响应报文处理之后，返回时必须通过调度器（节点服务器的网关为负载均衡服务器），经过调度器时报文的源地址被重写，再返回给客户端，完成整个负载调度过程。</li>
+<li>实现要点<ul>
+<li>节点服务器需要将网关配置为LB的ip地址，这样才能保证报文经过LB，报文才能被改写</li>
+<li>LB节点配置VIP和内核转发功能</li>
+<li>nat模式支持对ip及端口的转换</li>
+</ul>
+</li>
+<li>优缺点：由于请求和响应的报文都经过LB【也就是像7层负载的处理方式一样，但却没有7层负载那么”多功能”】，而响应数据一般比请求数据大得多，LB的负载压力过大，调度器Director容易出现瓶颈</li>
+</ul>
+<h3 id="TUN模式"><a href="#TUN模式" class="headerlink" title="TUN模式"></a>TUN模式</h3><ul>
+<li>原理：调度器把请求的报文通过ip隧道（将请求的报文封装在另一个ip报文中）转发至真实服务器，而真实服务器将处理后的响应报文直接返回给客户端。</li>
+<li>实现要点：<ul>
+<li>LB和RS节点都需要配置ip隧道功能</li>
+<li>LB和RS服务器lo网卡都要绑定VIP【防止真实网卡绑定vip造成ip冲突】，同时在RS上配置不对vip的arp广播请求响应，这样可以保证目标地址为vip的数据包只被director接受。</li>
+</ul>
+</li>
+<li>优缺点：<ul>
+<li>调度器就只处理请求的入站报文。由于一般网络服务应答数据比请求报文大很多，采用此模式后，系统吞吐量可以提高10倍。</li>
+<li>TUN模式的LAN环境转发不如DR模式效率高，而且还要考虑系统对ip隧道的支持问题</li>
+<li>LAN环境一般多采用DR模式，WAN环境可以用TUN模式，但在当前WAN环境下，请求转发更多被haproxy、nginx、dns调度取代，因此应用不多。</li>
+</ul>
+</li>
+</ul>
+<h3 id="DR模式"><a href="#DR模式" class="headerlink" title="DR模式"></a>DR模式</h3><ul>
+<li>原理：DR模式通过改写请求报文的目标MAC地址【请求地址仍为VIP】，将请求转发给真实的服务器，而真实服务器将响应后的处理结果直接返回给客户端。</li>
+<li>实现要点<ul>
+<li>要求调度器LB与真实服务器RS都有一块网卡连接在同一物理网段上。</li>
+<li>在LB和RS节点都需要配置VIP，并在RS配置抑制对vip的arp广播响应</li>
+<li>调度器不需要开启内核转发功能</li>
+<li>RS与director的监听端口必须一致</li>
+</ul>
+</li>
+<li>优缺点：<ul>
+<li>这种模式没有IP隧道的开销，对集群中的真实服务器也没有必须支持ip隧道协议的要求</li>
+</ul>
+</li>
+</ul>
+<h3 id="模式对比"><a href="#模式对比" class="headerlink" title="模式对比"></a>模式对比</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>vs/nat</th>
+<th>vs/tun</th>
+<th>vs/dr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>server</td>
+<td>any</td>
+<td>Tnuneling</td>
+<td>Non-arp device</td>
+</tr>
+<tr>
+<td>server network</td>
+<td>private</td>
+<td>LAN/WAN</td>
+<td>LAN</td>
+</tr>
+<tr>
+<td>server number</td>
+<td>low</td>
+<td>High</td>
+<td>High</td>
+</tr>
+<tr>
+<td>server gateway</td>
+<td>load balancer</td>
+<td>own router</td>
+<td>own router</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>在性能上，VS/DR和VS/TUN远高于VS/NAT，因为调度器只处于从客户到服务器的半连接中，按照半连接的TCP有限状态机进行状态迁移，极大程度上减轻了调度器的压力(真正建立TCP连接的是RS和Client)。VS/DR性能又稍高于VS/TUN，因为少了隧道的开销</li>
+<li>VS/DR和VS/TUN的主要区别是VS/TUN可以跨网络实现后端服务器负载均衡(也可以局域网内)，而VS/DR只能和director在局域网内进行负载均衡。</li>
+</ul>
+<h2 id="ipvs调度算法"><a href="#ipvs调度算法" class="headerlink" title="ipvs调度算法"></a>ipvs调度算法</h2><p>IPVS在内核中的负载均衡调度是以连接为粒度的。在HTTP协议（非持久）中，每个对象从WEB服务器上获取都需要建立一个TCP连接，同一用户 的不同请求会被调度到不同的服务器上，所以这种细粒度的调度在一定程度上可以避免单个用户访问的突发性引起服务器间的负载不平衡。在内核中的连接调度算法上，IPVS已实现了八种调度算法，其中，又根据运行方式不同，分为两大类：静态调度和动态反馈调度</p>
+<h3 id="静态调度"><a href="#静态调度" class="headerlink" title="静态调度"></a>静态调度</h3><blockquote>
+<p>不管RS的繁忙程度，根据调度算法计算后轮到谁就调度谁。</p>
+</blockquote>
+<ul>
+<li>轮叫调度（Round-Robin Scheduling，rr）</li>
+<li>加权轮叫调度（Weighted Round-Robin Scheduling，wrr），按照权重比例作为轮询标准</li>
+<li>目标地址散列调度（Destination Hashing Scheduling，dh），目标地址哈希，对于同一目标IP的请求总是发往同一服务器；</li>
+<li>源地址散列调度（Source Hashing Scheduling，sh），源地址哈希，在一定时间内，只要是来自同一个客户端的请求，就发送至同一个realserver。源地址散列调度和目标地址散列调度可以结合使用在防火墙集群中，它们可以保证整个系统的唯一出入口。</li>
+</ul>
+<h3 id="动态反馈调度"><a href="#动态反馈调度" class="headerlink" title="动态反馈调度"></a>动态反馈调度</h3><blockquote>
+<p>根据RS的繁忙程度反馈，计算出下一个连接应该调度谁(动态反馈负载均衡算法考虑服务器的实时负载和响应情况，不断调整服务器间处理请求的比例，来避免有些服务器超载时依然收到大量请求，从而提高整个系统的吞吐率)。</p>
+</blockquote>
+<ul>
+<li>最小连接调度（Least-Connection Scheduling，lc），调度器需要记录各个服务器已建立连接的数目，当一个请求被调度到某服务器，其连接数加1；当连接中止或超时，其连接数减1。当各个服务器的处理能力不同时，该算法不理想。</li>
+<li>加权最小连接调度（Weighted Least-Connection Scheduling，wlc）：ipvs默认调度算法</li>
+<li>基于本地的最少连接（Locality-Based Least Connections Scheduling，lblc）</li>
+<li>带复制的基于局部性最少连接（Locality-Based Least Connections with Replication Scheduling，lblcr）：目前主要用于Cache集群系统；因为在Cache集群中客户请求报文的目标IP地址是变化的。</li>
+</ul>
+<h3 id="综合负载"><a href="#综合负载" class="headerlink" title="综合负载"></a>综合负载</h3><p>计算算综合负载时，我们主要使用两大类负载信息：输入指标和服务器指标<br>输入指标：主要是在单位时间内服务器收到新连接数与平均连接数的比例，它是在调度器上收集到的。<br>服务器指标：  </p>
+<ul>
+<li>主要记录服务器各种负载信息，如服务器当前CPU负载LOADi、服务器当前磁盘使用情况Di、当前内存利用情况Mi和当前进程数目 Pi。【有两种方法可以获得这些信息；一是在所有的服务器上运行着SNMP（Simple Network Management Protocol）服务进程，而在调度器上的Monitor Daemon通过SNMP向各个服务器查询获得这些信息；二是在服务器上实现和运行收集信息的Agent，由Agent定时地向Monitor Daemon报告负载信息。】</li>
+<li>一个重要的服务器指标是服务器所提供服务的响应时间，它能比较好地反映服务器上请求等待队列的长度和请求的处理时间。调度器上的Monitor Daemon作为客户访问服务器所提供的服务，测得其响应时间。</li>
+</ul>
+<h3 id="权重计算"><a href="#权重计算" class="headerlink" title="权重计算"></a>权重计算</h3><ul>
+<li>在实际使用中，若发现所有服务器的权值都小于他们的DEFAULT_WEIGHT，则说明整个服务器集群处于超载状态，这时需要加入新的服务器结点 到集群中来处理部分负载；</li>
+<li>反之，若所有服务器的权值都接近于SCALE*DEFAULT_WEIGHT，则说明当前系统的负载都比较轻。</li>
+</ul>
+<h1 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h1><blockquote>
+<p>由于官方文档及网络均无ubuntu下源码安装参考，所以此处源码安装特指centos下的源码安装</p>
+</blockquote>
+<ul>
+<li><a href="http://www.linuxvirtualserver.org/software/ipvs.html" target="_blank" rel="noopener">lvs官方下载地址</a></li>
+<li><a href="https://mirrors.edge.kernel.org/pub/linux/utils/kernel/ipvsadm/" target="_blank" rel="noopener">最新版本ipvsadm</a></li>
+</ul>
+<h2 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a>依赖安装</h2><ul>
+<li>依赖安装：<code>yum install gcc* make kernel-devel libnl* popt* -y</code><ul>
+<li><a href="http://kb.linuxvirtualserver.org/wiki/Compiling_ipvsadm_on_different_Linux_distributions#Red_Hat_Enterprise_Linux_6" target="_blank" rel="noopener">编译安装参考</a></li>
+</ul>
+</li>
+<li>设置内核软链接：ln -s /usr/src/kernels/$(uname -r) /usr/src/linux</li>
+</ul>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><ul>
+<li>tar xzf ipvsadm.tar.gz</li>
+<li>make </li>
+<li>make install</li>
+</ul>
+<h2 id="安装结果测试"><a href="#安装结果测试" class="headerlink" title="安装结果测试"></a>安装结果测试</h2><ul>
+<li>命令是否存在：ipvsadm</li>
+<li>模块是否存在：lsmod |grep ip_vs</li>
+</ul>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>准备1台LB和2台RS服务器；节点关闭防火墙和selinux</p>
+<h2 id="LB节点设置"><a href="#LB节点设置" class="headerlink" title="LB节点设置"></a>LB节点设置</h2><ul>
+<li>LB主机添加vip地址：ifconfig eth0:0 192.168.100.10/24 up</li>
+<li>设置tcp超时参数：ipvsadm –set 30 5 60</li>
+<li>LB添加vip及设置调度算法：ipvsadm -A -t 192.168.100.10:80 -s rr</li>
+<li>LB添加RS节点：<ul>
+<li>ipvsadm -a -t 192.168.100.10:80 -r 192.168.100.1:80 -g</li>
+<li>ipvsadm -a -t 192.168.100.10:80 -r 192.168.100.2:80 -g</li>
+</ul>
+</li>
+</ul>
+<h2 id="RS节点设置"><a href="#RS节点设置" class="headerlink" title="RS节点设置"></a>RS节点设置</h2><ul>
+<li>lo网卡配置vip：ifconfig lo:1 192.168.100.10/32 up</li>
+<li>添加路由【多网卡环境】：route add -host 192.168.100.10 eth0</li>
+<li>设置节点抑制arp</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore </span><br><span class="line">echo 2 &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">echo 1 &gt;/proc/sys/net/ipv4/conf/all/arp_ignore </span><br><span class="line">echo 2 &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br></pre></td></tr></table></figure>
+<h2 id="状态查看"><a href="#状态查看" class="headerlink" title="状态查看"></a>状态查看</h2><p>watch –interval=2 ipvsadm -Ln【watch持续监控LB状态】</p>
+<h2 id="其他操作命令"><a href="#其他操作命令" class="headerlink" title="其他操作命令"></a>其他操作命令</h2><ul>
+<li>ipvsadm -L                查看LB-director信息</li>
+<li>ipvsadm -C                  清空配置信息</li>
+<li>ipvsadm -d                   删除配置条目</li>
+</ul>
+<h2 id="控制脚本"><a href="#控制脚本" class="headerlink" title="控制脚本"></a>控制脚本</h2><ul>
+<li><a href="https://github.com/simple0426/sysadm/blob/master/shell/lvs/dr-lb.sh" target="_blank" rel="noopener">DR模式-LB节点控制脚本</a></li>
+<li><a href="https://github.com/simple0426/sysadm/blob/master/shell/lvs/dr-rs.sh" target="_blank" rel="noopener">DR模式-RS节点控制脚本</a></li>
+<li><a href="https://github.com/simple0426/sysadm/blob/master/shell/lvs/tun-rs.sh" target="_blank" rel="noopener">TUN模式-RS节点控制脚本</a></li>
+<li><a href="https://github.com/simple0426/sysadm/blob/master/shell/lvs/MasterLb-chk-rs.sh" target="_blank" rel="noopener">主LB对RS节点执行健康检查</a></li>
+<li><a href="https://github.com/simple0426/sysadm/blob/master/shell/lvs/SlaveLb-chk-MasterLb.sh" target="_blank" rel="noopener">在备LB上实现对主LB的健康检查和接管</a>【类似keepalived】</li>
+</ul>
+<h1 id="故障与排查"><a href="#故障与排查" class="headerlink" title="故障与排查"></a>故障与排查</h1><ul>
+<li>负载不均<ul>
+<li>访问量较少，不均衡现象更加明显</li>
+<li>会话保持【lvs或后端服务】</li>
+<li>调度算法及用户请求的类型【时间长短、资源大小】</li>
+</ul>
+</li>
+<li>故障<ul>
+<li>调度器上lvs调度规则及ip地址的正确性</li>
+<li>要在RS进行服务检查</li>
+<li>RS节点绑定vip和抑制arp检查【对绑定的vip做实时监控并报警】</li>
+</ul>
+</li>
+<li>辅助排查工具tcpdump、ping</li>
+</ul>
+<hr>
+<p>本文参考：<a href="https://www.cnblogs.com/wyzhou/p/9741790.html" target="_blank" rel="noopener">https://www.cnblogs.com/wyzhou/p/9741790.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/lvs/" rel="tag"># lvs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/10/web服务管理/代理与高可用/负载均衡器-haproxy/" rel="next" title="负载均衡器-haproxy">
+                <i class="fa fa-chevron-left"></i> 负载均衡器-haproxy
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/16/web服务管理/代理与高可用/高可用服务-keepalived/" rel="prev" title="高可用服务-keepalived">
+                高可用服务-keepalived <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#lvs技术实现"><span class="nav-number">1.1.</span> <span class="nav-text">lvs技术实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipvs技术术语"><span class="nav-number">1.2.</span> <span class="nav-text">ipvs技术术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipvs的工作模式"><span class="nav-number">1.3.</span> <span class="nav-text">ipvs的工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NAT模式"><span class="nav-number">1.3.1.</span> <span class="nav-text">NAT模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TUN模式"><span class="nav-number">1.3.2.</span> <span class="nav-text">TUN模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DR模式"><span class="nav-number">1.3.3.</span> <span class="nav-text">DR模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式对比"><span class="nav-number">1.3.4.</span> <span class="nav-text">模式对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipvs调度算法"><span class="nav-number">1.4.</span> <span class="nav-text">ipvs调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#静态调度"><span class="nav-number">1.4.1.</span> <span class="nav-text">静态调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态反馈调度"><span class="nav-number">1.4.2.</span> <span class="nav-text">动态反馈调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#综合负载"><span class="nav-number">1.4.3.</span> <span class="nav-text">综合负载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权重计算"><span class="nav-number">1.4.4.</span> <span class="nav-text">权重计算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码安装"><span class="nav-number">2.</span> <span class="nav-text">源码安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖安装"><span class="nav-number">2.1.</span> <span class="nav-text">依赖安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译安装"><span class="nav-number">2.2.</span> <span class="nav-text">编译安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装结果测试"><span class="nav-number">2.3.</span> <span class="nav-text">安装结果测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LB节点设置"><span class="nav-number">3.1.</span> <span class="nav-text">LB节点设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RS节点设置"><span class="nav-number">3.2.</span> <span class="nav-text">RS节点设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态查看"><span class="nav-number">3.3.</span> <span class="nav-text">状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他操作命令"><span class="nav-number">3.4.</span> <span class="nav-text">其他操作命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制脚本"><span class="nav-number">3.5.</span> <span class="nav-text">控制脚本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障与排查"><span class="nav-number">4.</span> <span class="nav-text">故障与排查</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

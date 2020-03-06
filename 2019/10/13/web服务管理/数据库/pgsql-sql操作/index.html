@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sql,备份,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="系统管理会话管理 查看当前会话连接：select * from pg_stat_activity; 取消一个查询：pg_cancel_backend(pid int) 终止一个会话：pg_terminate_backend(pidint)  变量 查询：select current_setting(setting_name)或show var 设置：select set_config(settin">
+<meta name="keywords" content="sql,备份">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pgsql-sql操作">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-sql操作/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="系统管理会话管理 查看当前会话连接：select * from pg_stat_activity; 取消一个查询：pg_cancel_backend(pid int) 终止一个会话：pg_terminate_backend(pidint)  变量 查询：select current_setting(setting_name)或show var 设置：select set_config(settin">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.396Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pgsql-sql操作">
+<meta name="twitter:description" content="系统管理会话管理 查看当前会话连接：select * from pg_stat_activity; 取消一个查询：pg_cancel_backend(pid int) 终止一个会话：pg_terminate_backend(pidint)  变量 查询：select current_setting(setting_name)或show var 设置：select set_config(settin">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-sql操作/">
+
+
+
+
+
+  <title>pgsql-sql操作 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-sql操作/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pgsql-sql操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:19:38+08:00">
+                2019-10-13
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/pgsql/" itemprop="url" rel="index">
+                    <span itemprop="name">pgsql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><h2 id="会话管理"><a href="#会话管理" class="headerlink" title="会话管理"></a>会话管理</h2><ul>
+<li>查看当前会话连接：select * from pg_stat_activity;</li>
+<li>取消一个查询：pg_cancel_backend(pid int)</li>
+<li>终止一个会话：pg_terminate_backend(pidint)</li>
+</ul>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
+<li>查询：select current_setting(setting_name)或show var</li>
+<li>设置：select set_config(setting_name, new_value, is_local)或【SET old_var TO new_val;】<ul>
+<li>如果 is_local 设置为 true，那么新数值将只应用于当前事务。 如果你希望新的数值应用于当前会话，那么应该使用 false。</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据库对象存储位置"><a href="#数据库对象存储位置" class="headerlink" title="数据库对象存储位置"></a>数据库对象存储位置</h2><ul>
+<li>pg_relation_filenode(relation regclass)：获取指定对象的文件节点编号(通常为对象的oid值)。</li>
+<li>pg_relation_filepath(relation regclass)：获取指定对象的完整路径名。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">showba=# select pg_relation_filenode(&apos;auth_group&apos;);</span><br><span class="line">pg_relation_filenode</span><br><span class="line">----------------------</span><br><span class="line">                16388</span><br><span class="line">select pg_relation_filepath(&apos;auth_group&apos;);</span><br><span class="line">pg_relation_filepath</span><br><span class="line">----------------------</span><br><span class="line">base/16387/16388</span><br></pre></td></tr></table></figure>
+<h2 id="数据库对象尺寸大小"><a href="#数据库对象尺寸大小" class="headerlink" title="数据库对象尺寸大小"></a>数据库对象尺寸大小</h2><ul>
+<li>pg_column_size(any)</li>
+<li>pg_tablespace_size(oid/name)</li>
+<li>pg_relation_size(oid/name)</li>
+<li>pg_database_size(oid/name)</li>
+<li>pg_size_pretty(bigint):把字节计算的尺寸转换成一个人类易读的尺寸单位<ul>
+<li>select pg_size_pretty(pg_database_size(‘test’));</li>
+</ul>
+</li>
+</ul>
+<h2 id="sql命令"><a href="#sql命令" class="headerlink" title="sql命令"></a>sql命令</h2><ul>
+<li>\h：查看sql命令帮助</li>
+</ul>
+<h2 id="psql命令"><a href="#psql命令" class="headerlink" title="psql命令"></a>psql命令</h2><ul>
+<li>\?：查看psql命令帮助</li>
+<li>\a:切换对齐和非对齐模式</li>
+<li>\l：查看数据库列表</li>
+<li>\q：退出sql连接</li>
+<li>\c db：切换数据库</li>
+<li>\d：查看当前数据库的对象【表、视图、函数、索引】<ul>
+<li>\dt：查看当前路径下的表</li>
+</ul>
+</li>
+<li>\d table1:查看表结构</li>
+<li>\du:查看用户【select * from pg_roles】</li>
+</ul>
+<h1 id="导入导出csv"><a href="#导入导出csv" class="headerlink" title="导入导出csv"></a>导入导出csv</h1><ul>
+<li>设置编码【保证windows下excel可读不乱码】：set client_encoding=’gb18030’;</li>
+<li>导出数据【括号内为可执行语句】：copy (select * from xueji) to ‘/home/postgres/nnn.csv’ with csv HEADER;</li>
+<li>导入数据：copy xueji from ‘/home/postgres/nnn.csv’ with csv HEADER;</li>
+</ul>
+<h1 id="用户和权限"><a href="#用户和权限" class="headerlink" title="用户和权限"></a>用户和权限</h1><ul>
+<li>修改服务监听端口（postgresql.conf)<ul>
+<li>listen_address=’*’</li>
+<li>允许连接的主机</li>
+</ul>
+</li>
+<li>添加连接授权（pg_hba.conf）<ul>
+<li>【host  test aa   192.168.30.91/24 password】</li>
+<li>允许用户aa在主机 .91上以密码登陆方式操作test数据库</li>
+</ul>
+</li>
+<li>建立用户和授予操作权限<ul>
+<li>create user aa superuser password ‘ceshi-aa123’;</li>
+<li>grant all on DATABASE test to aa;</li>
+</ul>
+</li>
+<li>更改用户密码：alter user postgres with password ‘123456’;</li>
+</ul>
+<h2 id="添加只读账号"><a href="#添加只读账号" class="headerlink" title="添加只读账号"></a>添加只读账号</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">create role xiu LOGIN  NOSUPERUSER NOCREATEDB NOCREATEROLE  encrypted password &apos;wiquxiu8&apos;;</span><br><span class="line"># showba库授权</span><br><span class="line">grant connect on database showba to xiu;</span><br><span class="line">grant usage on schema public to xiu;</span><br><span class="line">grant usage on schema topology to xiu;</span><br><span class="line">grant select on all tables in schema public to xiu;</span><br><span class="line">grant select on all tables in schema topology to xiu;</span><br><span class="line">grant select on all sequences in schema public to xiu;</span><br><span class="line">grant select on all sequences in schema topology to xiu;</span><br><span class="line">grant select on geography_columns to xiu;</span><br><span class="line">grant select on geometry_columns to xiu;</span><br><span class="line">grant select on raster_overviews to xiu;</span><br><span class="line">grant select on raster_columns to xiu;</span><br><span class="line">grant select on coupons_orders to xiu;</span><br><span class="line">grant select on subscribe_orders to xiu;</span><br><span class="line">grant select on total_orders to xiu;</span><br><span class="line"># 更改新建库默认权限</span><br><span class="line">ALTER DEFAULT PRIVILEGES IN SCHEMA public grant select on tables to xiu;</span><br><span class="line">ALTER DEFAULT PRIVILEGES IN SCHEMA public grant select on sequences to xiu;</span><br><span class="line">ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on tables to xiu;</span><br><span class="line">ALTER DEFAULT PRIVILEGES IN SCHEMA topology grant select on sequences to xiu;</span><br></pre></td></tr></table></figure>
+<h1 id="表空间"><a href="#表空间" class="headerlink" title="表空间"></a>表空间</h1><ul>
+<li>功能：可以指定数据库对象的存储位置，方便扩展存储空间</li>
+<li>创建：<ul>
+<li>语法：CREATE TABLESPACE tb_space LOCATION ‘/home/postgres/db0/tb_space’;</li>
+<li>说明：os_path必须是空的、postgresql帐号有权的目录。创建表空间的用户必须是superuser，创建完表空间之后，可以将表空间的create权限赋给普通用户使用！</li>
+</ul>
+</li>
+<li>使用：<ul>
+<li>可使用对象：表、index、数据库：在创建这些对象时，可以显式的指定tablespace tals_name子句指示对象使用的表空间。</li>
+<li>说明：<ul>
+<li>postgresql允许通过符号链接简化表空间的实施，那在不支持符号链接的os上就无法简化，只能显式的创建所需的表空间了！</li>
+<li>表空间是和单个数据库无关的，他被所有的数据库使用。因为，表空间只有没有任何对象使用时，才能drop掉</li>
+</ul>
+</li>
+<li>语法：create database test tablespace tb_space;</li>
+</ul>
+</li>
+</ul>
+<h1 id="逻辑备份和恢复"><a href="#逻辑备份和恢复" class="headerlink" title="逻辑备份和恢复"></a>逻辑备份和恢复</h1><h2 id="备份特点"><a href="#备份特点" class="headerlink" title="备份特点"></a>备份特点</h2><ul>
+<li>可以远程执行备份</li>
+<li>可以备份全部库、库、表、表结构、数据</li>
+<li>备份的数据可以在当前版本或新版本数据库恢复</li>
+<li>备份的数据可以同时在32或64系统上使用</li>
+<li>备份的数据是备份开始的一个快照，他不会阻塞其他操作，但例外是会添加一个排它锁【如alter table】</li>
+</ul>
+<h2 id="备份命令"><a href="#备份命令" class="headerlink" title="备份命令"></a>备份命令</h2><h3 id="pg-dump"><a href="#pg-dump" class="headerlink" title="pg_dump"></a>pg_dump</h3><ul>
+<li>特点：<ul>
+<li>只备份单个库；</li>
+<li>指定备份格式(custom、directory、tar)时，使用pg_restore命令恢复数据；</li>
+<li>没有指定备份格式时，备份为文本格式，用psql命令恢复数据，示例如下<ul>
+<li>备份：pg_dump dbname &gt; dumpfile</li>
+<li>恢复(先创建库)：psql dbname &lt; dumpfile</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>命令选项<ul>
+<li>-F：指定输出备份格式</li>
+<li>-a：只导出库数据</li>
+<li>-s：只导出数据库结构</li>
+<li>-t：备份指定表</li>
+<li>-T：不备份特定表</li>
+<li>-C：包含创建数据库命令</li>
+<li>-f：指定备份输出文件或目录</li>
+<li>-d：需要备份的数据库</li>
+</ul>
+</li>
+<li>备份范例<ul>
+<li>备份数据库 pg_dump -Fc test &gt; test.all</li>
+<li>备份表数据 pg_dump -Fc -a -t xuji test &gt; xuji.db</li>
+<li>备份表结构 pg_dump -Fc -s -t xuji test &gt; xuji.sql</li>
+</ul>
+</li>
+</ul>
+<h3 id="pg-dumpall"><a href="#pg-dumpall" class="headerlink" title="pg_dumpall"></a>pg_dumpall</h3><ul>
+<li>特点：备份全部的库、用户信息、表空间信息</li>
+<li>特例：单独导出全局信息【用户、表空间】：pg_dumpall –globals-only</li>
+</ul>
+<h3 id="pg-restore"><a href="#pg-restore" class="headerlink" title="pg_restore"></a>pg_restore</h3><ul>
+<li>选项<ul>
+<li>-a：只恢复库数据</li>
+<li>-s：只恢复数据库结构</li>
+<li>-t：只恢复指定表</li>
+<li>-d：连接的数据库</li>
+</ul>
+</li>
+<li>范例<ul>
+<li>恢复表结构 pg_restore -s -t xuji -d test xuji.sql</li>
+<li>恢复表数据 pg_restore -a -t xuji -d test xuji.db</li>
+<li>恢复表  pg_restore -t xuji -d test xuji.all</li>
+</ul>
+</li>
+</ul>
+<h2 id="大数据量处理"><a href="#大数据量处理" class="headerlink" title="大数据量处理"></a>大数据量处理</h2><ul>
+<li>使用压缩<ul>
+<li>pg_dump dbname | gzip &gt; filename.gz</li>
+<li>gunzip -c filename.gz | psql dbname</li>
+</ul>
+</li>
+<li>使用切分<ul>
+<li>pg_dump dbname | split -b 1m - filename</li>
+<li>cat filename* | psql dbname</li>
+</ul>
+</li>
+<li>使用pg_dump自定义备份格式<ul>
+<li>pg_dump -Fc dbname &gt; filename</li>
+<li>pg_dump -Fc dbname &gt; filename</li>
+</ul>
+</li>
+<li>并行处理<ul>
+<li>pg_dump -j num -F d -f out.dir dbname</li>
+<li>pg_restore -j </li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+            <a href="/tags/备份/" rel="tag"># 备份</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-安装与介绍/" rel="next" title="pgsql-安装与介绍">
+                <i class="fa fa-chevron-left"></i> pgsql-安装与介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/" rel="prev" title="pgsql-归档和流复制">
+                pgsql-归档和流复制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统管理"><span class="nav-number">1.</span> <span class="nav-text">系统管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#会话管理"><span class="nav-number">1.1.</span> <span class="nav-text">会话管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">1.2.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库对象存储位置"><span class="nav-number">1.3.</span> <span class="nav-text">数据库对象存储位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库对象尺寸大小"><span class="nav-number">1.4.</span> <span class="nav-text">数据库对象尺寸大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql命令"><span class="nav-number">1.5.</span> <span class="nav-text">sql命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#psql命令"><span class="nav-number">1.6.</span> <span class="nav-text">psql命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导入导出csv"><span class="nav-number">2.</span> <span class="nav-text">导入导出csv</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户和权限"><span class="nav-number">3.</span> <span class="nav-text">用户和权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加只读账号"><span class="nav-number">3.1.</span> <span class="nav-text">添加只读账号</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#表空间"><span class="nav-number">4.</span> <span class="nav-text">表空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#逻辑备份和恢复"><span class="nav-number">5.</span> <span class="nav-text">逻辑备份和恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#备份特点"><span class="nav-number">5.1.</span> <span class="nav-text">备份特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份命令"><span class="nav-number">5.2.</span> <span class="nav-text">备份命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pg-dump"><span class="nav-number">5.2.1.</span> <span class="nav-text">pg_dump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pg-dumpall"><span class="nav-number">5.2.2.</span> <span class="nav-text">pg_dumpall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pg-restore"><span class="nav-number">5.2.3.</span> <span class="nav-text">pg_restore</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大数据量处理"><span class="nav-number">5.3.</span> <span class="nav-text">大数据量处理</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

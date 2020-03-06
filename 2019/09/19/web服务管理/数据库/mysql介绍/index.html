@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="InnoDB,存储引擎,字符集,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="版本 mysql-5.5 mysql-5.6【牧客，测试环境版本：5.6.43】 mysql-5.7【中冀汇通，全环境版本：5.7.17】 mariadb mysql-8.0  下载地址 mysql相关资源下载目录：https://www.mysql.com/products/community/ 社区版server下载地址：https://dev.mysql.com/downloads/mysq">
+<meta name="keywords" content="InnoDB,存储引擎,字符集">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql介绍">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/19/web服务管理/数据库/mysql介绍/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="版本 mysql-5.5 mysql-5.6【牧客，测试环境版本：5.6.43】 mysql-5.7【中冀汇通，全环境版本：5.7.17】 mariadb mysql-8.0  下载地址 mysql相关资源下载目录：https://www.mysql.com/products/community/ 社区版server下载地址：https://dev.mysql.com/downloads/mysq">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/mysql-arch.jpg">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/mysql-engine.jpg">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.384Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql介绍">
+<meta name="twitter:description" content="版本 mysql-5.5 mysql-5.6【牧客，测试环境版本：5.6.43】 mysql-5.7【中冀汇通，全环境版本：5.7.17】 mariadb mysql-8.0  下载地址 mysql相关资源下载目录：https://www.mysql.com/products/community/ 社区版server下载地址：https://dev.mysql.com/downloads/mysq">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/mysql-arch.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/19/web服务管理/数据库/mysql介绍/">
+
+
+
+
+
+  <title>mysql介绍 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/19/web服务管理/数据库/mysql介绍/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-19T18:06:50+08:00">
+                2019-09-19
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h1><ul>
+<li>mysql-5.5</li>
+<li>mysql-5.6【牧客，测试环境版本：5.6.43】</li>
+<li>mysql-5.7【中冀汇通，全环境版本：5.7.17】</li>
+<li>mariadb</li>
+<li>mysql-8.0</li>
+</ul>
+<h1 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h1><ul>
+<li>mysql相关资源下载目录：<a href="https://www.mysql.com/products/community/" target="_blank" rel="noopener">https://www.mysql.com/products/community/</a></li>
+<li>社区版server下载地址：<a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">https://dev.mysql.com/downloads/mysql/</a></li>
+</ul>
+<h1 id="体系架构"><a href="#体系架构" class="headerlink" title="体系架构"></a>体系架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/mysql-arch.jpg" alt=""></p>
+<ul>
+<li>连接池组件</li>
+<li>管理服务和工具组件</li>
+<li>SQL接口、分析器、优化器、缓冲组件</li>
+<li>存储引擎</li>
+<li>物理文件</li>
+</ul>
+<h1 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/mysql-engine.jpg" alt=""></p>
+<h2 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h2><ul>
+<li>查看支持的存储引擎：show engines;【常见引擎如上】</li>
+<li>查看当前的存储引擎选项：show variables like ‘%engine%’;</li>
+<li>查看表的存储引擎：show create table tb_name;</li>
+</ul>
+<h2 id="设置与修改"><a href="#设置与修改" class="headerlink" title="设置与修改"></a>设置与修改</h2><ul>
+<li>alter table table_name engine=innodb；</li>
+<li>将表结构导出使用sed替换，将数据导出，再将表结构导入，数据导入</li>
+<li>使用mysql_convert_table_format命令</li>
+<li>建表时使用engine=innodb参数</li>
+</ul>
+<h2 id="InnoDB与MyISAM对比"><a href="#InnoDB与MyISAM对比" class="headerlink" title="InnoDB与MyISAM对比"></a>InnoDB与MyISAM对比</h2><table>
+<thead>
+<tr>
+<th>MyISAM</th>
+<th>InnoDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不支持事务</td>
+<td>支持事务、分区、表空间</td>
+</tr>
+<tr>
+<td>写操作时表级别锁定</td>
+<td>写操作时行级别锁定</td>
+</tr>
+<tr>
+<td>只缓存索引</td>
+<td>缓存索引和数据</td>
+</tr>
+<tr>
+<td>读操作会阻塞写操作</td>
+<td>读写操作相对独立【根据事务隔离级别】</td>
+</tr>
+<tr>
+<td>支持全表索引，不支持外键约束</td>
+<td>支持外键约束，不支持全表索引</td>
+</tr>
+</tbody>
+</table>
+<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><ul>
+<li>物理文件：每一个myisam表对应于硬盘上的3个文件。这三个文件有一样的文件名，但是有不同的扩展名以指示其用途：<ul>
+<li>frm：保存表的定义，但这个文件不是myisam引擎的一部分，而是mysql数据库本身的一部分</li>
+<li>MYD(data)：保存表的数据</li>
+<li>MYI(index)：表的索引文件</li>
+</ul>
+</li>
+<li>应用：<ul>
+<li>并发较低的业务</li>
+<li>以读为主的业务</li>
+<li>不需要事务支持的业务</li>
+</ul>
+</li>
+<li>优化：<ul>
+<li>尽量索引及使用缓存</li>
+<li>尽量顺序操作将数据插入尾部</li>
+<li>分解复杂操作，延迟写入，批量插入</li>
+<li>降低并发数，高并发应用引入排队机制</li>
+</ul>
+</li>
+</ul>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><ul>
+<li>物理文件：<ul>
+<li>ibdata1，默认表空间文件，通过innodb_data_file_path参数设置，所有基于innodb存储引擎的表都会存储在该文件中<ul>
+<li>如果想基于每个表单独生成一个表空间文件，可以设置参数innodb_file_per_table为ON，这样表的数据、索引、插入缓冲等信息会存储在单独的表空间文件中，但是其余的信息还是存储在默认的表空间文件中</li>
+</ul>
+</li>
+<li>frm：表结构定义文件，mysql里每个表和视图都对应一个frm文件。frm文件时mysql数据库的一部分，和存储引擎无关</li>
+<li>ibd：单独的表空间文件</li>
+<li>ib_logfile：innodb存储引擎的事务日志；在数据库实例意外宕机，重启后可以利用重做日志恢复到宕机前的一致性状态</li>
+</ul>
+</li>
+<li>应用：<ul>
+<li>支持高并发，但需要确保查询时通过索引完成</li>
+<li>支持事务</li>
+<li>数据更新频繁</li>
+</ul>
+</li>
+<li>优化：<ul>
+<li>避免全表扫描，因为会使用表锁</li>
+<li>尽可能缓存所有索引和数据，提高响应速度，降低磁盘io</li>
+<li>在大批量小插入时，尽量自己控制事务而不要使用autocommit自动提交</li>
+<li>合理设置innodb_flush_log_at_trx_commit参数值，不要过度追求安全性</li>
+<li>避免主键更新，因为这会带来大量的数据移动</li>
+<li>主键尽可能小，避免给secondary index带来过大的空间负担</li>
+</ul>
+</li>
+</ul>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ul>
+<li>在mysql中只有使用了innodb引擎的数据库才支持事务</li>
+<li>事务处理可以用来维护数据库的一致性，保证多条sql语句要么全部执行，要么全部不执行</li>
+<li>事务用来管理insert、update、delete语句</li>
+</ul>
+<h3 id="特点-ACID"><a href="#特点-ACID" class="headerlink" title="特点-ACID"></a>特点-ACID</h3><ul>
+<li>原子性（Atomicity）：一个事务（transaction）中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。</li>
+<li>一致性（Consistency）：在事务开始之前和事务结束以后，数据库的完整性没有被破坏。</li>
+<li>隔离性（Isolation）：数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。</li>
+<li>持久性（Durability）：事务处理结束后，对数据的修改是永久性的</li>
+</ul>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><ul>
+<li>查询：SELECT @@tx_isolation;【默认REPEATABLE-READ】</li>
+<li>设置：set session transaction isolation level 隔离级别</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>描述</th>
+<th>解决的问题</th>
+<th>引发的新问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>serializable</td>
+<td>串行读取数据</td>
+<td>虚读</td>
+<td>数据库就变成了单线程访问的数据库，导致性能降低很多</td>
+</tr>
+<tr>
+<td>repeatable read</td>
+<td>可重复读</td>
+<td>不可重复读</td>
+<td>虚读：前后读取到表中的记录数不一样，读取到了其他事务插入的数据</td>
+</tr>
+<tr>
+<td>read committed</td>
+<td>读取提交的记录</td>
+<td>脏读</td>
+<td>不可重复读：一个事务读取表中的某一行数据时，多次读取结果不一致</td>
+</tr>
+<tr>
+<td>read uncommitted</td>
+<td>读取未提交的数据</td>
+<td>-</td>
+<td>脏读：一个事务读取了另外一个事务未提交的数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="开启事务"><a href="#开启事务" class="headerlink" title="开启事务"></a>开启事务</h3><p>mysql命令行下默认设置下，事务都是自动提交的；开启事务有以下两种方式：</p>
+<ul>
+<li>关闭事务自动提交模式：SET AUTOCOMMIT=0</li>
+<li>自动提交模式下，使用命令显式开启一个事务：begin或start transaction</li>
+</ul>
+<h3 id="事务控制语句"><a href="#事务控制语句" class="headerlink" title="事务控制语句"></a>事务控制语句</h3><ul>
+<li>begin或start transaction：开启一个事务</li>
+<li>commit：提交一个事务</li>
+<li>rollback：结束用户的事务，并撤销之前的修改</li>
+<li>savepoint identifier：在事务中创建一个保存点</li>
+<li>release savepoint identifier：删除一个事务保存点</li>
+<li>rollback to identifier：把事务回滚到保存点</li>
+</ul>
+<h1 id="字符集"><a href="#字符集" class="headerlink" title="字符集"></a>字符集</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>字符集（character set）：字符和编码对组成的集合</li>
+<li>字符序（collection）：同一个字符集内字符之间的比较规则</li>
+</ul>
+<h2 id="字符集变量"><a href="#字符集变量" class="headerlink" title="字符集变量"></a>字符集变量</h2><h3 id="字符集相关变量"><a href="#字符集相关变量" class="headerlink" title="字符集相关变量"></a>字符集相关变量</h3><ul>
+<li>查看支持的字符集：SHOW CHARACTER SET;</li>
+<li>查看当前的字符集设置：show variables like ‘%character%’;<ul>
+<li>character_set_client ：客户端使用的字符集，相当于网页中那个的字符集设置</li>
+<li>character_set_connection：客户端连接数据库的使用的字符集</li>
+<li>character_set_results：数据库给客户端返回时使用的字符集设定</li>
+<li><del>character_set_system</del>：数据库所在操作系统使用的字符集，character_set_system是个只读数据不能更改</li>
+<li>character_set_server：数据库实例启动时的默认字符集，也是建库时的默认字符集</li>
+<li><del>character_set_database</del>：当前数据库的字符集设置，可通过建库语句查看。</li>
+</ul>
+</li>
+</ul>
+<h3 id="字符序相关变量"><a href="#字符序相关变量" class="headerlink" title="字符序相关变量"></a>字符序相关变量</h3><ul>
+<li>查看支持的字符序：show collation;</li>
+<li>查看当前的字符序设置：show variables like ‘%collation%’;<ul>
+<li>collation_server：数据库实例默认校对规则</li>
+<li>collation_database ：当前数据库的字符序设置</li>
+<li>collation_connection：连接字符集校对规则</li>
+</ul>
+</li>
+</ul>
+<h3 id="字符集的转换过程"><a href="#字符集的转换过程" class="headerlink" title="字符集的转换过程"></a>字符集的转换过程</h3><ul>
+<li>客户端连接数据库时，如果不指定字符集【default-character-set】，则使用服务端默认设置【character-set-server】</li>
+<li>mysql server收到请求时将请求从character_set_client转换为character_set_connection</li>
+<li>进行内部操作前将请求数据从character_set_connection转换为内部操作字符集，确定顺序如下：<ul>
+<li>使用字段的字符集</li>
+<li>使用表的字符集</li>
+<li>使用库的字符集【建库时，未指定则使用character-set-server】</li>
+</ul>
+</li>
+<li>将操作结果从内部操作字符集转换为character_set_results返回给客户端</li>
+</ul>
+<h2 id="客户端设置"><a href="#客户端设置" class="headerlink" title="客户端设置"></a>客户端设置</h2><ul>
+<li>设置参数：default-character-set【服务端已不支持此参数】</li>
+<li>影响变量：<ul>
+<li>character_set_client </li>
+<li>character_set_connection</li>
+<li>character_set_results</li>
+<li>collation_connection</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务端设置"><a href="#服务端设置" class="headerlink" title="服务端设置"></a>服务端设置</h2><h3 id="字符集的继承关系"><a href="#字符集的继承关系" class="headerlink" title="字符集的继承关系"></a>字符集的继承关系</h3><ul>
+<li>创建数据库没有指定字符集，使用character_set_server设定值</li>
+<li>创建表没有指定字符集，默认使用数据库的的字符集</li>
+<li>字段没有设置字符集，默认使用表的字符集</li>
+</ul>
+<h3 id="server级别设置"><a href="#server级别设置" class="headerlink" title="server级别设置"></a>server级别设置</h3><ul>
+<li>设置参数：character-set-server、collation-server</li>
+<li>影响变量：<ul>
+<li>character_set_server</li>
+<li>character_set_database</li>
+<li>collation_server</li>
+<li>collation_database</li>
+</ul>
+</li>
+<li>设置方式<ul>
+<li>服务启动时命令行指定：mysqld –character-set-server=latin1</li>
+<li>配置文件my.cnf指定：character-set-server = utf8</li>
+<li>运行时修改：SET character_set_server = utf8 ;</li>
+</ul>
+</li>
+</ul>
+<h3 id="database级别设置"><a href="#database级别设置" class="headerlink" title="database级别设置"></a>database级别设置</h3><ul>
+<li>查看库字符集：SHOW CREATE DATABASE db_name;</li>
+<li>建库时设置：<code>CREATE DATABASE db_name [[DEFAULT] CHARACTER SET charset_name] [[DEFAULT] COLLATE collation_name]</code></li>
+<li>修改数据库的默认字符集：<code>ALTER DATABASE db_name DEFAULT CHARACTER SET character_name [COLLATE ...];</code><ul>
+<li>范例：alter database shiyan default character set utf8 COLLATE utf8_general_ci;</li>
+</ul>
+</li>
+</ul>
+<h3 id="table级别设置"><a href="#table级别设置" class="headerlink" title="table级别设置"></a>table级别设置</h3><ul>
+<li>查看表字符集：SHOW CREATE TABLE tbl_name;</li>
+<li>建表时设置：CREATE TABLE tb_name ( id INT NOT NULL) DEFAULT CHARACTER SET = utf8;</li>
+<li>修改表默认字符集：<code>ALTER TABLE tbl_name DEFAULT CHARACTER SET character_name [COLLATE...];</code><ul>
+<li>范例：ALTER TABLE logtest DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;</li>
+</ul>
+</li>
+<li>修改表的当前字符集：<code>ALTER TABLE tbl_name CONVERT TO CHARACTER SET character_name [COLLATE ...]</code><ul>
+<li>范例：ALTER TABLE logtest CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci; </li>
+</ul>
+</li>
+</ul>
+<h3 id="column级别设置"><a href="#column级别设置" class="headerlink" title="column级别设置"></a>column级别设置</h3><ul>
+<li>查看字符字符集：SHOW FULL COLUMNS FROM tbl_name;</li>
+<li>新增字段设置：ALTER TABLE test_table ADD COLUMN char_column VARCHAR(25) CHARACTER SET utf8;</li>
+<li>修改当前字段：<code>alter table table_name modify column column_attr character set character_name [COLLATE ...]</code><ul>
+<li>范例：alter table test1 modify name char(10) character set utf8 COLLATE utf8_general_ci; </li>
+</ul>
+</li>
+</ul>
+<h1 id="日志分类"><a href="#日志分类" class="headerlink" title="日志分类"></a>日志分类</h1><ul>
+<li>一般日志：记录 mysql 正在运行的语句，包括查询、修改、更新等的每条 sql<ul>
+<li>功能开关：general_log=OFF</li>
+<li>文件位置：general_log_file</li>
+</ul>
+</li>
+<li>错误日志：mysql运行过程中的错误信息<ul>
+<li>功能开关：无</li>
+<li>文件位置：log_error</li>
+</ul>
+</li>
+<li>慢查询日志：记录查询比较耗时的 SQL 语句<ul>
+<li>功能开关：slow_query_log=OFF</li>
+<li>阈值设置：long_query_time</li>
+<li>文件位置：slow_query_log_file</li>
+</ul>
+</li>
+<li>binlog日志：记录数据修改记录，包括创建表、数据更新等<ul>
+<li>功能开关：log_bin=ON</li>
+<li>文件位置：log_bin_index、log_bin_basename</li>
+</ul>
+</li>
+</ul>
+<h1 id="SQL操作分类"><a href="#SQL操作分类" class="headerlink" title="SQL操作分类"></a>SQL操作分类</h1><ul>
+<li>DDL(数据定义语言)：create、alter、drop</li>
+<li>DML(数据修改语言)：insert、delete、update</li>
+<li>DQL(数据查询语言)：select、order by、group by、having</li>
+<li>DCL(数据控制语言)：create user、grant、revoke、drop user</li>
+</ul>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://www.cnblogs.com/chyingp/p/mysql-character-set-collation.html" target="_blank" rel="noopener">字符集设置</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/InnoDB/" rel="tag"># InnoDB</a>
+          
+            <a href="/tags/存储引擎/" rel="tag"># 存储引擎</a>
+          
+            <a href="/tags/字符集/" rel="tag"># 字符集</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/17/架构与安全/站点到站点vpn/" rel="next" title="站点到站点vpn">
+                <i class="fa fa-chevron-left"></i> 站点到站点vpn
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/24/web服务管理/数据库/mysql安装与配置/" rel="prev" title="mysql安装与配置">
+                mysql安装与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#版本"><span class="nav-number">1.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下载地址"><span class="nav-number">2.</span> <span class="nav-text">下载地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#体系架构"><span class="nav-number">3.</span> <span class="nav-text">体系架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储引擎"><span class="nav-number">4.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看"><span class="nav-number">4.1.</span> <span class="nav-text">查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置与修改"><span class="nav-number">4.2.</span> <span class="nav-text">设置与修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB与MyISAM对比"><span class="nav-number">4.3.</span> <span class="nav-text">InnoDB与MyISAM对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyISAM"><span class="nav-number">4.4.</span> <span class="nav-text">MyISAM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB"><span class="nav-number">4.5.</span> <span class="nav-text">InnoDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务"><span class="nav-number">4.6.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">4.6.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-ACID"><span class="nav-number">4.6.2.</span> <span class="nav-text">特点-ACID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隔离级别"><span class="nav-number">4.6.3.</span> <span class="nav-text">隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启事务"><span class="nav-number">4.6.4.</span> <span class="nav-text">开启事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务控制语句"><span class="nav-number">4.6.5.</span> <span class="nav-text">事务控制语句</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符集"><span class="nav-number">5.</span> <span class="nav-text">字符集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">5.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符集变量"><span class="nav-number">5.2.</span> <span class="nav-text">字符集变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集相关变量"><span class="nav-number">5.2.1.</span> <span class="nav-text">字符集相关变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符序相关变量"><span class="nav-number">5.2.2.</span> <span class="nav-text">字符序相关变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集的转换过程"><span class="nav-number">5.2.3.</span> <span class="nav-text">字符集的转换过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端设置"><span class="nav-number">5.3.</span> <span class="nav-text">客户端设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端设置"><span class="nav-number">5.4.</span> <span class="nav-text">服务端设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集的继承关系"><span class="nav-number">5.4.1.</span> <span class="nav-text">字符集的继承关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server级别设置"><span class="nav-number">5.4.2.</span> <span class="nav-text">server级别设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#database级别设置"><span class="nav-number">5.4.3.</span> <span class="nav-text">database级别设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#table级别设置"><span class="nav-number">5.4.4.</span> <span class="nav-text">table级别设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column级别设置"><span class="nav-number">5.4.5.</span> <span class="nav-text">column级别设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">6.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL操作分类"><span class="nav-number">7.</span> <span class="nav-text">SQL操作分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

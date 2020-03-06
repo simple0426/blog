@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="curl,iptables,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="命令列表 tcpdump -i eth0：指定监听的网络接口 tcp port 3306：监听本机tcp协议3306端口 icmp：监听icmp协议 ip host 192.168.100.2：监听指定来源的主机 -t：不显示时间戳 -n：补办ip解析成域名 -nn：不把端口转换成对应的协议 -c：只抓取多少行数据 dst：指定数据流向【到本机还是离开本机】 范例：tcpdump -i eth1">
+<meta name="keywords" content="curl,iptables">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系统-网络管理">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="命令列表 tcpdump -i eth0：指定监听的网络接口 tcp port 3306：监听本机tcp协议3306端口 icmp：监听icmp协议 ip host 192.168.100.2：监听指定来源的主机 -t：不显示时间戳 -n：补办ip解析成域名 -nn：不把端口转换成对应的协议 -c：只抓取多少行数据 dst：指定数据流向【到本机还是离开本机】 范例：tcpdump -i eth1">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-filter-nat.gif">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.442Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux系统-网络管理">
+<meta name="twitter:description" content="命令列表 tcpdump -i eth0：指定监听的网络接口 tcp port 3306：监听本机tcp协议3306端口 icmp：监听icmp协议 ip host 192.168.100.2：监听指定来源的主机 -t：不显示时间戳 -n：补办ip解析成域名 -nn：不把端口转换成对应的协议 -c：只抓取多少行数据 dst：指定数据流向【到本机还是离开本机】 范例：tcpdump -i eth1">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/">
+
+
+
+
+
+  <title>linux系统-网络管理 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux系统-网络管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-17T17:18:07+08:00">
+                2019-07-17
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h1><ul>
+<li>tcpdump<ul>
+<li>-i eth0：指定监听的网络接口</li>
+<li>tcp port 3306：监听本机tcp协议3306端口</li>
+<li>icmp：监听icmp协议</li>
+<li>ip host 192.168.100.2：监听指定来源的主机</li>
+<li>-t：不显示时间戳</li>
+<li>-n：补办ip解析成域名</li>
+<li>-nn：不把端口转换成对应的协议</li>
+<li>-c：只抓取多少行数据</li>
+<li>dst：指定数据流向【到本机还是离开本机】<ul>
+<li>范例：tcpdump -i eth1 -tnn dst port 80 -c 100</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ping：测试网络连通性</li>
+<li>traceroute：路由追踪</li>
+<li>nslookup：域名解析【ip与mac对应关系】<ul>
+<li>dns设置：/etc/resolv.conf </li>
+</ul>
+</li>
+<li>arp：地址解析协议</li>
+<li><a href="#curl">curl</a></li>
+<li><a href="#iptables">iptables</a></li>
+<li><a href="#tcp-wrapper">tcp_wrapper</a></li>
+<li>netstat：显示网络链接<ul>
+<li>-a：显示所有链接状态</li>
+<li>-n：以数字形式显示ip和端口</li>
+<li>-u：显示udp链接</li>
+<li>-t：显示tcp链接</li>
+<li>-p：显示建立链接的进程信息【PID】</li>
+</ul>
+</li>
+<li><a href="#ifconfig">ifconfig</a>：查看或临时设置网卡信息</li>
+<li>ethtool：查看网口信息</li>
+<li><a href="#route">route</a>：查看或临时设置路由信息</li>
+<li>iftop</li>
+<li><a href="#wget">wget</a></li>
+<li><a href="#nc">nc</a></li>
+<li>nmap</li>
+</ul>
+<h1 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h1><blockquote>
+<p>永久修改网卡信息：/etc/sysconfig/network-scripts/ifcfg-eth0</p>
+</blockquote>
+<ul>
+<li>ifconfig：查看处于开启状态的网卡信息</li>
+<li>ifconfig -a：查看所有状态的网卡信息【包含down状态】</li>
+<li>设置网卡：<ul>
+<li>ifconfig eth0 192.168.1.1 netmask 255.255.255.0</li>
+<li>ifconfig eth0 192.168.1.1/24</li>
+</ul>
+</li>
+<li>添加虚拟网卡：Ifconfig eth0:0 192.168.20.1/24</li>
+<li>打开或关闭网卡：ifconfig eth0 up/down<ul>
+<li>启用/禁用网络接口：ifup/ifdown eth0</li>
+</ul>
+</li>
+</ul>
+<h1 id="route"><a href="#route" class="headerlink" title="route"></a>route</h1><ul>
+<li>查看路由表：route –n </li>
+<li>添加默认网关：route add default gw 192.168.1.1 </li>
+<li>删除默认网关：route del default gw 192.168.1.1 </li>
+<li>添加默认路由(下一跳)：route add –net 10.0.0.0 netmask 255.0.0.0 gw 192.168.30.254 </li>
+<li>添加默认路由(本地出口)：route add –net 10.0.0.0 netmask 255.0.0.0   dev eth0</li>
+<li>添加主机路由(本地出口)：route add –host 11.22.22.3 dev eth0 </li>
+<li>添加主机路由(下一跳)：route add –host 1.2.3.4 gw 192.168.30.254 </li>
+<li>删除默认路由：route del –net 10.0.0.0 netmask 255.0.0.0 gw 192.168.30.254 </li>
+<li>删除默认路由：route del –net 10.0.0.0 netmask 255.0.0.0 dev eth0</li>
+</ul>
+<h1 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h1><h2 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h2><ul>
+<li>-o 下载文件并另存为</li>
+<li>-O 下载文件</li>
+<li>-c –cookie-jar FILE将服务器发送的cookie保存到文件中<ul>
+<li>curl -c cookie.txt -s <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
+</ul>
+</li>
+<li>-I 只显示header信息<ul>
+<li>curl -s -I <a href="http://www.baidu.com" target="_blank" rel="noopener">http://www.baidu.com</a></li>
+</ul>
+</li>
+<li>-s –silent静默输出</li>
+<li>-w 显示特定变量的信息【变量参考<code>man curl</code>】<ul>
+<li>curl -o /dev/null -s -w “%{http_code}” <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><ul>
+<li>-X 指定请求方法【默认get】</li>
+<li>-d/–data 指定post请求数据<ul>
+<li>curl -X POST –data ‘{“message”: “01”, “pageIndex”: “1”}’ <a href="http://127.0.0.1:5000/python" target="_blank" rel="noopener">http://127.0.0.1:5000/python</a></li>
+</ul>
+</li>
+<li>-H/–header 指定要发送的header信息<ul>
+<li>curl -H “Content-Type: application/json” -X POST  –data ‘{“userID”:10001}’ <a href="http://localhost:8085/GetUserInfo" target="_blank" rel="noopener">http://localhost:8085/GetUserInfo</a></li>
+</ul>
+</li>
+<li>-A 指定user-agent信息<ul>
+<li>curl -A “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)” -o page.html  <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
+</ul>
+</li>
+<li>-b, –cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串<ul>
+<li>curl -b ‘a=1;b=2’ <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
+</ul>
+</li>
+<li>-e, –referer指定上次访问的页面【可用于盗链】<ul>
+<li>curl -o test.jpg -e <a href="http://oldboy.blog.51cto.com/2561410/1009292" target="_blank" rel="noopener">http://oldboy.blog.51cto.com/2561410/1009292</a> <a href="http://img1.51cto.com/attachment/201209/155625967.jpg" target="_blank" rel="noopener">http://img1.51cto.com/attachment/201209/155625967.jpg</a></li>
+</ul>
+</li>
+<li>-x 使用代理服务器</li>
+</ul>
+<h1 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h1><p>netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具</p>
+<h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
+<li>-l：开启监听模式</li>
+<li>-p：nc使用的源端口</li>
+<li>-s：发送数据使用的接口ip</li>
+<li>-n：不要使用DNS反向查询IP地址的域名</li>
+<li>-u：使用udp协议</li>
+<li>-w：设置超时时间</li>
+<li>-v：设置详情输出</li>
+<li>-z：扫描时不发送任何数据</li>
+</ul>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><h3 id="监听和连接"><a href="#监听和连接" class="headerlink" title="监听和连接"></a>监听和连接</h3><ul>
+<li>服务端：nc -l 1234</li>
+<li>udp服务端：nc -ul 2345</li>
+<li>客户端(可用于测试服务端口是否开启)：nc 127.0.0.1 1234</li>
+</ul>
+<h3 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h3><h4 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h4><ul>
+<li>服务端：nc -l 1234 &gt; filename.out</li>
+<li>客户端：nc host.example.com 1234 &lt; filename.in</li>
+</ul>
+<h4 id="文本传输"><a href="#文本传输" class="headerlink" title="文本传输"></a>文本传输</h4><ul>
+<li>与web服务器通信：printf “GET / HTTP/1.0\r\n\r\n” | nc host.example.com 80</li>
+<li>与snmp服务器通信：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nc [-C] localhost 25 &lt;&lt; EOF</span><br><span class="line">HELO host.example.com</span><br><span class="line">MAIL FROM:&lt;user@host.example.com&gt;</span><br><span class="line">RCPT TO:&lt;user2@host.example.com&gt;</span><br><span class="line">DATA</span><br><span class="line">Body of email.</span><br><span class="line">.</span><br><span class="line">QUIT</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h3 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h3><ul>
+<li>范围扫描：nc -zv host.example.com 20-30</li>
+<li>列表扫描：nc -zv host.example.com 80 20 22</li>
+</ul>
+<h1 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h1><p>非交互式网络下载器，wget支持https、http、ftp下载</p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><ul>
+<li>-O：另存为其他文件</li>
+<li>-b：后台执行【查看下载进度：tail -f wget-log】</li>
+<li>-c：支持断点续传</li>
+<li>-i file：从文件中读取下载地址【一行一个】</li>
+<li>–limit-rate： 限速【1M=限速1MB/s】</li>
+<li>–spider：像spider一样只测试文件是否存在，而不是真正下载</li>
+<li>–user-agent=agent-string：设置浏览器代理</li>
+<li>–ftp-user/–ftp-password：ftp下载选项</li>
+<li>–http-user/–http-password：http下载选项</li>
+<li>–proxy-user=user/–proxy-password=password：proxy选项设置</li>
+</ul>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><ul>
+<li>wget -b -c –limit-rate=300K <a href="https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64" target="_blank" rel="noopener">https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64</a> -O docker-compose.box</li>
+</ul>
+<h1 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a>iptables</h1><ul>
+<li>iptables是一个用于ipv4/ipv6包过滤和地址转换的管理工具</li>
+<li>iptables语法主要由路由表、规则链、匹配规则、执行动作构成</li>
+<li>iptables语法：iptables (-t 路由表) (<a href="#规则操作">规则操作</a> 规则链) (<a href="#功能参数">功能参数</a>) (<a href="#匹配规则">匹配规则</a>)  (-j <a href="#执行动作">执行动作</a>) </li>
+</ul>
+<h2 id="表和链"><a href="#表和链" class="headerlink" title="表和链"></a>表和链</h2><p>iptables包含4个表和5个链，路由表是对数据包的不同类型的操作，规则链是在处理流程中的不同时间点进行的操作<br><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif" alt=""></p>
+<ul>
+<li>路由表：优先级：raw &gt; mangle &gt; nat &gt; filter<ul>
+<li>filter：一般的主机过滤功能，默认表</li>
+<li>nat：一般用于网络地址转换（nat）</li>
+<li>mangle：主要负责修改数据包中特殊的路由标记，如TTL、TOS、MARK等</li>
+<li>raw，优先级最高，设置raw一般是为了不再让iptables做数据包的链接追踪处理，提高性能</li>
+</ul>
+</li>
+<li>规则链<ul>
+<li>PREROUTING：数据包进入路由表之前</li>
+<li>INPUT：通过路由表后目的地为本机</li>
+<li>FORWARD：通过路由表，目的地不是本机</li>
+<li>OUTPUT：本计产生的数据包</li>
+<li>POSTROUTING：发送到网卡接口前</li>
+</ul>
+</li>
+</ul>
+<h2 id="规则操作"><a href="#规则操作" class="headerlink" title="规则操作"></a>规则操作</h2><ul>
+<li>-A，–append chain rule-spec：在链的末尾添加规则</li>
+<li>-D，–delete<ul>
+<li>-D chain rule-spec：删除特定的规则</li>
+<li>-D chain rulenum：删除特定编号的规则</li>
+</ul>
+</li>
+<li>-C，–check chain rule-spec：检查特定规则是否存在（与-D chain rule-spec处理逻辑相同）</li>
+<li>-I，–insert chain <code>[rulenum]</code> rule-spec：在链的指定规则编号前插入规则；如果没有指定规则编号，则在链的第一行插入规则</li>
+<li>-R，–replace chain rulenum rule-spec：使用规则替换指定编号的规则</li>
+<li>-L，–list <code>[chain]</code>：显示表下链的规则（不指定则显示所有链）</li>
+<li>-S，–list-rules <code>[chain]</code>：以和iptables-save一样的格式显示规则</li>
+<li>-F，–flush <code>[chain]</code>：删除链中的所有规则</li>
+<li>-Z，–zero <code>[chain [rulenum]]</code>：清空链中规则的数据包计数器</li>
+<li>-P，–policy chain target：更改链的默认处理规则【ACCEPT、DROP等】</li>
+<li>-N，–new-chain chain：添加用户自定义链</li>
+<li>-X，–delete-chain <code>[chain]</code> ：删除用户自定义链（不能被引用）；如果未定义链名，则删除所有用户自定义链</li>
+<li>-E，–rename-chain old-chain new-chain：重命名用户自定义的链</li>
+</ul>
+<h2 id="功能参数"><a href="#功能参数" class="headerlink" title="功能参数"></a>功能参数</h2><ul>
+<li>-v，–verbose：展示详情输出</li>
+<li>-n，–numeric：IP地址和端口以数字形式输出</li>
+<li>-x，–exact：在使用-L选项时，显示数字计数器的精确值</li>
+<li>–line-numbers：显示规则行号</li>
+<li>–modprobe=command：当添加或插入规则时，加载必要的模块【targets、match extensions】</li>
+</ul>
+<h2 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h2><p><code>[!]</code>是对指定内容取反</p>
+<ul>
+<li><code>[!]</code> -p，–protocol protocol：只对特定协议(如tcp、udp、icmp)的数据包处理，默认为all</li>
+<li><code>[!]</code> -s，–sorce address<code>[/mask][,...]</code>：匹配源地址，可以是网段或主机ip地址，–src标志是这个选项的别名</li>
+<li><code>[!]</code> -d, –destination address<code>[/mask][,...]</code>：匹配目标地址。–dst标志是这个选项的别名</li>
+<li><code>[!]</code>-i，–in-interface name：接收数据包的网络接口【仅适用于INPUT, FORWARD、PREROUTING链】</li>
+<li><code>[!]</code>-o，–out-interface name：将要发送数据包的网络接口【仅适用于FORWARD、OUTPUT、POSTROUTING链】</li>
+<li>-j，–jump target：可以跳转到用户自定义的链处理；或直接使用内置处理规则【ACCEPT、DROP】处理数据包</li>
+<li>-g，–got chain：转向到用户自定义的链处理</li>
+<li>-m, –match match：匹配特定属性的扩展规则模块</li>
+</ul>
+<h3 id="扩展匹配规则"><a href="#扩展匹配规则" class="headerlink" title="扩展匹配规则"></a>扩展匹配规则</h3><ul>
+<li>multiport：多端口匹配【这个模块可以一次性匹配多个源或目的端口，最多可以指定15个端口；地址范围(port:port)被当做是2个端口；只能跟在tcp、udp协议后。】<ul>
+<li><code>[!] --source-ports,--sports port[,port|,port:port]</code>：源端口匹配</li>
+<li><code>[!] --destination-ports,--dports port[,port|,port:port]</code>：目的端口匹配</li>
+<li><code>[!] --ports port[,port|,port:port]</code>：端口匹配</li>
+<li>范例：iptables -I INPUT -p udp -m multiport –dports 100,180 -j DROP</li>
+</ul>
+</li>
+<li>state：网络连接状态匹配【如ftp】<ul>
+<li>–state 连接状态：NEW(新连接)、ESTABLISHED(已连接)、RELATED(正在连接或已连接)、INVALID(未知连接)</li>
+<li>范例：iptables -A INPUT -m state –state ESTABLISHED,RELATED -j ACCEPT</li>
+</ul>
+</li>
+<li>tcp：tcp协议匹配，在-p tcp指定后即可使用<ul>
+<li><code>[!] --source-port,--sport port[:port]</code>：源端口匹配，只接受一个端口或端口范围</li>
+<li><code>[!] --destination-port,--dport port[:port]</code>：目的端口匹配</li>
+<li><code>[!] --tcp-flags mask</code>：tcp连接状态匹配</li>
+<li>范例：iptables -A FORWARD -p tcp –tcp-flags SYN,ACK,FIN,RST SYN</li>
+</ul>
+</li>
+<li>udp：udp协议匹配<ul>
+<li><code>[!] --source-port,--sport port[:port]</code>：源端口匹配，只接受一个端口或端口范围</li>
+<li><code>[!] --destination-port,--dport port[:port]</code>：目的端口匹配</li>
+</ul>
+</li>
+</ul>
+<h2 id="执行动作"><a href="#执行动作" class="headerlink" title="执行动作"></a>执行动作</h2><ul>
+<li>ACCEPT：允许数据包通过</li>
+<li>DROP：拒绝数据包通过</li>
+<li>REJECT：向匹配的数据包发送一个错误响应，仅适用于INPUT, FORWARD、OUTPUT链</li>
+<li>MASQUERADE：仅用于nat表的POSTROUTING链，仅用于出口为动态公网ip的nat连接</li>
+<li>SNAT：修改数据包的源地址；仅适用于nat表的INPUT、POSTROUTING链；仅适用于tcp、udp协议<ul>
+<li><code>--to-source [ipaddr[-ipaddr]][:port[-port]]</code>：转换为特定源地址</li>
+</ul>
+</li>
+<li>DNAT：修改数据包的目的地址；仅适用于nat表的 PREROUTING、OUTPUT链<ul>
+<li><code>--to-destination [ipaddr[-ipaddr]][:port[-port]]</code>：转换为特定目的地址</li>
+</ul>
+</li>
+</ul>
+<h2 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h2><h3 id="filter与nat数据流"><a href="#filter与nat数据流" class="headerlink" title="filter与nat数据流"></a>filter与nat数据流</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-filter-nat.gif" alt=""></p>
+<h3 id="主机防火墙设置"><a href="#主机防火墙设置" class="headerlink" title="主机防火墙设置"></a>主机防火墙设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">iptables -F</span><br><span class="line">iptables -X</span><br><span class="line">iptables -Z</span><br><span class="line">iptables -A INPUT -s 192.168.100.0/24 -j ACCEPT</span><br><span class="line">iptables -A INPUT -i lo -j ACCEPT</span><br><span class="line">iptables -A INPUT -p tcp -m multiport --dports 3306,80 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p icmp -j ACCEPT</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line">iptables -P INPUT DROP</span><br><span class="line">iptables -P OUTPUT ACCEPT</span><br><span class="line">iptables -P FORWARD DROP</span><br></pre></td></tr></table></figure>
+<h3 id="正向代理设置"><a href="#正向代理设置" class="headerlink" title="正向代理设置"></a>正向代理设置</h3><blockquote>
+<p>代理局域网主机访问公网</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">sysctl -p</span><br><span class="line"># echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">iptables -P FORWARD ACCEPT</span><br><span class="line">iptables -F -t nat</span><br><span class="line">iptables -X -t nat </span><br><span class="line">iptables -Z -t nat </span><br><span class="line">modprobe ipt_stat             #开启iptables的状态记录模块</span><br><span class="line">modprobe ip_conntrack_ftp     #开启iptables的ftp连接追踪模块</span><br><span class="line">modprobe ip_nat_ftp       #开启iptables的ftp网络地址转换模块</span><br><span class="line">iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o eth1 -j MASQUERADE</span><br><span class="line"># iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o eth1 -j SNAT --to-source 192.168.1.50</span><br></pre></td></tr></table></figure>
+<h3 id="反向代理设置"><a href="#反向代理设置" class="headerlink" title="反向代理设置"></a>反向代理设置</h3><blockquote>
+<p>代理内网服务，以便公网可以访问</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80</span><br><span class="line">#iptables -t nat -A PREROUTING -d 192.168.1.50 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80</span><br></pre></td></tr></table></figure>
+<h1 id="tcp-wrapper"><a href="#tcp-wrapper" class="headerlink" title="tcp-wrapper"></a>tcp-wrapper</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li><a href="https://www.cnblogs.com/long-cnblogs/p/10716091.html" target="_blank" rel="noopener">tcp_wrapper</a>是一个类似于iptables的实现访问控制工具；但是，iptables是工作在内核中的，所以只要是一个网络服务经由内核中的TCP/IP协议栈就能够受到netfilter的控制</li>
+<li>tcp_wrapper是基于库调用来实现其功能的。这就意味着只有那些在开发时调用了tcp_wrapper相关库（这个库叫libwrap）的应用，tcp_wrapper的控制才能生效。</li>
+</ul>
+<h2 id="应用受控判断"><a href="#应用受控判断" class="headerlink" title="应用受控判断"></a>应用受控判断</h2><ul>
+<li>编译方式：一个程序在开发时如果调用了某个接口，它在编译时会有两种编译方式<ul>
+<li>动态编译：表示基于动态链接库的方式使用库</li>
+<li>静态编译：表示把调用的库文件直接编译进应用程序内部</li>
+</ul>
+</li>
+<li>应用是否支持tcp_wrapper，两种编译方式的判断如下<ul>
+<li>动态编译：使用ldd命令，显示出链接至libwrap，即表示支持tcp_wrapper功能；比如ssh服务：【ldd /usr/sbin/sshd】</li>
+<li>静态编译：使用strings命令，显示结果中出现两个文件（hosts.allow和hosts.deny）表示支持tcp_wrapper</li>
+</ul>
+</li>
+</ul>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><ul>
+<li>/etc/hosts.allow：允许访问的设置</li>
+<li>/etc/hosts.deny：禁止访问的设置<ul>
+<li>范例：【vsftpd:192.168.241.1】vsftpd服务不允许192.168.241.1访问</li>
+</ul>
+</li>
+<li>执行顺序：先检查hosts.allow，后检查hosts.deny【有相同条目时，allow生效】</li>
+</ul>
+<h2 id="配置语法"><a href="#配置语法" class="headerlink" title="配置语法"></a>配置语法</h2><p>语法：daemon_list：client_list <code>：[option_list]</code></p>
+<ul>
+<li>daemon_list：服务列表<ul>
+<li>服务的二进制文件名【应用程序是通过二进制文件链接至libwrap库文件来完成访问控制的】</li>
+<li>多个服务间逗号分隔</li>
+</ul>
+</li>
+<li>client_list：客户端地址<ul>
+<li>ip地址</li>
+<li>主机名：<ul>
+<li>LOCAL 代表本机</li>
+<li>ALL 代表所有程序，所有ip</li>
+</ul>
+</li>
+<li>网络地址<ul>
+<li>格式1：172.16.0.0/255.255.0.0</li>
+<li>格式2：172.16.【最后那个点不能省略】</li>
+<li>不能是： <del>172.16.0.0/16</del></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>option_list：可选参数列表<ul>
+<li>except：排除选项<ul>
+<li>范例要求：这个网络开放给172.16访问但是这个172.16.100.1不能访问</li>
+<li>设置：【vsftpd:172.16. EXCEPT 172.16.100.1】</li>
+</ul>
+</li>
+<li>deny：表示拒绝，用于host.allow文件中，在允许的文件中实现拒绝的功能【vsftpd:192.168.241. :deny】</li>
+<li>allow：表示允许，用于hosts.deny文件，实现allow的功能</li>
+<li>spawn：额外启动其它应用程序，完成一部分的管理或其它功能<ul>
+<li>范例要求：本地开放了ftp服务，一旦有人访问了，默认策略【allow或deny】执行后，将其记录到日志中</li>
+<li>设置：【vsftpd:ALL :spawn /bin/echo <code>date</code> login attemp from %c to %s,%d &gt;&gt; /var/log/vsftpd.deny.log】</li>
+<li>参数注解：%c表示client ip,客户端地址，%s表示server ip，服务器端地址，%d为daomon name即访问的是服务器上的哪个守护进程；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/curl/" rel="tag"># curl</a>
+          
+            <a href="/tags/iptables/" rel="tag"># iptables</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/15/系统管理/系统基础/文本编辑器-vim/" rel="next" title="文本编辑器-vim">
+                <i class="fa fa-chevron-left"></i> 文本编辑器-vim
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/30/系统管理/系统基础/shell编程/" rel="prev" title="shell编程">
+                shell编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#命令列表"><span class="nav-number">1.</span> <span class="nav-text">命令列表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ifconfig"><span class="nav-number">2.</span> <span class="nav-text">ifconfig</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#route"><span class="nav-number">3.</span> <span class="nav-text">route</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#curl"><span class="nav-number">4.</span> <span class="nav-text">curl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#响应"><span class="nav-number">4.1.</span> <span class="nav-text">响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求"><span class="nav-number">4.2.</span> <span class="nav-text">请求</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nc"><span class="nav-number">5.</span> <span class="nav-text">nc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用选项"><span class="nav-number">5.1.</span> <span class="nav-text">常用选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要功能"><span class="nav-number">5.2.</span> <span class="nav-text">主要功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#监听和连接"><span class="nav-number">5.2.1.</span> <span class="nav-text">监听和连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据传输"><span class="nav-number">5.2.2.</span> <span class="nav-text">数据传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件传输"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">文件传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本传输"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">文本传输</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#端口扫描"><span class="nav-number">5.2.3.</span> <span class="nav-text">端口扫描</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#wget"><span class="nav-number">6.</span> <span class="nav-text">wget</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#选项"><span class="nav-number">6.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">6.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iptables"><span class="nav-number">7.</span> <span class="nav-text">iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#表和链"><span class="nav-number">7.1.</span> <span class="nav-text">表和链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规则操作"><span class="nav-number">7.2.</span> <span class="nav-text">规则操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能参数"><span class="nav-number">7.3.</span> <span class="nav-text">功能参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匹配规则"><span class="nav-number">7.4.</span> <span class="nav-text">匹配规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展匹配规则"><span class="nav-number">7.4.1.</span> <span class="nav-text">扩展匹配规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行动作"><span class="nav-number">7.5.</span> <span class="nav-text">执行动作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">7.6.</span> <span class="nav-text">范例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#filter与nat数据流"><span class="nav-number">7.6.1.</span> <span class="nav-text">filter与nat数据流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主机防火墙设置"><span class="nav-number">7.6.2.</span> <span class="nav-text">主机防火墙设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正向代理设置"><span class="nav-number">7.6.3.</span> <span class="nav-text">正向代理设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向代理设置"><span class="nav-number">7.6.4.</span> <span class="nav-text">反向代理设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcp-wrapper"><span class="nav-number">8.</span> <span class="nav-text">tcp-wrapper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">8.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用受控判断"><span class="nav-number">8.2.</span> <span class="nav-text">应用受控判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">8.3.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置语法"><span class="nav-number">8.4.</span> <span class="nav-text">配置语法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

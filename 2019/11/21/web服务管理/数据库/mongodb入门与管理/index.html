@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="安装,用户权限,管理,numa,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介存储引擎 3.2之后增加存储引擎WiredTiger 4.2之后移除对MMAPv1引擎的支持 若要将数据从MMAPv1迁移到WiredTiger，参考官方文档 数据目录下包含的文件必须和存储引擎匹配，否则无法启动 WiredTiger存储引擎默认支持document级别锁（类似关系型数据库的行级锁）  软件版本由于mongodb的不同版本的区别较大，需要确认不同操作系统版本支持的软件版本 数据">
+<meta name="keywords" content="安装,用户权限,管理,numa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb入门与管理">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/11/21/web服务管理/数据库/mongodb入门与管理/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="简介存储引擎 3.2之后增加存储引擎WiredTiger 4.2之后移除对MMAPv1引擎的支持 若要将数据从MMAPv1迁移到WiredTiger，参考官方文档 数据目录下包含的文件必须和存储引擎匹配，否则无法启动 WiredTiger存储引擎默认支持document级别锁（类似关系型数据库的行级锁）  软件版本由于mongodb的不同版本的区别较大，需要确认不同操作系统版本支持的软件版本 数据">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.377Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongodb入门与管理">
+<meta name="twitter:description" content="简介存储引擎 3.2之后增加存储引擎WiredTiger 4.2之后移除对MMAPv1引擎的支持 若要将数据从MMAPv1迁移到WiredTiger，参考官方文档 数据目录下包含的文件必须和存储引擎匹配，否则无法启动 WiredTiger存储引擎默认支持document级别锁（类似关系型数据库的行级锁）  软件版本由于mongodb的不同版本的区别较大，需要确认不同操作系统版本支持的软件版本 数据">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/11/21/web服务管理/数据库/mongodb入门与管理/">
+
+
+
+
+
+  <title>mongodb入门与管理 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/21/web服务管理/数据库/mongodb入门与管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mongodb入门与管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-21T20:59:40+08:00">
+                2019-11-21
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index">
+                    <span itemprop="name">mongodb</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><ul>
+<li>3.2之后增加存储引擎WiredTiger</li>
+<li>4.2之后移除对MMAPv1引擎的支持</li>
+<li>若要将数据从MMAPv1迁移到WiredTiger，参考官方文档</li>
+<li>数据目录下包含的文件必须和存储引擎匹配，否则无法启动</li>
+<li>WiredTiger存储引擎默认支持document级别锁（类似关系型数据库的行级锁）</li>
+</ul>
+<h2 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h2><p>由于mongodb的不同版本的区别较大，需要确认不同操作系统版本支持的软件版本</p>
+<h2 id="数据可靠性"><a href="#数据可靠性" class="headerlink" title="数据可靠性"></a>数据可靠性</h2><ul>
+<li>Journal：使用Journal，即预写式日志保证数据可靠性</li>
+<li>副本集：在4.0之后的版本，使用WiredTiger引擎、开启主从复制时不能关闭日志功能（storage.journal.enabled: false）</li>
+</ul>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="安装要求"><a href="#安装要求" class="headerlink" title="安装要求"></a>安装要求</h2><ul>
+<li>时钟同步<ul>
+<li>目的：为了保证mongodb组件或集群成员之间保证正常工作，应该开启ntp服务以同步主机时间</li>
+<li>错误示例：【waited 189s for distributed lock configUpgrade for upgrading config database to new format v5】</li>
+</ul>
+</li>
+<li>设置文件描述符：ulimit</li>
+<li>禁用Transparent Huge Pages</li>
+<li>禁用NUMA选项</li>
+<li>关闭selinux</li>
+</ul>
+<h2 id="安装组件"><a href="#安装组件" class="headerlink" title="安装组件"></a>安装组件</h2><p>主要是安装mongodb-org，它包含如下的组件：</p>
+<ul>
+<li>mongodb-org-server：mongodb的服务端主进程<strong>mongod</strong></li>
+<li>mongodb-org-mongos：mongodb的分片功能主进程<strong>mongos</strong></li>
+<li>mongodb-org-shell：mongodb的客户端程序<strong>mongo</strong></li>
+<li>mongodb-org-tools：mongodb的工具软件，比如mongodump,mongorestore, mongostat等</li>
+</ul>
+<h2 id="centos安装"><a href="#centos安装" class="headerlink" title="centos安装"></a>centos安装</h2><ul>
+<li><p>设置yum源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[mongodb-org-4.2]</span><br><span class="line">name=MongoDB Repository</span><br><span class="line">baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yum源更新：yum makecache</p>
+</li>
+<li>软件安装：sudo yum install -y mongodb-org</li>
+</ul>
+<h2 id="ubuntu安装"><a href="#ubuntu安装" class="headerlink" title="ubuntu安装"></a>ubuntu安装</h2><ul>
+<li><p>设置软件源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -</span><br><span class="line">echo &quot;deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse&quot; | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list</span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>软件安装：sudo apt-get install -y mongodb-org</p>
+</li>
+<li>避免自动升级<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;mongodb-org hold&quot; | sudo dpkg --set-selections</span><br><span class="line">echo &quot;mongodb-org-server hold&quot; | sudo dpkg --set-selections</span><br><span class="line">echo &quot;mongodb-org-shell hold&quot; | sudo dpkg --set-selections</span><br><span class="line">echo &quot;mongodb-org-mongos hold&quot; | sudo dpkg --set-selections</span><br><span class="line">echo &quot;mongodb-org-tools hold&quot; | sudo dpkg --set-selections</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="tar包安装"><a href="#tar包安装" class="headerlink" title="tar包安装"></a>tar包安装</h2><ul>
+<li>依赖安装：sudo yum install libcurl openssl</li>
+<li><a href="https://www.mongodb.com/download-center/community?jmp=docs" target="_blank" rel="noopener">软件下载及解压</a></li>
+<li>编译安装（根据内置的参考文档）</li>
+<li>将二进制文件路径添加到PATH</li>
+<li>建立用户、日志目录、数据目录(对目录授权：mongod程序必须 有dbPath目录的读写权限)</li>
+<li>编辑配置文件mongod.conf</li>
+<li>启动服务：/usr/bin/mongod –config /etc/mongod.conf</li>
+</ul>
+<h1 id="服务控制"><a href="#服务控制" class="headerlink" title="服务控制"></a>服务控制</h1><ul>
+<li>目录设置(mongod.conf)：<ul>
+<li>数据目录：storage.dbPath</li>
+<li>日志目录：systemLog.path</li>
+</ul>
+</li>
+<li>启停：service mongod start/stop/restart</li>
+<li>客户端连接：mongo</li>
+</ul>
+<h1 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h1><h2 id="库操作"><a href="#库操作" class="headerlink" title="库操作"></a>库操作</h2><ul>
+<li>db：显示当前数据库</li>
+<li>show dbs：查看所有数据库</li>
+<li>use db：切换数据库（不存在则创建）</li>
+<li>db.dropDatabase()：删除当前库</li>
+</ul>
+<h2 id="集合操作"><a href="#集合操作" class="headerlink" title="集合操作"></a>集合操作</h2><ul>
+<li>查看库的所有集合： show collections</li>
+<li>创建集合：<ul>
+<li>单独创建一个资源受限的空集合，超过限制则删除最早的数据</li>
+<li>语法范例：db.createCollection(“profile”,{size: 1024, capped: true, max: 5})<ul>
+<li>size：使用空间大小限制</li>
+<li>capped：是否开显示</li>
+<li>max：最多保存多少条数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>删除集合：db.collection.drop()</li>
+<li>重命名集合：db.collection.renameCollection(“new_name”)</li>
+</ul>
+<h1 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h1><h2 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h2><blockquote>
+<p>集合不存在则自动创建</p>
+</blockquote>
+<ul>
+<li><p>插入数据：db.collection.insert()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.inventory.insert(&#123;&quot;item&quot;: &quot;test&quot;, &quot;qty&quot;: 11, &quot;status&quot;: &quot;B&quot;, &quot;size&quot;: &#123;&quot;h&quot;: 12, &quot;w&quot;: 2, &quot;uom&quot;: &quot;cm&quot;&#125;, &quot;tags&quot;: [&quot;orange&quot;]&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>批量插入数据：db.collection.insertMany()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.inventory.insertMany([</span><br><span class="line">   &#123; item: &quot;journal&quot;, qty: 25, status: &quot;A&quot;, size: &#123; h: 14, w: 21, uom: &quot;cm&quot; &#125;, tags: [ &quot;blank&quot;, &quot;red&quot; ] &#125;,</span><br><span class="line">   &#123; item: &quot;notebook&quot;, qty: 50, status: &quot;A&quot;, size: &#123; h: 8.5, w: 11, uom: &quot;in&quot; &#125;, tags: [ &quot;red&quot;, &quot;blank&quot; ] &#125;,</span><br><span class="line">   &#123; item: &quot;paper&quot;, qty: 10, status: &quot;D&quot;, size: &#123; h: 8.5, w: 11, uom: &quot;in&quot; &#125;, tags: [ &quot;red&quot;, &quot;blank&quot;, &quot;plain&quot; ] &#125;,</span><br><span class="line">   &#123; item: &quot;planner&quot;, qty: 0, status: &quot;D&quot;, size: &#123; h: 22.85, w: 30, uom: &quot;cm&quot; &#125;, tags: [ &quot;blank&quot;, &quot;red&quot; ] &#125;,</span><br><span class="line">   &#123; item: &quot;postcard&quot;, qty: 45, status: &quot;A&quot;, size: &#123; h: 10, w: 15.25, uom: &quot;cm&quot; &#125;, tags: [ &quot;blue&quot; ] &#125;</span><br><span class="line">]);</span><br><span class="line">// MongoDB adds an _id field with an ObjectId value if the field is not present in the document</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><ul>
+<li>语法：db.collection.remove()</li>
+<li>db.inventory.remove({“item”: “test”})</li>
+</ul>
+<h2 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h2><ul>
+<li>语法：db.collection.update( [查询条件]，[更新内容]，[不存在时是否添加(默认false)]，[是否更新多行(默认false,只更新第一行)])</li>
+<li>范例：<ul>
+<li>内容变更：$set：db.inventory.update({“status”: “A”}, {$set: {“qty”: 35}},false,true)</li>
+<li>数值增减：$inc：db.inventory.update({“status”: “A”}, {$inc: {“qty”: -34}})</li>
+</ul>
+</li>
+</ul>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><ul>
+<li>查询所有内容： db.collection.find() <ul>
+<li>格式化输出(pretty)：db.inventory.find({}).pretty()</li>
+</ul>
+</li>
+<li>精确查询：db.inventory.find( { “size.uom”: “in” } )</li>
+<li>指定返回字段(默认返回id)<ul>
+<li>语法：db.collection.find([查询字段]， [返回字段(1：包含，0：排除)])</li>
+<li>范例：db.inventory.find({},{_id:0, item:1, status:1})【不返回id，返回status】</li>
+</ul>
+</li>
+</ul>
+<h1 id="用户和权限"><a href="#用户和权限" class="headerlink" title="用户和权限"></a><a href="https://www.cnblogs.com/dbabd/p/10811523.html" target="_blank" rel="noopener">用户和权限</a></h1><ul>
+<li>mongodb默认没有启用用户访问控制，可以无限制的访问数据库</li>
+<li>权限由指定的数据库资源(resource)和指定资源上的操作(action)组成<ul>
+<li>资源：数据库、集合、集群</li>
+<li>操作：增、删、改、查（CRUD）</li>
+</ul>
+</li>
+<li>mongodb通过角色对用户授予相应数据库资源的操作权限，每个角色中的权限可以显式指定，也可以继承其他角色的权限，也可以两者兼有<pre><code>+ 在同一个数据库中，新建的用户可以继承其他用户的角色
++ 在admin库中，创建的角色可以继承其他任意数据库中角色的权限
+</code></pre></li>
+<li>mongodb中的角色分类<ul>
+<li>系统内置角色</li>
+<li>用户自定义角色</li>
+</ul>
+</li>
+</ul>
+<h2 id="系统内置角色"><a href="#系统内置角色" class="headerlink" title="系统内置角色"></a>系统内置角色</h2><ul>
+<li>数据库用户角色<ul>
+<li>read：读取非系统集合数据</li>
+<li>readWrite：读写非系统集合数据</li>
+</ul>
+</li>
+<li>数据库管理角色<ul>
+<li>dbAdmin：执行某些管理任务(与schema相关、索引、收集统计信息)的权限，但不包含用户管理</li>
+<li>userAdmin：创建、修改角色、用户的权限</li>
+<li>dbOwner：对数据库的所有的权限：readWrite、userAdmin、userAdmin</li>
+</ul>
+</li>
+<li>集群管理角色<ul>
+<li>clusterMonitor：监控工具（MongoDB Cloud Manager、Ops Manager）有只读权限</li>
+<li>hostManager：包含针对数据库服务器的监控和管理操作</li>
+<li>clusterManager：包含针对集群的监控和管理操作</li>
+<li>clusterAdmin：拥有集群的最高权限：clusterManager、clusterMonitor、hostManager、dropDatabase</li>
+</ul>
+</li>
+<li>备份恢复角色<ul>
+<li>backup：拥有备份mongodb数据的最小权限</li>
+<li>restore：含有从数据文件恢复数据的权限</li>
+</ul>
+</li>
+<li>全体数据库级别角色：只存在于admin库，适用于除了config和local之外的所有库<ul>
+<li>readAnyDatabase：对所有库的只读权限</li>
+<li>readWriteAnyDatabase：对所有库的读写权限</li>
+<li>userAdminAnyDatabase：类似于userAdmin对所有库的用户管理权限</li>
+<li>dbAdminAnyDatabase：类似于dbAdmin对所有库的管理权限</li>
+</ul>
+</li>
+<li>超级用户角色<ul>
+<li>用户拥有以下角色时，可以对任意用户授予任意数据库任意权限<ul>
+<li>admin库的dbOwner的角色</li>
+<li>admin库的userAdmin的角色</li>
+<li>userAdminAnyDatabase</li>
+</ul>
+</li>
+<li>root角色拥有的权限：readWriteAnyDatabase、dbAdminAnyDatabase、userAdminAnyDatabase、clusterAdmin、restore和backup</li>
+</ul>
+</li>
+<li>内部角色：__system</li>
+</ul>
+<h2 id="用户管理和访问控制"><a href="#用户管理和访问控制" class="headerlink" title="用户管理和访问控制"></a>用户管理和访问控制</h2><h3 id="管理用户"><a href="#管理用户" class="headerlink" title="管理用户"></a>管理用户</h3><ul>
+<li>创建管理用户：<code>db.createUser({user: &quot;user_admin&quot;, pwd: &quot;user_admin&quot;, roles: [{role: &quot;userAdminAnyDatabase&quot;, db: &quot;admin&quot;}]})</code></li>
+<li>开启访问控制(重启服务)：security.authorization：enabled</li>
+<li>授权登录<ul>
+<li>交互终端内：use admin；db.auth(‘user_admin’,’user_admin’)</li>
+<li>命令行模式：mongo –host 172.16.0.201 –port 27017 -u user_admin -p user_admin –authenticationDatabase admin</li>
+</ul>
+</li>
+</ul>
+<h3 id="普通用户"><a href="#普通用户" class="headerlink" title="普通用户"></a>普通用户</h3><ul>
+<li>查询数据库所有用户：db.getUsers()、show users</li>
+<li><p>创建用户并添加角色：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.createUser(</span><br><span class="line">&#123;</span><br><span class="line">    user: &quot;user_dba&quot;,</span><br><span class="line">    pwd: &quot;user_dba&quot;,</span><br><span class="line">    roles: [&quot;read&quot;],</span><br><span class="line">    customData: &#123;info: &quot;user for dba&quot;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新用户角色：db.updateUser(“user_dba”, {roles:[{role: “read”, db: “admin”},{role: “readWrite”,db: “examples”}]})</p>
+</li>
+<li>查询用户角色信息：db.getUser(“user_dba”,{showPrivileges: true})</li>
+<li>添加用户角色：db.grantRolesToUser(“user_dba”,[{role: “readWrite”, db: “admin”}])</li>
+<li>回收用户角色：db.revokeRolesFromUser(“user_dba”, [{role: “read”, db: “admin”}])</li>
+<li>变更用户密码：db.changeUserPassword(“user_dba”,”new_passwd”)</li>
+<li>删除用户：db.dropUser(“user_dba”)</li>
+</ul>
+<h1 id="备份和恢复"><a href="#备份和恢复" class="headerlink" title="备份和恢复"></a>备份和恢复</h1><ul>
+<li>用户授权：<code>db.grantRolesToUser(&quot;user_admin&quot;,[{role: &quot;backup&quot;, db: &quot;admin&quot;},{role: &quot;restore&quot;, db: &quot;admin&quot;}])</code></li>
+<li>备份数据：<code>mongodump --port 30001 -u user_admin -p user_admin --authenticationDatabase=admin -d test -o ./backup/</code></li>
+<li>导出数据：mongoexport<ul>
+<li>命令参数<ul>
+<li>-f：指定要导出的字段</li>
+<li>–type：指定导出格式，默认json格式，也可指定csv</li>
+<li>-d：数据库  -c：集合</li>
+</ul>
+</li>
+<li>mongoexport –host=host.com –port=3717 -u root -p passwd –authenticationDatabase=admin -d fubu -c fubu_forum -f username,phone,qq,email,homepage,recently_posted,last_reply_time –type=csv -o ./fubu_forum.csv</li>
+</ul>
+</li>
+<li>恢复数据：<code>mongorestore --port 30001 -u user_admin -p user_admin --authenticationDatabase=admin -d test --dir=./backup/test</code></li>
+</ul>
+<h1 id="操作日志"><a href="#操作日志" class="headerlink" title="操作日志"></a>操作日志</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>MongoDB Profile  记录是直接存在系统 db 里的，记录位置 system.profile ，<br>所以，我们只要查询这个 Collection 的记录就可以获取到我们的 Profile  记录了  </p>
+<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><ul>
+<li>日志设置状态查询：db.getProfilingStatus();</li>
+<li>命令行设置<ul>
+<li>只能在非mongos的主设置</li>
+<li>设置：db.setProfilingLevel(1,500); </li>
+<li>设置解读：0代表关闭，1代表只记录slowlog，2代表记录所有操作，这里设置成了500，即500ms。</li>
+</ul>
+</li>
+<li>配置文件设置<ul>
+<li>开关：operationProfiling.mode: [off/slowOp/all]</li>
+<li>阈值：operationProfiling.slowOpThresholdMs: N</li>
+</ul>
+</li>
+</ul>
+<h2 id="查询-1"><a href="#查询-1" class="headerlink" title="查询"></a>查询</h2><ul>
+<li>交互式命令行：db.system.profile.find({millis:{$gt:500}})</li>
+<li>shell命令行：echo “db.system.profile.find({millis:{\$gt:500}})”|mongo 10.86.0.150:27017</li>
+</ul>
+<h1 id="服务性能优化"><a href="#服务性能优化" class="headerlink" title="服务性能优化"></a>服务性能优化</h1><ul>
+<li>连接池【客户端设置】</li>
+<li>内存：默认使用50% of (RAM - 1 GB)或256 MB中的大的数值</li>
+<li>cpu：默认的线城池数量和cpu核心数相关</li>
+<li>swap：系统设置swap分区，并设置swap【低度使用swap】<ul>
+<li>cat /proc/sys/vm/swappiness</li>
+<li>sysctl vm.swappiness=1</li>
+</ul>
+</li>
+<li>文件系统<ul>
+<li>尽量使用xfs文件系统</li>
+<li>不建议使用NFS等远程文件系统</li>
+<li>使用的文件系统支持目录级别fsync()【HGFS、virtualbox的共享目录不支持此操作】</li>
+</ul>
+</li>
+<li>磁盘：建议使用RAID-10. RAID-5</li>
+<li>存储方式：将数据、预写日志、日志、索引存放在不同磁盘以改善性能</li>
+<li>数据压缩存储<ul>
+<li>snappy：默认压缩方式，压缩率较低，cpu使用也低</li>
+<li>zlib：压缩率较高，cpu使用也高</li>
+<li>zstd：4.2版本出现的压缩选项，在压缩率和cpu中折中选择</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="NUMA使用"><a href="#NUMA使用" class="headerlink" title="NUMA使用"></a>NUMA使用</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>现在的机器上都是有多个CPU和多个内存块的。以前我们都是将内存块看成是一大块内存，所有CPU到这个共享内存的访问消息是一样的。这就是之前普 遍使用的SMP模型。<br>但是随着处理器的增加，共享内存可能会导致内存访问冲突越来越厉害，且如果内存访问达到瓶颈的时候，性能就不能随之增加。NUMA（Non-Uniform Memory Access）就是这样的环境下引入的一个模型。<br> 比如一台机器是有2个处理器，有4个内存块。我们将1个处理器和两个内存块合起来，称为一个NUMA node，这样这个机器就会有两个NUMA node。在物理分布上，NUMA node的处理器和内存块的物理距离更小，因此访问也更快。<br> 比如这台机器会分左右两个处理器（cpu1, cpu2），在每个处理器两边放两个内存块(memory1.1, memory1.2, memory2.1,memory2.2)，这样NUMA node1的cpu1访问memory1.1和memory1.2就比访问memory2.1和memory2.2更快。所以使用NUMA的模式如果能尽量保证本node内的CPU只访问本node内的内存块，那这样的效率就是最高的。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>当你的服务器还有内存的时候，发现它已经在开始使用swap了，甚至已经导致机器出现停滞的现象。这个就有可 能是由于numa的限制，如果一个进程限制它只能使用自己的numa节点的内存，那么当自身numa node内存使用光之后，就不会去使用其他numa node的内存了，会开始使用swap，甚至更糟的情况，机器没有设置swap的时候，可能会直接死机！所以你可以使用numactl –interleave=all来取消numa node的限制。</p>
+<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2><ul>
+<li>如果你的程序是会占用大规模内存的，你大多应该选择关闭numa node的限制。因为这个时候你的程序很有几率会碰到numa陷阱。  </li>
+<li>如果你的程序并不占用大内存，而是要求更快的程序运行时间。你大多应该选择限制只访问本numa node的方法来进行处理  </li>
+</ul>
+<h2 id="mongodb使用"><a href="#mongodb使用" class="headerlink" title="mongodb使用"></a>mongodb使用</h2><p>mongod=”numactl –interleave=all /usr/local/mongod/bin/mongod”</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/安装/" rel="tag"># 安装</a>
+          
+            <a href="/tags/用户权限/" rel="tag"># 用户权限</a>
+          
+            <a href="/tags/管理/" rel="tag"># 管理</a>
+          
+            <a href="/tags/numa/" rel="tag"># numa</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/19/虚拟化与云计算/docker/虚拟化和容器技术docker/" rel="next" title="虚拟化和容器技术docker">
+                <i class="fa fa-chevron-left"></i> 虚拟化和容器技术docker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/01/web服务管理/数据库/mongodb副本集与分片/" rel="prev" title="mongodb副本集与分片">
+                mongodb副本集与分片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#存储引擎"><span class="nav-number">1.1.</span> <span class="nav-text">存储引擎</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件版本"><span class="nav-number">1.2.</span> <span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据可靠性"><span class="nav-number">1.3.</span> <span class="nav-text">数据可靠性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装要求"><span class="nav-number">2.1.</span> <span class="nav-text">安装要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装组件"><span class="nav-number">2.2.</span> <span class="nav-text">安装组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#centos安装"><span class="nav-number">2.3.</span> <span class="nav-text">centos安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu安装"><span class="nav-number">2.4.</span> <span class="nav-text">ubuntu安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tar包安装"><span class="nav-number">2.5.</span> <span class="nav-text">tar包安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务控制"><span class="nav-number">3.</span> <span class="nav-text">服务控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结构操作"><span class="nav-number">4.</span> <span class="nav-text">结构操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#库操作"><span class="nav-number">4.1.</span> <span class="nav-text">库操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合操作"><span class="nav-number">4.2.</span> <span class="nav-text">集合操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据操作"><span class="nav-number">5.</span> <span class="nav-text">数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#增加"><span class="nav-number">5.1.</span> <span class="nav-text">增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除"><span class="nav-number">5.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改"><span class="nav-number">5.3.</span> <span class="nav-text">修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">5.4.</span> <span class="nav-text">查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户和权限"><span class="nav-number">6.</span> <span class="nav-text">用户和权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统内置角色"><span class="nav-number">6.1.</span> <span class="nav-text">系统内置角色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理和访问控制"><span class="nav-number">6.2.</span> <span class="nav-text">用户管理和访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#管理用户"><span class="nav-number">6.2.1.</span> <span class="nav-text">管理用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#普通用户"><span class="nav-number">6.2.2.</span> <span class="nav-text">普通用户</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份和恢复"><span class="nav-number">7.</span> <span class="nav-text">备份和恢复</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作日志"><span class="nav-number">8.</span> <span class="nav-text">操作日志</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">8.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置"><span class="nav-number">8.2.</span> <span class="nav-text">设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询-1"><span class="nav-number">8.3.</span> <span class="nav-text">查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务性能优化"><span class="nav-number">9.</span> <span class="nav-text">服务性能优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NUMA使用"><span class="nav-number">10.</span> <span class="nav-text">NUMA使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">10.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">10.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建议"><span class="nav-number">10.3.</span> <span class="nav-text">使用建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mongodb使用"><span class="nav-number">10.4.</span> <span class="nav-text">mongodb使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

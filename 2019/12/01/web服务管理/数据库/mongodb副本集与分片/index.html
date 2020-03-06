@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="副本集,分片,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="副本集部署架构 主机：172.16.0.201、172.16.0.215、172.16.0.205 201已建立用户及其权限 readWriteAnyDatabase clusterAdmin userAdminAnyDatabase dbAdminAnyDatabase    配置文件12345678net: # 网络设置  port: 27017  bindIp: 0.0.0.0securit">
+<meta name="keywords" content="副本集,分片">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb副本集与分片">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/12/01/web服务管理/数据库/mongodb副本集与分片/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="副本集部署架构 主机：172.16.0.201、172.16.0.215、172.16.0.205 201已建立用户及其权限 readWriteAnyDatabase clusterAdmin userAdminAnyDatabase dbAdminAnyDatabase    配置文件12345678net: # 网络设置  port: 27017  bindIp: 0.0.0.0securit">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongodb副本集与分片">
+<meta name="twitter:description" content="副本集部署架构 主机：172.16.0.201、172.16.0.215、172.16.0.205 201已建立用户及其权限 readWriteAnyDatabase clusterAdmin userAdminAnyDatabase dbAdminAnyDatabase    配置文件12345678net: # 网络设置  port: 27017  bindIp: 0.0.0.0securit">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/12/01/web服务管理/数据库/mongodb副本集与分片/">
+
+
+
+
+
+  <title>mongodb副本集与分片 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/12/01/web服务管理/数据库/mongodb副本集与分片/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mongodb副本集与分片</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-01T18:55:08+08:00">
+                2019-12-01
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index">
+                    <span itemprop="name">mongodb</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="副本集部署"><a href="#副本集部署" class="headerlink" title="副本集部署"></a>副本集部署</h1><h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
+<li>主机：172.16.0.201、172.16.0.215、172.16.0.205</li>
+<li>201已建立用户及其权限<ul>
+<li>readWriteAnyDatabase</li>
+<li>clusterAdmin</li>
+<li>userAdminAnyDatabase</li>
+<li>dbAdminAnyDatabase</li>
+</ul>
+</li>
+</ul>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">net: # 网络设置</span><br><span class="line">  port: 27017</span><br><span class="line">  bindIp: 0.0.0.0</span><br><span class="line">security: </span><br><span class="line">  authorization: enabled # 开启用户认证</span><br><span class="line">  keyFile: /etc/mongo_key.txt #集群认证秘钥</span><br><span class="line">replication:</span><br><span class="line">  replSetName: &quot;rs0&quot; # 副本集名称设置</span><br></pre></td></tr></table></figure>
+<h2 id="集群认证秘钥"><a href="#集群认证秘钥" class="headerlink" title="集群认证秘钥"></a>集群认证秘钥</h2><ul>
+<li>产生：openssl rand -base64 32 -out mongo_key.txt</li>
+<li>变更用户和权限<ul>
+<li>chmod 0600 mongo_key.txt</li>
+<li>chown mongodb mongo_key.txt</li>
+</ul>
+</li>
+</ul>
+<h2 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h2><blockquote>
+<p>登录其中一个节点(201)配置，配置后此节点即为主节点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rs.initiate( &#123;</span><br><span class="line">   _id : &quot;rs0&quot;,</span><br><span class="line">   members: [</span><br><span class="line">      &#123; _id: 0, host: &quot;172.16.0.201:27017&quot; &#125;,</span><br><span class="line">      &#123; _id: 1, host: &quot;172.16.0.215:27017&quot; &#125;,</span><br><span class="line">      &#123; _id: 2, host: &quot;172.16.0.205:27017&quot; &#125;</span><br><span class="line">   ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="集群操作命令"><a href="#集群操作命令" class="headerlink" title="集群操作命令"></a>集群操作命令</h2><ul>
+<li>查看状态：rs.status()</li>
+<li>查看配置：rs.conf()</li>
+<li>查看从机状态：db.printSlaveReplicationInfo();</li>
+<li>查看复制状态：db.printReplicationInfo();</li>
+</ul>
+<h2 id="从机读设置"><a href="#从机读设置" class="headerlink" title="从机读设置"></a>从机读设置</h2><ul>
+<li>默认，读写都在primary节点操作，如果在从机操作，则会报错：”not master and slaveOk=false”</li>
+<li>从机客户端连接中设置可读：rs.slaveOk()</li>
+<li>主机客户端设置读取策略：<ul>
+<li>mongo连接级别：db.getMongo().setReadPref(‘secondary’)</li>
+<li>连接内的指针级别：db.inventories.find().readPref(‘secondary’)</li>
+</ul>
+</li>
+</ul>
+<h1 id="分片集群"><a href="#分片集群" class="headerlink" title="分片集群"></a>分片集群</h1><h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>此部署文档适用于MongoDB 4.2</li>
+<li>由于从3.6开始，所有分片集群必须是副本集；所有低于3.6版本的分片想要升级，必须<ul>
+<li>先将独立的分片集群转换为副本集</li>
+<li>后将副本集升级为分片副本集集群</li>
+</ul>
+</li>
+</ul>
+<h2 id="集群架构"><a href="#集群架构" class="headerlink" title="集群架构"></a>集群架构</h2><ul>
+<li>3节点数据副本集rs0【rs0/172.16.0.201:27017,172.16.0.215:27017,172.16.0.205:27017】</li>
+<li>3节点数据副本集rs1【rs1/172.16.0.201:27027,172.16.0.215:27027,172.16.0.205:27027】</li>
+<li>3节点配置副本集【configReplSet/172.16.0.201:29017,172.16.0.215:29017,172.16.0.205:29017】</li>
+<li>单节点路由服务【172.16.0.201:30001】</li>
+</ul>
+<h2 id="架构部署预览"><a href="#架构部署预览" class="headerlink" title="架构部署预览"></a>架构部署预览</h2><ul>
+<li><a href="#创建数据副本集">创建3节点数据副本集rs0，批量插入测试数据</a></li>
+<li><a href="#创建配置副本集">创建配置副本集(configsrv)</a></li>
+<li><a href="#创建路由服务">创建路由服务(mongos)</a></li>
+<li><a href="#将数据副本集添加为分片节点">将数据副本集添加为分片节点</a></li>
+<li>创建第二个分片节点，即副本集rs1</li>
+<li><a href="#将期望的集合分片">将期望的集合分片</a></li>
+</ul>
+<h1 id="创建数据副本集"><a href="#创建数据副本集" class="headerlink" title="创建数据副本集"></a>创建数据副本集</h1><ul>
+<li>参靠<a href="#副本集部署">mongodb副本集部署</a></li>
+<li>使用自定义目录方式启动服务<ul>
+<li>创建目录：mkdir -p /data/mongodb/rs0/{data,conf,log}</li>
+<li>创建用户：useradd mongodb</li>
+<li>对目录授权：chown -R mongodb.mongodb /data/mongodb/rs0</li>
+</ul>
+</li>
+<li>设置副本集名称：replication.replSetName: “rs0”</li>
+<li>命令行以指定用户启动服务：<code>chroot --userspec &quot;mongodb:mongodb&quot; &quot;/&quot; sh -c &quot;/usr/bin/mongod -f /data/mongodb/rs0/conf/mongod.conf&quot;</code></li>
+<li><p>批量插入测试数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">use test</span><br><span class="line">var bulk = db.test_collection.initializeUnorderedBulkOp();</span><br><span class="line">people = [&quot;Marc&quot;, &quot;Bill&quot;, &quot;George&quot;, &quot;Eliot&quot;, &quot;Matt&quot;, &quot;Trey&quot;, &quot;Tracy&quot;, &quot;Greg&quot;, &quot;Steve&quot;, &quot;Kristina&quot;, &quot;Katie&quot;, &quot;Jeff&quot;];</span><br><span class="line">for(var i=0; i&lt;1000000; i++)&#123;</span><br><span class="line">   user_id = i;</span><br><span class="line">   name = people[Math.floor(Math.random()*people.length)];</span><br><span class="line">   number = Math.floor(Math.random()*10001);</span><br><span class="line">   bulk.insert( &#123; &quot;user_id&quot;:user_id, &quot;name&quot;:name, &quot;number&quot;:number &#125;);</span><br><span class="line">&#125;</span><br><span class="line">bulk.execute();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将副本集转换为可分片模式</p>
+<ul>
+<li>连接集群从节点：关闭服务后、添加配置【sharding.clusterRole: shardsvr】、重启服务</li>
+<li>连接集群主节点：主节点置为从【rs.stepDown()】、添加配置【sharding.clusterRole: shardsvr】、重启服务</li>
+</ul>
+</li>
+</ul>
+<h1 id="创建配置副本集"><a href="#创建配置副本集" class="headerlink" title="创建配置副本集"></a>创建配置副本集</h1><ul>
+<li>参靠<a href="#副本集部署">mongodb副本集部署</a></li>
+<li>设置配置集群选项<ul>
+<li>replication.replSetName: “configReplSet”</li>
+<li>sharding.clusterRole: configsvr</li>
+</ul>
+</li>
+<li>初始化配置集群<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rs.reconfig( &#123;</span><br><span class="line">   _id : &quot;configReplSet&quot;,</span><br><span class="line">  configsvr: true,</span><br><span class="line">   members: [</span><br><span class="line">      &#123; _id: 0, host: &quot;172.16.0.201:29017&quot; &#125;,</span><br><span class="line">      &#123; _id: 1, host: &quot;172.16.0.215:29017&quot; &#125;,</span><br><span class="line">      &#123; _id: 2, host: &quot;172.16.0.205:29017&quot; &#125;</span><br><span class="line">   ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="创建路由服务"><a href="#创建路由服务" class="headerlink" title="创建路由服务"></a>创建路由服务</h1><ul>
+<li>配置选项：<ul>
+<li>sharding.configDB: configReplSet/172.16.0.201:29017,172.16.0.215:29017,172.16.0.205:29017</li>
+<li>security.keyFile: /etc/mongo_key.txt</li>
+</ul>
+</li>
+<li>启动服务：<code>chroot --userspec &quot;mongodb:mongodb&quot; &quot;/&quot; sh -c &quot;/usr/bin/mongos -f /data/mongodb/mongos/conf/mongos.conf&quot;</code></li>
+</ul>
+<h1 id="将数据副本集添加为分片节点"><a href="#将数据副本集添加为分片节点" class="headerlink" title="将数据副本集添加为分片节点"></a>将数据副本集添加为分片节点</h1><ul>
+<li>连接到mongos并授权登录</li>
+<li>添加副本集为分片节点：sh.addShard( “rs0/172.16.0.201:27017,172.16.0.215:27017,172.16.0.205:27017” )</li>
+<li>查看集群分片状态：sh.status()</li>
+</ul>
+<h1 id="将期望的集合分片"><a href="#将期望的集合分片" class="headerlink" title="将期望的集合分片"></a>将期望的集合分片</h1><ul>
+<li>连接到mongos并授权登录</li>
+<li>数据库开启分片：sh.enableSharding( “test” )</li>
+<li>在非空集合上添加索引：use test; db.test_collection.createIndex( { number : 1 } )</li>
+<li>对集合分片：use test; sh.shardCollection( “test.test_collection”, { “number” : 1 } )</li>
+<li>确认分片处于平衡状态<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">use test</span><br><span class="line">db.stats()</span><br><span class="line">db.printShardingStatus()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="配置文件-1"><a href="#配置文件-1" class="headerlink" title="配置文件"></a>配置文件</h1><h2 id="数据节点mongod-conf"><a href="#数据节点mongod-conf" class="headerlink" title="数据节点mongod.conf"></a>数据节点mongod.conf</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">storage:</span><br><span class="line">  dbPath: /data/mongodb/rs0/data</span><br><span class="line">  journal:</span><br><span class="line">    enabled: true</span><br><span class="line">systemLog:</span><br><span class="line">  destination: file</span><br><span class="line">  logAppend: true</span><br><span class="line">  path: /data/mongodb/rs0/log/mongod.log</span><br><span class="line">net:</span><br><span class="line">  port: 27017</span><br><span class="line">  bindIp: 0.0.0.0</span><br><span class="line">processManagement:</span><br><span class="line">  timeZoneInfo: /usr/share/zoneinfo</span><br><span class="line">  fork: true</span><br><span class="line">security:</span><br><span class="line">  authorization: enabled</span><br><span class="line">  keyFile: /etc/mongo_key.txt</span><br><span class="line">replication:</span><br><span class="line">  replSetName: &quot;rs0&quot;</span><br><span class="line">sharding:</span><br><span class="line">  clusterRole: shardsvr</span><br></pre></td></tr></table></figure>
+<h2 id="配置节点configsrv-conf"><a href="#配置节点configsrv-conf" class="headerlink" title="配置节点configsrv.conf"></a>配置节点configsrv.conf</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">storage:</span><br><span class="line">  dbPath: /data/mongodb/configdb/data</span><br><span class="line">  journal:</span><br><span class="line">    enabled: true</span><br><span class="line">systemLog:</span><br><span class="line">  destination: file</span><br><span class="line">  logAppend: true</span><br><span class="line">  path: /data/mongodb/configdb/log/config.log</span><br><span class="line">net:</span><br><span class="line">  port: 29017</span><br><span class="line">  bindIp: 0.0.0.0</span><br><span class="line">processManagement:</span><br><span class="line">  timeZoneInfo: /usr/share/zoneinfo</span><br><span class="line">  fork: true</span><br><span class="line">security:</span><br><span class="line">  authorization: enabled</span><br><span class="line">  keyFile: /etc/mongo_key.txt</span><br><span class="line">replication:</span><br><span class="line">  replSetName: &quot;configReplSet&quot;</span><br><span class="line">sharding:</span><br><span class="line">  clusterRole: configsvr</span><br></pre></td></tr></table></figure>
+<h2 id="路由服务mongos-conf"><a href="#路由服务mongos-conf" class="headerlink" title="路由服务mongos.conf"></a>路由服务mongos.conf</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">systemLog:</span><br><span class="line">  destination: file</span><br><span class="line">  logAppend: true</span><br><span class="line">  path: /data/mongodb/mongos/log/mongos.log</span><br><span class="line">net:</span><br><span class="line">  port: 30001</span><br><span class="line">  bindIp: 0.0.0.0</span><br><span class="line">processManagement:</span><br><span class="line">  timeZoneInfo: /usr/share/zoneinfo</span><br><span class="line">  fork: true</span><br><span class="line">sharding:</span><br><span class="line">  configDB: configReplSet/172.16.0.201:29017,172.16.0.215:29017,172.16.0.205:29017</span><br><span class="line">security:</span><br><span class="line">  keyFile: /etc/mongo_key.txt</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/副本集/" rel="tag"># 副本集</a>
+          
+            <a href="/tags/分片/" rel="tag"># 分片</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/21/web服务管理/数据库/mongodb入门与管理/" rel="next" title="mongodb入门与管理">
+                <i class="fa fa-chevron-left"></i> mongodb入门与管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/02/虚拟化与云计算/docker/docker网络/" rel="prev" title="docker网络">
+                docker网络 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#副本集部署"><span class="nav-number">1.</span> <span class="nav-text">副本集部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">1.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">1.2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群认证秘钥"><span class="nav-number">1.3.</span> <span class="nav-text">集群认证秘钥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群配置"><span class="nav-number">1.4.</span> <span class="nav-text">集群配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群操作命令"><span class="nav-number">1.5.</span> <span class="nav-text">集群操作命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从机读设置"><span class="nav-number">1.6.</span> <span class="nav-text">从机读设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分片集群"><span class="nav-number">2.</span> <span class="nav-text">分片集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">2.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群架构"><span class="nav-number">2.2.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构部署预览"><span class="nav-number">2.3.</span> <span class="nav-text">架构部署预览</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建数据副本集"><span class="nav-number">3.</span> <span class="nav-text">创建数据副本集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建配置副本集"><span class="nav-number">4.</span> <span class="nav-text">创建配置副本集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建路由服务"><span class="nav-number">5.</span> <span class="nav-text">创建路由服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将数据副本集添加为分片节点"><span class="nav-number">6.</span> <span class="nav-text">将数据副本集添加为分片节点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将期望的集合分片"><span class="nav-number">7.</span> <span class="nav-text">将期望的集合分片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件-1"><span class="nav-number">8.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据节点mongod-conf"><span class="nav-number">8.1.</span> <span class="nav-text">数据节点mongod.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置节点configsrv-conf"><span class="nav-number">8.2.</span> <span class="nav-text">配置节点configsrv.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由服务mongos-conf"><span class="nav-number">8.3.</span> <span class="nav-text">路由服务mongos.conf</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

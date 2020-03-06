@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="命令行,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="系统管理 crontab：设置周期性任务 at：一次性任务（使用较少） head -n：显示前n行内容【默认10】 tail：末尾显示 -n：显示末尾n行内容【默认10】 -f：持续追踪末尾输出   echo：回显文本 -e：支持特殊转义符：【\n \t等】 -n：移除末尾换行   read：从标准输入读取一行内容 seq [start [step]] end：打印数字序列 -f printf格式">
+<meta name="keywords" content="命令行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shell命令行">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/08/27/系统管理/系统基础/shell命令行/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="系统管理 crontab：设置周期性任务 at：一次性任务（使用较少） head -n：显示前n行内容【默认10】 tail：末尾显示 -n：显示末尾n行内容【默认10】 -f：持续追踪末尾输出   echo：回显文本 -e：支持特殊转义符：【\n \t等】 -n：移除末尾换行   read：从标准输入读取一行内容 seq [start [step]] end：打印数字序列 -f printf格式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.449Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="shell命令行">
+<meta name="twitter:description" content="系统管理 crontab：设置周期性任务 at：一次性任务（使用较少） head -n：显示前n行内容【默认10】 tail：末尾显示 -n：显示末尾n行内容【默认10】 -f：持续追踪末尾输出   echo：回显文本 -e：支持特殊转义符：【\n \t等】 -n：移除末尾换行   read：从标准输入读取一行内容 seq [start [step]] end：打印数字序列 -f printf格式">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/08/27/系统管理/系统基础/shell命令行/">
+
+
+
+
+
+  <title>shell命令行 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/27/系统管理/系统基础/shell命令行/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">shell命令行</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-27T15:38:54+08:00">
+                2019-08-27
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><ul>
+<li><a href="#crontab">crontab</a>：设置周期性任务</li>
+<li>at：一次性任务（使用较少）</li>
+<li>head -n：显示前n行内容【默认10】</li>
+<li>tail：末尾显示<ul>
+<li>-n：显示末尾n行内容【默认10】</li>
+<li>-f：持续追踪末尾输出</li>
+</ul>
+</li>
+<li>echo：回显文本<ul>
+<li>-e：支持特殊转义符：【\n \t等】</li>
+<li>-n：移除末尾换行</li>
+</ul>
+</li>
+<li><a href="#read">read</a>：从标准输入读取一行内容</li>
+<li>seq <code>[start [step]]</code> end：打印数字序列<ul>
+<li>-f printf格式</li>
+<li>-s 分隔符【默认\n】</li>
+<li>-w 列表前加0使宽度相等</li>
+</ul>
+</li>
+<li>man：查看命令man文档</li>
+<li>xargs：从标准输入读取内容，构建并执行命令【一般用于不支持管道的命令，如ls；或一次无法处理过多参数的命令，如rm】<ul>
+<li>-I <code>{}</code>：指定替换字符串（一般使用<code>{}</code>）：find . -type f|xargs -I {} mv {} ..</li>
+<li>-a file：从文件中读取内容：xargs -a /etc/hosts -I {} echo {}</li>
+<li>-d delimiter：定义输入分隔符【单字符，默认为换行符】</li>
+</ul>
+</li>
+<li>reboot、init、shutdown、poweroff、halt：服务器启停控制</li>
+<li>history：查看命令历史【-c 清除命令历史】</li>
+<li>which：查看命令全路径</li>
+<li>time：执行时间统计</li>
+<li>watch：周期性的执行程序，同时全屏显示输出</li>
+<li>alias、unalias：命令别名</li>
+<li>ulimit：控制shell终端可使用的资源</li>
+<li>whatis：显示命令含义</li>
+<li>logger：向syslog写入特定信息<ul>
+<li>-i 在每行都记录进程ID</li>
+<li>-t logger_test 每行记录都加上“logger_test”这个标签</li>
+<li>-p local3.notice 设置记录的设备和级别</li>
+<li>范例：echo “this is message”|logger -it logger_test -p local3.notice</li>
+</ul>
+</li>
+<li>dmesg：系统启动过程</li>
+<li>uname：显示系统信息</li>
+<li>dmidecode：查询bios信息</li>
+<li><a href="#时间">date</a>：时间</li>
+</ul>
+<h1 id="软件管理"><a href="#软件管理" class="headerlink" title="软件管理"></a>软件管理</h1><ul>
+<li><a href="#chkconfig">chkconfig</a>：自启动管理【centos6】</li>
+<li><a href="#systemctl">systemctl</a>：服务控制【centos7】</li>
+<li><a href="#rpm">rpm</a>：rpm包安装、卸载、查询</li>
+<li><a href="#yum">yum</a></li>
+<li><a href="#dpkg">dpkg</a></li>
+<li><a href="#apt">apt</a></li>
+<li><a href="#程序源码安装">源码安装</a></li>
+</ul>
+<h2 id="系统服务管理"><a href="#系统服务管理" class="headerlink" title="系统服务管理"></a>系统服务管理</h2><ul>
+<li>sysV是centos6之前控制系统服务的工具<ul>
+<li>chkconfig是管理系统各个运行级别下服务的启停</li>
+<li>service则控制系统服务的启停</li>
+</ul>
+</li>
+<li>system是centos7控制系统服务的工具<ul>
+<li>systemctl</li>
+</ul>
+</li>
+<li>系统运行级别：<ul>
+<li>0：关机</li>
+<li>1：单用户模式</li>
+<li>2：无网络多用户命令行模式</li>
+<li>3：有网络多用户命令行模式</li>
+<li>4：不可用</li>
+<li>5：带图形界面的多用户模式</li>
+<li>6：重启</li>
+</ul>
+</li>
+</ul>
+<h1 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h1><h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><ul>
+<li>/etc/cron.deny：不允许使用cron的用户</li>
+<li>/var/spool/cron：所有用户cron文件存放的目录</li>
+</ul>
+<h2 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数"></a>命令参数</h2><ul>
+<li>-u：指定要操作cron的用户【默认操作自己的cron】</li>
+<li>-l：查看crontab配置内容</li>
+<li>-r：删除crontab</li>
+<li>-e：编辑crontab</li>
+</ul>
+<h2 id="字段含义"><a href="#字段含义" class="headerlink" title="字段含义"></a>字段含义</h2><table>
+<thead>
+<tr>
+<th>*</th>
+<th>8-18</th>
+<th>*</th>
+<th>5</th>
+<th>0,1,4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>每分钟执行一次</td>
+<td>8点到18点</td>
+<td>忽略此项</td>
+<td>5月份</td>
+<td>周日，周一，周四</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>字段1：一个小时的第几分（0-59）</li>
+<li>字段2：一天的第几小时（0-23）</li>
+<li>字段3：一个月中的第几天（1-31）</li>
+<li>字段4：一年中的第几月（1-12）</li>
+<li><p>字段5：一周中的第几天（0-7）【0,7都是周日】</p>
+</li>
+<li><p>其他选项</p>
+<ul>
+<li>*：所有时间点</li>
+<li>-：连续的时间段</li>
+<li>,：间隔的时间点</li>
+<li>/：时间频率</li>
+</ul>
+</li>
+</ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>命令行或脚本试验后【如变量、特殊字符处理】，crontab里书写</li>
+<li>使用&amp;&amp;连接先后顺序的命令</li>
+<li>定时任务结尾加&gt;/dev/null 2&gt;&amp;1 【重定向所有输出到空设备】</li>
+<li>添加注释</li>
+</ul>
+<h1 id="read"><a href="#read" class="headerlink" title="read"></a>read</h1><p>从标准输入读取一行内容，语法：read <code>[选项]</code> name-1 <code>[... name-n]</code></p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><ul>
+<li>-a：将空格分隔的多个字符串组成一个数组赋值给变量name</li>
+<li>-d：定义行终止符【默认换行符\n】</li>
+<li>-p：设置提示语</li>
+<li>-s：隐藏输入内容【可用于密码输入】</li>
+<li>-t：设置交互式超时时间</li>
+</ul>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><ul>
+<li>readline：<code>while read line;do echo $line;sleep 2;done &lt; /etc/hosts</code></li>
+<li>read：<code>read -p &#39;pls input you name:&#39; -t 30 -d \# -s name</code></li>
+</ul>
+<h1 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h1><h2 id="BIOS与系统时间"><a href="#BIOS与系统时间" class="headerlink" title="BIOS与系统时间"></a>BIOS与系统时间</h2><p>系统每次启动时会读取BIOS时间，将之赋给系统时间；之后系统时间将独立运行。</p>
+<h2 id="date命令"><a href="#date命令" class="headerlink" title="date命令"></a>date命令</h2><blockquote>
+<p>显示或设置系统时间</p>
+</blockquote>
+<ul>
+<li>-d, –date=STRING：显示指定描述的时间</li>
+<li>-f, –file=DATEFILE：从文件中读取并显示指定描述的时间【一行一个】</li>
+<li>-s, –set=STRING：根据字符串的描述设置时间</li>
+</ul>
+<h3 id="时间字符串"><a href="#时间字符串" class="headerlink" title="时间字符串"></a>时间字符串</h3><p>时间字符串可以是任何人类可读的用于标识时间的字符串，比如：</p>
+<ul>
+<li>Sun, 29 Feb 2004 16:21:42 -0800</li>
+<li>2004-02-29 16:21:42</li>
+<li>next Thursday</li>
+<li>3 hours</li>
+<li>-3 years</li>
+</ul>
+<h3 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h3><ul>
+<li>简单表示法：“date +%D\ %T”</li>
+<li>全量表示法：“date +%Y-%m-%d\ %H:%M:%S”</li>
+<li>3天前表示：“date -d “-3 days””</li>
+</ul>
+<h2 id="时间设置"><a href="#时间设置" class="headerlink" title="时间设置"></a>时间设置</h2><ul>
+<li>手动设置系统时间：date -s “01/01/2014 13:16:13”</li>
+<li>使用ntp同步时间服务器：ntpdate -u time.windows.com</li>
+<li>将系统时间写入bios：clock -w</li>
+</ul>
+<h2 id="ntpdate与ntpd的区别"><a href="#ntpdate与ntpd的区别" class="headerlink" title="ntpdate与ntpd的区别"></a>ntpdate与ntpd的区别</h2><ul>
+<li>ntpd在实际同步时间时是一点点的校准过来时间的，最终把时间慢慢的校正对。</li>
+<li>ntpdate不会考虑其他程序是否会阵痛，直接调整时间。</li>
+</ul>
+<h1 id="rpm"><a href="#rpm" class="headerlink" title="rpm"></a>rpm</h1><ul>
+<li>-qa：查询软件是否安装【grep】</li>
+<li>-qf：查询文件属于哪个软件包</li>
+<li>-ql：查询软件包的展开文件列表</li>
+<li>-ivh：安装软件</li>
+<li>-e：卸载软件</li>
+</ul>
+<h1 id="yum"><a href="#yum" class="headerlink" title="yum"></a>yum</h1><p>是一个在rhel、Centos、SUSE中的shell前端软件包管理器，能从指定的服务器自动下载和安装软件包，并解决软件之间的依赖性。</p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><ul>
+<li>yum list|grouplist：查看yum源上可用安装包、包组</li>
+<li>yum info：查看软件信息</li>
+<li>yum search：yum源搜索软件</li>
+<li>yum install|groupinstall：安装单个软件、包组</li>
+<li>yum reinstall： 重装软件</li>
+<li>yum update|groupupdate： 软件更新【有参时更新个别，无参全部更新】</li>
+<li>yum remove|groupremove：移除单个软件、包组</li>
+<li>yum clean all：清除yum缓存</li>
+<li>yum makecache：生成yum缓存</li>
+<li>yum provides */command：查询包含命令command的软件包</li>
+</ul>
+<h2 id="软件源设置"><a href="#软件源设置" class="headerlink" title="软件源设置"></a>软件源设置</h2><blockquote>
+<p>文件必须位于/etc/yum.repos.d下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[local]                --yum源标题</span><br><span class="line">name=local          ---》yum源名称</span><br><span class="line">baseurl=file:///media  ---》yum源路径</span><br><span class="line">enable=1             引导文件起作用</span><br><span class="line">gpgcheck=0          ---》不进行md5校验</span><br></pre></td></tr></table></figure>
+<h1 id="dpkg"><a href="#dpkg" class="headerlink" title="dpkg"></a>dpkg</h1><ul>
+<li>-i：安装deb软件</li>
+<li>-r：删除软件</li>
+<li>-P：删除软件和配置</li>
+<li>-l：显示软件列表</li>
+</ul>
+<h1 id="apt"><a href="#apt" class="headerlink" title="apt"></a>apt</h1><ul>
+<li>update：更新软件</li>
+<li>upgrade：升级软件</li>
+<li>install：安装软件</li>
+<li>remove：删除已安装软件</li>
+<li>purge：删除软件和配置文件</li>
+<li>apt-cache search：在本地搜索软件【apt update更新后本地形成缓存】</li>
+</ul>
+<h2 id="软件源"><a href="#软件源" class="headerlink" title="软件源"></a>软件源</h2><p>设置/etc/apt/sources.list</p>
+<h1 id="chkconfig"><a href="#chkconfig" class="headerlink" title="chkconfig"></a>chkconfig</h1><ul>
+<li>–add：添加服务，Chkconfig确保每个运行级别都有一项启动（S）或者停止（K）入口。若有缺少，则会从缺省的init脚本中自动创建。<ul>
+<li>范例：chkconfig –add httpd</li>
+</ul>
+</li>
+<li>–del：删除服务，不再由chkconfig指令管理，并同时在系统启动的叙述文件中（<code>/etc/rc[0-6].d</code>）删除相关数据<ul>
+<li>范例：chkconfig –del httpd</li>
+</ul>
+</li>
+<li>–list：默认显示所有运行级别下所有服务的运行状态（on或off）；若指定了服务，则显示指定服务所有运行级别的运行状态<ul>
+<li>范例：chkconfig –list mysqld</li>
+</ul>
+</li>
+<li>–level：对指定运行级别下的指定服务进行操作（开启、关闭或初始化）；不加参数时，对于【on】或【off】命令，系统默认只对级别2,3,4,5进行操作；<ul>
+<li>范例：chkconfig –level httpd 2345 on</li>
+</ul>
+</li>
+</ul>
+<h1 id="systemctl"><a href="#systemctl" class="headerlink" title="systemctl"></a>systemctl</h1><h2 id="systemd添加服务"><a href="#systemd添加服务" class="headerlink" title="systemd添加服务"></a>systemd添加服务</h2><ul>
+<li>将服务控制文件放入/usr/lib/systemd/system/</li>
+<li>systemd服务重载配置：systemctl daemon-reload</li>
+</ul>
+<h2 id="systemd管理"><a href="#systemd管理" class="headerlink" title="systemd管理"></a>systemd管理</h2><ul>
+<li>查看已经启动的服务：systemctl list-units –type=service</li>
+<li>查看所有服务：systemctl list-units –type=service –all</li>
+<li>开机启动：systemctl enable crond</li>
+<li>关闭开启启动：systemctl disable crond</li>
+<li>是否开机启动：systemctl is-enabled crond</li>
+<li>服务状态：systemctl status crond</li>
+<li>开启服务：systemctl start crond</li>
+<li>关闭服务：systemctl stop crond</li>
+<li>重启服务：systemctl restart crond</li>
+</ul>
+<h1 id="程序源码安装"><a href="#程序源码安装" class="headerlink" title="程序源码安装"></a>程序源码安装</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>开放源码：人可以看懂的文本类型的程序源码</li>
+<li>编译程序：将程序源码编译成机器可以看懂的语言，类似翻译者的角色</li>
+<li>可执行程序：开放源码经过编译生成的二进制文件，机器可以看懂并执行</li>
+</ul>
+<h2 id="安装前置条件"><a href="#安装前置条件" class="headerlink" title="安装前置条件"></a>安装前置条件</h2><ul>
+<li>系统核心是否适合本软件</li>
+<li>是否有编译程序【gcc、make、autoconfig等】</li>
+<li>是否存在本软件所需要的函数库或其他依赖软件</li>
+<li>是否存在核心的头文件（header include）</li>
+</ul>
+<h2 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h2><ul>
+<li>解压：将压缩类型文件【如tar.gz等格式】展开成文本类型普通文件</li>
+<li>configure（配置编译参数）：测试系统环境是否满足软件安装的需求，满足后，根据某些用户的自定义项生成源码如何编译的规则文件makefile</li>
+<li>make：根据makefile的编译规则，使用源码、编译程序、依赖的库函数编译程序，生成二进制文件</li>
+<li>make install：将make产生的二进制文件和配置文件安装在自己的主机上</li>
+</ul>
+<h2 id="函数库"><a href="#函数库" class="headerlink" title="函数库"></a>函数库</h2><p>函数库依照是否被编译到程序内部分为动态库和静态库【查看可执行程序的动态库：ldd binary-file】</p>
+<table>
+<thead>
+<tr>
+<th>静态库</th>
+<th>动态库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>扩展名通常为libxxx.a</td>
+<td>扩展名通常为libxxx.a</td>
+</tr>
+<tr>
+<td>此类函数库在编译时直接整合到可执行程序中【生成的可执行程序较大】</td>
+<td>编译时仅将函数库的位置点编入程序，因此生成的可执行程序较小</td>
+</tr>
+<tr>
+<td>可执行程序可独立执行</td>
+<td>程序不能被独立执行，要确保函数库位置不变且必须存在</td>
+</tr>
+<tr>
+<td>函数库升级后，所有包含次函数的可执行程序必须重新编译</td>
+<td>函数库升级后，程序无需变更【函数名不变】</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/命令行/" rel="tag"># 命令行</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/26/系统管理/系统基础/linux系统-权限管理/" rel="next" title="linux系统-权限管理">
+                <i class="fa fa-chevron-left"></i> linux系统-权限管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/系统管理/系统基础/linux系统-文件管理/" rel="prev" title="linux系统-文件管理">
+                linux系统-文件管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统管理"><span class="nav-number">1.</span> <span class="nav-text">系统管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软件管理"><span class="nav-number">2.</span> <span class="nav-text">软件管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统服务管理"><span class="nav-number">2.1.</span> <span class="nav-text">系统服务管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#crontab"><span class="nav-number">3.</span> <span class="nav-text">crontab</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令参数"><span class="nav-number">3.2.</span> <span class="nav-text">命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段含义"><span class="nav-number">3.3.</span> <span class="nav-text">字段含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#read"><span class="nav-number">4.</span> <span class="nav-text">read</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#选项"><span class="nav-number">4.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#时间"><span class="nav-number">5.</span> <span class="nav-text">时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS与系统时间"><span class="nav-number">5.1.</span> <span class="nav-text">BIOS与系统时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date命令"><span class="nav-number">5.2.</span> <span class="nav-text">date命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时间字符串"><span class="nav-number">5.2.1.</span> <span class="nav-text">时间字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间设置"><span class="nav-number">5.3.</span> <span class="nav-text">时间设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ntpdate与ntpd的区别"><span class="nav-number">5.4.</span> <span class="nav-text">ntpdate与ntpd的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpm"><span class="nav-number">6.</span> <span class="nav-text">rpm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yum"><span class="nav-number">7.</span> <span class="nav-text">yum</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">7.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源设置"><span class="nav-number">7.2.</span> <span class="nav-text">软件源设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dpkg"><span class="nav-number">8.</span> <span class="nav-text">dpkg</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#apt"><span class="nav-number">9.</span> <span class="nav-text">apt</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源"><span class="nav-number">9.1.</span> <span class="nav-text">软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chkconfig"><span class="nav-number">10.</span> <span class="nav-text">chkconfig</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemctl"><span class="nav-number">11.</span> <span class="nav-text">systemctl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd添加服务"><span class="nav-number">11.1.</span> <span class="nav-text">systemd添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd管理"><span class="nav-number">11.2.</span> <span class="nav-text">systemd管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序源码安装"><span class="nav-number">12.</span> <span class="nav-text">程序源码安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">12.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装前置条件"><span class="nav-number">12.2.</span> <span class="nav-text">安装前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码安装"><span class="nav-number">12.3.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数库"><span class="nav-number">12.4.</span> <span class="nav-text">函数库</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

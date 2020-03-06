@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="状态码,http报文,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="http浏览过程 用户提交域名 浏览器进行域名解析 浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】 本地无缓存时使用本地dns服务器 本地dns无缓存时向授权dns服务器请求解析   有使用CDN时，进入CDN解析循环  访问模式BS模式即browser/server浏览器/服务器模式，是一种三层架构【页面显示、逻辑处理、数据库访问】， B/S架构中显示逻辑交">
+<meta name="keywords" content="状态码,http报文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web基础知识">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/06/11/通用技能/web基础知识/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="http浏览过程 用户提交域名 浏览器进行域名解析 浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】 本地无缓存时使用本地dns服务器 本地dns无缓存时向授权dns服务器请求解析   有使用CDN时，进入CDN解析循环  访问模式BS模式即browser/server浏览器/服务器模式，是一种三层架构【页面显示、逻辑处理、数据库访问】， B/S架构中显示逻辑交">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/http-header.png">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.532Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web基础知识">
+<meta name="twitter:description" content="http浏览过程 用户提交域名 浏览器进行域名解析 浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】 本地无缓存时使用本地dns服务器 本地dns无缓存时向授权dns服务器请求解析   有使用CDN时，进入CDN解析循环  访问模式BS模式即browser/server浏览器/服务器模式，是一种三层架构【页面显示、逻辑处理、数据库访问】， B/S架构中显示逻辑交">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/http-header.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/06/11/通用技能/web基础知识/">
+
+
+
+
+
+  <title>web基础知识 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/11/通用技能/web基础知识/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">web基础知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-11T18:08:44+08:00">
+                2019-06-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="http浏览过程"><a href="#http浏览过程" class="headerlink" title="http浏览过程"></a>http浏览过程</h1><ol>
+<li>用户提交域名</li>
+<li>浏览器进行域名解析<ol>
+<li>浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】</li>
+<li>本地无缓存时使用本地dns服务器</li>
+<li>本地dns无缓存时向授权dns服务器请求解析</li>
+</ol>
+</li>
+<li>有使用CDN时，进入CDN解析循环</li>
+</ol>
+<h1 id="访问模式"><a href="#访问模式" class="headerlink" title="访问模式"></a>访问模式</h1><h2 id="BS模式"><a href="#BS模式" class="headerlink" title="BS模式"></a>BS模式</h2><p>即browser/server浏览器/服务器模式，是一种三层架构【页面显示、逻辑处理、数据库访问】， B/S架构中显示逻辑交给了web浏览器，事务处理放在webapp上，这样就避免了庞大的客户端，减少了客户端的压力，因为客户端包含的逻辑较少，因此也被称为瘦客户端</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>无需安装客户端，有web浏览器就够了</li>
+<li>BS架构无需升级多个客户端，升级服务器就行了</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>在跨浏览器上，需要测试人员进行各种测试</li>
+<li>在速度和安全上需要花费巨大的设计成本，这是BS架构的最大问题</li>
+<li>客户端服务器的交互式请求-相应模式，通常需要刷新页面，这并是不客户乐意做的（在Ajax实用化后此问题得到一定程度的缓解）</li>
+</ul>
+<h2 id="CS模式"><a href="#CS模式" class="headerlink" title="CS模式"></a>CS模式</h2><p>C/S系统是一种典型的两层架构，期全称为Client/server，客户端服务端架构，客户端包含一个或多个在用户电脑上运行的程序，而服务端有两种，一种为数据库服务端，客户端通过数据库连接访问服务端的数据；另一种是socket服务器端，服务器程序通过socket与客户端程序通信。<br>C/S架构为胖客户端，因为客户端需要实现绝大部分的业务逻辑和页面展示。这种架构中，通过与数据库交互（通常是sql或存储过程的实现）来达到持久化数据。</p>
+<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>C/S架构的页面和操作可以很丰富</li>
+<li>服务器端和客户端可以更好的兼容</li>
+</ul>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>需要安装客户端，不利于向未知用户推广</li>
+<li>维护成本高，发生一次升级，则所有客户端的程序都需要改变</li>
+</ul>
+<h1 id="网页技术"><a href="#网页技术" class="headerlink" title="网页技术"></a>网页技术</h1><h2 id="静态网页"><a href="#静态网页" class="headerlink" title="静态网页"></a>静态网页</h2><p>程序在客户端浏览器解析，它是相对于动态网页而言，是指没有后台数据库、不含程序和可交互的网页。通俗来说就是编辑什么显示什么不会有任何变化。<br>常见扩展名为：htm、html、xml、shtml、jpg(gif、png、bmp等所有图片)、js、css（样式），swf，avi，wmv，flv视频格式</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>静态网页的每个页面都有一个固定的url，且网页url一般以.html、.htm、.shtml常见后缀，而且地址中不含有问号“？”或“&amp;”等特殊符号；</li>
+<li>静态网页是实实在在保存在服务器上的文件，每个网页都是一个独立的文件</li>
+<li>静态网页内容相对稳定，因此更容易被搜索引擎收录</li>
+<li>静态网页没有数据库支持，维护更新不便</li>
+<li>静态网页交互性差</li>
+<li>网页程序在浏览器端解析，服务器直接返回数据，能够接受更多的并发</li>
+</ul>
+<h3 id="静态网页语言"><a href="#静态网页语言" class="headerlink" title="静态网页语言"></a>静态网页语言</h3><p>html，js，css，xml</p>
+<h2 id="动态网页"><a href="#动态网页" class="headerlink" title="动态网页"></a>动态网页</h2><p>以asp、aspx、php、jsp、do、cgi、perl为后缀，并且一般动态网页中含有标志性的“？”、“&amp;”等</p>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>以数据库技术为基础</li>
+<li>可以实现更多的功能，如用户登录、用户注册、在线调查、用户管理、订单管理等</li>
+<li>动态网页大多并不是独立存在于服务器的网页文件，只有当用户请求时服务器才返回一个完整页面</li>
+<li>动态网页中的“？”对搜索引擎的收录存在一定问题，搜索引擎一般不可能从一个网站的数据库中访问全部的网页，或者出于技术方面的考虑，所有蜘蛛一般不会去抓取网址中“？”后面的内容，一般采用动态网页的网站在进行搜索引擎推广时需要做一定的技术处理（伪静态）才能适应搜索引擎的抓取要求。</li>
+<li>程序在服务端解析，服务端：php引擎，java容器（tomcat，resin，jboss、weblogic）</li>
+<li>由于程序在服务端解析，因此会消耗大量的cpu和内存等资源，因此效率不如静态网页</li>
+</ul>
+<h2 id="伪静态网页"><a href="#伪静态网页" class="headerlink" title="伪静态网页"></a>伪静态网页</h2><ul>
+<li>由于搜索引擎无法正确读取带参数的动态网页内容，多数网站采用动态生成静态页面的技术，消除动态网页中的参数，使搜索引擎收录更多的网页，达到优化的效果，伪静态实质依然是动态页面。</li>
+<li>伪静态技术：通过某些技术（如rewrite规则），把网页的url重写，同时消除了动态网页中的参数，但是并不生成任何的页面，仅改变了地址路径，以达到搜索引擎收录的目的。</li>
+</ul>
+<h1 id="http报文"><a href="#http报文" class="headerlink" title="http报文"></a>http报文</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/http-header.png" alt=""></p>
+<ul>
+<li>请求行<ul>
+<li>范例：GET /index.html HTTP/1.1</li>
+<li>请求方法：GET、POST、HEAD、PUT、DELETE、OPTIONS、TRACE、CONNECT<ul>
+<li>GET：当客户端从服务端读取文档时使用GET方法，使用GET方法时，请求参数和对应的值附加到URL后，利用一个问号（“？”）代表URL的结束与请求参数的开始，传递参数的最长为1024个字节</li>
+<li>POST：当客户端向服务端提交的信息较多时使用POST方法，POST方法将参数和值封装在请求的数据中，以键值对的形式出现</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>请求头<ul>
+<li>请求头部由关键字/值对组成，每行一对。关键字与值使用英文冒号分割。请求头部通知服务器关于客户端请求的信息。</li>
+<li>典型的请求头有：<ul>
+<li>User-agent：产生请求的浏览器类型</li>
+<li>Accept：客户端可识别的内容类型列表</li>
+<li>Host：请求的主机名，允许多个域名同处一个ip地址，即为虚拟主机。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>空行<ul>
+<li>最后一个请求头之后是一个空行，发送回车和换行符，通知服务器一下不再有请求头</li>
+<li>对于一个完整的http请求来说，空行是必须的，否则服务器会认为本次请求的数据尚未完全发送到服务器，服务器会一直处于等待状态。</li>
+</ul>
+</li>
+<li><p>请求数据</p>
+<ul>
+<li>请求数据不在GET方法中，而是在POST方法中</li>
+<li>POST方法适用于需要客户填写表单的场合</li>
+<li>与请求数据相关的最常用的请求头有Content-Type和Content-Length</li>
+</ul>
+</li>
+<li><p>GET与POST</p>
+<ul>
+<li>GET是从服务器上获取数据，POST是向服务器传送数据</li>
+<li>对于GET方式，服务端使用Request.QueryString获取变量的值；POST方式服务端使用Request.Form获取提交的数据</li>
+<li>GET方式通过URL提交数据，数据在URL中可以看到，所以不安全；POST方式，数据放在html header中，较为安全。</li>
+<li>GET方式提交的数据最多为1024字节，POST方式则没有限制。</li>
+</ul>
+</li>
+</ul>
+<h1 id="http状态码"><a href="#http状态码" class="headerlink" title="http状态码"></a>http状态码</h1><table>
+<thead>
+<tr>
+<th>群组</th>
+<th>状态码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2系列【成功】</td>
+<td>200</td>
+<td>OK,服务器成功返回网页</td>
+</tr>
+<tr>
+<td>3系列【重定向】</td>
+<td>301</td>
+<td>Moved Permanently（永久跳转）请求的网页已永久跳转到新位置</td>
+</tr>
+<tr>
+<td>4系列【请求错误】</td>
+<td>403</td>
+<td>Forbidden（禁止访问）服务器拒绝请求</td>
+</tr>
+<tr>
+<td>4系列</td>
+<td>404</td>
+<td>Not Found，服务器找不到请求的页面</td>
+</tr>
+<tr>
+<td>5系列【服务器错误】</td>
+<td>500</td>
+<td>Internal Server Error(内部服务器错误)</td>
+</tr>
+<tr>
+<td>5系列</td>
+<td>502</td>
+<td>Bad Gateway（坏的网关），一般是网关服务器请求后端服务时，后端服务没有按照http协议正确返回结果</td>
+</tr>
+<tr>
+<td>5系列</td>
+<td>503</td>
+<td>Service Unavailable（服务不可用），可能因为超载或停机维护</td>
+</tr>
+<tr>
+<td>5系列</td>
+<td>504</td>
+<td>Gateway Timeout（网关超时），一般是因为网关服务器请求后端服务时，后端服务没有在特定的时间内完成服务</td>
+</tr>
+</tbody>
+</table>
+<h1 id="名词注解"><a href="#名词注解" class="headerlink" title="名词注解"></a>名词注解</h1><ul>
+<li>IP：独立的ip数，是网站流量分析的重要指标，0:00-24:00内相同ip被计算一次</li>
+<li>PV【page view 访问量】：用户刷新一次被计算1次</li>
+<li>UV【unique vistor独立访客】：访问网站的一个电脑客户端为一个访客<ul>
+<li>通过IP地址+其他特征信息定义</li>
+<li>通过cookies分辨</li>
+</ul>
+</li>
+<li>URI标记一个网络资源</li>
+<li>URL用地址标记一个网络资源<ul>
+<li>格式：scheme://host.domain:port/path/filename</li>
+<li>范例：<a href="http://www.w3school.com.cn/html/html_url.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/html/html_url.asp</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="web服务器"><a href="#web服务器" class="headerlink" title="web服务器"></a>web服务器</h1><ul>
+<li>IIS：windows下常用web服务器</li>
+<li>apache</li>
+<li>nginx</li>
+<li>tomcat</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/状态码/" rel="tag"># 状态码</a>
+          
+            <a href="/tags/http报文/" rel="tag"># http报文</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/11/web服务管理/web服务/nginx进阶学习/" rel="next" title="nginx进阶学习">
+                <i class="fa fa-chevron-left"></i> nginx进阶学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/13/系统管理/系统基础/日志切割工具logrotate/" rel="prev" title="日志切割工具logrotate">
+                日志切割工具logrotate <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#http浏览过程"><span class="nav-number">1.</span> <span class="nav-text">http浏览过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问模式"><span class="nav-number">2.</span> <span class="nav-text">访问模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BS模式"><span class="nav-number">2.1.</span> <span class="nav-text">BS模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">2.1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">2.1.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CS模式"><span class="nav-number">2.2.</span> <span class="nav-text">CS模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网页技术"><span class="nav-number">3.</span> <span class="nav-text">网页技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态网页"><span class="nav-number">3.1.</span> <span class="nav-text">静态网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">3.1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态网页语言"><span class="nav-number">3.1.2.</span> <span class="nav-text">静态网页语言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态网页"><span class="nav-number">3.2.</span> <span class="nav-text">动态网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#伪静态网页"><span class="nav-number">3.3.</span> <span class="nav-text">伪静态网页</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http报文"><span class="nav-number">4.</span> <span class="nav-text">http报文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http状态码"><span class="nav-number">5.</span> <span class="nav-text">http状态码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#名词注解"><span class="nav-number">6.</span> <span class="nav-text">名词注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web服务器"><span class="nav-number">7.</span> <span class="nav-text">web服务器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

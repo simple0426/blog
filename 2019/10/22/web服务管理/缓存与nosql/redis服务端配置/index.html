@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="redis.conf,慢日志,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="服务端配置方法 文件指令格式：keyword argument1 argument2 … argumentN 使用引号处理包含的空格：requirepass “hello world”   命令行传参：./redis-server –port 6380 –slaveof 127.0.0.1 6379 运行状态下变更配置： 获取配置：config get keyword 设置参数：config se">
+<meta name="keywords" content="redis.conf,慢日志">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis服务端配置">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/22/web服务管理/缓存与nosql/redis服务端配置/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="服务端配置方法 文件指令格式：keyword argument1 argument2 … argumentN 使用引号处理包含的空格：requirepass “hello world”   命令行传参：./redis-server –port 6380 –slaveof 127.0.0.1 6379 运行状态下变更配置： 获取配置：config get keyword 设置参数：config se">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.411Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis服务端配置">
+<meta name="twitter:description" content="服务端配置方法 文件指令格式：keyword argument1 argument2 … argumentN 使用引号处理包含的空格：requirepass “hello world”   命令行传参：./redis-server –port 6380 –slaveof 127.0.0.1 6379 运行状态下变更配置： 获取配置：config get keyword 设置参数：config se">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/22/web服务管理/缓存与nosql/redis服务端配置/">
+
+
+
+
+
+  <title>redis服务端配置 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/22/web服务管理/缓存与nosql/redis服务端配置/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis服务端配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-22T21:26:56+08:00">
+                2019-10-22
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="服务端配置方法"><a href="#服务端配置方法" class="headerlink" title="服务端配置方法"></a>服务端配置方法</h1><ul>
+<li>文件指令格式：keyword argument1 argument2 … argumentN<ul>
+<li>使用引号处理包含的空格：requirepass “hello world”</li>
+</ul>
+</li>
+<li>命令行传参：./redis-server –port 6380 –slaveof 127.0.0.1 6379</li>
+<li>运行状态下变更配置：<ul>
+<li>获取配置：config get keyword</li>
+<li>设置参数：config set keyword value</li>
+<li>将运行配置写入文件：config rewrite</li>
+</ul>
+</li>
+</ul>
+<h1 id="专项配置"><a href="#专项配置" class="headerlink" title="专项配置"></a>专项配置</h1><h2 id="慢日志"><a href="#慢日志" class="headerlink" title="慢日志"></a>慢日志</h2><h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><ul>
+<li>日志条目id</li>
+<li>日志记录时间戳</li>
+<li>执行时间（微秒）</li>
+<li>执行命令数组</li>
+<li>客户端ip和端口（4.0版本）</li>
+<li>通过client setname设置的客户端名称（4.0版本）</li>
+</ul>
+<h3 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h3><ul>
+<li>slowlog-log-slower-than：执行时间阈值</li>
+<li>slowlog-max-len：记录日志条数</li>
+</ul>
+<h3 id="控制命令"><a href="#控制命令" class="headerlink" title="控制命令"></a>控制命令</h3><ul>
+<li>查看（指定数目）日志：slowlog get （number）</li>
+<li>查看日志记录总数：slowlog len</li>
+<li>清空日志：slowlog reset</li>
+</ul>
+<h1 id="配置文件redis-conf"><a href="#配置文件redis-conf" class="headerlink" title="配置文件redis.conf"></a>配置文件redis.conf</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br></pre></td><td class="code"><pre><span class="line"># redis.conf必须作为第一个参数，例如：./redis-server /path/to/redis.conf</span><br><span class="line"></span><br><span class="line"># 涉及内存时的计量单位</span><br><span class="line"># 1k =&gt; 1000 bytes</span><br><span class="line"># 1kb =&gt; 1024 bytes</span><br><span class="line"># 1m =&gt; 1000000 bytes</span><br><span class="line"># 1mb =&gt; 1024*1024 bytes</span><br><span class="line"># 1g =&gt; 1000000000 bytes</span><br><span class="line"># 1gb =&gt; 1024*1024*1024 bytes</span><br><span class="line"></span><br><span class="line">################################## INCLUDES ###################################</span><br><span class="line"></span><br><span class="line"># include包含的文件不能被【config rewrite】命令改写</span><br><span class="line"># 针对相同的配置项，后面的配置会覆盖前面的配置，所以需要注意include的位置【首行？尾行】</span><br><span class="line"># include /path/to/local.conf</span><br><span class="line"></span><br><span class="line">################################## MODULES #####################################</span><br><span class="line"></span><br><span class="line"># 加载自定义模块</span><br><span class="line"># loadmodule /path/to/my_module.so</span><br><span class="line"></span><br><span class="line">################################## NETWORK #####################################</span><br><span class="line"></span><br><span class="line"># 如果没有指定bind参数，redis运行在所有网络接口上</span><br><span class="line"># redis可以指定一个或多个网络接口</span><br><span class="line"># bind 192.168.1.100 10.0.0.1</span><br><span class="line"># bind 127.0.0.1 ::1</span><br><span class="line">bind 127.0.0.1</span><br><span class="line"></span><br><span class="line"># 公网保护模式（默认开启）</span><br><span class="line"># 如果没有配置bind指令或密码认证信息，则只能从127.0.0.1等回环接口访问</span><br><span class="line">protected-mode yes</span><br><span class="line"></span><br><span class="line"># 监听端口（默认6379，设置为0，则不在tcp上监听）</span><br><span class="line">port 6379</span><br><span class="line"></span><br><span class="line"># 定义tcp队列长度</span><br><span class="line"># 在linux环境下，linux内核会自动将其值变更为/proc/sys/net/core/somaxconn的值，</span><br><span class="line"># 以确保可以通过提高somaxconn的值达到最终目的</span><br><span class="line">tcp-backlog 511</span><br><span class="line"></span><br><span class="line"># 设置unix socket文件（默认不产生socket文件）</span><br><span class="line"># unixsocket /tmp/redis.sock</span><br><span class="line"># unixsocketperm 700</span><br><span class="line"></span><br><span class="line"># 客户端连接超时时间</span><br><span class="line">timeout 0</span><br><span class="line"></span><br><span class="line"># tcp连接心跳检测（3.2.1之后，默认值为300s）</span><br><span class="line">tcp-keepalive 300</span><br><span class="line"></span><br><span class="line">################################# GENERAL #####################################</span><br><span class="line"></span><br><span class="line"># 是否开启后台运行模式（默认no）</span><br><span class="line"># 如果设置为后台模式，则会产生一个pid文件</span><br><span class="line">daemonize no</span><br><span class="line"></span><br><span class="line"># 如果使用其他控制程序(如upstart、systemd)控制redis服务启停，需要如下相关设置</span><br><span class="line">#   supervised no      - no supervision interaction</span><br><span class="line">#   supervised upstart - signal upstart by putting Redis into SIGSTOP mode</span><br><span class="line">#   supervised systemd - signal systemd by writing READY=1 to $NOTIFY_SOCKET</span><br><span class="line">#   supervised auto    - detect upstart or systemd method based on</span><br><span class="line">#                        UPSTART_JOB or NOTIFY_SOCKET environment variables</span><br><span class="line"># Note: these supervision methods only signal &quot;process is ready.&quot;</span><br><span class="line">#       They do not enable continuous liveness pings back to your supervisor.</span><br><span class="line">supervised no</span><br><span class="line"></span><br><span class="line"># 后台运行时产生的pid文件位置（如果没有指定，默认写入/var/run/redis.pid）</span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line"></span><br><span class="line"># 日志级别</span><br><span class="line"># debug (a lot of information, useful for development/testing)</span><br><span class="line"># verbose (many rarely useful info, but not a mess like the debug level)</span><br><span class="line"># notice (moderately verbose, what you want in production probably)</span><br><span class="line"># warning (only very important / critical messages are logged)</span><br><span class="line">loglevel notice</span><br><span class="line"></span><br><span class="line"># 日志文件位置</span><br><span class="line">logfile &quot;&quot;</span><br><span class="line"></span><br><span class="line"># 是否使用系统的syslog方式写日志</span><br><span class="line"># syslog-enabled no</span><br><span class="line"></span><br><span class="line"># Specify the syslog identity.</span><br><span class="line"># syslog-ident redis</span><br><span class="line"></span><br><span class="line"># Specify the syslog facility. Must be USER or between LOCAL0-LOCAL7.</span><br><span class="line"># syslog-facility local0</span><br><span class="line"></span><br><span class="line"># 设置数据库数量，每个库都有独立的命名空间</span><br><span class="line">databases 16</span><br><span class="line"></span><br><span class="line"># 交互模式下，是否显示redis logo信息</span><br><span class="line">always-show-logo yes</span><br><span class="line"></span><br><span class="line">################################ SNAPSHOTTING  ################################</span><br><span class="line"></span><br><span class="line"># 设置保存数据到rdb文件的频率：save &lt;seconds&gt; &lt;changes&gt;</span><br><span class="line"># 取消所有保存频率的设置：save &quot;&quot;</span><br><span class="line"># </span><br><span class="line"># 以下设置的含义：</span><br><span class="line"># 900秒后至少有1个key发生变更</span><br><span class="line"># 300秒后至少有10个key发生变更</span><br><span class="line"># 60秒后至少有10000个key发生变更</span><br><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br><span class="line"></span><br><span class="line"># 开启rdb写入时，如果后台持久化存储失败则停止客户端写操作</span><br><span class="line">stop-writes-on-bgsave-error yes</span><br><span class="line"></span><br><span class="line"># rdb文件压缩存储</span><br><span class="line">rdbcompression yes</span><br><span class="line"></span><br><span class="line"># rdb校验【增加可用性，但会增加存储或加载开销】</span><br><span class="line">rdbchecksum yes</span><br><span class="line"></span><br><span class="line"># rdb文件名</span><br><span class="line">dbfilename dump.rdb</span><br><span class="line"></span><br><span class="line"># 指定rdb和aof文件的存储目录</span><br><span class="line">dir ./</span><br><span class="line"></span><br><span class="line">################################# REPLICATION #################################</span><br><span class="line"></span><br><span class="line"># 主从复制从机设置</span><br><span class="line"># slaveof &lt;masterip&gt; &lt;masterport&gt;</span><br><span class="line"></span><br><span class="line"># 主机要求的验证密码（requirepass）</span><br><span class="line"># masterauth &lt;master-password&gt;</span><br><span class="line"></span><br><span class="line"># 主从复制中断时，从机的处理（默认yes）：</span><br><span class="line"># 设置为yes，则从机可以使用过期的数据为客户端提供服务</span><br><span class="line"># 设置为no，则从机会对除了INFO和SLAVEOF的其他命令返回错误信息：&quot;SYNC with master in progress&quot;</span><br><span class="line">slave-serve-stale-data yes</span><br><span class="line"></span><br><span class="line"># 从机只读设置</span><br><span class="line">slave-read-only yes</span><br><span class="line"></span><br><span class="line"># rdb文件传输方式（复制同步策略）：</span><br><span class="line"># 有盘方式：主开启写进程在本地写rdb文件，在rdb文件阶段性写完后，</span><br><span class="line">#   就可以和（多个）从机通信，然后由父进程传输文件到从机</span><br><span class="line"># 无盘方式（网络）：主开启写进程直接将rdb文件写入从机网络socket，</span><br><span class="line">#   当阶段性写操作完成后，主和另一个从机通信进行复制操作</span><br><span class="line">#</span><br><span class="line"># 无盘复制同步要点：</span><br><span class="line"># 1.无盘模式当前是实验性功能</span><br><span class="line"># 2.新建一个从机或从机重连时会执行一个全量同步</span><br><span class="line"># 3.使用无盘方式，会配置一个等待时间，以便所有从机可达以并行方式传输</span><br><span class="line"># 4.磁盘容量小或磁盘io小，同时网络带宽大的情况更适合使用无盘方式</span><br><span class="line">repl-diskless-sync no</span><br><span class="line"></span><br><span class="line"># 无盘方式工作时，复制开始前主机的等待时间（默认5s，0则不等待）</span><br><span class="line"># 一旦同步开始，新的从机并不会被主接纳，所以需要配置一个等待时间，确保所有从机已连上。</span><br><span class="line">repl-diskless-sync-delay 5</span><br><span class="line"></span><br><span class="line"># 从机检测主机可达的时间间隔</span><br><span class="line"># repl-ping-slave-period 10</span><br><span class="line"></span><br><span class="line"># 复制超时时间</span><br><span class="line"># 它包含：主机视角的ping响应超时、从机角度的ping和数据传输超时</span><br><span class="line"># 它必须比repl-ping-slave-period时间长</span><br><span class="line"># repl-timeout 60</span><br><span class="line"></span><br><span class="line"># 是否关闭tcp nodelay功能（默认no，不关闭延迟）</span><br><span class="line"># 设置为yes，会传输更小的数据包并使用更小的带宽，但延迟会增加（linux内核限制，最多40ms）</span><br><span class="line"># 设置为no，延迟会更低，但是需要更大的带宽</span><br><span class="line">repl-disable-tcp-nodelay no</span><br><span class="line"></span><br><span class="line"># 允许从机断开并重连时可以继续同步的缓冲区大小【避免全量同步】</span><br><span class="line"># repl-backlog-size 512mb</span><br><span class="line"></span><br><span class="line"># 超时则主释放同步缓冲区，0则永不释放</span><br><span class="line"># repl-backlog-ttl 3600</span><br><span class="line"></span><br><span class="line"># 从机提升为主机时的优先级（数越小优先级越高）</span><br><span class="line"># 主要是redis sentinel使用，当主出现异常时提升从机为主</span><br><span class="line">slave-priority 100</span><br><span class="line"></span><br><span class="line"># 当少于指定数量的从机或复制延迟大于某个阈值时，主停止写操作（设置为0则关闭此功能）</span><br><span class="line"># 范例：至少3个从机的延迟小于10，否则master停止写入操作</span><br><span class="line"># min-slaves-to-write 3</span><br><span class="line"># min-slaves-max-lag 10</span><br><span class="line"></span><br><span class="line"># 主从复制时，主查看从机ip的方式：INFO replication 和 ROLE</span><br><span class="line"># 在端口转发和nat网络情况下，上述命令获取的信息会有误</span><br><span class="line"># 通过在从机声明如下变量，可以告诉主机自己真实的ip和port【可选设置】</span><br><span class="line"># slave-announce-ip 5.5.5.5</span><br><span class="line"># slave-announce-port 1234</span><br><span class="line"></span><br><span class="line">################################## SECURITY ###################################</span><br><span class="line"></span><br><span class="line"># 客户端认证密码（也是主从复制的密码），由于redis没有防爆破的手段，所以需要设置一个强密码</span><br><span class="line"># requirepass foobared</span><br><span class="line"></span><br><span class="line"># 重命名命令：</span><br><span class="line"># rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</span><br><span class="line"># 也可通过空字符串“删除”命令</span><br><span class="line"># rename-command CONFIG &quot;&quot;</span><br><span class="line"># 【注意】重命名命令在写入aof或传输到从机时会出问题</span><br><span class="line"></span><br><span class="line">################################### CLIENTS ####################################</span><br><span class="line"></span><br><span class="line"># 客户端最大连接数</span><br><span class="line"># 如果redis不能设置最大文件描述符数量，</span><br><span class="line">#   则maxclients被设置为当前最大文件描述符数量减32（redis保留部分描述符供内部使用）</span><br><span class="line"># maxclients 10000</span><br><span class="line"></span><br><span class="line">############################## MEMORY MANAGEMENT ################################</span><br><span class="line"></span><br><span class="line"># 最大可用内存（超过后根据驱逐策略删除key）</span><br><span class="line"># 1. 超过此阈值，如果驱逐策略为noeviction，则对于写命令则返回错误，读命令则正常返回</span><br><span class="line"># 2. 作为LRU或LFU缓存，或使用noeviction驱逐策略时，都应该设置硬限制</span><br><span class="line"># 3. 不包含主从复制的输出缓冲区大小（repl-backlog-size）</span><br><span class="line"># maxmemory &lt;bytes&gt;</span><br><span class="line"></span><br><span class="line"># 内存使用达到限制时的key删除策略（默认noeviction）：</span><br><span class="line"># volatile-lru -&gt; 使用LRU策略驱逐具有过期设置的key</span><br><span class="line"># allkeys-lru -&gt; 使用LRU策略驱逐任意的key</span><br><span class="line"># volatile-lfu -&gt; 使用LFU策略驱逐具有过期设置的key</span><br><span class="line"># allkeys-lfu -&gt; 使用LFU策略驱逐任意的key</span><br><span class="line"># volatile-random -&gt; 从具有过期设置的key中随机删除一个</span><br><span class="line"># allkeys-random -&gt; 从所有key中随机删除一个</span><br><span class="line"># volatile-ttl -&gt; 删除最接近过期的key</span><br><span class="line"># noeviction -&gt; 不驱逐任何key，向写操作返回错误</span><br><span class="line">#</span><br><span class="line"># LRU：Least Recently Used【最近最少使用】</span><br><span class="line"># LFU：Least Frequently Used【经常最少使用】</span><br><span class="line"># LRU, LFU 和 volatile-ttl都使用了近似的随机算法</span><br><span class="line">#</span><br><span class="line"># 即使使用上述策略，如果没有合适的key被删除，依然会对写操作返回错误，包含的写操作如下：</span><br><span class="line"># set setnx setex append</span><br><span class="line"># incr decr rpush lpush rpushx lpushx linsert lset rpoplpush sadd</span><br><span class="line"># sinter sinterstore sunion sunionstore sdiff sdiffstore zadd zincrby</span><br><span class="line"># zunionstore zinterstore hset hsetnx hmset hincrby incrby decrby</span><br><span class="line"># getset mset msetnx exec sort</span><br><span class="line">#</span><br><span class="line"># maxmemory-policy noeviction</span><br><span class="line"></span><br><span class="line"># 启动内存回收时，单次取样数量：</span><br><span class="line"># 3个速度最快，但是策略执行不精确；5个足够；10个最精确，但是更消耗cpu</span><br><span class="line"># maxmemory-samples 5</span><br><span class="line"></span><br><span class="line">############################# LAZY FREEING ####################################</span><br><span class="line"></span><br><span class="line"># 非阻塞式释放内存</span><br><span class="line">#</span><br><span class="line"># redis有两种删除key的模式：</span><br><span class="line"># 1.阻塞式：del命令是一种阻塞式删除，即在进行删除操作的同时停止处理新命令，阻塞时间的长短根据删除对象的大小而定</span><br><span class="line"># 2.非阻塞式：redis（4.0.0之上版本）也提供非阻塞式删除命令，比如unlink（非阻塞del）、flushdb|flushall的async选项</span><br><span class="line"># 这些命令会在限定时间内执行完，但是会在后台开启一个新线程持续释放内存空间</span><br><span class="line">#</span><br><span class="line"># 情景设置：</span><br><span class="line"># 一、在下列情景中，redis默认会以阻塞方式删除key或清空库：</span><br><span class="line"># 1.根据最大内存和驱逐策略删除key</span><br><span class="line"># 2.由于key的过期设置（EXPIRE）</span><br><span class="line"># 3.对一个已存在的key进行操作，如RENAME</span><br><span class="line"># 4.在复制操作时，从机执行全量复制时，会清空从机rdb</span><br><span class="line"># </span><br><span class="line"># 二、可以单独设置以上情况以非阻塞方式释放内存，具体命令如下：</span><br><span class="line">lazyfree-lazy-eviction no</span><br><span class="line">lazyfree-lazy-expire no</span><br><span class="line">lazyfree-lazy-server-del no</span><br><span class="line">slave-lazy-flush no</span><br><span class="line"></span><br><span class="line">############################## APPEND ONLY MODE ###############################</span><br><span class="line"></span><br><span class="line"># 是否开启预写日志模式（aof和rdb可以同时开启）</span><br><span class="line"># 默认情况下，redis异步导出数据到磁盘（基于rdb的不同刷新策略（save）可能会有部分数据丢失）</span><br><span class="line"># 当aof开启时，redis启动时会将加载aof文件</span><br><span class="line">appendonly no</span><br><span class="line"></span><br><span class="line"># aof文件名</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;</span><br><span class="line"></span><br><span class="line"># fsync为数据写入磁盘的策略</span><br><span class="line"># no: 让操作系统处理什么时候刷新数据到磁盘，此时速度最快</span><br><span class="line"># always: 每次都等待数据写入aof文件，速度最慢，安全性最好</span><br><span class="line"># everysec: 每秒刷新数据到磁盘，折中选择【默认选项】</span><br><span class="line">appendfsync everysec</span><br><span class="line"></span><br><span class="line"># 在后台执行BGSAVE或BGREWRITEAOF命令时，是否阻止主进程进行磁盘刷新操作</span><br><span class="line"># 这个选项是为了减轻磁盘写压力，但会造成数据丢失【默认不开启】</span><br><span class="line">no-appendfsync-on-rewrite no</span><br><span class="line"></span><br><span class="line"># 自动重写aof文件时，增长的大小所占的百分比</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line"># 自动重写aof文件时，最小增加的文件大小</span><br><span class="line">auto-aof-rewrite-min-size 64mb</span><br><span class="line"></span><br><span class="line"># 是否允许加载不完整（被截断）的aof文件（如果设置为no，必须使用redis-check-aof修复aof文件）</span><br><span class="line">aof-load-truncated yes</span><br><span class="line"></span><br><span class="line"># 使用aof和rdb混合方式持久化数据【可以更快的执行重写和恢复操作，默认关闭】</span><br><span class="line">aof-use-rdb-preamble no</span><br><span class="line"></span><br><span class="line">################################ LUA SCRIPTING  ###############################</span><br><span class="line"></span><br><span class="line"># lua脚本执行超时时间（毫秒，0或负值则不限制时间）</span><br><span class="line"># 超过时间，redis会记录脚本依然在执行，并对查询信息返回错误</span><br><span class="line"># 【SCRIPT KILL】命令会停止一个不含写操作的脚本</span><br><span class="line"># 【SHUTDOWN NOSAVE】可以停止包含写操作的脚本</span><br><span class="line">lua-time-limit 5000</span><br><span class="line"></span><br><span class="line">################################ REDIS CLUSTER  ###############################</span><br><span class="line"></span><br><span class="line"># 是否开启redis集群功能</span><br><span class="line"># redis单实例模式和集群模式不能相互转换，只能在一开始就确定使用的方式</span><br><span class="line"># cluster-enabled yes</span><br><span class="line"></span><br><span class="line"># 集群节点的配置文件（集群自动创建和更新，一般不需要手动编辑）每个节点都有一个配置文件</span><br><span class="line"># cluster-config-file nodes-6379.conf</span><br><span class="line"></span><br><span class="line"># 节点断开超时时间（毫秒，其他内部限制时间都是这个值的倍数）</span><br><span class="line"># 超过这个时间，节点被认为是失败状态</span><br><span class="line"># cluster-node-timeout 15000</span><br><span class="line"></span><br><span class="line"># 定义从机选举为主的因子（避免数据太旧的从机执行故障切换）</span><br><span class="line"># </span><br><span class="line"># 数据新旧情况判断：</span><br><span class="line"># 1.当有多个从机时：会根据他们从主上接收数据的多少（offset）选择谁执行故障切换</span><br><span class="line"># 2.单个从机角度计算：则根据距离上次接收ping响应、接收命令的时间（连接状态下）或与主断开的时间</span><br><span class="line"># </span><br><span class="line"># 第2点可以由用户控制，超过【(node-timeout * slave-validity-factor) + repl-ping-slave-period】</span><br><span class="line"># 的从机不能提升为主；其中slave-validity-factor是从机选举为主的因子：</span><br><span class="line"># 1）定义为n，则超过（n*timeout+ping）后选举为主，此段时间内，集群不可用除非原来的主恢复</span><br><span class="line"># 2）如果：非常大的值允许有非常旧数据的从机执行故障切换，值太小则无法在众多从机中选出提升为主的从机</span><br><span class="line"># 3）默认为0，超时即选为主；此设置保证了最大可用性，允许从机立即提升为主，但是依然会根据从主机接收数据的多少选择提升为主的从机</span><br><span class="line">#</span><br><span class="line"># cluster-slave-validity-factor 10</span><br><span class="line"></span><br><span class="line"># 主机在有如下数量的从机时，其他从机可以自动迁移到孤立的主机（没有从机的主机）</span><br><span class="line"># cluster-migration-barrier 1</span><br><span class="line"></span><br><span class="line"># 是否要求所有数据槽都可用时集群才可用</span><br><span class="line"># 设置为no时，允许集群数据不完整时依然可以提供查询服务</span><br><span class="line"># cluster-require-full-coverage yes</span><br><span class="line"></span><br><span class="line"># 主故障时，禁止从机执行故障切换（此时会手动处理主机故障切换操作）</span><br><span class="line"># 在有多个数据中心时非常有用，此时会期望只有这个数据中心的节点全部出现故障时才执行切换</span><br><span class="line"># cluster-slave-no-failover no</span><br><span class="line"></span><br><span class="line">########################## CLUSTER DOCKER/NAT support  ########################</span><br><span class="line"></span><br><span class="line"># 当遇到nat网络或端口转发时【如docker等容器环境】集群节点地址发现会失败，所以</span><br><span class="line"># 每个集群节点都需要知道一个公共地址，即如下配置：</span><br><span class="line"># * cluster-announce-ip</span><br><span class="line"># * cluster-announce-port</span><br><span class="line"># * cluster-announce-bus-port</span><br><span class="line">#</span><br><span class="line"># Example:</span><br><span class="line">#</span><br><span class="line"># cluster-announce-ip 10.1.1.5</span><br><span class="line"># cluster-announce-port 6379</span><br><span class="line"># cluster-announce-bus-port 6380</span><br><span class="line"></span><br><span class="line">################################## SLOW LOG ###################################</span><br><span class="line"></span><br><span class="line"># 慢日志在内存中记录超过一定执行时间的命令：</span><br><span class="line"># 不包含io操作，比如：和客户端通信、发送响应</span><br><span class="line"># 仅包含：命令的实际执行时间，此时线程被阻塞不能服务于其他请求</span><br><span class="line"></span><br><span class="line"># 执行时间阈值（微秒，负值则关闭slowlog功能，0则记录每一个命令）</span><br><span class="line">slowlog-log-slower-than 10000</span><br><span class="line"></span><br><span class="line"># 保存多少条慢日志，超过则删除最旧的记录（【SLOWLOG RESET】强制回收内存）</span><br><span class="line">slowlog-max-len 128</span><br><span class="line"></span><br><span class="line">################################ LATENCY MONITOR ##############################</span><br><span class="line"></span><br><span class="line"># 超过阈值的延迟因素会被记录（毫秒；默认为0，关闭功能 ）</span><br><span class="line">latency-monitor-threshold 0</span><br><span class="line"></span><br><span class="line">############################# EVENT NOTIFICATION ##############################</span><br><span class="line"></span><br><span class="line"># redis可以通知发布/订阅的客户端发生在键空间的事件，</span><br><span class="line"># 相关文档：http://redis.io/topics/notifications</span><br><span class="line">#</span><br><span class="line"># redis通过单字符定义要通知的事件：</span><br><span class="line">#  K     Keyspace events, published with __keyspace@&lt;db&gt;__ prefix.</span><br><span class="line">#  E     Keyevent events, published with __keyevent@&lt;db&gt;__ prefix.</span><br><span class="line">#  g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...</span><br><span class="line">#  $     String commands</span><br><span class="line">#  l     List commands</span><br><span class="line">#  s     Set commands</span><br><span class="line">#  h     Hash commands</span><br><span class="line">#  z     Sorted set commands</span><br><span class="line">#  x     Expired events (events generated every time a key expires)</span><br><span class="line">#  e     Evicted events (events generated when a key is evicted for maxmemory)</span><br><span class="line">#  A     Alias for g$lshzxe, so that the &quot;AKE&quot; string means all the events.</span><br><span class="line"># </span><br><span class="line"># notify-keyspace-events使用0或多个字符构成的字符串串作为参数：</span><br><span class="line"># 1. 0个字符串表示关闭事件通知功能（默认）</span><br><span class="line"># 2. 至少需要指定K或E，否则会没有事件通知</span><br><span class="line">#</span><br><span class="line"># 范例1：开启列表和通用事件，从事件名称的角度，使用如下</span><br><span class="line">#  notify-keyspace-events Elg</span><br><span class="line">#</span><br><span class="line"># 范例2：获取提交给频道&lt;__keyevent@0__:expired&gt;的过期key流</span><br><span class="line">#  notify-keyspace-events Ex</span><br><span class="line">notify-keyspace-events &quot;&quot;</span><br><span class="line"></span><br><span class="line">############################### ADVANCED CONFIG ###############################</span><br><span class="line"></span><br><span class="line"># ziplist是一个解决空间紧凑的数据存储结构，但是当数据超过此阈值时，将采用原生的数据存储结构</span><br><span class="line"># </span><br><span class="line"># 数据类型为hash，设置使用ziplist的条目数量、最大条目值的阈值</span><br><span class="line">hash-max-ziplist-entries 512</span><br><span class="line">hash-max-ziplist-value 64</span><br><span class="line"></span><br><span class="line"># 数据类型是list，设定使用ziplist的阈值</span><br><span class="line"># 定义为正值时，表示单个列表最大元素数量</span><br><span class="line"># 定义为负值时（-5到-1）表示单个列表的最大存储空间</span><br><span class="line"># -5: max size: 64 Kb  &lt;-- not recommended for normal workloads</span><br><span class="line"># -4: max size: 32 Kb  &lt;-- not recommended</span><br><span class="line"># -3: max size: 16 Kb  &lt;-- probably not recommended</span><br><span class="line"># -2: max size: 8 Kb   &lt;-- good</span><br><span class="line"># -1: max size: 4 Kb   &lt;-- good</span><br><span class="line">list-max-ziplist-size -2</span><br><span class="line"></span><br><span class="line"># 数据类型是list，也可以被压缩存储</span><br><span class="line"># 压缩深度定义如下</span><br><span class="line"># 0：关闭列表所有节点的压缩</span><br><span class="line"># 1：列表的首尾节点不压缩，其他节点都压缩</span><br><span class="line"># 2：列表的首及相邻节点、尾及相邻节点不压缩，其他节点都压缩</span><br><span class="line"># n：以此类推，首尾的n个节点不压缩，中间节点压缩</span><br><span class="line">list-compress-depth 0</span><br><span class="line"></span><br><span class="line"># 数据类型为set，且仅由基数为10的整数（64为有符号整数）组成的字符串</span><br><span class="line"># 当set类型的大小小于阈值时，可以使用这种节省内存的编码</span><br><span class="line">set-max-intset-entries 512</span><br><span class="line"></span><br><span class="line"># 数据类型sorted sets（zset），设定使用ziplist的阈值</span><br><span class="line">zset-max-ziplist-entries 128</span><br><span class="line">zset-max-ziplist-value 64</span><br><span class="line"></span><br><span class="line"># HyperLogLog的稀疏表示限制（建议值是3000，取值范围是0到15000）</span><br><span class="line"># 1. 大于这个阈值，数据使用稠密数据结构；</span><br><span class="line"># 2. 小于此值，数据使用稀疏数据结构。</span><br><span class="line"># 3. 大于16000的值是无意义的，因为此时稠密表示法更能有效使用内存</span><br><span class="line">hll-sparse-max-bytes 3000</span><br><span class="line"></span><br><span class="line"># 是否开启对主字典的二次哈希（hash会释放内存，但因为使用cpu会造成微量延迟）</span><br><span class="line">activerehashing yes</span><br><span class="line"></span><br><span class="line"># 客户端输出缓冲区限制，如果客户端读取数据的速度不够快，则强制断开</span><br><span class="line"># 参数0不限制；一般的客户端（normal）不限制，因为他们使用应答模式返回数据</span><br><span class="line"># </span><br><span class="line"># 语法：</span><br><span class="line"># client-output-buffer-limit &lt;class&gt; &lt;hard limit&gt; &lt;soft limit&gt; &lt;soft seconds&gt;</span><br><span class="line">#</span><br><span class="line"># redis：定义了3种不同类型的客户端</span><br><span class="line"># normal -&gt; normal clients including MONITOR clients</span><br><span class="line"># slave  -&gt; slave clients</span><br><span class="line"># pubsub -&gt; clients subscribed to at least one pubsub channel or pattern</span><br><span class="line"># </span><br><span class="line"># 如果客户端使用达到硬限制或软限制（同时达到字节大小和持续时间）则断开客户端</span><br><span class="line">client-output-buffer-limit normal 0 0 0</span><br><span class="line">client-output-buffer-limit slave 256mb 64mb 60</span><br><span class="line">client-output-buffer-limit pubsub 32mb 8mb 60</span><br><span class="line"></span><br><span class="line"># 客户端查询缓冲区限制（如果有特殊需求可以设置）</span><br><span class="line"># client-query-buffer-limit 1gb</span><br><span class="line"></span><br><span class="line"># 使用redis协议时，单个大数据量请求的字符串长度限制（默认512mb）</span><br><span class="line"># proto-max-bulk-len 512mb</span><br><span class="line"></span><br><span class="line"># redis调用内部函数执行后台任务（如：超时关闭客户端，删除过期的key）的频率：</span><br><span class="line"># 1. 增大数值可以更精确的处理各类超时、删除过期key等问题，但是会消耗更多的cpu、也会增加redis的延迟</span><br><span class="line"># 2. 取值范围1到500，但是不建议使用超过100的值</span><br><span class="line">hz 10</span><br><span class="line"></span><br><span class="line"># 当aof文件重写时，每产生32MB数据就会执行一次刷新磁盘操作</span><br><span class="line"># 以这种渐进的方式进行重写操作可以降低磁盘写压力（从而降低常规写aof的延迟）</span><br><span class="line">aof-rewrite-incremental-fsync yes</span><br><span class="line"></span><br><span class="line"># 【LFU算法调节】</span><br><span class="line"># 可调节参数：计数器对数因子（lfu-log-factor）和计数器衰减时间（lfu-decay-time）</span><br><span class="line">#</span><br><span class="line"># 【计数器对数因子-原理】</span><br><span class="line"># 针对每个key，LFU计数器只有8位，最大值是255；</span><br><span class="line"># 给旧的计数器一个值，当key被访问时，计数器以下面方式增长</span><br><span class="line"># 1.产生一个0~1之间的随机数R</span><br><span class="line"># 2.计算一个概率值P：1/(old_value*lfu_log_factor+1)</span><br><span class="line"># 3.只有当概率值P大于随机数R时，计数器才递增</span><br><span class="line">#</span><br><span class="line"># 下边是不同对数因子在不同访问次数下的频率计数器变化</span><br><span class="line"># （计数器的初试值为5，以便计算对象的累积命中率；测试命令如下）：</span><br><span class="line"># 1. redis-benchmark -n 1000000 incr foo</span><br><span class="line"># 2. redis-cli object freq foo</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line"># | factor | 100 hits   | 1000 hits  | 100K hits  | 1M hits    | 10M hits   |</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line"># | 0      | 104        | 255        | 255        | 255        | 255        |</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line"># | 1      | 18         | 49         | 255        | 255        | 255        |</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line"># | 10     | 10         | 18         | 142        | 255        | 255        |</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line"># | 100    | 8          | 11         | 49         | 143        | 255        |</span><br><span class="line"># +--------+------------+------------+------------+------------+------------+</span><br><span class="line">#</span><br><span class="line"># 【计数器衰减时间-原理】</span><br><span class="line"># 必须是经过的时间，以便将key计数器除以2或直接递减（小于等于10时） </span><br><span class="line">#</span><br><span class="line"># 【计数器对数因子-设置】（0-255）（因子越高，为了达到最大值，需要更多的访问）</span><br><span class="line"># 如下表示：每100万个请求使计数器饱和</span><br><span class="line"># lfu-log-factor 10</span><br><span class="line">#</span><br><span class="line"># 【LFU衰减时间周期-设置】（分钟），默认1分钟；</span><br><span class="line"># 如下表示：每分钟使计数器衰减一次</span><br><span class="line"># lfu-decay-time 1</span><br><span class="line"></span><br><span class="line">########################### ACTIVE DEFRAGMENTATION #######################</span><br><span class="line"></span><br><span class="line"># 开启实时内存碎片整理功能</span><br><span class="line"># activedefrag yes</span><br><span class="line"></span><br><span class="line"># 内存碎片化达到多少字节后开启整理</span><br><span class="line"># active-defrag-ignore-bytes 100mb</span><br><span class="line"></span><br><span class="line"># 内存碎片化达到多大比率时开启整理</span><br><span class="line"># active-defrag-threshold-lower 10</span><br><span class="line"></span><br><span class="line"># 碎片整理的最大百分比</span><br><span class="line"># active-defrag-threshold-upper 100</span><br><span class="line"></span><br><span class="line"># 碎片整理占用的最小cpu使用率</span><br><span class="line"># active-defrag-cycle-min 25</span><br><span class="line"></span><br><span class="line"># 碎片整理占用的最大cpu使用率</span><br><span class="line"># active-defrag-cycle-max 75</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis-conf/" rel="tag"># redis.conf</a>
+          
+            <a href="/tags/慢日志/" rel="tag"># 慢日志</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/" rel="next" title="pgsql-pgpool使用">
+                <i class="fa fa-chevron-left"></i> pgsql-pgpool使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/22/web服务管理/缓存与nosql/redis客户端redis-cli/" rel="prev" title="redis客户端redis-cli">
+                redis客户端redis-cli <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务端配置方法"><span class="nav-number">1.</span> <span class="nav-text">服务端配置方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#专项配置"><span class="nav-number">2.</span> <span class="nav-text">专项配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#慢日志"><span class="nav-number">2.1.</span> <span class="nav-text">慢日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式"><span class="nav-number">2.1.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置参数"><span class="nav-number">2.1.2.</span> <span class="nav-text">配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制命令"><span class="nav-number">2.1.3.</span> <span class="nav-text">控制命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件redis-conf"><span class="nav-number">3.</span> <span class="nav-text">配置文件redis.conf</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

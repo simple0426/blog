@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="集群,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="集群介绍 redis3.0之后提供集群模式 集群功能 自动将数据拆分到多个节点 在一部分节点不可用时，依然可以进行数据操作   集群端口 服务端口(client port，如6379)：集群的其他节点(key迁移)、客户端都可以访问到 集群总线端口(client port+10000)：用于集群节点间的通信，如：失败检测、配置更新、故障切换授权等   集群与docker 当前redis集群不支持n">
+<meta name="keywords" content="集群">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis集群">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/26/web服务管理/缓存与nosql/redis集群/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="集群介绍 redis3.0之后提供集群模式 集群功能 自动将数据拆分到多个节点 在一部分节点不可用时，依然可以进行数据操作   集群端口 服务端口(client port，如6379)：集群的其他节点(key迁移)、客户端都可以访问到 集群总线端口(client port+10000)：用于集群节点间的通信，如：失败检测、配置更新、故障切换授权等   集群与docker 当前redis集群不支持n">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.416Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis集群">
+<meta name="twitter:description" content="集群介绍 redis3.0之后提供集群模式 集群功能 自动将数据拆分到多个节点 在一部分节点不可用时，依然可以进行数据操作   集群端口 服务端口(client port，如6379)：集群的其他节点(key迁移)、客户端都可以访问到 集群总线端口(client port+10000)：用于集群节点间的通信，如：失败检测、配置更新、故障切换授权等   集群与docker 当前redis集群不支持n">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/26/web服务管理/缓存与nosql/redis集群/">
+
+
+
+
+
+  <title>redis集群 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/26/web服务管理/缓存与nosql/redis集群/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis集群</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-26T00:48:05+08:00">
+                2019-10-26
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="集群介绍"><a href="#集群介绍" class="headerlink" title="集群介绍"></a><a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">集群介绍</a></h1><ul>
+<li>redis3.0之后提供集群模式</li>
+<li>集群功能<ul>
+<li>自动将数据拆分到多个节点</li>
+<li>在一部分节点不可用时，依然可以进行数据操作</li>
+</ul>
+</li>
+<li>集群端口<ul>
+<li>服务端口(client port，如6379)：集群的其他节点(key迁移)、客户端都可以访问到</li>
+<li>集群总线端口(client port+10000)：用于集群节点间的通信，如：失败检测、配置更新、故障切换授权等</li>
+</ul>
+</li>
+<li>集群与docker<ul>
+<li>当前redis集群不支持nat网络环境和ip、port都重新映射的通用环境</li>
+<li>为了使docker兼容redis集群，docker应当使用host网络模式（–net=host）</li>
+</ul>
+</li>
+<li>数据分片：<ul>
+<li>集群共有16384个hash槽，分布在集群的所有节点上</li>
+<li>每个key在逻辑上都是hash槽的一部分</li>
+<li>在给定一个key时，通过对key的CRC16相对于16384取模来确定key要存储的hash槽</li>
+<li>只需来回迁移hash槽到不同节点，就可以在线添加或删除节点</li>
+<li>集群支持在一个命令（整个事务、lua脚本执行）执行多键操作，只需要所有的键都在同一个hash槽中</li>
+<li>用户可以使用hash标签将多个键存储在同一个hash槽中</li>
+</ul>
+</li>
+<li>支持主从复制功能</li>
+<li>数据一致性保证<ul>
+<li>redis集群不保证强的数据一致性：比如在数据刷新到磁盘前宕机、数据复制到从机前宕机等都会丢失部分数据</li>
+<li>可以通过如下措施增加一致性<ul>
+<li>变更数据刷新策略（fsync），即数据写入磁盘后才向客户端返回确认信息，但这回造成性能损失</li>
+<li>使用WAIT命令后，启用同步复制功能</li>
+</ul>
+</li>
+<li>网络隔离也会造成数据丢失<ul>
+<li>产生网络隔离后，客户端Z1和至少一个主节点B位于其中一个网络，其他节点（A、A1、B1、C、C1）位于另一个网络</li>
+<li>在节点超时前(cluster-node-timeout)，Z1依然可以向B发送写操作；</li>
+<li>节点超时后，不能和其他主节点通信的主节点(B)会被认为是失败节点，不再接收写操作，集群也会将失败节点的从节点(B1)提升为主节点</li>
+<li>由于B在不能和从节点通信时依然接收写操作，当从节点B1提升为主节点时会丢失部分数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>集群配置参数<ul>
+<li>cluster-enabled：是否开启集群模式，集群模式和独立模式不能互相切换</li>
+<li>cluster-config-file：集群状态文件，用户不可编辑</li>
+<li>cluster-node-timeout：集群超时时间，超时则失败主停止写，从机执行故障切换</li>
+<li>cluster-slave-validity-factor：【超时时间*衡量因子】之后从机执行故障切换，为了高可用，可以设置为0【从机一直尝试接管主机】</li>
+<li>cluster-migration-barrier：主机应当保留的从机个数，超过的从机可以迁移到孤立主机上</li>
+<li>cluster-require-full-coverage：数据不全时是否对外提供查询服务</li>
+</ul>
+</li>
+</ul>
+<h1 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h1><h2 id="内置脚本方式"><a href="#内置脚本方式" class="headerlink" title="内置脚本方式"></a>内置脚本方式</h2><p>utils/create-cluster/create-cluster start/create/stop</p>
+<h2 id="手动创建方式"><a href="#手动创建方式" class="headerlink" title="手动创建方式"></a>手动创建方式</h2><ul>
+<li>创建并启动多个redis实例(包含集群参数)</li>
+<li>创建集群<ul>
+<li>版本5之后已在redis-cli命令中内置集群功能，可以实现：创建集群、集群分片检查和重新分片等功能<ul>
+<li>范例：redis-cli –cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 –cluster-replicas 1</li>
+<li>解释：使用create创建集群，并保证每个主一个从节点</li>
+</ul>
+</li>
+<li>版本4和3需要使用ruby工具：redis-trib.rb<ul>
+<li>安装 redis gem：<ul>
+<li>apt-get install rubygems</li>
+<li>gem install redis</li>
+</ul>
+</li>
+<li>使用ruby工具创建集群<ul>
+<li>./redis-trib.rb create –replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="手动创建范例"><a href="#手动创建范例" class="headerlink" title="手动创建范例"></a>手动创建范例</h2><ul>
+<li>解压redis源码，并将src目录绝对路径添加到PATH变量中</li>
+<li>安装redis gem</li>
+<li>执行创建脚本creat.sh</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># create.sh</span><br><span class="line">result=&quot;redis-trib.rb create --replicas 1 &quot;</span><br><span class="line">for port in `seq 7000 7005`</span><br><span class="line">do</span><br><span class="line">        mkdir $&#123;HOME&#125;/$&#123;port&#125;</span><br><span class="line">        cp redis.conf $&#123;HOME&#125;/$&#123;port&#125;/$&#123;port&#125;.conf</span><br><span class="line">        sed -i &apos;s/7000/&apos;$port&apos;/g&apos; $&#123;HOME&#125;/$&#123;port&#125;/$&#123;port&#125;.conf</span><br><span class="line">        sed -i &apos;s%/home/redis%&apos;$&#123;HOME&#125;&apos;%g&apos; $&#123;HOME&#125;/$&#123;port&#125;/$&#123;port&#125;.conf</span><br><span class="line">        echo $port</span><br><span class="line">        redis-server $&#123;HOME&#125;/$&#123;port&#125;/$&#123;port&#125;.conf</span><br><span class="line">        ip_port=&quot;127.0.0.1:&quot;$port</span><br><span class="line">        result=$&#123;result&#125;\ $&#123;ip_port&#125;</span><br><span class="line">done</span><br><span class="line">echo &quot;yes&quot; |$result</span><br><span class="line"></span><br><span class="line"># stop.sh</span><br><span class="line">for port in `seq 7000 7005`</span><br><span class="line">do</span><br><span class="line">    cat $&#123;HOME&#125;/$&#123;port&#125;/$&#123;port&#125;.pid  |xargs -i kill &#123;&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h1 id="客户端支持"><a href="#客户端支持" class="headerlink" title="客户端支持"></a>客户端支持</h1><ul>
+<li>程序语言支持：<a href="https://redis.io/topics/cluster-tutorial#playing-with-the-cluster" target="_blank" rel="noopener">https://redis.io/topics/cluster-tutorial#playing-with-the-cluster</a></li>
+<li>redis-cli支持(-c参数)：例如：redis-cli -c -p 7000</li>
+</ul>
+<h1 id="集群管理"><a href="#集群管理" class="headerlink" title="集群管理"></a>集群管理</h1><ul>
+<li>hash槽迁移：<ul>
+<li>命令行(redis-trib)：redis-trib.rb reshard –from source_id –to dest_id –slots slot_num –yes ip:port</li>
+<li>参数解释<ul>
+<li>连接的节点ip和端口需要放在最后</li>
+<li>源和目标节点id可以从【cluster nodes】中获取，源节点可以有多个(逗号分隔，all表示其他所有节点)</li>
+<li>–from/–to：迁移的源和目标节点</li>
+<li>–slots：迁移的槽数量</li>
+<li>–yes：免交互确认</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>手动故障切换(主从状态切换)：cluster failover（在从节点执行）</li>
+<li>添加主节点：<ul>
+<li>命令行方式：redis-trib  add-node  new_host:new_port existing_host:existing_port</li>
+<li>交互式命令行：cluster meet ip port </li>
+</ul>
+</li>
+<li>添加从节点：<ul>
+<li>命令行方式：redis-trib  add-node –slave –master-id new_host:new_port existing_host:existing_port【不指定master-id时，默认将其随机添加到具有最少从节点的主节点】</li>
+<li>交互式命令行：cluster replicate master-id<ul>
+<li>此种模式首先添加一个没有数据的空节点，然后连接到此节点后使用上述复制命令将其添加为从节点</li>
+<li>此命令也可以用于改变从机的主节点</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>删除节点：<ul>
+<li>删除方式：<ul>
+<li>命令行：redis-trib del-node host:port node_id</li>
+<li>交互式命令行：cluster forget node_id</li>
+</ul>
+</li>
+<li>主从处理：<ul>
+<li>从节点可以直接删除</li>
+<li>主节点没有数据时才可以删除</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="可用性预处理"><a href="#可用性预处理" class="headerlink" title="可用性预处理"></a>可用性预处理</h1><p>为了提高系统可用性，事先在每个实体机上预留1~2个多余的从节点作为备份，当某个主节点或从节点挂掉时，多余的从节点可以自动的迁移(cluster-migration-barrier)过来以达到集群所有主节点至少有一个从节点。</p>
+<h2 id="少数主或从节点故障"><a href="#少数主或从节点故障" class="headerlink" title="少数主或从节点故障"></a>少数主或从节点故障</h2><ul>
+<li>预处理：配置备份飘逸参数cluster-migration-barrier</li>
+<li>主节点故障：客户端写操作会报错；不会形成备份飘逸；8、9秒后，从节点提升为主，客户端可以进行写操作。</li>
+<li>从节点故障：客户端无影响；会形成备份飘逸</li>
+</ul>
+<h2 id="少数主和它的从节点同时挂掉"><a href="#少数主和它的从节点同时挂掉" class="headerlink" title="少数主和它的从节点同时挂掉"></a>少数主和它的从节点同时挂掉</h2><ul>
+<li>预处理：配置cluster-require-full-coverage为no，集群出故障时可读不可写</li>
+</ul>
+<h2 id="多数主节点同时宕机"><a href="#多数主节点同时宕机" class="headerlink" title="多数主节点同时宕机"></a>多数主节点同时宕机</h2><p>集群处于不可用状态</p>
+<h1 id="数据迁移"><a href="#数据迁移" class="headerlink" title="数据迁移"></a>数据迁移</h1><ul>
+<li>redis支持迁移到集群的情况<ul>
+<li>没有使用多键操作、事务、包含多键的lua脚本</li>
+<li>使用hash标签的多键、事务、包含多键的lua脚本</li>
+</ul>
+</li>
+<li>手动迁移步骤<ul>
+<li>停止客户端连接。当前版本不能进行在线迁移</li>
+<li>产生aof文件【BGREWRITEAOF】</li>
+<li>拷贝aof文件到其他位置，停止旧实例</li>
+<li>创建包含N个主和0个从的集群【从机稍后添加，并确保使用aof做持久化化】</li>
+<li>停止所有集群节点，将迁移前产生的aof文件替换到集群中</li>
+<li>重启集群</li>
+<li>使用redis-trib fix让键值对自动迁移</li>
+<li>使用redis-trib check查看迁移结果</li>
+<li>重启客户端，连接到集群任意节点</li>
+<li>向当前集群添加从节点</li>
+</ul>
+</li>
+<li>5.0版本内置迁移命令：redis-cli –cluster import<ul>
+<li>支持将一个运行中的实例数据迁移到一个预先搭建好的集群中（同时会删除源实例中的数据）</li>
+<li>当2.8版本作为源实例时，由于没有实现迁移连接缓存，迁移过程会很慢，解决方案是使用3.x版本实例加载源数据</li>
+</ul>
+</li>
+</ul>
+<h1 id="故障处理"><a href="#故障处理" class="headerlink" title="故障处理"></a>故障处理</h1><ul>
+<li>交互式迁移报错<ul>
+<li>报错：[ERR] Calling MIGRATE: ERR Syntax error, try CLIENT (LIST | KILL | GETNAME | SETNAME | PAUSE | REPLY)</li>
+<li>原因：官方bug</li>
+<li>解决：安装低版本gem redis：gem install redis -v 3.3.5</li>
+</ul>
+</li>
+<li>节点状态不一致<ul>
+<li>现象<ul>
+<li>连接不同的节点，获取cluster nodes输出不一致</li>
+<li>使用./redis-trib [check|fix]命令得到如下报错：【 Nodes don’t agree about configuration】，并显示个别slot处于importing状态</li>
+<li>由于状态不一致，所以不能进行slot迁移【不能使用reshard命令】</li>
+</ul>
+</li>
+<li>解决：由于只是个别节点状态不一致，只需处理个别节点即可</li>
+<li>步骤<ul>
+<li>手动设置异常节点的slot：for i in {5461..10922};do redis-cli -h 172.29.88.117 -p 7004 -c cluster setslot $i node ca4757c010e6b6c028006bb4b8c1cd0852ab3033;done<ul>
+<li>5461…10922为状态异常的slot</li>
+<li>-h/-p  连接异常节点</li>
+<li>ca4757c0… 为这些slot的正确节点id【根绝大多数节点返回获得】</li>
+</ul>
+</li>
+<li>修复异常节点状态（循环：每次修复一个slot）：for i in {5461..10922};do ./redis-trib.rb fix 172.29.88.117:7004;done</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/集群/" rel="tag"># 集群</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/25/web服务管理/缓存与nosql/redis简介与管理/" rel="next" title="redis简介与管理">
+                <i class="fa fa-chevron-left"></i> redis简介与管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/30/web服务管理/缓存与nosql/redis数据操作/" rel="prev" title="redis数据操作">
+                redis数据操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群介绍"><span class="nav-number">1.</span> <span class="nav-text">集群介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建集群"><span class="nav-number">2.</span> <span class="nav-text">创建集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置脚本方式"><span class="nav-number">2.1.</span> <span class="nav-text">内置脚本方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动创建方式"><span class="nav-number">2.2.</span> <span class="nav-text">手动创建方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动创建范例"><span class="nav-number">2.3.</span> <span class="nav-text">手动创建范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端支持"><span class="nav-number">3.</span> <span class="nav-text">客户端支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群管理"><span class="nav-number">4.</span> <span class="nav-text">集群管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可用性预处理"><span class="nav-number">5.</span> <span class="nav-text">可用性预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#少数主或从节点故障"><span class="nav-number">5.1.</span> <span class="nav-text">少数主或从节点故障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#少数主和它的从节点同时挂掉"><span class="nav-number">5.2.</span> <span class="nav-text">少数主和它的从节点同时挂掉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多数主节点同时宕机"><span class="nav-number">5.3.</span> <span class="nav-text">多数主节点同时宕机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据迁移"><span class="nav-number">6.</span> <span class="nav-text">数据迁移</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障处理"><span class="nav-number">7.</span> <span class="nav-text">故障处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

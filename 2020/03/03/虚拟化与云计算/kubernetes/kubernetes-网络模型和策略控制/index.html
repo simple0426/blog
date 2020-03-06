@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ingress,cni,flannel,canal,calico,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+<meta name="keywords" content="ingress,cni,flannel,canal,calico">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes-网络模型和策略控制">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/03/03/虚拟化与云计算/kubernetes/kubernetes-网络模型和策略控制/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-04T11:42:38.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubernetes-网络模型和策略控制">
+<meta name="twitter:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/03/03/虚拟化与云计算/kubernetes/kubernetes-网络模型和策略控制/">
+
+
+
+
+
+  <title>kubernetes-网络模型和策略控制 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/03/虚拟化与云计算/kubernetes/kubernetes-网络模型和策略控制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kubernetes-网络模型和策略控制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T23:54:17+08:00">
+                2020-03-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-04T19:42:38+08:00">
+                2020-03-04
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="kubernetes网络模型"><a href="#kubernetes网络模型" class="headerlink" title="kubernetes网络模型"></a>kubernetes网络模型</h1><ul>
+<li>要求所有容器都处于同一个ip网络中</li>
+<li>集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间</li>
+</ul>
+<h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
+<li>pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供；</li>
+<li>pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解决的问题，包含叠加网络模型(overlay)和路由网络模型(underlay)</li>
+<li>pod与service间通信：k8s将service的cluster-ip到pod-ip的映射转换为相应节点的iptables、ipvs规则，从而实现service到pod的通信</li>
+<li>service与集群外部通信：k8s根据service的代理类型转换为相应节点的iptables或ipvs规则，从而实现外部流量到pod的通信</li>
+</ul>
+<h2 id="CNI插件"><a href="#CNI插件" class="headerlink" title="CNI插件"></a>CNI插件</h2><ul>
+<li>CNI插件连接容器管理系统和网络插件</li>
+<li>CNI插件分类<ul>
+<li>main：实现特定的网络功能，如：bridge、loopback</li>
+<li>meta：调用其他插件，如：flannel、calico</li>
+<li>ipam：分配ip地址，如：dhcp</li>
+</ul>
+</li>
+</ul>
+<h2 id="CNI插件安装"><a href="#CNI插件安装" class="headerlink" title="CNI插件安装"></a>CNI插件安装</h2><ul>
+<li>安装cni插件集成包：kubernetes-cni，cni插件在/opt/cni/bin目录下</li>
+<li>部署calico、flannel时会在/etc/cni/net.d/下生成插件的配置文件</li>
+<li>kubelet启动后(–network-plugin=cni)会加载cni插件及其配置文件</li>
+<li>如果kubelet开启cni后，缺少部分插件【failed to find plugin “portmap” in path [/opt/cni/bin]]】，则可以通过安装包补全插件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">repo_gpgcheck=1</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line">yum clean all</span><br><span class="line">yum install kubernetes-cni -y</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="常见CNI插件对应的项目"><a href="#常见CNI插件对应的项目" class="headerlink" title="常见CNI插件对应的项目"></a>常见CNI插件对应的项目</h2><ul>
+<li>flannel：一个为kubernetes提供overlay(叠加网络)的插件，它基于linux tun/tap，使用udp封装ip报文来创建叠加网络，并借助etcd维护网络分配情况；不支持网络策略</li>
+<li>calico：一个基于BGP的三层网络插件，并且支持网络策略(network policy)实现访问控制；它在每台机器上运行一个vRouter，利用Linux内核来转发网络数据包，并借助iptables实现防火墙功能</li>
+<li>canal：包含flannel和calico功能的插件，支持网络策略</li>
+<li>weavenet：多主机容器网络方案，采用UDP封装实现L2 Overlay，支持用户态(慢，可加密)/内核态(快，不能加密)两种方式</li>
+<li>kube-router：kubernetes提供的网络解决方案，采用BGP提供网络直连，集成基于LVS的负载均衡能力；支持网络策略</li>
+</ul>
+<h1 id="flannel"><a href="#flannel" class="headerlink" title="flannel"></a>flannel</h1><h2 id="网络模型-后端"><a href="#网络模型-后端" class="headerlink" title="网络模型/后端"></a>网络模型/后端</h2><ul>
+<li>vxlan：使用内核vxlan模块封装报文</li>
+<li>host-gw：直接在节点创建到目标容器的路由，要求各节点处于同一个二层网络</li>
+<li>udp：性能较低，仅适用于前两者不可用的情况【已废弃】</li>
+<li>云厂商类型：Alivpc、AWSvpc、Alloc、GCE</li>
+</ul>
+<h2 id="vxlan后端"><a href="#vxlan后端" class="headerlink" title="vxlan后端"></a>vxlan后端</h2><ul>
+<li>vxlan(virtual extentsible local area network)：是vlan扩展方案草案，采用的是MAC in UDP封装方式，是NVo3(network virtualization over layer3)中的一种网络虚拟化技术</li>
+<li>vxlan实现：将虚拟网络的数据帧添加到vxlan首部后，封装在物理网络的udp报文中，然后以传统的通信方式传送该udp报文，待其到达目的主机后，去掉物理网络报文的头部信息以及vxlan首部，然后将报文交付给目的终端</li>
+<li>Directrouting：vxlan的直接路由模式，兼具vxlan后端和host-gw后端的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力<ul>
+<li>配置样例：”Backend”:{“Type”:”VxLAN”, “Directrouting”: true}</li>
+</ul>
+</li>
+</ul>
+<h2 id="部署-手动etcd方式"><a href="#部署-手动etcd方式" class="headerlink" title="部署-手动etcd方式"></a>部署-手动etcd方式</h2><ul>
+<li>安装并配置etcd</li>
+<li>etcd中创建flannel网络配置<ol>
+<li>etcdctl mkdir /kube-centos/network</li>
+<li>etcdctl mk /kube-centos/network/config ‘{“Network”:”172.33.0.0/16”,”SubnetLen”:24,”Backend”:{“Type”:”host-gw”}}’</li>
+<li>参数详解：<ul>
+<li>Network：全局使用CIDR格式ipv4网络</li>
+<li>SubnetLen：节点使用的子网的掩码</li>
+<li>Backend：flannel要使用的后端类型</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>安装flannel</li>
+<li><p>flannel服务配置(centos示例-/etc/sysconfig/flanneld)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FLANNEL_ETCD_ENDPOINTS=&quot;http://172.17.8.101:2379&quot;</span><br><span class="line">FLANNEL_ETCD_PREFIX=&quot;/kube-centos/network&quot;</span><br><span class="line">FLANNEL_OPTIONS=&quot;-iface=eth1&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动flannel</p>
+</li>
+</ul>
+<h2 id="部署-k8s资源清单方式"><a href="#部署-k8s资源清单方式" class="headerlink" title="部署-k8s资源清单方式"></a>部署-k8s资源清单方式</h2><ul>
+<li><a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml" target="_blank" rel="noopener">资源清单</a></li>
+<li>配置调整<ul>
+<li>网络设置(net-conf.json)</li>
+<li>主机间的内部通信端口设置(kube-flannel–&gt;DaemonSet)：–iface=eth1</li>
+</ul>
+</li>
+</ul>
+<h1 id="基于calico的网络策略部署"><a href="#基于calico的网络策略部署" class="headerlink" title="基于calico的网络策略部署"></a>基于calico的网络策略部署</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>主要通过使用flannel(pod间通信)和calico(pod间访问控制)两个软件实现<br>为了充分利用flannel的易用性和calico的丰富功能，可以通过以下方式部署实现(不含calico单独部署)  </p>
+<ul>
+<li><a href="#canal部署">只部署canal</a>【canal是一个整合了flannel和calico的综合项目，其中calico用于策略控制、flannel用于网络通信】</li>
+<li><a href="#flannel和calico协同部署">协同部署</a>flannel实现网络功能、部署calico实现访问控制功能</li>
+</ul>
+<h2 id="部署要求"><a href="#部署要求" class="headerlink" title="部署要求"></a>部署要求</h2><ul>
+<li>flannel的后端必须是vxlan模型【host-gw、vxlan-Directrouting均不行】</li>
+<li>kubelet必须开启cni支持：–network-plugin=cni</li>
+<li>kube-controller-manager开启配置：<code>-cluster-cidr=&lt;your-pod-cidr&gt;</code>和–allocate-node-cidrs=true</li>
+<li>其他要求：<a href="https://docs.projectcalico.org/getting-started/kubernetes/requirements" target="_blank" rel="noopener">官网</a></li>
+</ul>
+<h2 id="canal部署"><a href="#canal部署" class="headerlink" title="canal部署"></a><a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/flannel" target="_blank" rel="noopener">canal部署</a></h2><ul>
+<li>下载清单文件<ul>
+<li>etcd存储：curl <a href="https://docs.projectcalico.org/manifests/canal-etcd.yaml" target="_blank" rel="noopener">https://docs.projectcalico.org/manifests/canal-etcd.yaml</a> -O</li>
+<li>k8s存储：curl <a href="https://docs.projectcalico.org/manifests/canal.yaml" target="_blank" rel="noopener">https://docs.projectcalico.org/manifests/canal.yaml</a> -O</li>
+</ul>
+</li>
+<li><p>更改配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POD_CIDR=&quot;&lt;your-pod-cidr&gt;&quot;</span><br><span class="line">sed -i -e &quot;s?10.244.0.0/16?$POD_CIDR?g&quot; canal.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行清单创建资源：kubectl apply -f canal.yaml</p>
+</li>
+</ul>
+<h2 id="flannel和calico协同部署"><a href="#flannel和calico协同部署" class="headerlink" title="flannel和calico协同部署"></a>flannel和calico协同部署</h2><h3 id="flannel部署"><a href="#flannel部署" class="headerlink" title="flannel部署"></a><a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel部署</a></h3><ul>
+<li>下载清单文件:部署：curl <a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml" target="_blank" rel="noopener">https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</a> -o</li>
+<li>配置调整<ul>
+<li>网络设置(net-conf.json)</li>
+<li>主机间的内部通信端口设置(kube-flannel–&gt;DaemonSet)：–iface=eth1</li>
+</ul>
+</li>
+<li>执行清单创建资源：kubectl apply -f kube-flannel.yml</li>
+</ul>
+<h3 id="calico部署"><a href="#calico部署" class="headerlink" title="calico部署"></a><a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/other" target="_blank" rel="noopener">calico部署</a></h3><ul>
+<li>下载清单文件：curl <a href="https://docs.projectcalico.org/manifests/calico-policy-only.yaml" target="_blank" rel="noopener">https://docs.projectcalico.org/manifests/calico-policy-only.yaml</a> -O</li>
+<li><p>更改配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POD_CIDR=&quot;&lt;your-pod-cidr&gt;&quot;</span><br><span class="line">sed -i -e &quot;s?192.168.0.0/16?$POD_CIDR?g&quot; calico.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行清单创建资源：kubectl apply -f calico.yaml</p>
+</li>
+</ul>
+<h1 id="网络策略控制"><a href="#网络策略控制" class="headerlink" title="网络策略控制"></a>网络策略控制</h1><p>控制pod到pod、node、外接网络的访问限制，包含流入(Ingress)和流出(Egress)两个方向的控制规则</p>
+<h2 id="默认规则"><a href="#默认规则" class="headerlink" title="默认规则"></a>默认规则</h2><ul>
+<li>默认情况下，所有pod处于非隔离状态，所有方向的流量都可以自由流动</li>
+<li>一旦有策略应用于pod，那么所有未明确声明允许的流量都将被拒绝</li>
+<li>如果在policyTypes中定义了生效规则(Ingress/Egress)：<ul>
+<li>spec定义了空值【<code>{}</code>】表示不限制相关方向的访问</li>
+<li>spec中没有定义相应的Ingress或Egress规则，则表示拒绝相关方向上的一切流量。范例如下【定义默认规则】<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: deny-all-traffic</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125; #所有pod</span><br><span class="line">  policyTypes: # 进口、出口流量都管控；没有定义出站(Egress)详细规则，则拒绝所有出站流量</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  Ingress: #定义了入站规则，但是为空，表示允许所有入站流量</span><br><span class="line">    - &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="语法定义"><a href="#语法定义" class="headerlink" title="语法定义"></a>语法定义</h2><ul>
+<li>podSelector：通过pod选择器选定的一组pod资源，它是规则生效的对象<ul>
+<li>matchLabel、matchExpression</li>
+</ul>
+</li>
+<li>Egress：出站规则<ul>
+<li>to：目标对象</li>
+<li>ports：目标对象端口</li>
+</ul>
+</li>
+<li>Ingress：入站规则<ul>
+<li>from：源对象</li>
+<li>ports：本地pod资源端口</li>
+</ul>
+</li>
+<li>ports：tcp或udp端口<ul>
+<li>protocol：默认tcp</li>
+<li>port：端口</li>
+</ul>
+</li>
+<li>to/from：目标对象或源对象<ul>
+<li>ipBlock：IP地址块</li>
+<li>namespaceSelector：名称空间选择器</li>
+<li>podSelctor：pod选择器</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-myapp-ingress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector: #选择策略生效目标</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  policyTypes: [&apos;Ingress&apos;] #策略管控的流量方向，此处为入站流量(Ingress)</span><br><span class="line">  ingress:</span><br><span class="line">    - from: #入站来源</span><br><span class="line">      - ipBlock: #ip选择</span><br><span class="line">          cidr: 10.244.0.0/16</span><br><span class="line">          except: #排除部分选项</span><br><span class="line">            - 10.244.3.0/24</span><br><span class="line">      - podSelector: # 标签选择</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: myapp</span><br><span class="line">      ports: #目标端口</span><br><span class="line">      - protocol: TCP</span><br><span class="line">        port: 80</span><br></pre></td></tr></table></figure>
+<ul>
+<li>from:入站流量来源<ul>
+<li>多个项目之间为“逻辑或”关系</li>
+<li>若未设置此字段或字段为空，则允许一切来源</li>
+<li>如果设置至少一个值，则设置的值为白名单，只有名单中的地址的流量才被放行</li>
+</ul>
+</li>
+<li>ports：入站流量的目标端口，其他说明如上</li>
+<li>from和ports之间为“逻辑与”关系；仅定义from隐含本地pod资源的所有端口；仅定义ports隐含所有来源；两者都定义则精确匹配来源及目标端口</li>
+</ul>
+<h2 id="Egress"><a href="#Egress" class="headerlink" title="Egress"></a>Egress</h2><p>对于具有app=tomcat标签的对象，它到【app=nginx】对象80端口的流量被放行<br>到【app=mysql】对象3306端口的流量也被放行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-tomcat-egress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: tomcat</span><br><span class="line">  policyTypes: [&quot;Egress&quot;]</span><br><span class="line">  egress:</span><br><span class="line">    - to:</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">      ports:</span><br><span class="line">        - protocol: TCP</span><br><span class="line">          port: 80</span><br><span class="line">    - to:</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: mysql</span><br><span class="line">      ports:</span><br><span class="line">        - protocol: TCP</span><br><span class="line">          port: 3306</span><br></pre></td></tr></table></figure>
+<h2 id="名称空间隔离"><a href="#名称空间隔离" class="headerlink" title="名称空间隔离"></a>名称空间隔离</h2><p>允许当前名称空间内部各pod之间，以及当前名称空间与kube-system名称空间内各pod的通信</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-deny-all</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-allow</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  ingress:</span><br><span class="line">    - from:</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: name</span><br><span class="line">              operator: In</span><br><span class="line">              values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br><span class="line">  Egress:</span><br><span class="line">    - to:</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: name</span><br><span class="line">              operator: In</span><br><span class="line">              values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br></pre></td></tr></table></figure>
+<h1 id="网络策略应用案例"><a href="#网络策略应用案例" class="headerlink" title="网络策略应用案例"></a>网络策略应用案例</h1><h2 id="实现目标-1"><a href="#实现目标-1" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
+<li>testing名称空间下运行app=nginx和app=myapp两个应用</li>
+<li>myapp仅允许来自nginx访问其TCP/80端口，但可以向nginx的所有端口发出出站流量</li>
+<li>nginx允许所有源站点访问其TCP/80端口，并能向任意端点发出出站流量</li>
+<li>myapp和nginx都可以与kube-system名称空间内的任意pod通信</li>
+</ul>
+<h2 id="运行应用"><a href="#运行应用" class="headerlink" title="运行应用"></a>运行应用</h2><ul>
+<li>myapp：<code>kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=1 --namespace=testing --port 80 --expose --labels app=myapp</code></li>
+<li>nginx：<code>kubectl run nginx --image=nginx:alpine --replicas=1 --namespace=testing --port 80 --expose --labels app=nginx</code></li>
+<li>调试客户端：<code>kubectl run debug --namespace=default --rm -it --image=nicolaka/netshoot -- sh</code></li>
+<li>为kube-system添加标签：<code>kubectl label namespace kube-system ns=kube-system</code></li>
+</ul>
+<h2 id="配置清单"><a href="#配置清单" class="headerlink" title="配置清单"></a>配置清单</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: testing-default # testing默认策略，拒绝所有进出流量</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125; </span><br><span class="line">  policyTypes: </span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-policy # myapp策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes:</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  ingress:</span><br><span class="line">    - from: #允许来自nginx访问其80端口</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">      ports:</span><br><span class="line">        - port: 80</span><br><span class="line">    - from: #允许来自kube-system的pod访问</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">  egress:</span><br><span class="line">    - to: #允许访问nginx的所有端口</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">    - to: # 允许访问kube-system的pod</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-policy #nginx策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: nginx</span><br><span class="line">  policyTypes:</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  ingress:</span><br><span class="line">    - ports: #允许所有源站点访问80端口</span><br><span class="line">      - port: 80</span><br><span class="line">    - from: # 允许来自kube-system访问</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">  egress: </span><br><span class="line">    - &#123;&#125; #出口流量不限制</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ingress/" rel="tag"># ingress</a>
+          
+            <a href="/tags/cni/" rel="tag"># cni</a>
+          
+            <a href="/tags/flannel/" rel="tag"># flannel</a>
+          
+            <a href="/tags/canal/" rel="tag"># canal</a>
+          
+            <a href="/tags/calico/" rel="tag"># calico</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/24/虚拟化与云计算/kubernetes/kubernetes-pod对象管理/" rel="next" title="kubernetes-pod对象管理">
+                <i class="fa fa-chevron-left"></i> kubernetes-pod对象管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/06/虚拟化与云计算/kubernetes/kubernetes-service和ingress/" rel="prev" title="kubernetes-service和ingress">
+                kubernetes-service和ingress <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubernetes网络模型"><span class="nav-number">1.</span> <span class="nav-text">kubernetes网络模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">1.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CNI插件"><span class="nav-number">1.2.</span> <span class="nav-text">CNI插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CNI插件安装"><span class="nav-number">1.3.</span> <span class="nav-text">CNI插件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见CNI插件对应的项目"><span class="nav-number">1.4.</span> <span class="nav-text">常见CNI插件对应的项目</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flannel"><span class="nav-number">2.</span> <span class="nav-text">flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络模型-后端"><span class="nav-number">2.1.</span> <span class="nav-text">网络模型/后端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vxlan后端"><span class="nav-number">2.2.</span> <span class="nav-text">vxlan后端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署-手动etcd方式"><span class="nav-number">2.3.</span> <span class="nav-text">部署-手动etcd方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署-k8s资源清单方式"><span class="nav-number">2.4.</span> <span class="nav-text">部署-k8s资源清单方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于calico的网络策略部署"><span class="nav-number">3.</span> <span class="nav-text">基于calico的网络策略部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">3.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署要求"><span class="nav-number">3.2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#canal部署"><span class="nav-number">3.3.</span> <span class="nav-text">canal部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flannel和calico协同部署"><span class="nav-number">3.4.</span> <span class="nav-text">flannel和calico协同部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel部署"><span class="nav-number">3.4.1.</span> <span class="nav-text">flannel部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#calico部署"><span class="nav-number">3.4.2.</span> <span class="nav-text">calico部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略控制"><span class="nav-number">4.</span> <span class="nav-text">网络策略控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认规则"><span class="nav-number">4.1.</span> <span class="nav-text">默认规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法定义"><span class="nav-number">4.2.</span> <span class="nav-text">语法定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ingress"><span class="nav-number">4.3.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egress"><span class="nav-number">4.4.</span> <span class="nav-text">Egress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名称空间隔离"><span class="nav-number">4.5.</span> <span class="nav-text">名称空间隔离</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略应用案例"><span class="nav-number">5.</span> <span class="nav-text">网络策略应用案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标-1"><span class="nav-number">5.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行应用"><span class="nav-number">5.2.</span> <span class="nav-text">运行应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单"><span class="nav-number">5.3.</span> <span class="nav-text">配置清单</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

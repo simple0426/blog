@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="权限,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="目录用户管理 useradd：添加用户 usermod：更改用户信息 userdel：删除用户【-r删除主目录】 id：查看用户id信息 passwd：设置或更改密码 -l：锁定用户 -u：解锁用户   chage：设置密码过期信息 范例要求：要求oldboy用户7天内不能更改密码，60天以后必须修改密码，过期前10天通知oldboy用户，过期后30天后禁止用户登陆 passwd实现：passwd">
+<meta name="keywords" content="权限">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系统-权限管理">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/08/26/系统管理/系统基础/linux系统-权限管理/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="目录用户管理 useradd：添加用户 usermod：更改用户信息 userdel：删除用户【-r删除主目录】 id：查看用户id信息 passwd：设置或更改密码 -l：锁定用户 -u：解锁用户   chage：设置密码过期信息 范例要求：要求oldboy用户7天内不能更改密码，60天以后必须修改密码，过期前10天通知oldboy用户，过期后30天后禁止用户登陆 passwd实现：passwd">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux系统-权限管理">
+<meta name="twitter:description" content="目录用户管理 useradd：添加用户 usermod：更改用户信息 userdel：删除用户【-r删除主目录】 id：查看用户id信息 passwd：设置或更改密码 -l：锁定用户 -u：解锁用户   chage：设置密码过期信息 范例要求：要求oldboy用户7天内不能更改密码，60天以后必须修改密码，过期前10天通知oldboy用户，过期后30天后禁止用户登陆 passwd实现：passwd">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/08/26/系统管理/系统基础/linux系统-权限管理/">
+
+
+
+
+
+  <title>linux系统-权限管理 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/26/系统管理/系统基础/linux系统-权限管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux系统-权限管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-26T15:37:39+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><ul>
+<li><a href="#useradd">useradd</a>：添加用户</li>
+<li><a href="#usermod">usermod</a>：更改用户信息</li>
+<li>userdel：删除用户【-r删除主目录】</li>
+<li>id：查看用户id信息</li>
+<li><a href="#密码过期范例">passwd</a>：设置或更改密码<ul>
+<li>-l：锁定用户</li>
+<li>-u：解锁用户</li>
+</ul>
+</li>
+<li><a href="#密码过期范例">chage</a>：设置密码过期信息<ul>
+<li>范例要求：要求oldboy用户7天内不能更改密码，60天以后必须修改密码，过期前10天通知oldboy用户，过期后30天后禁止用户登陆</li>
+<li>passwd实现：passwd -n 7 -x 60 -w 10 -i 30 oldboy</li>
+<li>chage实现：chage -m 7 -M 60 -W 10 -I 30 oldboy</li>
+</ul>
+</li>
+<li>groupadd、groupdel、groupmod：添加、删除、变更组</li>
+<li>groups：查看用户组信息</li>
+<li>gpasswd：向组添加用户<ul>
+<li>-a：单用户添加</li>
+<li>-M：多用户添加【逗号分隔】</li>
+<li>-d：删除组用户</li>
+<li>范例：gpasswd -a user group</li>
+</ul>
+</li>
+</ul>
+<h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><ul>
+<li><a href="#文件权限示例">文件权限示例</a></li>
+<li><a href="#权限表示">权限表示</a></li>
+<li><a href="#粘滞类权限">粘滞类权限</a></li>
+<li><a href="#chmod">chmod</a>：设置文件的基本权限</li>
+<li><a href="#chown">chown</a>：设置文件属主属组</li>
+<li><a href="#getfacl">getfacl</a>：查看文件访问控制列表</li>
+<li><a href="#setfacl">setfacl</a>：设置文件访问控制列表</li>
+<li><a href="#chattr">chattr</a>：设置文件隐藏属性</li>
+<li><a href="#lsattr">lsattr</a>：查看文件隐藏属性</li>
+<li><a href="#sudo">sudo</a>：权限提升</li>
+<li><a href="#su">su</a>：切换用户</li>
+</ul>
+<h2 id="登录查询"><a href="#登录查询" class="headerlink" title="登录查询"></a>登录查询</h2><ul>
+<li>users：所有登录用户</li>
+<li>w、who：查看所有用户登录详情</li>
+<li>last：查看系统最近登录情况</li>
+<li>lastlog：显示最近登录的用户名，登录端口及时间</li>
+<li>lastb：登录失败信息</li>
+</ul>
+<h1 id="useradd"><a href="#useradd" class="headerlink" title="useradd"></a>useradd</h1><blockquote>
+<p>默认使用/etc/default/useradd配置</p>
+</blockquote>
+<ul>
+<li>-d：指定用户用户主目录</li>
+<li>-g：指定用户基本组</li>
+<li>-G：指定用户附加组</li>
+<li>-m：创建用户主目录</li>
+<li>-M：不创建用户主目录</li>
+<li>-r：创建一个系统账号【默认不会创建家目录，需-m创建】</li>
+<li>-s：设置登录shell</li>
+<li>-u：设置用户uid</li>
+</ul>
+<h1 id="usermod"><a href="#usermod" class="headerlink" title="usermod"></a>usermod</h1><blockquote>
+<p>注意：不能更改在线使用者的信息</p>
+</blockquote>
+<ul>
+<li>-d：指定用户新的家目录，有-m参数时则将原有家目录内容移动至新家目录</li>
+<li>-g/-G：指定基本组、附加组</li>
+<li>-s：更改shell</li>
+<li>-l：更改用户名</li>
+<li>-e mm/dd/yy：指定账号过期时间</li>
+</ul>
+<h1 id="文件权限示例"><a href="#文件权限示例" class="headerlink" title="文件权限示例"></a>文件权限示例</h1><p>ll命令结果【-rw-r–r– 2 root root 5 8月  14 19:55 1.txt】解读：</p>
+<ul>
+<li>-：说明此为普通文件</li>
+<li>rw-：属主权限</li>
+<li>r–：属组权限</li>
+<li>r–：其他人权限</li>
+<li>2：硬链接数</li>
+<li>root：属主</li>
+<li>root：属组</li>
+<li>5：最后修改时间【日】</li>
+<li>8月：最后修改时间【月】</li>
+<li>14：文件大小</li>
+<li>19:55：最后修改时间</li>
+<li>1.txt：文件名</li>
+</ul>
+<h1 id="权限表示"><a href="#权限表示" class="headerlink" title="权限表示"></a>权限表示</h1><h2 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h2><ul>
+<li>写权限：对文件内容修改(但不包含删除文件本身)</li>
+<li>执行权限：普通用户需要同时有读权限才能执行</li>
+<li>删除文件：文件名放在上级目录的block中，删除文件是对上级目录的操作，需要有对上级目录的写权限</li>
+<li>默认权限：权限掩码umask设置【默认0002】<ul>
+<li>root用户：目录755 文件644</li>
+<li>普通用户：目录775 文件664</li>
+</ul>
+</li>
+</ul>
+<h2 id="目录权限"><a href="#目录权限" class="headerlink" title="目录权限"></a>目录权限</h2><ul>
+<li>读权限：具有查看目录内文件名（仅指文件名）列表的权限</li>
+<li>写权限：具有增删移动目录内文件的权限【需配合x权限】</li>
+<li>执行权限：具有进入目录，查看文件名称和属性的权限</li>
+</ul>
+<h2 id="权限表示法"><a href="#权限表示法" class="headerlink" title="权限表示法"></a>权限表示法</h2><ul>
+<li>数字表示法<ul>
+<li>数字表示法：4-读 2-写 1-执行 0-无权限(数字可叠加)</li>
+<li>范例：644【3位数字式】<ul>
+<li>属主权限：6=4+2+0</li>
+<li>属组权限：4=4+0+0</li>
+<li>其他人权限：4=4+0+0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>字母表示法<ul>
+<li>字母表示法：r-读 w-写 x-执行 -无权限</li>
+<li>范例：rw-r–r–<ul>
+<li>属主权限：rw-</li>
+<li>属组权限：r–</li>
+<li>其他人权限：r–</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="用户组表示"><a href="#用户组表示" class="headerlink" title="用户组表示"></a>用户组表示</h2><ul>
+<li>a：所有用户</li>
+<li>u：属主</li>
+<li>g：属组</li>
+<li>o：其他人</li>
+</ul>
+<h1 id="粘滞类权限"><a href="#粘滞类权限" class="headerlink" title="粘滞类权限"></a>粘滞类权限</h1><h2 id="suid设置"><a href="#suid设置" class="headerlink" title="suid设置"></a>suid设置</h2><ul>
+<li>含义：作用于二进制文件，使文件在执行阶段具有文件所有者的权限</li>
+<li>表示法：<ul>
+<li>数字表示法：4【4位数字式的首位】</li>
+<li>字母表示法：(u+)s</li>
+</ul>
+</li>
+<li>范例：普通用户对/etc/shadow 无任何权限，但普通用户却可以修改自己的密码，结果是修改到其中的内容；这是由于/usr/bin/passwd具有suid权限，普通用户执行passwd命令过程中短暂获得root用户权限，从而可以修改/etc/shadow内容。</li>
+</ul>
+<h2 id="sgid设置"><a href="#sgid设置" class="headerlink" title="sgid设置"></a>sgid设置</h2><ul>
+<li>含义<ul>
+<li>文件：作用于二进制文件，使文件在执行阶段具有文件属组的权限</li>
+<li>目录：用户有进入目录的权限，用户在此目录下的有效属组将变成该目录的属组</li>
+</ul>
+</li>
+<li>表示法：<ul>
+<li>数字表示法：2【4位数字式的首位】</li>
+<li>字母表示法：(g+)s</li>
+</ul>
+</li>
+<li>范例：用于目录时，若用户对此目录有写权限，则在此目录下建立的目录或文件的属组为此目录的属组</li>
+</ul>
+<h2 id="sticky设置"><a href="#sticky设置" class="headerlink" title="sticky设置"></a>sticky设置</h2><ul>
+<li>含义：常用于目录，表示该目录下用户建立的文件只能自己删除</li>
+<li>表示法：<ul>
+<li>数字表示法：1【4位数字式的首位】</li>
+<li>字母表示法：(o+)t</li>
+</ul>
+</li>
+</ul>
+<h2 id="大写S与大写T"><a href="#大写S与大写T" class="headerlink" title="大写S与大写T"></a>大写S与大写T</h2><p>由于所设置的文件ugo位都没有x权限，所以当赋予suit，sgit，sbit权限时，对应为空权限，即字符s，t由小写变为大写S，T。</p>
+<h1 id="chmod"><a href="#chmod" class="headerlink" title="chmod"></a>chmod</h1><blockquote>
+<p>更改文件权限</p>
+</blockquote>
+<ul>
+<li>语法：chmod 权限设置 文件</li>
+<li>范例：<ul>
+<li>数字式设置权限：chmod nnnn file</li>
+<li>字母式增加/减少/精确设置权限：chmod u+r,g-w,o=rwx file</li>
+<li>所有用户权限设置：chmod a+/-/=rwx file</li>
+<li>特殊权限设置：chmod u+s,g+s,o+t file</li>
+</ul>
+</li>
+</ul>
+<h1 id="chown"><a href="#chown" class="headerlink" title="chown"></a>chown</h1><blockquote>
+<p>更改文件属主属组</p>
+</blockquote>
+<ul>
+<li>语法：chown 参数 用户组 文件</li>
+<li>参数<ul>
+<li>-R 递归更改属性</li>
+</ul>
+</li>
+<li>范例<ul>
+<li>chown user:group file</li>
+<li>chown user.group file</li>
+<li>chown user file</li>
+<li>chown .group file</li>
+<li>chown :group file</li>
+</ul>
+</li>
+</ul>
+<h1 id="getfacl"><a href="#getfacl" class="headerlink" title="getfacl"></a>getfacl</h1><blockquote>
+<p>获取文件或目录的访问控制列表</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1:  # file: somedir/</span><br><span class="line">2:  # owner: lisa</span><br><span class="line">3:  # group: staff</span><br><span class="line">4:  # flags: -s-</span><br><span class="line">5:  user::rwx</span><br><span class="line">6:  user:joe:rwx               #effective:r-x</span><br><span class="line">7:  group::rwx                 #effective:r-x</span><br><span class="line">8:  group:cool:r-x</span><br><span class="line">9:  mask::r-x</span><br><span class="line">10:  other::r-x</span><br><span class="line">11:  default:user::rwx</span><br><span class="line">12:  default:user:joe:rwx       #effective:r-x</span><br><span class="line">13:  default:group::r-x</span><br><span class="line">14:  default:mask::r-x</span><br><span class="line">15:  default:other::---</span><br></pre></td></tr></table></figure>
+<ul>
+<li>1-3表示文件名、属主、属组</li>
+<li>4显示特殊权限setuid (s), setgid (s), sticky (t)【3个权限都无时，不显示此行内容】</li>
+<li>5、7、10对应属主、属组、其他人的权限，表示基本的acl条目</li>
+<li>6、8是命名的用户和组的权限条目</li>
+<li>9是有效的权限掩码，针对所有的组和命名的用户【但不包含属主、其他人】</li>
+<li>11-15显示目录的默认权限【普通文件则没有】</li>
+</ul>
+<h1 id="setfacl"><a href="#setfacl" class="headerlink" title="setfacl"></a>setfacl</h1><blockquote>
+<p>设置文件或目录的访问控制列表</p>
+</blockquote>
+<ul>
+<li>语法：<code>setfacl [-bkndRLPvh] [{-m|-x} acl_spec] [{-M|-X} acl_file] file ...</code></li>
+<li>使用注意<ul>
+<li>命令行下操作权限时，多个ACL条目以逗号分隔</li>
+<li>从文件中读取ACL时，最终会有getfacl式的结果输出</li>
+<li>属主、属组、其他人这3个基本的权限条目不可移除，且只能有一个</li>
+<li>当ACL包含命名的用户和组的条目时，必须包含有效的权限掩码</li>
+</ul>
+</li>
+</ul>
+<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><ul>
+<li>-m(–modify)、-M (–modify-file)：定义ACL权限，-m在命令行定义，-M从文件中或标准输入读取要定义的ACl</li>
+<li>-x(–remove)、-X (–remove-file)：移除ACl权限，-x在命令行移除，-X从文件中或标准输入读取要移除的ACL</li>
+<li>-b、–remove-all：移除所有扩展的ACL【不包含对3个基本条目修改的恢复】</li>
+<li>-k、–remove-default：移除默认的ACL</li>
+<li>-n, –no-mask：不计算掩码条目</li>
+<li>–mask：计算掩码条目</li>
+<li>-d、–default：使用默认ACL</li>
+<li>–restore=file：从文件中恢复ACL【使用getfacl -R备份的文件】</li>
+<li>–test：测试模式</li>
+<li>-R, –recursive：递归应用权限</li>
+<li>-L, –logical：操作适用于符号链接关联的目录</li>
+<li>-P, –physical：操作不适用于符号链接关联的目录</li>
+</ul>
+<h2 id="权限条目"><a href="#权限条目" class="headerlink" title="权限条目"></a>权限条目</h2><ul>
+<li>用户权限：<code>[d[efault]:] [u[ser]:]uid [:perms]</code>：设置命名用户的权限，uid为空则表示属主的权限</li>
+<li>组权限：<code>[d[efault]:] g[roup]:gid [:perms]</code>：设置命名组的权限，gid为空则表示属组的权限</li>
+<li>权限掩码：<code>[d[efault]:] m[ask][:] [:perms]</code></li>
+<li>其他人权限：<code>[d[efault]:] o[ther][:] [:perms]</code></li>
+</ul>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><ul>
+<li>默认权限：setfacl -m d:u:hjq:rwx test</li>
+<li>设置属主权限：setfacl -m u::r test/</li>
+<li>设置属组权限：setfacl -m g::rw test/</li>
+<li>设置权限掩码：setfacl -m d:m:rx test/</li>
+<li>移除所有扩展权限：setfacl -b test/</li>
+</ul>
+<h1 id="chattr"><a href="#chattr" class="headerlink" title="chattr"></a>chattr</h1><blockquote>
+<p>改变文件的隐藏属性</p>
+</blockquote>
+<ul>
+<li>用法：<code>chattr [ -RVf -v version ] [ mode ] files...</code></li>
+<li>一般参数：<ul>
+<li>-R：递归设置文件和目录</li>
+<li>-V：显示设置过程</li>
+<li>-f：屏蔽错误输出</li>
+<li>-v version：设置文件版本</li>
+</ul>
+</li>
+<li>模式参数：<code>+-=[acdeijstuADST]</code><ul>
+<li>+表示增加模式</li>
+<li>-表示较少模式</li>
+<li>=表示只设置此种模式</li>
+</ul>
+</li>
+</ul>
+<h2 id="模式参数"><a href="#模式参数" class="headerlink" title="模式参数"></a>模式参数</h2><ul>
+<li>a：只允许增加内容，不允许修改和删除</li>
+<li>A：不修改atime时间戳</li>
+<li>c：文件存储时压缩，读取时自动解压</li>
+<li>d：dump程序启动备份时，不对此文件备份</li>
+<li>i：不能被修改和删除</li>
+<li>s：删除数据的同时将数据从磁盘删除</li>
+<li>S：将数据同步写入磁盘【一般为异步】</li>
+<li>u：与s相反，删除文件但不从磁盘上删除【可以用于恢复】</li>
+</ul>
+<h2 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h2><ul>
+<li>只许向文件追加内容：chattr +a 12</li>
+<li>撤销追加属性：chattr -a 12</li>
+</ul>
+<h2 id="lsattr"><a href="#lsattr" class="headerlink" title="lsattr"></a>lsattr</h2><ul>
+<li>-d：显示目录本身隐藏属性</li>
+<li>-R：递归显示目录及目录下的隐藏属性</li>
+</ul>
+<p>查看文件的隐藏属性：lsattr 12</p>
+<h1 id="su"><a href="#su" class="headerlink" title="su"></a>su</h1><ul>
+<li>su：切换用户【默认切换到root】</li>
+<li>su -：切换用户的同时切换环境变量</li>
+<li>sudo：权限提升，一般为切换为root</li>
+</ul>
+<h1 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><ul>
+<li>时间：5分钟内无需再次输入密码</li>
+<li>命令<ul>
+<li>visudo -c：语法检查</li>
+<li>visudo -f：加载指定配置文件</li>
+<li>sudo -l【查看用户sudo权限】</li>
+</ul>
+</li>
+<li>文件：/etc/sudoers</li>
+<li>环境设置：<ul>
+<li><code>Defaults    env_reset</code>【执行命令时环境变量被重置】</li>
+<li><code>Defaults:muker !requiretty</code>【允许用户远程执行sudo命令】</li>
+</ul>
+</li>
+</ul>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
+<li>范例：<ul>
+<li>单用户设置：<code>admin   ALL=(ALL)       /usr/sbin/useradd</code></li>
+<li>用户组设置：<code>%admin          ALL=(ALL)       NOPASSWD: ALL</code></li>
+</ul>
+</li>
+<li>语法：用户或组+来源主机+可以切换到的用户+可以执行的命令<ul>
+<li>用户或组：admin</li>
+<li>来源主机：ALL</li>
+<li>可以切换的用户：ALL</li>
+<li>可以执行的命令：/usr/sbin/useradd<ul>
+<li>命令需要使用全路径</li>
+<li>命令前使用<code>！</code>表示取反【<code>admin   ALL=NOPASSWD:/sbin/*, !/sbin/fdisk</code>】，禁止命令需要放在允许命令之后</li>
+<li>命令前<code>NOPASSWD</code>表示执行sudo时无需输入密码</li>
+<li>多个命令之间逗号分隔，且逗号与下个命令之间要有空格</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><blockquote>
+<p>可以对sudo语法中的4个主要条目设置别名<br>别名必须使用大写字母，%表示引用组名</p>
+</blockquote>
+<ul>
+<li>用户：<code>User_Alias ADMINS = admin, baby, %admin</code></li>
+<li>来源主机：<code>Host_Alias     MAILSERVERS = smtp, smtp2</code></li>
+<li>可切换用户：<code>Runas_Alias  OP = root, admin</code></li>
+<li>可执行命令：<code>Cmnd_Alias SOFTWARE = /bin/rpm, /usr/bin/up2date, /usr/bin/yum</code></li>
+</ul>
+<h2 id="远程sudo"><a href="#远程sudo" class="headerlink" title="远程sudo"></a>远程sudo</h2><p>配置文件requiretty参数和命令行ssh -t参数的差异</p>
+<ul>
+<li>以客户端角度看：ssh以-t参数远程运行命令(ssh -t host sudo comand)，无论requiretty如何配置都可以远程sudo执行</li>
+<li>以服务端角度看<ul>
+<li>【!requiretty】不要求有tty终端，【ssh host sudo comand】命令可以执行（ansible的sudo方式也可以执行）</li>
+<li>【requiretty】要求有tty终端，【ssh host sudo comand】无法执行执行</li>
+</ul>
+</li>
+</ul>
+<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><h2 id="故障现象"><a href="#故障现象" class="headerlink" title="故障现象"></a>故障现象</h2><ul>
+<li>修改密码时报错 passwd: Authentication token manipulation error</li>
+<li>添加用户报错：unable to lock password file</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><ul>
+<li>检查相关配置文件权限正常：/etc/passwd 和/etc/shadow</li>
+<li>df查看硬盘空间正常</li>
+<li>使用命令strace -f passwd 追踪分析原因，看到关键报错信息：“No space left on device”，可是df查看硬盘空间没问题，有可能是inode满了，使用df –i查看inode使用情况，确实/var/spool/clientmqueue占用大量的inode</li>
+<li>/var/spool/clientmqueue 生成的文件占用完inode，此目录下文件的产生原因主要是crontab里面的命令没有添加“&gt;/dev/null 2&gt;&amp;1”标准输出、错误输出信息都输出到标准输出，以文件形似存储在clientmqueue</li>
+</ul>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>删除文件后正常，将crontab命令后面添加“&gt;/dev/null 2&gt;&amp;1”</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/权限/" rel="tag"># 权限</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/23/web服务管理/数据库/mysql用户和权限/" rel="next" title="mysql用户和权限">
+                <i class="fa fa-chevron-left"></i> mysql用户和权限
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/系统管理/系统基础/shell命令行/" rel="prev" title="shell命令行">
+                shell命令行 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">1.1.</span> <span class="nav-text">用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限管理"><span class="nav-number">1.2.</span> <span class="nav-text">权限管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登录查询"><span class="nav-number">1.3.</span> <span class="nav-text">登录查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useradd"><span class="nav-number">2.</span> <span class="nav-text">useradd</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#usermod"><span class="nav-number">3.</span> <span class="nav-text">usermod</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件权限示例"><span class="nav-number">4.</span> <span class="nav-text">文件权限示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#权限表示"><span class="nav-number">5.</span> <span class="nav-text">权限表示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件权限"><span class="nav-number">5.1.</span> <span class="nav-text">文件权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录权限"><span class="nav-number">5.2.</span> <span class="nav-text">目录权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限表示法"><span class="nav-number">5.3.</span> <span class="nav-text">权限表示法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户组表示"><span class="nav-number">5.4.</span> <span class="nav-text">用户组表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#粘滞类权限"><span class="nav-number">6.</span> <span class="nav-text">粘滞类权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#suid设置"><span class="nav-number">6.1.</span> <span class="nav-text">suid设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sgid设置"><span class="nav-number">6.2.</span> <span class="nav-text">sgid设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sticky设置"><span class="nav-number">6.3.</span> <span class="nav-text">sticky设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大写S与大写T"><span class="nav-number">6.4.</span> <span class="nav-text">大写S与大写T</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chmod"><span class="nav-number">7.</span> <span class="nav-text">chmod</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chown"><span class="nav-number">8.</span> <span class="nav-text">chown</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#getfacl"><span class="nav-number">9.</span> <span class="nav-text">getfacl</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#setfacl"><span class="nav-number">10.</span> <span class="nav-text">setfacl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">10.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限条目"><span class="nav-number">10.2.</span> <span class="nav-text">权限条目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">10.3.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chattr"><span class="nav-number">11.</span> <span class="nav-text">chattr</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模式参数"><span class="nav-number">11.1.</span> <span class="nav-text">模式参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">11.2.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lsattr"><span class="nav-number">11.3.</span> <span class="nav-text">lsattr</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#su"><span class="nav-number">12.</span> <span class="nav-text">su</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sudo"><span class="nav-number">13.</span> <span class="nav-text">sudo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础"><span class="nav-number">13.1.</span> <span class="nav-text">基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">13.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#别名"><span class="nav-number">13.3.</span> <span class="nav-text">别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程sudo"><span class="nav-number">13.4.</span> <span class="nav-text">远程sudo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#案例"><span class="nav-number">14.</span> <span class="nav-text">案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#故障现象"><span class="nav-number">14.1.</span> <span class="nav-text">故障现象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">14.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决"><span class="nav-number">14.3.</span> <span class="nav-text">解决</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

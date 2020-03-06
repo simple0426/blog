@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pgpool,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="pgpool简介pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：  连接池 复制功能：可以实时的把数据备份到单独的磁盘 负载均衡：将查询语句拆分到多台后端数据库 限制过量的连接：将超过限制的连接排队，但不直接返回错误 看门狗功能：同时在两个节点部署pgpool，通过vip偏移执行高可用 基于内存的查询缓存  软件安装./configure –prefix=/usr/loc">
+<meta name="keywords" content="pgpool">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pgsql-pgpool使用">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="pgpool简介pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：  连接池 复制功能：可以实时的把数据备份到单独的磁盘 负载均衡：将查询语句拆分到多台后端数据库 限制过量的连接：将超过限制的连接排队，但不直接返回错误 看门狗功能：同时在两个节点部署pgpool，通过vip偏移执行高可用 基于内存的查询缓存  软件安装./configure –prefix=/usr/loc">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.394Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pgsql-pgpool使用">
+<meta name="twitter:description" content="pgpool简介pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：  连接池 复制功能：可以实时的把数据备份到单独的磁盘 负载均衡：将查询语句拆分到多台后端数据库 限制过量的连接：将超过限制的连接排队，但不直接返回错误 看门狗功能：同时在两个节点部署pgpool，通过vip偏移执行高可用 基于内存的查询缓存  软件安装./configure –prefix=/usr/loc">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/">
+
+
+
+
+
+  <title>pgsql-pgpool使用 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pgsql-pgpool使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:58:10+08:00">
+                2019-10-13
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/pgsql/" itemprop="url" rel="index">
+                    <span itemprop="name">pgsql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="pgpool简介"><a href="#pgpool简介" class="headerlink" title="pgpool简介"></a>pgpool简介</h1><p>pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：</p>
+<ul>
+<li>连接池</li>
+<li>复制功能：可以实时的把数据备份到单独的磁盘</li>
+<li>负载均衡：将查询语句拆分到多台后端数据库</li>
+<li>限制过量的连接：将超过限制的连接排队，但不直接返回错误</li>
+<li>看门狗功能：同时在两个节点部署pgpool，通过vip偏移执行高可用</li>
+<li>基于内存的查询缓存</li>
+</ul>
+<h1 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h1><p>./configure –prefix=/usr/local/pgpool –with-pgsql=/usr/local/pgsql/<br>make<br>make install</p>
+<h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><h2 id="pgpool-recovery"><a href="#pgpool-recovery" class="headerlink" title="pgpool_recovery"></a>pgpool_recovery</h2><p>$ cd pgpool-II-x.x.x/src/sql/pgpool-recovery<br>$ make<br>$ make install<br>$ psql -f pgpool-recovery.sql template1<br>$ 【vim postgresql.conf】：pgpool.pg_ctl = ‘/usr/local/pgsql/bin/pg_ctl’<br>$ pg_ctl reload -D /usr/local/pgsql/data</p>
+<h2 id="pgpool-regclass"><a href="#pgpool-regclass" class="headerlink" title="pgpool-regclass"></a>pgpool-regclass</h2><p> PostgreSQL 9.4 or later可以省略</p>
+<h2 id="insert-lock表"><a href="#insert-lock表" class="headerlink" title="insert_lock表"></a>insert_lock表</h2><p>如果打算使用原生的复制模式和insert_lock，需要创建：<br>$ cd pgpool-II-x.x.x/src/sql<br>$ psql -f insert_lock.sql template1</p>
+<h1 id="配置pgpool-conf"><a href="#配置pgpool-conf" class="headerlink" title="配置pgpool.conf"></a>配置<a href="https://www.pgpool.net/docs/latest/en/html/runtime-config.html" target="_blank" rel="noopener">pgpool.conf</a></h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">#连接</span><br><span class="line">listen_addresses = &apos;*&apos;</span><br><span class="line">port = 9833</span><br><span class="line">pcp_listen_addresses = &apos;*&apos;</span><br><span class="line">pcp_port = 9898</span><br><span class="line"></span><br><span class="line">#后端</span><br><span class="line">backend_hostname0 = &apos;10.86.0.10&apos;</span><br><span class="line">backend_port0 = 5432</span><br><span class="line">backend_weight0 = 16</span><br><span class="line">backend_data_directory0 = &apos;/home/postgres/db0/db/9.3/data/&apos;</span><br><span class="line">backend_flag0 = &apos;ALLOW_TO_FAILOVER&apos;</span><br><span class="line">backend_hostname1 = &apos;10.86.0.12&apos;</span><br><span class="line">backend_port1 = 5432</span><br><span class="line">backend_weight1 = 128</span><br><span class="line">backend_data_directory1 = &apos;/home/postgres/db0/db/9.3/data&apos;</span><br><span class="line">backend_flag1 = &apos;ALLOW_TO_FAILOVER&apos;</span><br><span class="line"></span><br><span class="line">#安全</span><br><span class="line">enable_pool_hba = on</span><br><span class="line">pool_passwd = &apos;&apos;</span><br><span class="line">authentication_timeout = 60</span><br><span class="line">ssl = off</span><br><span class="line"></span><br><span class="line">#连接池</span><br><span class="line">num_init_children = 64</span><br><span class="line">max_pool = 16</span><br><span class="line">child_life_time = 300</span><br><span class="line">child_max_connections = 200</span><br><span class="line">connection_life_time = 120</span><br><span class="line">client_idle_limit = 60</span><br><span class="line">connection_cache = on</span><br><span class="line">reset_query_list = &apos;ABORT; DISCARD ALL&apos;</span><br><span class="line">relcache_expire = 0</span><br><span class="line">relcache_size = 256</span><br><span class="line">check_temp_table = on</span><br><span class="line"></span><br><span class="line">#日志</span><br><span class="line">log_destination = &apos;syslog&apos;</span><br><span class="line">print_timestamp = on</span><br><span class="line">log_connections = off</span><br><span class="line">log_hostname = off</span><br><span class="line">log_statement = off</span><br><span class="line">log_per_node_statement = off</span><br><span class="line">log_standby_delay = &apos;none&apos;</span><br><span class="line">syslog_facility = &apos;LOCAL0&apos;</span><br><span class="line">syslog_ident = &apos;pgpool&apos;</span><br><span class="line">debug_level = 0</span><br><span class="line"></span><br><span class="line">#文件位置</span><br><span class="line">pid_file_name = &apos;/home/postgres/pgpool2/run/pgpool.pid&apos;</span><br><span class="line">logdir = &apos;/home/postgres/pgpool2/log/&apos;</span><br><span class="line"></span><br><span class="line">#基于流复制的负载均衡模式（主备模式）</span><br><span class="line">replication_mode = off</span><br><span class="line">insert_lock = on</span><br><span class="line">load_balance_mode = on</span><br><span class="line">master_slave_mode = on</span><br><span class="line">master_slave_sub_mode = &apos;stream&apos;</span><br><span class="line">ignore_leading_white_space = on</span><br><span class="line">white_function_list = &apos;&apos;</span><br><span class="line">black_function_list = &apos;nextval,setval&apos;</span><br><span class="line">sr_check_period = 3</span><br><span class="line">sr_check_user = &apos;replication&apos;</span><br><span class="line">sr_check_password = &apos;repl-pg-0232&apos;</span><br><span class="line">delay_threshold = 0</span><br><span class="line"></span><br><span class="line">#健康检查</span><br><span class="line">health_check_period = 10</span><br><span class="line">health_check_timeout = 20</span><br><span class="line">health_check_user = &apos;postgres&apos;</span><br><span class="line">health_check_password = &apos;YUTR0-Lew&amp;4-DE74GF-qePi8&apos;</span><br><span class="line">health_check_max_retries = 0</span><br><span class="line">health_check_retry_delay = 3</span><br><span class="line"></span><br><span class="line">#故障切换</span><br><span class="line">failover_command = &apos;/home/postgres/bin/failover_stream.sh %d %H /home/postgres/db0/tmp/trigger_file&apos;</span><br><span class="line">failback_command = &apos;/bin/rm -f /home/postgres/db0/tmp/trigger_file&apos;</span><br><span class="line">fail_over_on_backend_error = on #设置health_check_max_retries则关闭此选项</span><br><span class="line">search_primary_node_timeout = 10</span><br><span class="line"></span><br><span class="line">#在线恢复</span><br><span class="line">recovery_user = &apos;postgres&apos;</span><br><span class="line">recovery_password = &apos;YUTR0-Lew&amp;4-DE74GF-qePi8&apos;</span><br><span class="line">recovery_1st_stage_command = &apos;/home/postgres/bin/basebackup.sh&apos;</span><br><span class="line">recovery_2nd_stage_command = &apos;&apos;</span><br><span class="line">recovery_timeout = 90</span><br><span class="line">client_idle_limit_in_recovery = 0</span><br><span class="line"></span><br><span class="line">#双击热备配置</span><br><span class="line">use_watchdog = on                   #   开启看门狗，用于监控pgpool 集群健康状态</span><br><span class="line">wd_hostname = &apos;10.86.0.10&apos;             #   本地看门狗地址</span><br><span class="line">wd_port = 9000                          #</span><br><span class="line">wd_priority = 1                         #   看门狗优先级，用于pgpool 集群中master选举</span><br><span class="line">delegate_IP = &apos;10.86.0.100&apos;             #    VIP 地址</span><br><span class="line">if_up_cmd = &apos;ip addr add $_IP_$/24 dev eth0 label eth0:0&apos;  # 配置虚拟IP到本地网卡</span><br><span class="line">if_down_cmd = &apos;ip addr del $_IP_$/24 dev eth0&apos;          #   </span><br><span class="line">wd_lifecheck_method = &apos;heartbeat         # &apos;  看门狗健康检测方法</span><br><span class="line">wd_heartbeat_port = 9694                #     看门狗心跳端口，用于pgpool 集群健康状态通信</span><br><span class="line">wd_heartbeat_keepalive = 2              #     看门狗心跳检测间隔</span><br><span class="line">wd_heartbeat_deadtime = 30              #</span><br><span class="line">heartbeat_destination0 = &apos;10.86.0.12&apos;  #     配置需要监测健康心跳的IP地址，非本地地址，即互相监控，配置对端的IP地址</span><br><span class="line">heartbeat_destination_port0 = 9694      # 监听的端口</span><br><span class="line">heartbeat_device0 = &apos;eth0&apos;              # 监听的网卡名称</span><br><span class="line">wd_life_point = 3               #    生命检测失败后重试次数</span><br><span class="line">wd_lifecheck_query = &apos;SELECT 1&apos; #   用于检查 pgpool-II 的查询语句。默认为“SELECT 1”。</span><br><span class="line">wd_lifecheck_dbname = &apos;postgres&apos;        # 检查健康状态的数据库名称</span><br><span class="line">wd_lifecheck_user = &apos;pgcheck&apos;           # 检查数据库的用户，该用户需要在Postgres数据库存在，且有查询权限</span><br><span class="line">wd_lifecheck_password = &apos;123456&apos;        #   看门狗健康检查用户密码</span><br><span class="line">other_pgpool_hostname0 = &apos;10.86.0.12&apos;  # 指定被监控的 pgpool-II 服务器的主机名</span><br><span class="line">other_pgpool_port0 = 9999       # 指定被监控的 pgpool-II 服务器的端口号</span><br><span class="line">other_wd_port0 = 9000           # 指定 pgpool-II 服务器上的需要被监控的看门狗的端口号</span><br></pre></td></tr></table></figure>
+<h1 id="配置pcp-conf"><a href="#配置pcp-conf" class="headerlink" title="配置pcp.conf"></a>配置pcp.conf</h1><p>pcp为pgpool管理接口，pcp.conf里包含有管理接口的认证信息，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># USERID:MD5PASSWD</span><br><span class="line">postgres:e10adc3949ba59abbe56e057f20f883e</span><br></pre></td></tr></table></figure></p>
+<p>md5密码产生：pg_md5 123456</p>
+<h1 id="配置pool-hba-conf"><a href="#配置pool-hba-conf" class="headerlink" title="配置pool_hba.conf"></a>配置pool_hba.conf</h1><ul>
+<li>pool_hba和pg_hba类似，是客户端连接pgpool的认证</li>
+<li>当pgpool使用pg原生模式或只有一个后端服务器时，可以不使用pool_hba</li>
+<li>配置：<ul>
+<li>从数据库中查询用户及密码：select rolpassword from pg_authid where rolname=’pgtest’; </li>
+<li>建立文件pool_passwd，并写入查询到的账号信息：【pgtest:md5adbe22045e9d4ebb5254ed06a0987528】</li>
+</ul>
+</li>
+</ul>
+<h1 id="服务启停控制"><a href="#服务启停控制" class="headerlink" title="服务启停控制"></a>服务启停控制</h1><ul>
+<li>启动服务：pgpool<ul>
+<li>前台debug模式：pgpool -n -d</li>
+</ul>
+</li>
+<li>停止服务：pgpool 【-m smart|fast|immediate】stop</li>
+<li>重载配置：pgpool reload</li>
+</ul>
+<h1 id="服务状态查看"><a href="#服务状态查看" class="headerlink" title="服务状态查看"></a>服务状态查看</h1><p>sql命令行下执行如下命令：</p>
+<ul>
+<li>节点状态：show pool_nodes;</li>
+<li>进程池：show pool_processes;</li>
+<li>配置信息：show pool_status;</li>
+<li>连接池：show pool_status;</li>
+</ul>
+<h1 id="节点管理"><a href="#节点管理" class="headerlink" title="节点管理"></a>节点管理</h1><ul>
+<li>卸载节点：pcp_detach_node -h 127.0.0.1 -p 9898 -n 1</li>
+<li>添加节点：pcp_attach_node -h 127.0.0.1 -p 9898 -n 1</li>
+<li>恢复节点为可用状态：pcp_recovery_node【配合pgpool.conf中的ONLINE RECOVERY配置】</li>
+</ul>
+<h1 id="故障自动切换配置"><a href="#故障自动切换配置" class="headerlink" title="故障自动切换配置"></a><a href="https://www.pgpool.net/docs/latest/en/html/runtime-config-failover.html" target="_blank" rel="noopener">故障自动切换配置</a></h1><ul>
+<li>failover_command = ‘/usr/local/pgpool/failover.sh’</li>
+<li>failover.sh</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T 172.16.0.215 &quot;/usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data/ -l /home/postgres/logfile promote&quot;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pgpool/" rel="tag"># pgpool</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/" rel="next" title="pgsql-归档和流复制">
+                <i class="fa fa-chevron-left"></i> pgsql-归档和流复制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/22/web服务管理/缓存与nosql/redis服务端配置/" rel="prev" title="redis服务端配置">
+                redis服务端配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pgpool简介"><span class="nav-number">1.</span> <span class="nav-text">pgpool简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软件安装"><span class="nav-number">2.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装插件"><span class="nav-number">3.</span> <span class="nav-text">安装插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pgpool-recovery"><span class="nav-number">3.1.</span> <span class="nav-text">pgpool_recovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pgpool-regclass"><span class="nav-number">3.2.</span> <span class="nav-text">pgpool-regclass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#insert-lock表"><span class="nav-number">3.3.</span> <span class="nav-text">insert_lock表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置pgpool-conf"><span class="nav-number">4.</span> <span class="nav-text">配置pgpool.conf</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置pcp-conf"><span class="nav-number">5.</span> <span class="nav-text">配置pcp.conf</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置pool-hba-conf"><span class="nav-number">6.</span> <span class="nav-text">配置pool_hba.conf</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务启停控制"><span class="nav-number">7.</span> <span class="nav-text">服务启停控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务状态查看"><span class="nav-number">8.</span> <span class="nav-text">服务状态查看</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#节点管理"><span class="nav-number">9.</span> <span class="nav-text">节点管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障自动切换配置"><span class="nav-number">10.</span> <span class="nav-text">故障自动切换配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

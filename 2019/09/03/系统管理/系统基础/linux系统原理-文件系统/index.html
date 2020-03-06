@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="磁盘,分区,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="文件系统实质：组织和存储数据的一种机制 文件类型 以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建   普通文件：文本文件、二进制文件、数据文件 ll表示：首字符显示为”-“ 范例：lsof.txt文件：-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt   目录 ll表示：首字符显示为">
+<meta name="keywords" content="磁盘,分区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系统原理-文件系统">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/09/03/系统管理/系统基础/linux系统原理-文件系统/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="文件系统实质：组织和存储数据的一种机制 文件类型 以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建   普通文件：文本文件、二进制文件、数据文件 ll表示：首字符显示为”-“ 范例：lsof.txt文件：-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt   目录 ll表示：首字符显示为">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/MBR.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.bmp">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-grub_conf.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-inittab.png">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.445Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux系统原理-文件系统">
+<meta name="twitter:description" content="文件系统实质：组织和存储数据的一种机制 文件类型 以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建   普通文件：文本文件、二进制文件、数据文件 ll表示：首字符显示为”-“ 范例：lsof.txt文件：-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt   目录 ll表示：首字符显示为">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/MBR.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/03/系统管理/系统基础/linux系统原理-文件系统/">
+
+
+
+
+
+  <title>linux系统原理-文件系统 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/03/系统管理/系统基础/linux系统原理-文件系统/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux系统原理-文件系统</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T15:45:09+08:00">
+                2019-09-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h1><p>实质：组织和存储数据的一种机制</p>
+<h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><blockquote>
+<p>以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建</p>
+</blockquote>
+<ul>
+<li>普通文件：文本文件、二进制文件、数据文件<ul>
+<li>ll表示：首字符显示为”-“</li>
+<li>范例：lsof.txt文件：<code>-rw-rw-r-- 1 muker muker 135522 Jul 18 13:17 lsof.txt</code></li>
+</ul>
+</li>
+<li>目录<ul>
+<li>ll表示：首字符显示为“d”</li>
+<li>范例：roles目录：<code>drwxrwxr-x  7 muker muker  4096 Jun 21 17:31 roles/</code></li>
+</ul>
+</li>
+<li>符号链接：表示软连接<ul>
+<li>ll表示：首字符显示为”l”</li>
+<li>范例：<code>lrwxrwxrwx. 1 root root 7 Oct 15  2017 /bin/python -&gt; python2</code></li>
+</ul>
+</li>
+<li>套接字文件：用于网络通信<ul>
+<li>ll表示：首字符显示为“s”</li>
+<li>范例：supervisor程序的socket文件：<code>srwx------ 1 root root 0 May 22 14:33 /var/run/supervisor/supervisor.sock</code></li>
+</ul>
+</li>
+<li>字符设备文件：表示串行端口设备、管道类型设备，提供输入输出功能<ul>
+<li>ll表示：首字符显示为”c“</li>
+<li>范例：pts虚拟终端：<code>crw--w---- 1 muker tty 136, 0 Jul 19 09:16 /dev/pts/0</code></li>
+</ul>
+</li>
+<li>块设备文件：表示提供存储功能的设备<ul>
+<li>ll表示：首字符显示为”b“</li>
+<li>范例：vda磁盘：<code>brw-rw---- 1 root disk 253, 0 May 22 17:12 /dev/vda</code></li>
+</ul>
+</li>
+<li>FIFO文件：命名管道文件，提供双向通信<ul>
+<li>ll表示：首字符显示为“p”</li>
+<li>管道的不同区别：FIFO是命名的双向通道，任何程序任何时间都可以通过此管道进行双向通信；而“|”是无名的单向通道，管道运行完即销毁</li>
+</ul>
+</li>
+</ul>
+<h2 id="软链接与硬链接"><a href="#软链接与硬链接" class="headerlink" title="软链接与硬链接"></a>软链接与硬链接</h2><ul>
+<li>实质：<ul>
+<li>软链接是新建一个文件（软链接使用不同于源文件的新inode号），文件内容记录源文件或目录的路径信息，相当于windows的快捷方式</li>
+<li>硬链接相当于为文件建立一个新的索引别名（硬链接和源文件使用相同的inode号），源文件和硬链接除了名称不一样外，其他属性信息完全相同</li>
+</ul>
+</li>
+<li>不能对目录建立硬链接，也不能跨文件系统对文件建立硬链接</li>
+<li>可以在同一文件系统或跨文件系统，对目录或文件建立软链接</li>
+<li>删除源文件，软链接失效，硬链接依然可以显示文件内容</li>
+<li>生产现场经常使用软链接【相对硬链接限制更少】；而许多硬件设备的快照功能则类似硬链接</li>
+</ul>
+<h2 id="文件删除"><a href="#文件删除" class="headerlink" title="文件删除"></a>文件删除</h2><ul>
+<li>原理：linux系统对文件的删除是通过控制文件的link数达到的，而link数主要由i_nlink（硬链接数，磁盘引用次数）和i_count（文件被进程调用的次数，内存引用次数），只有当这两个数值同时为0时，文件（确切的说是文件名及相应的inode）才从文件系统中消失。但此时若无新数据写入或系统未执行磁盘检查收回空间，数据还是可以找回的</li>
+<li>删除条件：<ul>
+<li>硬链接都被删除（i_nlink为0）</li>
+<li>没有被进程调用（i_count）</li>
+<li>实际存储空间没有被覆盖或回收</li>
+</ul>
+</li>
+<li>范例：磁盘幽灵空间<ul>
+<li>现象：df与du统计相差巨大</li>
+<li>原因：文件被删除，但是使用这些文件的进程还在，造成空间不能释放</li>
+<li>解决：使用 lsof|grep deleted 查看占用删除文件的进程，重启或删除相关进程</li>
+</ul>
+</li>
+<li>范例：web服务日志写满磁盘，删除日志后，磁盘空间依然充满未被释放；此时重启apache服务，磁盘空间释放，日志可重新写入。</li>
+</ul>
+<h2 id="tmpfs"><a href="#tmpfs" class="headerlink" title="tmpfs"></a>tmpfs</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>默认系统就会启用tmpfs，以实现特殊功能，如保存系统运行状态；tmpfs是临时文件系统，是一种基于内存的文件系统，<br>它和虚拟磁盘ramdis比较类似，但不完全相同。和ramdisk一样，tmpfs可以使用RAM，但它也可以使用swap分区来存储；<br>ramdisk是个传统的块设备，需要使用mkfs格式化后才能使用；tmpfs是一个文件系统，直接挂载就可以使用。  </p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
+<li>查看使用情况：df -h</li>
+<li>fstab设置：<code>tmpfs                   /dev/shm                tmpfs   defaults,size=64g        0 0</code><ul>
+<li>卸载：umount /dev/shm</li>
+<li>加载：mount /dev/shm</li>
+</ul>
+</li>
+<li>实时修改tmpfs大小：mount -o remount,size=64G /dev/shm</li>
+</ul>
+<h3 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h3><ul>
+<li>oracle启动错误：<code>ORA-00845: MEMORY_TARGET not supported on this system</code></li>
+<li>原因与解决：tmpfs管理下的物理内存或swap不足，此时可通过增加tmpfs大小解决问题（首先增加swap大小）</li>
+</ul>
+<h1 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h1><blockquote>
+<p>fdisk -l命令结果</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/sda: 120.0 GB, 120034123776 bytes</span><br><span class="line">255 heads, 63 sectors/track, 14593 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br></pre></td></tr></table></figure>
+<ul>
+<li>磁盘容量大小</li>
+<li>255个磁头(heads)，63个扇区(sectors)/磁道(track)，14593个柱面(cylinders)</li>
+<li>每个柱面大小(units)=扇区数(255<em>63)</em>扇区大小(512)</li>
+<li>扇区大小512</li>
+</ul>
+<h2 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h2><ul>
+<li>纵切图看，一个磁盘有多个盘片，每个盘片对于2个盘面，一个盘面对应一个磁头(heads)</li>
+<li>横切图看，一个盘面有多个磁道(track)，一个磁道有多个扇区(sector)【磁盘存储的最小单位】</li>
+<li>俯视图看，多个盘面相同半径的磁道共同构成一个柱面(cylinders)【磁盘分区的最小单位】</li>
+</ul>
+<h2 id="容量计算"><a href="#容量计算" class="headerlink" title="容量计算"></a>容量计算</h2><ul>
+<li>磁盘容量：磁头数*磁道/柱面数*每道扇区数*扇区大小，即：<code>255*14593*63*512=120031511040</code><ul>
+<li>缩写式：柱面大小(units)*柱面数(cylinders)</li>
+</ul>
+</li>
+<li>数据三维地址：磁头、柱面/磁道、扇区</li>
+</ul>
+<h2 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h2><ul>
+<li>读写原理：将磁粒子的极性转换为电脉冲信号</li>
+<li>读写流程：从盘片的边缘向里依次从0磁道开始读写</li>
+</ul>
+<h1 id="raid"><a href="#raid" class="headerlink" title="raid"></a>raid</h1><ul>
+<li>简介：RAID(redundant arrays of independed disk)：廉价且具有冗余功能的磁盘阵列</li>
+<li>功能：提供比单个物理磁盘更大的存储容量及不同级别的数据冗余备份</li>
+</ul>
+<h2 id="raid0"><a href="#raid0" class="headerlink" title="raid0"></a>raid0</h2><blockquote>
+<p>生产中使用单盘也要做成raid0，否则无法使用</p>
+</blockquote>
+<ul>
+<li>原理：将连续的数据交叉存储在多个磁盘上（stripe-条带存储），</li>
+<li>容量计算：最少需要1个磁盘，总容量=各盘容量之和</li>
+<li>优点：磁盘利用率高【100%】</li>
+<li>缺点：无冗余备份，1块磁盘损坏raid就不能使用</li>
+</ul>
+<h2 id="raid1"><a href="#raid1" class="headerlink" title="raid1"></a>raid1</h2><ul>
+<li>原理：将数据分成完全一样的两份写入两块磁盘【mirror-镜像存储】</li>
+<li>容量计算：2个磁盘，总容量=最小的那块磁盘</li>
+<li>优点：有冗余备份，安全性好</li>
+<li>缺点：磁盘利用率低【50%】，成本高</li>
+</ul>
+<h2 id="raid5"><a href="#raid5" class="headerlink" title="raid5"></a>raid5</h2><ul>
+<li>原理：将数据和数据的奇偶校验码交叉存储在不同的磁盘</li>
+<li>容量计算：最少需要3个磁盘，总容量=最小磁盘容量*（磁盘数-1）</li>
+<li>优点：兼顾安全性和成本【可以损坏1块磁盘，当损坏磁盘大于等于2块时，数据彻底损坏】</li>
+<li>热备盘【hot spare】：当阵列中的某颗磁盘损毁时，spare disk被主动拉进阵列，坏磁盘被移除阵列，实时进行数据重建</li>
+</ul>
+<h2 id="raid10"><a href="#raid10" class="headerlink" title="raid10"></a>raid10</h2><blockquote>
+<p>也有raid01，但是服务器常用只有raid10</p>
+</blockquote>
+<ul>
+<li>原理：先组成raid1，再组成raid0</li>
+<li>容量计算：最少需要4个磁盘，且为偶数个磁盘，总容量=所有盘容量之和的一般</li>
+<li>优点：安全性好</li>
+<li>缺点：磁盘利用率低【50%】，成本高</li>
+</ul>
+<h1 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h1><ul>
+<li>分区实质：划分起止柱面号</li>
+<li>格式化实质：创建文件系统</li>
+<li>分区工具：fdisk【小于2T】和pated【大于2T】</li>
+</ul>
+<h2 id="MBR"><a href="#MBR" class="headerlink" title="MBR"></a>MBR</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/MBR.png" alt=""></p>
+<ul>
+<li>MBR(广义)：每个磁盘只有一个主引导扇区，它不属于任何分区【所以格式化不能清除mbr】</li>
+<li>物理位置：位于0柱面，0磁道，1扇区</li>
+<li>组成：主引导程序、硬盘分区表、硬盘有效标志<ul>
+<li>主引导程序（boot-loader）占用446个字节<ul>
+<li>包含开机管理程序，直接指向可开机的程序区段，引导操作系统启动</li>
+<li>提供多重引导选项，将控制权移交到其他boot-loader</li>
+</ul>
+</li>
+<li>分区表（DPT）占用64字节，每个分区表项长16个字节，一共4个，所以最多4个主分区(磁盘限制)或扩展分区（操作系统显示只能有一个扩展分区）</li>
+<li>硬盘有效标志（MN）占2字节，内容：55AA</li>
+</ul>
+</li>
+</ul>
+<h2 id="分区构成"><a href="#分区构成" class="headerlink" title="分区构成"></a>分区构成</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png" alt=""></p>
+<ul>
+<li>组成(格式化后分区构成)：启动扇区、数个块组<ul>
+<li>启动扇区(boot sector)<ul>
+<li>每个分区都有一个启动扇区</li>
+<li>可以装载开机管理程序【boot-loader】，以用于多重引导<ul>
+<li>对linux来说，安装时默认在分区boot-sector保存一份boot-loader，可选择是否在MBR保存另一份【只安装linux系统时，则必须在mbr也安装一份】</li>
+<li>对windows来说，强制在MBR和分区boot-sector各保存一份boot-loader【所以双os需先安装windows后linux】</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>块组（block group）</li>
+</ul>
+</li>
+<li>块组（block group）：可通过dumpe2fs查看分区superblock和block group信息<ul>
+<li>super block：存储block和inode的大小、已用、未用数量，分区的挂载与否，挂载时间等【每个分区只有一个super block，块组中第一个块组包含超级块，其他块组可能包含super block，但只是作为第一个超级块的备份】</li>
+<li>文件系统描述：说明block group、block bitmap、inode bitmap、inode table等的起止block号</li>
+<li>block映射表：显示区块号是否被使用</li>
+<li>inode映射表：显示inode号是否被使用</li>
+<li>inode table：显示文件属性（不包含文件名），显示文件实际存储的block号，常用大小256字节；每个文件一个inode号(指向数据实际存储区域)</li>
+<li>data block：用于实际存储数据，块由扇区组成，常用块大小4K；文件根据大小占用数量不等的block<ul>
+<li>区块(block)是文件系统读写的最小单位（windows下为簇）</li>
+<li>block大小应当适量：block过大浪费磁盘空间；block过小则影响读写速度。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li>安装linux时强制将/boot设为主分区，以使/boot分区位于磁盘的最前面</li>
+<li>swap分区非必需的，内存较大负载不高时可以不分。</li>
+</ul>
+<h1 id="LVM"><a href="#LVM" class="headerlink" title="LVM"></a>LVM</h1><ul>
+<li>LVM(logical volume manage)逻辑卷管理，一个灵活的扩展分区管理工具</li>
+</ul>
+<h2 id="新建LVM"><a href="#新建LVM" class="headerlink" title="新建LVM"></a>新建LVM</h2><h3 id="新建LVM分区"><a href="#新建LVM分区" class="headerlink" title="新建LVM分区"></a>新建LVM分区</h3><ul>
+<li>新建分区：fdisk /dev/sdb   n,p,w</li>
+<li>更改分区类型为lvm：t   8e</li>
+</ul>
+<h3 id="新建物理卷"><a href="#新建物理卷" class="headerlink" title="新建物理卷"></a>新建物理卷</h3><ul>
+<li>新建：pvcreate /dev/sdb1、pvcreate /dev/sdc1</li>
+<li>物理卷命令：<ul>
+<li>pvcreate  ：将实体 partition 建立成为 PV；</li>
+<li>pvscan  ：搜寻目前系统里面任何具有 PV 的磁盘</li>
+<li>pvdisplay  ：显示出目前系统上面的 PV 状态；</li>
+<li>pvremove  ：将 PV 属性移除，让该 partition不具有PV属性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="新建卷组"><a href="#新建卷组" class="headerlink" title="新建卷组"></a>新建卷组</h3><ul>
+<li>新建：vgcreate -s 8M cipan /dev/sdb1 /dev/sdc1【在磁盘分区sdb1，sdc1上创建pe大小为8M，名称为cipan的卷组】</li>
+<li>卷组命令：<ul>
+<li>vgcreate  ：就是主要建立 VG 的指令</li>
+<li>vgscan  ：搜寻系统上面是否有 VG 存在</li>
+<li>vgdisplay  ：显示目前系统上面的 VG 状态</li>
+<li>vgextend  ：在 VG 内增加额外的 PV  </li>
+<li>vgreduce  ：在 VG 内移除 PV </li>
+<li>vgchange  ：设定 VG 是否启动 (active) </li>
+<li>vgremove  ：移除一个 VG </li>
+</ul>
+</li>
+</ul>
+<h3 id="新建逻辑卷"><a href="#新建逻辑卷" class="headerlink" title="新建逻辑卷"></a>新建逻辑卷</h3><ul>
+<li>新建：lvcreate -L 5G -n juan1 cipan【在卷组cipan中添加大小为5G名称为juan1的逻辑卷】</li>
+<li>逻辑卷命令：<ul>
+<li>lvcreate  ：建立 LV 啦</li>
+<li>lvscan  ：查询系统上面的 LV </li>
+<li>lvdisplay  ：显示系统上面的 LV 状态啊</li>
+<li>lvextend  ：在 LV 里面增加容量</li>
+<li>lvreduce  ：在 LV 里面减少容量</li>
+<li>lvremove  ：移除一个 LV  </li>
+<li>lvresize  ：对 LV 迚行容量大小的调整</li>
+</ul>
+</li>
+</ul>
+<h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 /dev/cipan/juan1 </span><br><span class="line">mkdir /juan</span><br><span class="line">mount /dev/cipan/juan1 /juan/</span><br><span class="line">df -h</span><br></pre></td></tr></table></figure>
+<h2 id="LVM扩容"><a href="#LVM扩容" class="headerlink" title="LVM扩容"></a>LVM扩容</h2><ul>
+<li>新建分区：fdisk /dev/sdd</li>
+<li>新建物理卷：pvcreate /dev/sdd1</li>
+<li>扩容卷组：vgextend  /dev/cipan  /dev/sdd1</li>
+<li>扩容逻辑卷：lvextend -L 8G /dev/cipan/juan1</li>
+<li>文件系统扩容：resize2fs -p /dev/cipan/juan1</li>
+<li>逻辑卷重新挂载：mount -o remount,rw /juan/</li>
+</ul>
+<h2 id="LVM减容"><a href="#LVM减容" class="headerlink" title="LVM减容"></a>LVM减容</h2><ul>
+<li>卸载逻辑卷：umount /dev/cipan/juan1</li>
+<li>文件系统减容：resize2fs /dev/cipan/juan1 4G <ul>
+<li>减容前 强制逻辑卷检查：fsck -f /dev/cipan/juan1</li>
+</ul>
+</li>
+<li>逻辑卷减容：lvreduce -L 4G /dev/cipan/juan1</li>
+<li>挂载逻辑卷：mount /dev/cipan/juan1 /juan</li>
+<li>卷组减容【后续】：vgreduce /dev/cipan /dev/sdc1</li>
+</ul>
+<h2 id="删除LVM"><a href="#删除LVM" class="headerlink" title="删除LVM"></a>删除LVM</h2><ul>
+<li>卸载逻辑卷：umount /dev/cipan/juan1</li>
+<li>删除逻辑卷：lvremove juan1</li>
+<li>删除卷组：vgremove cipan</li>
+<li>删除物理卷：pvremove /dev/sdb1</li>
+</ul>
+<h1 id="开机过程"><a href="#开机过程" class="headerlink" title="开机过程"></a>开机过程</h1><blockquote>
+<p>centos6系统启动过程</p>
+</blockquote>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.bmp" alt=""></p>
+<ul>
+<li>BIOS开机自检：检测硬件是否存在故障；根据bios设置确定引导次序</li>
+<li>MBR引导：bios读取MBR中的boot-loader（grub程序）</li>
+<li>grub引导【可选】：grub程序读取grub配置(grub.conf)，显示grub菜单选项（将开机管理功能转交给其他loader（boot sector）负责）</li>
+<li>加载kernel(此时kernel从bios取得系统控制权,并再次扫描硬件情况)和initrd，挂载根文件系统rootfs，并切换到根目录<ul>
+<li>initrd：虚拟文件系统，在内存中仿真成根目录；它包含一个可执行程序，能够帮助kenel加载真实根文件系统rootfs所需驱动程序</li>
+</ul>
+</li>
+<li>启动init进程，读取配置文件【/etc/inittab或/etc/init目录下所有文件】，确定启动级别</li>
+<li>读取/etc/rc.sysinit文件，完成系统初始化设定<ul>
+<li>激活udev和selinux</li>
+<li>设置内核参数/etc/sysctl.conf</li>
+<li>设置系统时钟</li>
+<li>设置网卡</li>
+<li>启用交换分区</li>
+<li>加载键盘映射</li>
+<li>激活RAID和lvm逻辑卷</li>
+<li>挂载额外的文件系统/etc/fstab</li>
+<li>设置环境变量</li>
+</ul>
+</li>
+<li>根据启动级别加载相应级别/etc/rc*.d下的服务脚本</li>
+<li>执行/etc/rc.local中用户自定义脚本</li>
+<li>使用Mingetty命令调出tty终端或使用prefdm调出x-windows供终端用户登录</li>
+</ul>
+<h2 id="启动级别"><a href="#启动级别" class="headerlink" title="启动级别"></a>启动级别</h2><ul>
+<li>0   关机</li>
+<li>1   单用户模式</li>
+<li>2   无网络多用户命令行模式</li>
+<li>3   有网络多用户命令行模式</li>
+<li>4   不可用</li>
+<li>5   带图形界面的多用户模式</li>
+<li>6   重启</li>
+</ul>
+<h2 id="grub-conf配置"><a href="#grub-conf配置" class="headerlink" title="grub.conf配置"></a>grub.conf配置</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-grub_conf.png" alt=""></p>
+<h2 id="inittab详解"><a href="#inittab详解" class="headerlink" title="inittab详解"></a>inittab详解</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-inittab.png" alt=""></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://blog.csdn.net/Apollon_krj/article/details/77869770" target="_blank" rel="noopener">MBR和启动扇区</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/磁盘/" rel="tag"># 磁盘</a>
+          
+            <a href="/tags/分区/" rel="tag"># 分区</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/系统管理/系统基础/linux系统-文件管理/" rel="next" title="linux系统-文件管理">
+                <i class="fa fa-chevron-left"></i> linux系统-文件管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/09/系统管理/辅助开发/域名解析服务-bind9/" rel="prev" title="域名解析服务-bind9">
+                域名解析服务-bind9 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统"><span class="nav-number">1.</span> <span class="nav-text">文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件类型"><span class="nav-number">1.1.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软链接与硬链接"><span class="nav-number">1.2.</span> <span class="nav-text">软链接与硬链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件删除"><span class="nav-number">1.3.</span> <span class="nav-text">文件删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tmpfs"><span class="nav-number">1.4.</span> <span class="nav-text">tmpfs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.4.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">1.4.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例"><span class="nav-number">1.4.3.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#磁盘"><span class="nav-number">2.</span> <span class="nav-text">磁盘</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#组成"><span class="nav-number">2.1.</span> <span class="nav-text">组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容量计算"><span class="nav-number">2.2.</span> <span class="nav-text">容量计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写"><span class="nav-number">2.3.</span> <span class="nav-text">读写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#raid"><span class="nav-number">3.</span> <span class="nav-text">raid</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#raid0"><span class="nav-number">3.1.</span> <span class="nav-text">raid0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raid1"><span class="nav-number">3.2.</span> <span class="nav-text">raid1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raid5"><span class="nav-number">3.3.</span> <span class="nav-text">raid5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raid10"><span class="nav-number">3.4.</span> <span class="nav-text">raid10</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分区"><span class="nav-number">4.</span> <span class="nav-text">分区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MBR"><span class="nav-number">4.1.</span> <span class="nav-text">MBR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区构成"><span class="nav-number">4.2.</span> <span class="nav-text">分区构成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">4.3.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM"><span class="nav-number">5.</span> <span class="nav-text">LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建LVM"><span class="nav-number">5.1.</span> <span class="nav-text">新建LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新建LVM分区"><span class="nav-number">5.1.1.</span> <span class="nav-text">新建LVM分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建物理卷"><span class="nav-number">5.1.2.</span> <span class="nav-text">新建物理卷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建卷组"><span class="nav-number">5.1.3.</span> <span class="nav-text">新建卷组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建逻辑卷"><span class="nav-number">5.1.4.</span> <span class="nav-text">新建逻辑卷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化"><span class="nav-number">5.1.5.</span> <span class="nav-text">格式化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVM扩容"><span class="nav-number">5.2.</span> <span class="nav-text">LVM扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVM减容"><span class="nav-number">5.3.</span> <span class="nav-text">LVM减容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除LVM"><span class="nav-number">5.4.</span> <span class="nav-text">删除LVM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开机过程"><span class="nav-number">6.</span> <span class="nav-text">开机过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动级别"><span class="nav-number">6.1.</span> <span class="nav-text">启动级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grub-conf配置"><span class="nav-number">6.2.</span> <span class="nav-text">grub.conf配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inittab详解"><span class="nav-number">6.3.</span> <span class="nav-text">inittab详解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
