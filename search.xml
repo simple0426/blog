@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[kubernetes-包管理器helm]]></title>
+    <url>%2F2020%2F03%2F08%2F%E8%99%9A%E6%8B%9F%E5%8C%96%E4%B8%8E%E4%BA%91%E8%AE%A1%E7%AE%97%2Fkubernetes%2Fkubernetes-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8helm%2F</url>
+    <content type="text"><![CDATA[简介实现目标 能够管理复杂的程序结构 方便升级：可使用就地升级和自定义钩子 便于分享：使用charts构建和分享程序 便于回滚：使用helm rollback快速回滚 核心术语 Helm：是k8s的应用程序管理器，也是helm的客户端；相当于linux系统的apt、yum；主要完成如下工作 本地charts开发 管理charts仓库 与tiller服务交互：发送charts以安装、查询Release的相关信息、升级或卸载已有的Release Tiller server：它是运行于k8s集群中的应用；helm的服务端程序，接收helm客户端请求，与kubernetes API Server交互，完成以下任务： 监听来自helm客户端的请求 安装应用，合并charts和Config为一个Release 跟踪Release状态 升级或卸载Release Chart：是helm的核心打包组件，用于将kubernetes的资源(deployments/service/configmap等)打包进一个charts中 Charts：一个Helm程序包，相当于linux的rpm、deb包 Repository：charts仓库，存储charts程序，相当于linux的yum或apt仓库源 Config：charts程序实例化运行时使用的配置文件 Release：charts实例化配置后运行于k8s集群中的一个charts实例；在同一个集群中，一个charts可以使用不同的Config重复安装多次，每次安装都会创建一个新的Release；相当于linux的进程 应用管理流程 从0开始创建charts：helm create 将charts及相关的文件打包为归档格式：helm package 将charts存储于仓库中并与之交互：helm repo 在kubernetes集群中安装或卸载charts：helm install、delete 管理经Helm安装的应用的版本发行周期：helm rollback helm安装安装helm-client [源码下载] 官方【被墙不可用，可以查询版本】 google:可基于github版本和google地址前缀下载源码 linux windows 解压：tar -xzvf helm-v2.14.1-linux-amd64.tar.gz 移动二进制文件：mvn linux-amd64/helm /usr/local/bin/ 注意事项：helm命令运行的节点应该可以正常运行kubectl命令，或者至少有可用kubeconfig配置文件，这样才可以和运行于k8s集群中的tiller server进行通信 安装tiller-server rbac配置–资源清单方式 123456789101112131415161718apiVersion: v1kind: ServiceAccountmetadata: name: tiller namespace: kube-system---apiVersion: rbac.authoriation.k8s.io/v1beta1kind: ClusterRoleBindingmetadata: name: tillerRoleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: cluster-adminsubjects: - kind: ServiceAccount name: tiller namespace: kube-system rbac配置–命令行方式 kubectl create serviceaccount –namespace kube-system tiller kubectl create clusterrolebinding tiller-cluster-rule –clusterrole=cluster-admin –serviceaccount=kube-system:tiller 初始化安装tiller server：helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://apphub.aliyuncs.com --debug 卸载： kubectl delete deploy tiller-deploy -n kube-system helm reset 操作命令 helm repo update：更新本地仓库元信息 helm search charts_name：搜索软件包 helm inspect charts_name：显示包详情 helm install charts_name -n release_name：安装软件包 -n release_name：部署的release名称 –dry-run：测试 –debug：调试 -f Config：使用自定义配置文件 –set key=value：使用自定义配置 安装源(charts_name)：目录、压缩包、仓库、URL helm list：显示已安装的Release helm status release_name：显示release的状态和提示信息 helm delete release_name：删除release helm upgrade：升级 helm rollback：回滚 helm history：显示版本历史 charts语法charts是helm使用的kubernetes程序打包格式，一个charts就是一个描述k8s资源文件的集合 目录结构12345678910111213141516mychart #charts名称├── Chart.yaml charts元数据信息├── LICENSE 许可证信息【可选】├── README.md README文件【可选】├── requirements.yaml 当前charts的依赖关系【可选】├── charts 当前charts依赖的其他charts文件│ ├── mysql-6.8.0.tgz├── templates 模板文件，用于生成kubernetes资源│ ├── deployment.yaml│ ├── _helpers.tpl│ ├── ingress.yaml│ ├── NOTES.txt 模板注解文件，描述如何使用charts；helm status命令也会输出此内容│ ├── service.yaml│ └── tests│ └── test-connection.yaml└── values.yaml #默认配置文件，helm install -f参数会覆盖此默认配置 Chart.yaml123456789101112131415161718192021apiVersion: v1 appVersion: 5.0.7 #程序版本，redis版本description: Open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets. #描述信息engine: gotpl #模板引擎，go模板home: http://redis.io/ #项目主页icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png #项目图标keywords: #项目关键词- redis- keyvalue- databasemaintainers: #项目维护者- email: containers@bitnami.com name: Bitnami- email: cedric@desaintmartin.fr name: desaintmartinname: redis #charts名称sources: #项目源码- https://github.com/bitnami/bitnami-docker-redisversion: 10.5.3 #charts版本 requirements.yaml12345dependencies:- name: mysql #被依赖的charts名称 version: 6.8.0 #被依赖的charts版本 repository: https://apphub.aliyuncs.com #依赖的软件所属仓库（需要事前添加仓库） alias：给被依赖的charts建立别名 使用helm dependency update命令更新依赖关系，自动下载被依赖的charts到charts目录 自定义charts 创建空charts：helm create mychart 修改配置： values.yaml中的默认配置、镜像信息 chart.yaml中的描述信息 语法检查：helm lint mychart 安装部署：helm install –name myapp ./mychart –set service.type=NodePort 打包：helm package ./mychart charts仓库公有仓库 bitnami web地址：http://hub.kubeapps.com/ 仓库：https://cetic.github.io/helm-charts/ helm web地址：https://hub.helm.sh/ 仓库：https://kubernetes-charts.storage.googleapis.com、http://storage.googleapis.com/kubernetes-charts 阿里云： web地址：https://developer.aliyun.com/hub/ 仓库：https://apphub.aliyuncs.com 源码：https://github.com/cloudnativeapp/charts 内置仓库服务 helm serve：运行charts仓库服务 helm search local：搜索本地仓库 仓库服务实践 任何支持传输文件的的web服务器都可以作为charts仓库，如apache、nginx 仓库中有一个index.yaml用于描述仓库的所有charts信息(本地制作的charts可以使用helm repo index生成索引文件) repo命令 添加仓库：helm repo add name URL 显示仓库列表：helm repo list 更新仓库元信息：helm repo update 删除仓库：helm repo remove]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>helm</tag>
+        <tag>charts</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[kubernetes-service和ingress]]></title>
     <url>%2F2020%2F03%2F06%2F%E8%99%9A%E6%8B%9F%E5%8C%96%E4%B8%8E%E4%BA%91%E8%AE%A1%E7%AE%97%2Fkubernetes%2Fkubernetes-service%E5%92%8Cingress%2F</url>
     <content type="text"><![CDATA[service实现目标 在pod的弹性伸缩变化过程中，保持外部访问入口不变【service_name、clusterIP】 对pod资源访问做负载均衡 保持在不同环境下应用部署的拓扑结构和访问方式不变【service_name】 实现方式 service资源基于标签选择器将一组pod定义成一个逻辑组合，并通过自己的ip地址和端口调度代理请求至组内的pod对象之上 kube-proxy根据apiserver中service和pod的映射关系，在节点上创建相应的iptables、ipvs规则 服务发现 环境变量方式：在创建pod对象时，kubelet将活动的service对象的一系列环境变量注入到pod中【缺点：仅有那些与创建的pod对象处于同一名称空间且事先存在的service对象才会以环境变量方式注入】 DNS方式(例如CoreDNS)：集群中创建的每个service对象，都会有ClusterDNS自动生成相关资源记录 拥有ClusterIP的service：A记录【service.namespace.svc.domain==》clusterIP】 Headless类型service(无ClusterIP)：A记录【service.namespace.svc.domain==&gt;endpointIP】 ExternalName类型service：CNAME记录【service.namespace.svc.domain==》externalName】 service类型 ClusterIP：默认的service类型，提供的ip只可以在集群内部访问 NodePort：建构于clusterIP类型之上，在节点绑定端口；实现方式：【NodePort==》ClusterIP:port】 LoadBalancer：建构于NodePort类型之上，指向云厂商设置的负载均衡设备(如阿里云SLB)；实现方式：【LoadBalancer==》NodePort==》ClusterIP】 ExternalName：不是定义k8s集群提供的服务，而是把集群外部的某服务以CNAME记录的方式映射到集群内，从而让集群内的pod资源能够访问外部的service;externlName只能是外部服务的域名(不能是ip)123456789101112apiVersion: v1kind: Servicemetadata: name: redis-svc namespace: defaultspec: type: ExternalName externalName: redis.example.com ports: - protocol: TCP port: 6379 targetPort: 6379 Headless类型service 设置：【clusterIp:None】 实现：不为service对象创建clusterIP，客户端直接通过pod-ip访问pod 实现方式： 有标签选择器(selector)：DNS直接将service_name解析为后端各pod对象的ip；客户端访问时，每次接入的pod资源则是由DNS服务器接收到查询请求时以轮询(roundrobin)方式返回的IP地址 无标签选择器 为ExternalName类型创建CNAME记录，例子如上 对其他类型来说，为那些与当前service共享名称的所有Endpoints对象创建一条记录 service语法 service部署 1234567891011121314apiVersion: v1kind: Servicemetadata: name: nginx-servicespec: ports: - port: 31222 #服务端口：ClusterIP protocol: TCP targetPort: 80 #pod/容器端口 nodePort: 32222 #节点端口【不设置或设置为0，系统自动配置】 selector: #选择的pod app: nginx type: NodePort #端口类型 # clusterIP: None 相关deployment 123456789101112131415161718192021apiVersion: apps/v1 kind: Deploymentmetadata: #Deployment元信息 name: nginx-deployment labels: app: nginxspec: replicas: 3 #期望的pod数量 selector: #pod选择器 matchLabels: app: nginx template: #pod模板 metadata: labels: app: nginx spec: containers: - name: nginx image: nginx:1.12.2 ports: - containerPort: 80 负载均衡kubernetes实现了两种形式的负载均衡： TCP负载均衡：工作于传输层的service资源； 基于netfilter之上进行的四层调度，如iptables、ipvs 支持调度http、mysql等应用层服务 HTTP(S)负载均衡：工作于应用层的Ingress资源 可以实现基于URL的请求调度机制 支持卸载HTTPS中的ssl会话 支持对后端服务器进行健康检查 Ingress 实质：就是一组基于DNS名称(host)或URL路径把请求转发到指定的service资源的规则 实现：实现Ingress规则的组件就是Ingress Controller Ingress-Controller 与k8s核心组件关系：Ingress Controller不是集群kube-controller-manager的一部分，它是k8s集群的一个组件(类似于CoreDNS)，需要单独部署 本质：Ingress控制器本身也是作为一个pod资源在集群中运行，它可以由deployment或daemonset创建；由于需要接入外部流量，还需要为其创建相关的NodePort或LoadBalancer类型的Service资源对象 实现原理：Ingress控制器基于Ingress定义的规则将流量转发到service对应的后端pod上，service对象仅仅用于辅助Ingress识别pod对象；这种转发机制会绕过service资源，从而省去了kube-proxy实现的端口代理开销 实现软件：Ingress控制器可以由任何实现反向代理(HTTP/HTTPS)的软件实现，如nginx、traefik nginx-ingress pod service traefik-1.7 官方安装 第三方安装 traefik配置https Ingress语法 rules：转发规则定义 host：匹配的主机名 不支持使用ip地址 不支持端口形式【：port】 字段留空表示匹配所有主机名 backend：处理请求的后端，rules和backend至少要定义一个 serviceName：service名称 servicePort：service端口 tls：包含支持https的对象 hosts：使用证书的主机名列表 secretName：基于证书创建的secret对象名称 Ingress范例 范例-基于主机名的虚拟主机【traefik.jimmysong.io==》traefik-ingress-service:8080】 1234567891011121314apiVersion: extensions/v1beta1kind: Ingressmetadata: name: traefik-ingress namespace: kube-systemspec: rules: - host: traefik.jimmysong.io http: paths: - path: / backend: serviceName: traefik-ingress-service servicePort: 8080 范例-基于URL路径【myapp.abc.com/myapp==》myapp:80】 123456789101112131415apiVersion: extensions/v1beta1kind: Ingressmetadata: name: traefik-ingress annotations: traefik.ingress.kubernetes.io/rewrite-target: /spec: rules: - host: myapp.abc.com http: paths: - path: /myapp backend: serviceName: myapp servicePort: 80 Ingress-TLS设置范例 创建自签名证书 openssl genrsa -out tls.key 2048 openssl req -new -x509 -key tls.key -out tls.crt -subj /C=CN/ST=Beijing/L=Beijing/O=DevOps/CN=test.abc.com -days 3650 将证书放入k8s的secret中：kubectl create secret tls tomcat-ingress-secret –cert=tls.crt –key=tls.key -n testing 在ingress中设置123456789101112131415161718kind: IngressapiVersion: extensions/v1beta1metadata: name: tomcat namespace: testingspec: tls: - hosts: - test.abc.com secretName: tomcat-ingress-secret rules: - host: test.abc.com http: paths: - path: backend: serviceName: tomcat-svc servicePort: 80]]></content>
@@ -757,12 +769,12 @@
         <category>web</category>
       </categories>
       <tags>
+        <tag>rewrite</tag>
         <tag>nginx</tag>
         <tag>proxy</tag>
         <tag>lua</tag>
         <tag>waf</tag>
         <tag>升级</tag>
-        <tag>rewrite</tag>
       </tags>
   </entry>
   <entry>
@@ -882,8 +894,8 @@
         <category>web</category>
       </categories>
       <tags>
-        <tag>rewrite</tag>
         <tag>apache</tag>
+        <tag>rewrite</tag>
       </tags>
   </entry>
   <entry>
@@ -968,9 +980,9 @@
         <category>web</category>
       </categories>
       <tags>
+        <tag>json</tag>
         <tag>jquery</tag>
         <tag>ajax</tag>
-        <tag>json</tag>
       </tags>
   </entry>
   <entry>
@@ -1050,9 +1062,9 @@
         <category>mysql</category>
       </categories>
       <tags>
-        <tag>存储过程</tag>
         <tag>mysql</tag>
         <tag>索引</tag>
+        <tag>存储过程</tag>
       </tags>
   </entry>
   <entry>
@@ -1075,8 +1087,8 @@
         <category>python</category>
       </categories>
       <tags>
-        <tag>json</tag>
         <tag>open</tag>
+        <tag>json</tag>
         <tag>xml</tag>
         <tag>ini</tag>
       </tags>
