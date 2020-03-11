@@ -136,9 +136,9 @@ spec: #资源的详细定义
 * 启动命令：`minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.7.3.iso`
     - start其他配置选项
         + --cpus=2：为minikube虚拟机配置的cpu数量
-        + --disk-size='20000mb'：为minikube虚拟机配置的磁盘大小
-        + --memory='2000mb'：为minikube虚拟机分配的内存
-        + --kubernetes-version='v1.16.2'：minikube使用的kubernetes版本
+        + --disk-size=20000mb：为minikube虚拟机配置的磁盘大小
+        + --memory=2000mb'：为minikube虚拟机分配的内存
+        + --kubernetes-version=v1.16.2：minikube使用的kubernetes版本
 * 停止命令：minikube stop
 * 浏览器查看集群信息：minikube dashboard
 * 使用kubectl查看集群信息：kubectl config view、kubectl cluster-info

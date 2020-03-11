@@ -182,3 +182,42 @@ volumes:
   persistentVolumeClaim:
     claimName: pvc-oss   
 ```
+
+# 动态存储-storageclass
+## 创建storageclass
+* 通用参数
+  - provisioner:提供存储资源的存储系统
+  - parameters：存储类使用参数描述要关联的存储卷
+  - reclaimPolicy：动态创建pv的回收策略，默认delete，可选retain
+  - mountOptions：pv挂载选项
+  - volumeBindingMode：如何给pvc完成供给和绑定
+* 范例：阿里云nas
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: alicloud-nas-subpath
+mountOptions:
+- nolock,tcp,noresvport
+- vers=3
+parameters:
+  volumeAs: subpath
+  server: "xxxxxxx.cn-hangzhou.nas.aliyuncs.com:/k8s/"
+provisioner: nasplugin.csi.alibabacloud.com
+reclaimPolicy: Retain
+```
+
+## 创建pvc
+```
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: storageclass-pvc
+spec:
+  storageClassName: "standard"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+```
