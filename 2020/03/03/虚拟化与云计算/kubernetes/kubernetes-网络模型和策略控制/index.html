@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-04T11:42:38.858Z">
+<meta property="og:updated_time" content="2020-03-10T08:02:29.094Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-网络模型和策略控制">
 <meta name="twitter:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-04T19:42:38+08:00">
-                2020-03-04
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-10T16:02:29+08:00">
+                2020-03-10
               </time>
             
           </span>
@@ -457,7 +457,7 @@
 <li><a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml" target="_blank" rel="noopener">资源清单</a></li>
 <li>配置调整<ul>
 <li>网络设置(net-conf.json)</li>
-<li>主机间的内部通信端口设置(kube-flannel–&gt;DaemonSet)：–iface=eth1</li>
+<li>主机间的内部通信端口设置(kube-flannel–&gt;DaemonSet)：<code>--iface=eth1</code></li>
 </ul>
 </li>
 </ul>
@@ -694,7 +694,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">110</span>
+                  <span class="site-state-item-count">112</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -716,7 +716,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">214</span>
+                  <span class="site-state-item-count">219</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

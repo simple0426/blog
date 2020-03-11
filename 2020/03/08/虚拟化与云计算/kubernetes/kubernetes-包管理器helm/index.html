@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="简介实现目标 能够管理复杂的程序结构 方便升级：可使用就地升级和自定义钩子 便于分享：使用charts构建和分享程序 便于回滚：使用helm rollback快速回滚  核心术语 Helm：是k8s的应用程序管理器，也是helm的客户端；相当于linux系统的apt、yum；主要完成如下工作 本地charts开发 管理charts仓库 与tiller服务交互：发送charts以安装、查询Relea">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-08T04:58:11.028Z">
+<meta property="og:updated_time" content="2020-03-08T06:46:11.676Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-包管理器helm">
 <meta name="twitter:description" content="简介实现目标 能够管理复杂的程序结构 方便升级：可使用就地升级和自定义钩子 便于分享：使用charts构建和分享程序 便于回滚：使用helm rollback快速回滚  核心术语 Helm：是k8s的应用程序管理器，也是helm的客户端；相当于linux系统的apt、yum；主要完成如下工作 本地charts开发 管理charts仓库 与tiller服务交互：发送charts以安装、查询Relea">
@@ -330,7 +330,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-08T12:58:11+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-08T14:46:11+08:00">
                 2020-03-08
               </time>
             
@@ -439,8 +439,8 @@
 </li>
 <li><p>rbac配置–命令行方式</p>
 <ul>
-<li>kubectl create serviceaccount –namespace kube-system tiller</li>
-<li>kubectl create clusterrolebinding tiller-cluster-rule –clusterrole=cluster-admin –serviceaccount=kube-system:tiller</li>
+<li><code>kubectl create serviceaccount --namespace kube-system tiller</code></li>
+<li><code>kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller</code></li>
 </ul>
 </li>
 <li>初始化安装tiller server：<code>helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://apphub.aliyuncs.com --debug</code></li>
@@ -562,6 +562,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/03/11/虚拟化与云计算/kubernetes/kubernetes-监控和日志/" rel="prev" title="kubernetes-监控和日志">
+                kubernetes-监控和日志 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -637,7 +641,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">110</span>
+                  <span class="site-state-item-count">112</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -659,7 +663,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">214</span>
+                  <span class="site-state-item-count">219</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
