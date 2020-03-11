@@ -1,8 +1,15 @@
 ---
 title: kubernetes-监控和日志
 tags:
+  - metrics-server
+  - prometheus
+  - 监控
+  - 日志
 categories:
+  - kubernetes
+date: 2020-03-11 17:03:40
 ---
+
 # 监控类型
 * 资源监控(cpu、内存、磁盘、带宽)
 * 性能监控-APM(jvm)
@@ -35,15 +42,39 @@ categories:
 | Custom metrics    | custom.metrics.k8s.io   | 主要的实现为prometheus，提供资源监控和自定义监控   |
 | External metrics  | external.metrics.k8s.io | 主要的实现为云厂商的provider，提供云资源的监控指标 |
 
+# metric-server部署
+安装参考：https://github.com/kubernetes-sigs/metrics-server  
+错误处理：以下解决方式适用于手动安装的kubernetes集群（非kubeadm方式）  
 
-## 资源指标API
-* metrics-server部署： https://github.com/kubernetes-sigs/metrics-server
-* 验证资源指标API可用性
-    - kubectl get --raw "/apis/metrics.k8s.io/v1beta1/pods"
-    - kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
-* 获取node或pod对象的资源使用情况；kubectl top node/pod
+## 安装metric-server证书
+>错误：metric-server x509: certificate signed by unknown authority
 
-# prometheus监控
+* [需要先安装cfssl工具](#安装cfssl)
+* cd /etc/kubernetes/pki/
+* 创建签名
+```
+cat > metrics-server-csr.json <<EOF
+{"CN": "aggregator","hosts": [],"key": {"algo": "rsa","size": 2048},"names": [{"C": "CN","ST": "Hangzhou","L": "Hangzhou","O": "k8s","OU": "4Paradigm"}]}
+EOF
+```
+* 创建证书和私钥：`cfssl gencert -ca=/etc/kubernetes/pki/ca.pem -ca-key=/etc/kubernetes/pki/ca-key.pem -config=/etc/kubernetes/pki/ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server`
+
+## apiserver开启聚合配置
+>错误：I0313 05:18:36.447202 1 serving.go:273] Generated self-signed cert (apiserver.local.config/certificates/apiserver.crt, apiserver.local.config/certificates/apiserver.key)Error: cluster doesn't provide requestheader-client-ca-file
+
+```
+--proxy-client-cert-file=/etc/kubernetes/pki/metrics-server.pem --proxy-client-key-file=/etc/kubernetes/pki/metrics-server-key.pem --runtime-config=api/all=true --requestheader-client-ca-file=/etc/kubernetes/pki/ca.crt --requestheader-allowed-names=aggregator --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User
+```
+
+## 容器网络配置
+>错误【容器解析的主机名不是节点ip】：E0313 08:23:41.193222 1 manager.go:102] unable to fully collect metrics: [unable to fully scrape metrics from source kubelet_summary:192.168.209.130: unable to fetch metrics from Kubelet 192.168.209.130 (192.168.209.130)
+
+```
+- --kubelet-insecure-tls
+- --kubelet-preferred-address-types=InternalIP
+```
+
+# prometheus
 ## 架构
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png)
 
@@ -64,7 +95,7 @@ categories:
 * 各类api clients
 
 ## 部署
-* [kubernetes上部署prometheus](https://github.com/coreos/prometheus-operator)
+[kubernetes上部署prometheus](https://github.com/coreos/kube-prometheus)
 
 # 日志分类
 * 主机内核日志：网络栈异常、驱动异常、文件系统异常
@@ -86,7 +117,7 @@ categories:
     - influxdb：索引、存储
     - grafana：可视化、分析
 
-# 阿里云监控实践
+# 阿里云产品实践
 * 云监控
 * SLS：日志服务
 * ARMS(java/php)：性能监控
@@ -94,3 +125,16 @@ categories:
     - 架构感知
     - 故障演练
     - 流控降级
+
+---
+# 安装[cfssl](https://github.com/cloudflare/cfssl)
+* [安装golang](https://golang.google.cn/doc/install)
+    - 下载：wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
+    - tar -C /usr/local/ -xzf go1.14.linux-amd64.tar.gz  
+    - export PATH=$PATH:/usr/local/go/bin
+* 编译cfssl
+    - 下载：https://github.com/cloudflare/cfssl.git
+    - 安装gcc库：yum install gcc*
+    - cd cfssl
+    - make
+    - export PATH=$PATH:/root/vendor/cfssl/bin

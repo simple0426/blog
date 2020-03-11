@@ -90,7 +90,7 @@ FLANNEL_OPTIONS="-iface=eth1"
 * [资源清单](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
 * 配置调整
     - 网络设置(net-conf.json)
-    - 主机间的内部通信端口设置(kube-flannel-->DaemonSet)：--iface=eth1
+    - 主机间的内部通信端口设置(kube-flannel-->DaemonSet)：`--iface=eth1`
 
 # 基于calico的网络策略部署
 ## 概要

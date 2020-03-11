@@ -71,8 +71,8 @@ subjects:
     namespace: kube-system
 ```
 * rbac配置--命令行方式
-    - kubectl create serviceaccount --namespace kube-system tiller
-    - kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+    - `kubectl create serviceaccount --namespace kube-system tiller`
+    - `kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller`
 * 初始化安装tiller server：`helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://apphub.aliyuncs.com --debug`
 * 卸载：
     - kubectl delete deploy tiller-deploy -n kube-system

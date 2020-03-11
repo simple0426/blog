@@ -14,6 +14,11 @@ date: 2019-06-24 21:54:01
 - docker-cn：https://registry.docker-cn.com
 - daocloud：http://f1361db2.m.daocloud.io
 
+# [镜像加速-中科大](http://mirrors.ustc.edu.cn/)
+* docker.io：docker.mirrors.ustc.edu.cn
+* gcr.io：gcr.mirrors.ustc.edu.cn
+* quay.io：quay.mirrors.ustc.edu.cn
+
 # nginx文档
 - [淘宝tengine项目](http://tengine.taobao.org/)
 - [淘宝nginx文档](http://tengine.taobao.org/nginx_docs/cn/docs/)
