@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="volumes类型 本地存储(临时存储)：emptyDir、hostpath 网络存储： in-tree(插件代码在k8s仓库中)：nfs、awsElasticBlockStorage、gcePersistentDisk out-of-tree(插件代码不在k8s仓库中)：flexvolume、csi等网络存储   配置存储：secret、ConfigMap、downwardAPI、Service">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-24T12:01:51.560Z">
+<meta property="og:updated_time" content="2020-03-18T10:11:34.336Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-存储和持久化">
 <meta name="twitter:description" content="volumes类型 本地存储(临时存储)：emptyDir、hostpath 网络存储： in-tree(插件代码在k8s仓库中)：nfs、awsElasticBlockStorage、gcePersistentDisk out-of-tree(插件代码不在k8s仓库中)：flexvolume、csi等网络存储   配置存储：secret、ConfigMap、downwardAPI、Service">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-24T20:01:51+08:00">
-                2020-02-24
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-18T18:11:34+08:00">
+                2020-03-18
               </time>
             
           </span>
@@ -470,6 +470,19 @@
 <li>volumeName：用于直接指定要绑定的pv的卷名</li>
 </ul>
 <h2 id="pod使用"><a href="#pod使用" class="headerlink" title="pod使用"></a>pod使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">volumes:</span><br><span class="line">- name: pvc-oss</span><br><span class="line">  persistentVolumeClaim:</span><br><span class="line">    claimName: pvc-oss</span><br></pre></td></tr></table></figure>
+<h1 id="动态存储-storageclass"><a href="#动态存储-storageclass" class="headerlink" title="动态存储-storageclass"></a>动态存储-storageclass</h1><h2 id="创建storageclass"><a href="#创建storageclass" class="headerlink" title="创建storageclass"></a>创建storageclass</h2><ul>
+<li>通用参数<ul>
+<li>provisioner:提供存储资源的存储系统</li>
+<li>parameters：存储类使用参数描述要关联的存储卷</li>
+<li>reclaimPolicy：动态创建pv的回收策略，默认delete，可选retain</li>
+<li>mountOptions：pv挂载选项</li>
+<li>volumeBindingMode：如何给pvc完成供给和绑定</li>
+</ul>
+</li>
+<li>范例：阿里云nas<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: alicloud-nas-subpath</span><br><span class="line">mountOptions:</span><br><span class="line">- nolock,tcp,noresvport</span><br><span class="line">- vers=3</span><br><span class="line">parameters:</span><br><span class="line">  volumeAs: subpath</span><br><span class="line">  server: &quot;xxxxxxx.cn-hangzhou.nas.aliyuncs.com:/k8s/&quot;</span><br><span class="line">provisioner: nasplugin.csi.alibabacloud.com</span><br><span class="line">reclaimPolicy: Retain</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="创建pvc"><a href="#创建pvc" class="headerlink" title="创建pvc"></a>创建pvc</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: storageclass-pvc</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: &quot;standard&quot;</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 2Gi</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -593,7 +606,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">112</span>
+                  <span class="site-state-item-count">114</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -615,7 +628,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">219</span>
+                  <span class="site-state-item-count">222</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -664,7 +677,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#volumes类型"><span class="nav-number">1.</span> <span class="nav-text">volumes类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#emptyDir"><span class="nav-number">2.</span> <span class="nav-text">emptyDir</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用途"><span class="nav-number">2.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hostPath"><span class="nav-number">3.</span> <span class="nav-text">hostPath</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用途-1"><span class="nav-number">3.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#oss使用"><span class="nav-number">4.</span> <span class="nav-text">oss使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ossfs"><span class="nav-number">4.1.</span> <span class="nav-text">ossfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubernetes存储管理"><span class="nav-number">4.2.</span> <span class="nav-text">kubernetes存储管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pv-pvc"><span class="nav-number">5.</span> <span class="nav-text">pv-pvc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pv创建"><span class="nav-number">5.1.</span> <span class="nav-text">pv创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pv-范例"><span class="nav-number">5.1.1.</span> <span class="nav-text">pv-范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pv-参数"><span class="nav-number">5.1.2.</span> <span class="nav-text">pv-参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pvc创建"><span class="nav-number">5.2.</span> <span class="nav-text">pvc创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pvc-范例"><span class="nav-number">5.2.1.</span> <span class="nav-text">pvc-范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pvc-参数"><span class="nav-number">5.2.2.</span> <span class="nav-text">pvc-参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod使用"><span class="nav-number">5.3.</span> <span class="nav-text">pod使用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#volumes类型"><span class="nav-number">1.</span> <span class="nav-text">volumes类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#emptyDir"><span class="nav-number">2.</span> <span class="nav-text">emptyDir</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用途"><span class="nav-number">2.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hostPath"><span class="nav-number">3.</span> <span class="nav-text">hostPath</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用途-1"><span class="nav-number">3.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#oss使用"><span class="nav-number">4.</span> <span class="nav-text">oss使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ossfs"><span class="nav-number">4.1.</span> <span class="nav-text">ossfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubernetes存储管理"><span class="nav-number">4.2.</span> <span class="nav-text">kubernetes存储管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pv-pvc"><span class="nav-number">5.</span> <span class="nav-text">pv-pvc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pv创建"><span class="nav-number">5.1.</span> <span class="nav-text">pv创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pv-范例"><span class="nav-number">5.1.1.</span> <span class="nav-text">pv-范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pv-参数"><span class="nav-number">5.1.2.</span> <span class="nav-text">pv-参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pvc创建"><span class="nav-number">5.2.</span> <span class="nav-text">pvc创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pvc-范例"><span class="nav-number">5.2.1.</span> <span class="nav-text">pvc-范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pvc-参数"><span class="nav-number">5.2.2.</span> <span class="nav-text">pvc-参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod使用"><span class="nav-number">5.3.</span> <span class="nav-text">pod使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态存储-storageclass"><span class="nav-number">6.</span> <span class="nav-text">动态存储-storageclass</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建storageclass"><span class="nav-number">6.1.</span> <span class="nav-text">创建storageclass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建pvc"><span class="nav-number">6.2.</span> <span class="nav-text">创建pvc</span></a></li></ol></li></ol></div>
             
 
           </div>
