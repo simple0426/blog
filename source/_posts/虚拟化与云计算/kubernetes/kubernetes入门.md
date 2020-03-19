@@ -20,17 +20,13 @@ date: 2018-04-03 10:28:44
 ## master节点
 >管理和数据资源入口
 
-* etcd：分布式配置存储服务，保存集群状态，类似zookeeper
-* apiserver：是kubernetes系统的入口，封装了对核心对象的增删改查操作，以restful接口的形式提供给外部和内部使用。它维护的rest对象可以持久化到etcd中
+* etcd：分布式配置存储服务，保存资源的定义和状态
+* apiserver：是kubernetes系统的入口，封装了对资源对象的增删改查操作，以restful接口的形式提供给外部和内部使用。它维护的rest对象可以持久化到etcd中
     - 可以水平扩展进行部署
 * scheduler：负责集群资源调度，根据预定的调度策略将pod调度到相应的机器上
     - 可以热备，但只能有一个active
-* controller-manager：负责维护集群的状态，比如故障检测、自动扩展、滚动更新等
+* controller-manager：确保各资源的当前状态(status)可以匹配用户期望的状态(spec)，实现此功能的操作有：故障检测、自动扩展、滚动更新等；实现此功能的控制器有：各类pod控制器，endpoint控制器、ServiceAccount控制器、node控制器等
     - 可以热备，但只能有一个active
-    - 节点（Node）控制器
-    - endpoint-controller：定期关联service和pod
-    - replication-controller：负责关联replication controller和pod
-    - Service Account和Token控制器：为新的Namespace 创建默认帐户访问API Token
 
 ## node节点
 >真正运行业务负载的节点
