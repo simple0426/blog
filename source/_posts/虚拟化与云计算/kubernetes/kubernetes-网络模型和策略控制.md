@@ -14,6 +14,7 @@ date: 2020-03-03 23:54:17
 # kubernetes网络模型
 * 要求所有容器都处于同一个ip网络中
 * 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间
+* pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。
 
 ## 实现目标
 * pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供；
