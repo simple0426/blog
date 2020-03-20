@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+<meta name="description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间 pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。  实现目标 pod内容">
 <meta name="keywords" content="ingress,cni,flannel,canal,calico">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-网络模型和策略控制">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/03/03/虚拟化与云计算/kubernetes/kubernetes-网络模型和策略控制/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+<meta property="og:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间 pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。  实现目标 pod内容">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-10T08:02:29.094Z">
+<meta property="og:updated_time" content="2020-03-20T07:23:52.610Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-网络模型和策略控制">
-<meta name="twitter:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间  实现目标 pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供； pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解">
+<meta name="twitter:description" content="kubernetes网络模型 要求所有容器都处于同一个ip网络中 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间 pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。  实现目标 pod内容">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-10T16:02:29+08:00">
-                2020-03-10
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-20T15:23:52+08:00">
+                2020-03-20
               </time>
             
           </span>
@@ -389,6 +389,7 @@
         <h1 id="kubernetes网络模型"><a href="#kubernetes网络模型" class="headerlink" title="kubernetes网络模型"></a>kubernetes网络模型</h1><ul>
 <li>要求所有容器都处于同一个ip网络中</li>
 <li>集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间</li>
+<li>pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。</li>
 </ul>
 <h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
 <li>pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供；</li>
@@ -694,7 +695,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">114</span>
+                  <span class="site-state-item-count">115</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -716,7 +717,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">223</span>
+                  <span class="site-state-item-count">224</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
