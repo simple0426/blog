@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="初始化容器,钩子函数,容器探测,资源,">
+  <meta name="keywords" content="初始化容器,钩子函数,容器探测,资源,标签,选择器,pod定义,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="pod对象生命周期pod对象操作概述 运行初始化容器(init container) 创建主容器(main container)【必须】 容器启动后钩子(post start hook) 容器就绪型探测(readiness probe) 容器存活性探测(liveness probe) 容器终止前钩子(pre stop hook)  pod状态 pending：api server创建了pod资源对">
-<meta name="keywords" content="初始化容器,钩子函数,容器探测,资源">
+<meta name="description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
+<meta name="keywords" content="初始化容器,钩子函数,容器探测,资源,标签,选择器,pod定义">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-pod对象管理">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/02/24/虚拟化与云计算/kubernetes/kubernetes-pod对象管理/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="pod对象生命周期pod对象操作概述 运行初始化容器(init container) 创建主容器(main container)【必须】 容器启动后钩子(post start hook) 容器就绪型探测(readiness probe) 容器存活性探测(liveness probe) 容器终止前钩子(pre stop hook)  pod状态 pending：api server创建了pod资源对">
+<meta property="og:description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-20T16:17:56.509Z">
+<meta property="og:updated_time" content="2020-03-22T10:00:55.890Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-pod对象管理">
-<meta name="twitter:description" content="pod对象生命周期pod对象操作概述 运行初始化容器(init container) 创建主容器(main container)【必须】 容器启动后钩子(post start hook) 容器就绪型探测(readiness probe) 容器存活性探测(liveness probe) 容器终止前钩子(pre stop hook)  pod状态 pending：api server创建了pod资源对">
+<meta name="twitter:description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-21T00:17:56+08:00">
-                2020-03-21
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-22T18:00:55+08:00">
+                2020-03-22
               </time>
             
           </span>
@@ -386,15 +386,240 @@
       
 
       
-        <h1 id="pod对象生命周期"><a href="#pod对象生命周期" class="headerlink" title="pod对象生命周期"></a>pod对象生命周期</h1><h2 id="pod对象操作概述"><a href="#pod对象操作概述" class="headerlink" title="pod对象操作概述"></a>pod对象操作概述</h2><ul>
-<li>运行初始化容器(init container)</li>
-<li>创建主容器(main container)【必须】</li>
-<li>容器启动后钩子(post start hook)</li>
-<li>容器就绪型探测(readiness probe)</li>
-<li>容器存活性探测(liveness probe)</li>
-<li>容器终止前钩子(pre stop hook)</li>
+        <h1 id="容器与pod"><a href="#容器与pod" class="headerlink" title="容器与pod"></a>容器与pod</h1><h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><ul>
+<li>容器的本质是一个进程，是一个视图被隔离、资源受限制的进程</li>
+<li>容器里pid=1的进程就是应用本身</li>
+<li>管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程)</li>
+<li>kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包</li>
 </ul>
-<h2 id="pod状态"><a href="#pod状态" class="headerlink" title="pod状态"></a>pod状态</h2><ul>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><ul>
+<li>容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理<ul>
+<li>如果需要运行多进程，则pid=1的进程要具有管理其他进程的能力(systemd)</li>
+<li>也可以直接运行systemd，由systemd管理多进程；但是，此时：【容器管理】=【管理systemd】!=【直接管理应用本身】</li>
+</ul>
+</li>
+<li>作为类比，容器相当于进程(linux中的线程)，pod相当于进程组(linux进程，包含至少一个线程)</li>
+<li>在k8s中，pod是一个逻辑单位，它包含多个相互协作的容器，共享某些资源(volume/网络)<ul>
+<li>pod是资源分配单位【类比，进程是操作系统资源分配的单位】</li>
+<li>pod也是原子调度单位</li>
+</ul>
+</li>
+<li>pod与多容器<ul>
+<li>如果只是亲密关系，可以通过调度器让俩个应用部署在同一台宿主机上</li>
+<li>如果是超亲密关系(比如：产生日志的应用和写日志的应用)，则需要将多个应用定义在一个pod中<ul>
+<li>会发生直接的文件交互</li>
+<li>使用localhost或socket进行本地通信</li>
+<li>会发生频繁的RPC调用</li>
+<li>会共享某些namespace</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="pod实现"><a href="#pod实现" class="headerlink" title="pod实现"></a>pod实现</h2><h3 id="网络实现"><a href="#网络实现" class="headerlink" title="网络实现"></a>网络实现</h3><ul>
+<li>启动一个infra container容器，pod里的其他容器通过join namespace的方式加入infra container的network namespace中</li>
+<li>pod的网络地址即是infra的地址</li>
+<li>pod的生命周期也即infra的生命周期</li>
+</ul>
+<h3 id="存储实现"><a href="#存储实现" class="headerlink" title="存储实现"></a>存储实现</h3><p>在pod级别创建volume，然后pod内的所有容器挂载这个volume</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: two-containers</span><br><span class="line">spec:</span><br><span class="line">  restartPolicy: Never</span><br><span class="line">  volumes:</span><br><span class="line">  - name: shared-data</span><br><span class="line">     hostPath:</span><br><span class="line">        path: /data</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx-container</span><br><span class="line">     image: nginx</span><br><span class="line">     volumeMounts:</span><br><span class="line">      - name: shared-data</span><br><span class="line">         mountPath: /usr/sharr/nginx/html</span><br><span class="line">  - name: debian-container</span><br><span class="line">     image: debian</span><br><span class="line">     volumeMounts:</span><br><span class="line">      - name: shared-data</span><br><span class="line">         mountPath: /pod-data</span><br><span class="line">    command: [&quot;/bin/sh&quot;]</span><br><span class="line">    args: [&quot;-c&quot;, &quot;echo Hello from the debian container &gt; /pod-data/index.html&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="容器设计模式"><a href="#容器设计模式" class="headerlink" title="容器设计模式"></a>容器设计模式</h3><ul>
+<li>sidecar：在pod里定义一些专门的容器，来执行主业务容器所需要的辅助工作</li>
+<li>通过sidecar方式，可以实现功能的解耦和重用</li>
+</ul>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><ul>
+<li>日志收集(log)</li>
+<li>Debug应用(debug)</li>
+<li>容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互</li>
+<li>适配器(adapter)：单独写一个应用用来处理URL变更、数据格式变更的操作，以完成对现有业务的兼容</li>
+</ul>
+<h4 id="应用范例-war包"><a href="#应用范例-war包" class="headerlink" title="应用范例-war包"></a>应用范例-war包</h4><ul>
+<li>可选方式<ul>
+<li>将war包和tomcat都打包进镜像中，但是代码和tomcat的更新都需要更新镜像</li>
+<li>制作单独的tomcat镜像，在容器运行时将war包挂载到容器内，此时则需要单独维护war包和一个分布式文件系统</li>
+</ul>
+</li>
+<li>sidecar方式-initContainer<ul>
+<li>先启动一个initContainer，将war包拷贝到共享目录</li>
+<li>再启动container，这个容器启动tomcat(共享目录webapps中包含war包)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: javaweb-2</span><br><span class="line">spec:</span><br><span class="line">  initContainers:</span><br><span class="line">  - image: resouer/sample:v2</span><br><span class="line">     name: war</span><br><span class="line">     command: [&quot;cp&quot;, &quot;/sample.war&quot;, &quot;/app&quot;]</span><br><span class="line">     volumeMounts:</span><br><span class="line">     - mountPath: /app</span><br><span class="line">        name: app-volume</span><br><span class="line">  contaners:</span><br><span class="line">  - image: resouer/tomcat:7.0</span><br><span class="line">     name: tomcat</span><br><span class="line">     command: [&quot;sh&quot;, &quot;-c&quot;, &quot;/root/apache-tomcat-7.0.42-v2/bin/start.sh&quot;]</span><br><span class="line">     volumeMounts:</span><br><span class="line">      - mountPath: /root/apache-tomcat-7.0.42-v2/webapps</span><br><span class="line">         name: app-volume</span><br><span class="line">      ports:</span><br><span class="line">      - containerPort: 8080</span><br><span class="line">         hostPort: 8001</span><br><span class="line">    volumes:</span><br><span class="line">    - name: app-volume</span><br><span class="line">       emptyDir: &#123;&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="pod容器定义"><a href="#pod容器定义" class="headerlink" title="pod容器定义"></a>pod容器定义</h1><p>spec.containers</p>
+<h2 id="镜像-images"><a href="#镜像-images" class="headerlink" title="镜像-images"></a>镜像-images</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-pod</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: nginx #容器名称</span><br><span class="line">      images: nginx:latest #镜像名称</span><br><span class="line">        imagePullPolicy: Always</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置选项</p>
+<ul>
+<li>仓库认证：imagePullSecrets【参见secret章节】</li>
+<li>镜像获取策略：imagePullPolicy<ul>
+<li>Always：镜像版本为latest或本地不存在的镜像则从远端仓库拉取</li>
+<li>IfNotPresent：本地镜像不存在则从远端仓库拉取</li>
+<li>Never：禁止从远端仓库拉取镜像，只使用本地镜像  </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="端口-ports"><a href="#端口-ports" class="headerlink" title="端口-ports"></a>端口-ports</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-example</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    images: ikubernetes/myapp:v1</span><br><span class="line">    ports:</span><br><span class="line">      - name: http #端口名称</span><br><span class="line">        containerPort: 80 #指向容器监听的端口</span><br><span class="line">        protocol: TCP #端口协议类型</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明：端口设置仅为说明性内容；为端口设置名称，方便被service调用</p>
+</li>
+<li>设置选项<ul>
+<li>hostPort：将节点端口映射到容器端口</li>
+<li>hostIP：节点端口绑定的ip，默认为0.0.0.0，一般不设置</li>
+</ul>
+</li>
+<li>注意事项：hostPort和service下的NodePort区别<ul>
+<li>hostPort在pod下设置，只绑定到pod所在节点</li>
+<li>NodePort在service下设置，绑定到所有节点</li>
+</ul>
+</li>
+</ul>
+<h2 id="自定义命令-command"><a href="#自定义命令-command" class="headerlink" title="自定义命令-command"></a>自定义命令-command</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-example</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: alpine:latest</span><br><span class="line">    command: [&quot;/bin/sh&quot;] #命令</span><br><span class="line">    args: [&quot;-c&quot;, &quot;while true;do sleep 30;done&quot;] #参数</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>说明：查看镜像默认运行的命令</p>
+<ul>
+<li>cmd方式：<code>docker inspect nginx:1.13 -f {\.Config.Cmd}</code></li>
+<li>entrypoint方式：<code>docker inspect nginx:1.13 -f {\.Config.Entrypoint}</code></li>
+</ul>
+</li>
+<li>设置选项：命令和参数<ul>
+<li>command：会覆盖默认运行命令</li>
+<li>args：则会给command或默认的运行命令提供参数</li>
+</ul>
+</li>
+</ul>
+<h2 id="环境变量-env"><a href="#环境变量-env" class="headerlink" title="环境变量-env"></a>环境变量-env</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-env</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: filebeat</span><br><span class="line">    image: ikubernetes/filebeat:5.6.5-alpine</span><br><span class="line">    env:</span><br><span class="line">      - name: REDIS_HOST #变量名称</span><br><span class="line">        value: db.ilinux.io:6379 #变量值</span><br><span class="line">      - name: LOG_LEVEL</span><br><span class="line">        value: info</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明：向pod传递变量之有两种方式：env和envFrom【参见配置管理ConfigMap和secret】</p>
+</li>
+</ul>
+<h2 id="使用节点网络-hostNetwork"><a href="#使用节点网络-hostNetwork" class="headerlink" title="使用节点网络-hostNetwork"></a>使用节点网络-hostNetwork</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-network</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br><span class="line">  hostNetwork: true #共享节点网络</span><br><span class="line">  hostPID: true #共享节点PID</span><br><span class="line">  hostIPC: true #共享节点IPC</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明:默认情况下，pod的所有容器会建立一个独立的网络名称空间；但是一些特殊的pod需要运行在节点的网络名称空间下，执行系统级的任务</p>
+</li>
+<li>应用范例：<ul>
+<li>使用kubeadm部署的kube-controller-manager、kube-apiserver、kube-scheduler、kube-proxy组件</li>
+<li>flannel网络部署</li>
+</ul>
+</li>
+<li>其他选项：共享节点PID和IPC<ul>
+<li>hostPID: 共享节点PID</li>
+<li>hostIPC: 共享节点IPC</li>
+</ul>
+</li>
+</ul>
+<h2 id="安全上下文-securityContext"><a href="#安全上下文-securityContext" class="headerlink" title="安全上下文-securityContext"></a>安全上下文-securityContext</h2><p>securityContext主要用于容器运行时的安全管控，类似linux的selinux、sudo等内容，通过限制容器的行为，从而保障系统和其他容器的安全</p>
+<h3 id="选项位置"><a href="#选项位置" class="headerlink" title="选项位置"></a>选项位置</h3><ul>
+<li>容器级别的securityContext：对指定容器生效</li>
+<li>pod级别的securityContext：对指定pod中的所有容器有效</li>
+<li>Pod Security Policies(PSP):对集群内的所有pod有效</li>
+</ul>
+<h3 id="选项类别"><a href="#选项类别" class="headerlink" title="选项类别"></a>选项类别</h3><ul>
+<li>根据用户id和组id控制访问对象</li>
+<li>基于selinux的安全标签</li>
+<li>以特权或非特权方式运行(privileged)</li>
+<li>是否能够权限升级(allowPrivilegeEscalation)</li>
+<li>通过Linux Capablities为其提供部分特权</li>
+<li>基于seccomp过滤进程可以操作的系统调用</li>
+</ul>
+<h3 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h3><blockquote>
+<p>以uid为1000的非特权用户运行容器，并禁止提权</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-with-securitycontext</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: busybox</span><br><span class="line">      image: busybox</span><br><span class="line">      command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sleep 86400&quot;]</span><br><span class="line">      securityContext: #容器级别securitycontext</span><br><span class="line">        runAsNonRoot: true</span><br><span class="line">        runAsUser: 1000</span><br><span class="line">        allowPrivilegeEscalation: false</span><br></pre></td></tr></table></figure>
+<h1 id="标签和标签选择器"><a href="#标签和标签选择器" class="headerlink" title="标签和标签选择器"></a>标签和标签选择器</h1><p>标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上</p>
+<h2 id="标签定义"><a href="#标签定义" class="headerlink" title="标签定义"></a>标签定义</h2><ul>
+<li>键由键前缀和健名组成<ul>
+<li>健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点</li>
+<li>键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或低三方组件为用户添加的键必须使用键前缀；“kubernetes.io”是系统核心组件使用的</li>
+</ul>
+</li>
+<li>键值：和健名规则相同</li>
+</ul>
+<h2 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h2><ul>
+<li>版本标签：release：stable，release：canary，release：beta</li>
+<li>环境标签：environment：dev，environment：qa，environment：prod</li>
+<li>应用标签：app：ui，app：as，app：pc，app：sc</li>
+<li>服务分层标签：tier：frontend，tier：backend，backend：cache</li>
+<li>分区标签：partition：customerA，partition：customerB</li>
+<li>品控级别标签：track：daily，track：weekly</li>
+</ul>
+<h2 id="创建时添加标签"><a href="#创建时添加标签" class="headerlink" title="创建时添加标签"></a>创建时添加标签</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-label</span><br><span class="line">  labels:</span><br><span class="line">    env: qa</span><br><span class="line">    tier: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
+<h2 id="动态修改标签"><a href="#动态修改标签" class="headerlink" title="动态修改标签"></a>动态修改标签</h2><ul>
+<li>修改已存在标签：kubectl label pods/pod-label env=prod –overwrite</li>
+<li>添加新标签：kubectl label pods/pod-label release=alpha</li>
+<li>删除标签：kubectl label pods/pod-label release-</li>
+</ul>
+<h2 id="标签显示"><a href="#标签显示" class="headerlink" title="标签显示"></a>标签显示</h2><ul>
+<li>显示所有标签：kubectl get pod –show-labels</li>
+<li>显示特定键标签：kubectl get pod -L env,tier</li>
+</ul>
+<h2 id="标签选择器"><a href="#标签选择器" class="headerlink" title="标签选择器"></a>标签选择器</h2><ul>
+<li>标签选择器逻辑<ul>
+<li>多个选择器之间为逻辑“与”关系</li>
+<li>空值的标签选择器意味着所有对象都被选中</li>
+<li>空标签选择器意味着没有对象被选中</li>
+</ul>
+</li>
+<li>选择器种类<ul>
+<li>等值关系，操作符：“=”，“==”，“！=”</li>
+<li>集合关系，操作符：in，notin，exists(key-存在，!key-不存在)</li>
+</ul>
+</li>
+<li>命令行使用：<ul>
+<li>相等型：kubectl get deployment –show-labels -l env=test,env!=prod</li>
+<li>集合型：kubectl get deployment –show-labels -l “Env in (test,gray)，Tie notin (front,back)，release，!release”</li>
+</ul>
+</li>
+<li>selector使用【deployment、service、replicaset等使用】：<ul>
+<li>matchLabels:相等型关系匹配</li>
+<li>matchExpressions：集合型关系匹配<ul>
+<li>key：key_name</li>
+<li>operator：【In,NotIn,Exists,DoesNotExist】</li>
+<li>values:[values1,values2…]<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">selector:</span><br><span class="line">  matchLables:</span><br><span class="line">    component: redis</span><br><span class="line">  matchExpressions:</span><br><span class="line">    - key: tier</span><br><span class="line">      operator: In</span><br><span class="line">      values: [cache]</span><br><span class="line">    - key: environment</span><br><span class="line">      operator: Exists</span><br><span class="line">      values:</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="pod节点选择器-nodeSelector"><a href="#pod节点选择器-nodeSelector" class="headerlink" title="pod节点选择器-nodeSelector"></a>pod节点选择器-nodeSelector</h2><ul>
+<li>功能：将pod调度至特定节点运行</li>
+<li>节点标签<ul>
+<li>定义：kubectl label nodes minikube minikube=yes</li>
+<li>查看：kubectl get node –show-labels</li>
+</ul>
+</li>
+<li>节点默认标签：<ul>
+<li>kubernetes.io/os=linux：操作系统类型</li>
+<li>kubernetes.io/hostname=minikube：节点主机名【spec.nodeName】</li>
+</ul>
+</li>
+<li>范例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br><span class="line">  nodeSelector:</span><br><span class="line">    hostname: node2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="注解-annotations"><a href="#注解-annotations" class="headerlink" title="注解-annotations"></a>注解-annotations</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据<br>注解中的数据不受字符数量、特殊字符限制，可以是结构化(如json)也可以是非结构化数据  </p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
+<li>在为某资源引入新字段时，先以注解的方式提供；确定支持使用后，在资源中添加新字段，同时删除相关注解</li>
+<li>资源的相关描述信息</li>
+</ul>
+<h2 id="查看注解"><a href="#查看注解" class="headerlink" title="查看注解"></a>查看注解</h2><ul>
+<li>describe：kubectl describe pod storage-provisioner -n kube-system</li>
+<li>get -o yaml：<code>kubectl get pod storage-provisioner -n kube-system -o yaml</code></li>
+</ul>
+<h2 id="手动添加注解"><a href="#手动添加注解" class="headerlink" title="手动添加注解"></a>手动添加注解</h2><p>kubectl annotate pods pod-label ilinux.io/created-by=”cluster admin”</p>
+<h1 id="pod状态和重启"><a href="#pod状态和重启" class="headerlink" title="pod状态和重启"></a>pod状态和重启</h1><h2 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h2><ul>
 <li>pending：api server创建了pod资源对象，但尚未被调度完成；或者处于拉取镜像的过程中</li>
 <li>running：pod已被调度到某节点，并且所有容器都被kubelet创建完成</li>
 <li>succeeded：pod中的所有容器已成功终止并且不会被重启</li>
@@ -416,14 +641,22 @@
 <li>OnFailure：仅在pod对象出错时才将其重启</li>
 <li>Never：从不重启</li>
 </ul>
-<h1 id="initContainer"><a href="#initContainer" class="headerlink" title="initContainer"></a>initContainer</h1><p>可用于普通containers启动前的初始化或前置条件检验(如检测网络连通性)</p>
-<h2 id="与普通containers区别"><a href="#与普通containers区别" class="headerlink" title="与普通containers区别"></a>与普通containers区别</h2><ul>
+<h1 id="全生命周期操作"><a href="#全生命周期操作" class="headerlink" title="全生命周期操作"></a>全生命周期操作</h1><h2 id="操作概述"><a href="#操作概述" class="headerlink" title="操作概述"></a>操作概述</h2><ul>
+<li>运行初始化容器(init container)</li>
+<li>创建主容器(main container)【必须】</li>
+<li>容器启动后钩子(post start hook)</li>
+<li>容器就绪型探测(readiness probe)</li>
+<li>容器存活性探测(liveness probe)</li>
+<li>容器终止前钩子(pre stop hook)</li>
+</ul>
+<h2 id="initContainer"><a href="#initContainer" class="headerlink" title="initContainer"></a>initContainer</h2><p>可用于普通containers启动前的初始化或前置条件检验(如检测网络连通性)</p>
+<h3 id="与普通containers区别"><a href="#与普通containers区别" class="headerlink" title="与普通containers区别"></a>与普通containers区别</h3><ul>
 <li>initContainer会先于普通containers启动执行，所有initContainer执行成功后，普通containers才会被启动</li>
 <li>pod中多个initContainer之间是按定义顺序依次启动执行，而pod中多个普通containers时并行启动的</li>
 <li>initContainer执行成功就退出，而普通containers可能会一直执行或重启</li>
 </ul>
-<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-pod</span><br><span class="line">  labels:</span><br><span class="line">    app: myapp</span><br><span class="line">spec:</span><br><span class="line">  initContainers:</span><br><span class="line">    - name: init-something</span><br><span class="line">      image: busybox</span><br><span class="line">      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 10&quot;]</span><br><span class="line">  containers:</span><br><span class="line">    - name: myapp-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
-<h1 id="生命周期钩子函数"><a href="#生命周期钩子函数" class="headerlink" title="生命周期钩子函数"></a>生命周期钩子函数</h1><h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><ul>
+<h3 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-pod</span><br><span class="line">  labels:</span><br><span class="line">    app: myapp</span><br><span class="line">spec:</span><br><span class="line">  initContainers:</span><br><span class="line">    - name: init-something</span><br><span class="line">      image: busybox</span><br><span class="line">      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 10&quot;]</span><br><span class="line">  containers:</span><br><span class="line">    - name: myapp-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
+<h2 id="生命周期钩子函数"><a href="#生命周期钩子函数" class="headerlink" title="生命周期钩子函数"></a>生命周期钩子函数</h2><h3 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h3><ul>
 <li>生命周期节点<ul>
 <li>postStart：容器建立后立即运行的功能，但是k8s无法保证它一定运行在entrypoint之前</li>
 <li>preStop：容器终止前执行的功能，此操作完成前阻塞删除容器的操作</li>
@@ -435,12 +668,12 @@
 </ul>
 </li>
 </ul>
-<h2 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: lifecycle-demo</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: lifecycle-demo-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br><span class="line">      lifecycle: #定义钩子函数</span><br><span class="line">        postStart: #容器启动后执行</span><br><span class="line">          exec: #执行用户自定义命令</span><br><span class="line">            command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo &apos;lifecycle hooks handler&apos; &gt; /usr/share/nginx/html/test.html&quot;]</span><br><span class="line">        preStop: #容器终止前执行</span><br><span class="line">          httpGet: #发起http球球</span><br><span class="line">            host: blog.csdn.net</span><br><span class="line">            path: zhangmingli_summer/article/details/82145852</span><br><span class="line">            port: 443</span><br></pre></td></tr></table></figure>
-<h1 id="容器探测"><a href="#容器探测" class="headerlink" title="容器探测"></a>容器探测</h1><h2 id="探测种类"><a href="#探测种类" class="headerlink" title="探测种类"></a>探测种类</h2><ul>
+<h3 id="范例-2"><a href="#范例-2" class="headerlink" title="范例"></a>范例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: lifecycle-demo</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: lifecycle-demo-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br><span class="line">      lifecycle: #定义钩子函数</span><br><span class="line">        postStart: #容器启动后执行</span><br><span class="line">          exec: #执行用户自定义命令</span><br><span class="line">            command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo &apos;lifecycle hooks handler&apos; &gt; /usr/share/nginx/html/test.html&quot;]</span><br><span class="line">        preStop: #容器终止前执行</span><br><span class="line">          httpGet: #发起http球球</span><br><span class="line">            host: blog.csdn.net</span><br><span class="line">            path: zhangmingli_summer/article/details/82145852</span><br><span class="line">            port: 443</span><br></pre></td></tr></table></figure>
+<h2 id="容器探测"><a href="#容器探测" class="headerlink" title="容器探测"></a>容器探测</h2><h3 id="探测种类"><a href="#探测种类" class="headerlink" title="探测种类"></a>探测种类</h3><ul>
 <li>livenessProbe(存活性探测)：探测容器是否处于running状态，检测不通过时根据重启策略(restartPolicy)确定是否重启</li>
 <li>readinessProbe(就绪性探测)：判断容器是否准备就绪，可以对外提供服务；未通过时，会将此pod从endpoint(如service对象)中移除，直到pod就绪</li>
 </ul>
-<h2 id="探测方式"><a href="#探测方式" class="headerlink" title="探测方式"></a>探测方式</h2><ul>
+<h3 id="探测方式"><a href="#探测方式" class="headerlink" title="探测方式"></a>探测方式</h3><ul>
 <li>exec：执行用户自定义命令<ul>
 <li>命令参数：command</li>
 <li>exec探测会消耗容器资源，所以需要探测命令简单、轻量</li>
@@ -467,19 +700,19 @@
 </ul>
 </li>
 </ul>
-<h2 id="通用探测属性"><a href="#通用探测属性" class="headerlink" title="通用探测属性"></a>通用探测属性</h2><ul>
+<h3 id="通用探测属性"><a href="#通用探测属性" class="headerlink" title="通用探测属性"></a>通用探测属性</h3><ul>
 <li>initialDelaySeconds：容器启动多长时间后进行首次探测，默认0s</li>
 <li>timeoutSeconds：探测超时时间，默认1s</li>
 <li>periodSeconds：探测频率，默认间隔10s，最小1s</li>
 <li>successThreshold：处于失败状态时，多少次成功才认为是成功；默认1，最小1</li>
 <li>failureThreshold：处于成功状态时，多少次失败才认为是失败；默认3，最小1</li>
 </ul>
-<h2 id="应用实践"><a href="#应用实践" class="headerlink" title="应用实践"></a>应用实践</h2><ul>
+<h3 id="应用实践"><a href="#应用实践" class="headerlink" title="应用实践"></a>应用实践</h3><ul>
 <li>调大判断的阈值(超时、次数等)，防止容器压力过大时出现误判</li>
 <li>exec执行shell脚本时，在容器内执行的时间会比较长(可以使用go等编译型语言执行)</li>
 <li>使用tcpSocket时遇到TLS，需要判断业务层是否有影响</li>
 </ul>
-<h2 id="范例-2"><a href="#范例-2" class="headerlink" title="范例"></a>范例</h2><ul>
+<h3 id="范例-3"><a href="#范例-3" class="headerlink" title="范例"></a>范例</h3><ul>
 <li><p>readinessProbe</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: readiness-exec</span><br><span class="line">  labels:</span><br><span class="line">    test: readiness-exec</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: readiness-exec-demo</span><br><span class="line">      image: busybox</span><br><span class="line">      args: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;while true;do rm -f /tmp/ready;sleep 30;touch /tmp/ready;sleep 300;done&quot;]</span><br><span class="line">      readinessProbe:</span><br><span class="line">        exec:</span><br><span class="line">          command: [&quot;test&quot;, &quot;-e&quot;, &quot;/tmp/ready&quot;]</span><br><span class="line">        initialDelaySeconds: 5</span><br><span class="line">        periodSeconds: 5</span><br></pre></td></tr></table></figure>
 </li>
@@ -536,6 +769,12 @@
             <a href="/tags/容器探测/" rel="tag"># 容器探测</a>
           
             <a href="/tags/资源/" rel="tag"># 资源</a>
+          
+            <a href="/tags/标签/" rel="tag"># 标签</a>
+          
+            <a href="/tags/选择器/" rel="tag"># 选择器</a>
+          
+            <a href="/tags/pod定义/" rel="tag"># pod定义</a>
           
         </div>
       
@@ -637,7 +876,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">115</span>
+                  <span class="site-state-item-count">114</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -659,7 +898,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">225</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -708,7 +947,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pod对象生命周期"><span class="nav-number">1.</span> <span class="nav-text">pod对象生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod对象操作概述"><span class="nav-number">1.1.</span> <span class="nav-text">pod对象操作概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod状态"><span class="nav-number">1.2.</span> <span class="nav-text">pod状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod异常状态诊断"><span class="nav-number">1.3.</span> <span class="nav-text">pod异常状态诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器重启策略"><span class="nav-number">1.4.</span> <span class="nav-text">容器重启策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#initContainer"><span class="nav-number">2.</span> <span class="nav-text">initContainer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#与普通containers区别"><span class="nav-number">2.1.</span> <span class="nav-text">与普通containers区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生命周期钩子函数"><span class="nav-number">3.</span> <span class="nav-text">生命周期钩子函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用说明"><span class="nav-number">3.1.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器探测"><span class="nav-number">4.</span> <span class="nav-text">容器探测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#探测种类"><span class="nav-number">4.1.</span> <span class="nav-text">探测种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#探测方式"><span class="nav-number">4.2.</span> <span class="nav-text">探测方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通用探测属性"><span class="nav-number">4.3.</span> <span class="nav-text">通用探测属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用实践"><span class="nav-number">4.4.</span> <span class="nav-text">应用实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-2"><span class="nav-number">4.5.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源需求和限制"><span class="nav-number">5.</span> <span class="nav-text">资源需求和限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod服务-QOS"><span class="nav-number">5.1.</span> <span class="nav-text">pod服务-QOS</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器与pod"><span class="nav-number">1.</span> <span class="nav-text">容器与pod</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">1.1.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod实现"><span class="nav-number">1.3.</span> <span class="nav-text">pod实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络实现"><span class="nav-number">1.3.1.</span> <span class="nav-text">网络实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储实现"><span class="nav-number">1.3.2.</span> <span class="nav-text">存储实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器设计模式"><span class="nav-number">1.3.3.</span> <span class="nav-text">容器设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用范例-war包"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">应用范例-war包</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pod容器定义"><span class="nav-number">2.</span> <span class="nav-text">pod容器定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像-images"><span class="nav-number">2.1.</span> <span class="nav-text">镜像-images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#端口-ports"><span class="nav-number">2.2.</span> <span class="nav-text">端口-ports</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义命令-command"><span class="nav-number">2.3.</span> <span class="nav-text">自定义命令-command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量-env"><span class="nav-number">2.4.</span> <span class="nav-text">环境变量-env</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用节点网络-hostNetwork"><span class="nav-number">2.5.</span> <span class="nav-text">使用节点网络-hostNetwork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全上下文-securityContext"><span class="nav-number">2.6.</span> <span class="nav-text">安全上下文-securityContext</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项位置"><span class="nav-number">2.6.1.</span> <span class="nav-text">选项位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选项类别"><span class="nav-number">2.6.2.</span> <span class="nav-text">选项类别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例"><span class="nav-number">2.6.3.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签和标签选择器"><span class="nav-number">3.</span> <span class="nav-text">标签和标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签定义"><span class="nav-number">3.1.</span> <span class="nav-text">标签定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用标签"><span class="nav-number">3.2.</span> <span class="nav-text">常用标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建时添加标签"><span class="nav-number">3.3.</span> <span class="nav-text">创建时添加标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态修改标签"><span class="nav-number">3.4.</span> <span class="nav-text">动态修改标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签显示"><span class="nav-number">3.5.</span> <span class="nav-text">标签显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签选择器"><span class="nav-number">3.6.</span> <span class="nav-text">标签选择器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod节点选择器-nodeSelector"><span class="nav-number">3.7.</span> <span class="nav-text">pod节点选择器-nodeSelector</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解-annotations"><span class="nav-number">4.</span> <span class="nav-text">注解-annotations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看注解"><span class="nav-number">4.3.</span> <span class="nav-text">查看注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动添加注解"><span class="nav-number">4.4.</span> <span class="nav-text">手动添加注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pod状态和重启"><span class="nav-number">5.</span> <span class="nav-text">pod状态和重启</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#状态"><span class="nav-number">5.1.</span> <span class="nav-text">状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod异常状态诊断"><span class="nav-number">5.2.</span> <span class="nav-text">pod异常状态诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器重启策略"><span class="nav-number">5.3.</span> <span class="nav-text">容器重启策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全生命周期操作"><span class="nav-number">6.</span> <span class="nav-text">全生命周期操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作概述"><span class="nav-number">6.1.</span> <span class="nav-text">操作概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initContainer"><span class="nav-number">6.2.</span> <span class="nav-text">initContainer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与普通containers区别"><span class="nav-number">6.2.1.</span> <span class="nav-text">与普通containers区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-1"><span class="nav-number">6.2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期钩子函数"><span class="nav-number">6.3.</span> <span class="nav-text">生命周期钩子函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用说明"><span class="nav-number">6.3.1.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-2"><span class="nav-number">6.3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器探测"><span class="nav-number">6.4.</span> <span class="nav-text">容器探测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#探测种类"><span class="nav-number">6.4.1.</span> <span class="nav-text">探测种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#探测方式"><span class="nav-number">6.4.2.</span> <span class="nav-text">探测方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用探测属性"><span class="nav-number">6.4.3.</span> <span class="nav-text">通用探测属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用实践"><span class="nav-number">6.4.4.</span> <span class="nav-text">应用实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-3"><span class="nav-number">6.4.5.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源需求和限制"><span class="nav-number">7.</span> <span class="nav-text">资源需求和限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod服务-QOS"><span class="nav-number">7.1.</span> <span class="nav-text">pod服务-QOS</span></a></li></ol></li></ol></div>
             
 
           </div>
