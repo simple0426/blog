@@ -331,24 +331,6 @@ selector:
       values:
 ```
 
-## pod节点选择器-nodeSelector
-* 功能：将pod调度至特定节点运行
-* 节点标签
-    - 定义：kubectl label nodes minikube minikube=yes
-    - 查看：kubectl get node --show-labels
-* 节点默认标签：
-    - kubernetes.io/os=linux：操作系统类型
-    - kubernetes.io/hostname=minikube：节点主机名【spec.nodeName】
-* 范例
-```
-spec:
-  containers:
-  - name: myapp
-    image: ikubernetes/myapp:v1
-  nodeSelector:
-    hostname: node2
-```
-
 # 注解-annotations
 ## 定义
 它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据  
