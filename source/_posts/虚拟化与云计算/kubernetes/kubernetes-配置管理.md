@@ -173,7 +173,7 @@ spec:
         secretName: ssh-key-secret
 ```
 ### dockerconfigjson类型
-* 创建docker-registry secret：kubectl create secret docker-registry aliyun-simple --docker-username=perfect@qq.com --docker-password=123456 --docker-server=registry.cn-hangzhou.aliyuncs.com
+* 创建docker-registry secret：`kubectl create secret docker-registry aliyun-simple --docker-username=perfect@qq.com --docker-password=123456 --docker-server=registry.cn-hangzhou.aliyuncs.com`
 * 使用imagePullSecrets设置认证信息
     - 在pod中使用imagePullSecrets
     ```
