@@ -2,11 +2,12 @@
 title: kubernetes-资源管理
 tags:
   - kubectl
+  - 标签
+  - 选择器
 categories:
   - kubernetes
 date: 2020-03-21 00:20:49
 ---
-
 
 # 实现方式-API
 kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，  
@@ -83,20 +84,105 @@ spec:
 * apiVersion：API群组及相关的版本
 * metadata：为资源提供元数据，如名称、隶属的名称空间、标签
 * spec：用户期望的状态
-* status：活动对象的当前状态；由kubernetes集群维护，对用户只读
+* status：活动对象的当前状态【由kubernetes集群维护，对用户只读】
 
 ## 资源对象文档
 * 查看资源对象语法：kubectl explain resources_name.field_name
 
 ## metadata
 ### 必选字段
-* namespace:所属名称空间
+* namespace：所属名称空间【默认default】
 * name：对象名称
-* uid：当前对象的唯一标识符，由集群自动生成
+* uid：当前对象的唯一标识符【由集群自动生成】
 
 ### 可选字段
 * labels:设定用于标识当前对象的键值对，常用作筛选条件
 * annotations：非标识性键值对，用于labels的补充
+
+# 标签和标签选择器
+标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上
+## 标签定义
+* 键由键前缀和健名组成
+    - 健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点
+    - 键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或第三方组件为用户添加的键必须使用键前缀；“kubernetes.io"是系统核心组件使用的
+* 键值：和健名规则相同
+
+## 常用标签
+* 版本标签：release：stable，release：canary，release：beta
+* 环境标签：environment：dev，environment：qa，environment：prod
+* 应用标签：app：ui，app：as，app：pc，app：sc
+* 服务分层标签：tier：frontend，tier：backend，backend：cache
+* 分区标签：partition：customerA，partition：customerB
+* 品控级别标签：track：daily，track：weekly
+
+## 创建时添加标签
+```
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-label
+  labels:
+    env: qa
+    tier: frontend
+spec:
+  containers:
+  - name: myapp
+    image: ikubernetes/myapp:v1
+```
+
+## 动态修改标签
+* 修改已存在标签：kubectl label pods/pod-label env=prod --overwrite
+* 添加新标签：kubectl label pods/pod-label release=alpha
+* 删除标签：kubectl label pods/pod-label release-
+
+## 标签显示
+* 显示所有标签：kubectl get pod --show-labels
+* 显示特定键标签：kubectl get pod -L env,tier
+
+## 标签选择器
+* 标签选择器逻辑
+    - 多个选择器之间为逻辑“与”关系
+    - 空值的标签选择器意味着所有对象都被选中
+    - 空标签选择器意味着没有对象被选中
+* 选择器种类
+    - 等值关系，操作符：“=”，“==”，“！=”
+    - 集合关系，操作符：in，notin，exists(key-存在，!key-不存在)
+* 命令行使用：
+    - 相等型：kubectl get deployment --show-labels -l env=test,env!=prod
+    - 集合型：kubectl get deployment --show-labels -l "Env in (test,gray)，Tie notin (front,back)，release，!release"
+* selector使用【deployment、service、replicaset等使用】：
+    - matchLabels:相等型关系匹配
+    - matchExpressions：集合型关系匹配
+        + key：key_name
+        + operator：【In,NotIn,Exists,DoesNotExist】
+        + values:\[values1,values2...\]
+```
+selector:
+  matchLables:
+    component: redis
+  matchExpressions:
+    - key: tier
+      operator: In
+      values: [cache]
+    - key: environment
+      operator: Exists
+      values:
+```
+
+# 注解-annotations
+## 定义
+它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据  
+注解中的数据不受字符数量、特殊字符限制，可以是结构化(如json)也可以是非结构化数据  
+## 使用场景
+* 在为某资源引入新字段时，先以注解的方式提供；确定支持使用后，在资源中添加新字段，同时删除相关注解
+* 资源的相关描述信息
+
+## 查看注解
+* describe：kubectl describe pod storage-provisioner -n kube-system
+* get -o yaml：`kubectl get pod storage-provisioner -n kube-system -o yaml`
+
+## 手动添加注解
+kubectl annotate pods pod-label ilinux.io/created-by="cluster admin"
 
 # kubectl命令
 ## 语法格式
@@ -161,28 +247,28 @@ kubectl sub_command resource_type resource_name cmd_option
 * -o：指定输出格式
     - wide：宽格式显示
     - yaml、json：yaml、json格式显示资源对象
-    - go-template：以自定义的go模板格式限制资源对象
-    - custom-columns：自定义输出字段
+    - go-template：以自定义的go模板格式显示资源对象
+    - custom-columns：自定义输出字段：`kubectl get pod -o custom-columns=NAME:metadata.name,IMAGE:spec.containers[0].image`
 * -l：通过标签过滤资源
 * -n：指定名称空间
 * -s：指定apiserver地址
-* --kubeconfig：指定kubeconfig文件，默认~/.kube/config
+* --kubeconfig：指定kubeconfig文件【默认~/.kube/config】
 
 ## 插件-kubectl-debug
 * [简介](https://github.com/aylei/kubectl-debug/blob/master/docs/zh-cn.md):通过启动一个安装了各种排障工具的容器，来诊断目标容器
 * [安装](https://github.com/aylei/kubectl-debug/releases)
-* 命令使用：kubectl debug pod_name --agentless
+* 命令使用：`kubectl debug pod_name --agentless`
 * 命令参数：
     - --fork：诊断一个处于CrashLookBackoff的pod
     - --agentless：启动无代理模式【命令使用时自动创建一个agent】
-    - --image：指定使用的工具镜像，不使用默认的工具镜像nicolaka/netshoot
+    - --image：指定使用的工具镜像【默认的镜像：nicolaka/netshoot】
     - -c container-name：指定要进入的容器内
 
 # 资源对象操作
 ## 创建资源对象
 - 直接通过各种子命令管理资源对象：kubectl run
 - 根据资源文件创建资源对象：kubectl create
-- 根据声明式资源文件让kubernetes集群自行资源状态：kubectl apply
+- 根据声明式资源文件让kubernetes集群自动调整资源状态：kubectl apply
 
 ## 查看资源对象
 * get命令：kubectl get resource_type resource_name 

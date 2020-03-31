@@ -5,8 +5,6 @@ tags:
   - 钩子函数
   - 容器探测
   - 资源
-  - 标签
-  - 选择器
   - pod定义
 categories:
   - kubernetes
@@ -127,10 +125,11 @@ apiVersion: v1
 metadata:
   name: nginx-pod
 spec:
+  imagePullSecret: aliyun-simple
   containers:
-    - name: nginx #容器名称
-      images: nginx:latest #镜像名称
-        imagePullPolicy: Always
+  - name: nginx #容器名称
+    images: nginx:latest #镜像名称
+    imagePullPolicy: Always
 ```
 * 设置选项
     - 仓库认证：imagePullSecrets【参见secret章节】
@@ -154,11 +153,12 @@ spec:
       - name: http #端口名称
         containerPort: 80 #指向容器监听的端口
         protocol: TCP #端口协议类型
+        hostPort: 8000
 ```
 * 选项说明：端口设置仅为说明性内容；为端口设置名称，方便被service调用
 * 设置选项
     - hostPort：将节点端口映射到容器端口
-    - hostIP：节点端口绑定的ip，默认为0.0.0.0，一般不设置
+    - hostIP：节点端口绑定的ip【默认为0.0.0.0，一般不设置】
 * 注意事项：hostPort和service下的NodePort区别
     - hostPort在pod下设置，只绑定到pod所在节点
     - NodePort在service下设置，绑定到所有节点
@@ -178,8 +178,8 @@ spec:
     args: ["-c", "while true;do sleep 30;done"] #参数
 ```
 * 说明：查看镜像默认运行的命令
-    - cmd方式：`docker inspect nginx:1.13 -f {\.Config.Cmd}`
-    - entrypoint方式：`docker inspect nginx:1.13 -f {\.Config.Entrypoint}`
+    - cmd方式：`docker inspect nginx:1.13 -f {\{\.Config.Cmd}\}`
+    - entrypoint方式：`docker inspect nginx:1.13 -f {\{\.Config.Entrypoint}\}`
 * 设置选项：命令和参数
     - command：会覆盖默认运行命令
     - args：则会给command或默认的运行命令提供参数
@@ -223,7 +223,7 @@ spec:
 * 应用范例：
     - 使用kubeadm部署的kube-controller-manager、kube-apiserver、kube-scheduler、kube-proxy组件
     - flannel网络部署
-* 其他选项：共享节点PID和IPC
+* 其他选项
     - hostPID: 共享节点PID
     - hostIPC: 共享节点IPC
 
@@ -232,7 +232,7 @@ securityContext主要用于容器运行时的安全管控，类似linux的selinu
 ### 选项位置
 * 容器级别的securityContext：对指定容器生效
 * pod级别的securityContext：对指定pod中的所有容器有效
-* Pod Security Policies(PSP):对集群内的所有pod有效
+* Pod Security Policies(PSP)：对集群内的所有pod有效
 
 ### 选项类别
 * 根据用户id和组id控制访问对象
@@ -260,91 +260,6 @@ spec:
         runAsUser: 1000
         allowPrivilegeEscalation: false
 ```
-
-# 标签和标签选择器
-标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上
-## 标签定义
-* 键由键前缀和健名组成
-    - 健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点
-    - 键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或低三方组件为用户添加的键必须使用键前缀；“kubernetes.io"是系统核心组件使用的
-* 键值：和健名规则相同
-
-## 常用标签
-* 版本标签：release：stable，release：canary，release：beta
-* 环境标签：environment：dev，environment：qa，environment：prod
-* 应用标签：app：ui，app：as，app：pc，app：sc
-* 服务分层标签：tier：frontend，tier：backend，backend：cache
-* 分区标签：partition：customerA，partition：customerB
-* 品控级别标签：track：daily，track：weekly
-
-## 创建时添加标签
-```
-kind: Pod
-apiVersion: v1
-metadata:
-  name: pod-label
-  labels:
-    env: qa
-    tier: frontend
-spec:
-  containers:
-  - name: myapp
-    image: ikubernetes/myapp:v1
-```
-
-## 动态修改标签
-* 修改已存在标签：kubectl label pods/pod-label env=prod --overwrite
-* 添加新标签：kubectl label pods/pod-label release=alpha
-* 删除标签：kubectl label pods/pod-label release-
-
-## 标签显示
-* 显示所有标签：kubectl get pod --show-labels
-* 显示特定键标签：kubectl get pod -L env,tier
-
-## 标签选择器
-* 标签选择器逻辑
-    - 多个选择器之间为逻辑“与”关系
-    - 空值的标签选择器意味着所有对象都被选中
-    - 空标签选择器意味着没有对象被选中
-* 选择器种类
-    - 等值关系，操作符：“=”，“==”，“！=”
-    - 集合关系，操作符：in，notin，exists(key-存在，!key-不存在)
-* 命令行使用：
-    - 相等型：kubectl get deployment --show-labels -l env=test,env!=prod
-    - 集合型：kubectl get deployment --show-labels -l "Env in (test,gray)，Tie notin (front,back)，release，!release"
-* selector使用【deployment、service、replicaset等使用】：
-    - matchLabels:相等型关系匹配
-    - matchExpressions：集合型关系匹配
-        + key：key_name
-        + operator：【In,NotIn,Exists,DoesNotExist】
-        + values:\[values1,values2...\]
-```
-selector:
-  matchLables:
-    component: redis
-  matchExpressions:
-    - key: tier
-      operator: In
-      values: [cache]
-    - key: environment
-      operator: Exists
-      values:
-```
-
-# 注解-annotations
-## 定义
-它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据  
-注解中的数据不受字符数量、特殊字符限制，可以是结构化(如json)也可以是非结构化数据  
-## 使用场景
-* 在为某资源引入新字段时，先以注解的方式提供；确定支持使用后，在资源中添加新字段，同时删除相关注解
-* 资源的相关描述信息
-
-## 查看注解
-* describe：kubectl describe pod storage-provisioner -n kube-system
-* get -o yaml：`kubectl get pod storage-provisioner -n kube-system -o yaml`
-
-## 手动添加注解
-kubectl annotate pods pod-label ilinux.io/created-by="cluster admin"
 
 # pod状态和重启
 ## 状态
@@ -427,7 +342,7 @@ spec:
           exec: #执行用户自定义命令
             command: ["/bin/sh", "-c", "echo 'lifecycle hooks handler' > /usr/share/nginx/html/test.html"]
         preStop: #容器终止前执行
-          httpGet: #发起http球球
+          httpGet: #发起http请求
             host: blog.csdn.net
             path: zhangmingli_summer/article/details/82145852
             port: 443
@@ -440,7 +355,7 @@ spec:
 ### 探测方式
 * exec：执行用户自定义命令
     - 命令参数：command
-    - exec探测会消耗容器资源，所以需要探测命令简单、轻量
+    - 注意事项：exec探测会消耗容器资源，所以需要探测命令简单、轻量
 * httpGet：向指定url发起get请求，响应码2xx、3xx为成功
     - 命令参数：
         + host：请求主机，默认pod ip
@@ -448,7 +363,7 @@ spec:
         + httpHeaders：自定义header信息
         + path：请求的http资源url
         + scheme：连接协议，HTTP/HTTPS,默认HTTP
-    - 在多层架构中，只能针对当前服务层进行探测(其他两种方式也一样)；如果后端服务不可用，会造成pod一次次重启，直到后端服务可用
+    - 注意事项：在多层架构中，只能针对当前服务层进行探测(其他两种方式也一样)；如果后端服务不可用，会造成pod一次次重启，直到后端服务可用
 * tcpSocket：与容器tcp端口建立连接，端口打开即为成功
     - 命令参数：
         + host：请求主机，默认pod ip
