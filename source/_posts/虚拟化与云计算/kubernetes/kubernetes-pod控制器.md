@@ -23,9 +23,9 @@ date: 2020-02-24 19:32:25
 * 常见控制器(workload)：ReplicationController、Replicaset、Deployment、Daemonset、Job、CronJob、Statefulset
 
 ## 语法定义
-* 标签选择器(selector)
-* 期望的副本数量(replicas)：scale命令支持对Deployment, ReplicaSet, Replication Controller, or StatefulSet进行扩容、缩容
-* pod模板(template)
+* selector：标签选择器
+* replicas：期望的副本数量；scale命令支持对Deployment, ReplicaSet, Replication Controller, or StatefulSet进行扩容、缩容
+* template：pod模板
 * minReadySeconds：新建pod等待多久才会将其视为就绪可用
 
 # Replicaset

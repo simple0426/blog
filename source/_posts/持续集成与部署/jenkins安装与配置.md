@@ -23,7 +23,7 @@ sudo apt-get update
 sudo apt-get install jenkins
 ```
 * 源码包安装
-    - 软件源：https://mirrors.tuna.tsinghua.edu.cn/jenkins/【debian-stable、redhat-stable】
+    - 软件源：https://mirrors.tuna.tsinghua.edu.cn/jenkins/ `debian-stable|redhat-stable`
     - deb包安装失败
         + sudo apt-get update # 更新
         + sudo apt-get -f install # 解决依赖关系
@@ -34,13 +34,13 @@ sudo apt-get install jenkins
 
 ### docker部署
 * 镜像：使用预装blueocean的【jenkinsci/blueocean】
-* 启动参数：docker run --name jenkinsci-blueocean -u root --rm -d -p 7005:8080 -p 50000:50000 -v /data/jenkins/:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin jenkinsci/blueocean
+* 启动参数：`docker run --name jenkinsci-blueocean -u root --rm -d -p 7005:8080 -p 50000:50000 -v /data/jenkins/:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin jenkinsci/blueocean`
 * 参数详解：
     - --name：设置容器名称
     - -u：以root启动，防止出现权限问题
     - --rm：运行结束即删除
     - -d：后台运行
-    - -p 7005:8080：映射服务端口【容器8080-》宿主机7005】
+    - -p 7005:8080：映射服务端口【宿主机7005-》容器8080】
     - -p 50000:50000：agent连接master的端口
     - -v /data/jenkins/:/var/jenkins_home：jenkins主目录持久化存储
     - -v /var/run/docker.sock:/var/run/docker.sock：确保jenkins容器内可以操作宿主机的docker
@@ -53,7 +53,7 @@ sudo apt-get install jenkins
     1. 更新简体中文插件到1.0.10+
     2. 点击页面右下角（确保浏览器的语言为中文）的Jenkins中文社区
     3. 点击使用按钮
-    4. 修改更新中心的地址为https://updates.jenkins-zh.cn/update-center.json
+    4. 修改更新中心的地址为`https://updates.jenkins-zh.cn/update-center.json`
     5. 在插件管理的高级页面，点击立即获取
 * 邮件设置(Mailer插件)
     - 系统管理员帐户
