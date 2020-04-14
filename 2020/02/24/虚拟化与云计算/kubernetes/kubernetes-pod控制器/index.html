@@ -88,7 +88,7 @@
 <meta property="og:description" content="pod控制器需求来源 自主式pod被调度到节点后，由kubelet负责容器的存活性； 容器主进程崩溃后，kubelet自动重启相应的容器； 非主进程崩溃类型的容器错误，需要用户自定义存活性探测(liveness probe),以便kubelet可以探测到此类故障   pod意外删除或节点故障，需要节点以外的pod控制器负责其重建  原理 pod控制器由master的kube-controller-">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-deployment.jpg">
-<meta property="og:updated_time" content="2020-03-20T06:25:55.279Z">
+<meta property="og:updated_time" content="2020-03-31T16:34:31.539Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-pod控制器">
 <meta name="twitter:description" content="pod控制器需求来源 自主式pod被调度到节点后，由kubelet负责容器的存活性； 容器主进程崩溃后，kubelet自动重启相应的容器； 非主进程崩溃类型的容器错误，需要用户自定义存活性探测(liveness probe),以便kubelet可以探测到此类故障   pod意外删除或节点故障，需要节点以外的pod控制器负责其重建  原理 pod控制器由master的kube-controller-">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-20T14:25:55+08:00">
-                2020-03-20
+              <time title="更新于" itemprop="dateModified" datetime="2020-04-01T00:34:31+08:00">
+                2020-04-01
               </time>
             
           </span>
@@ -401,9 +401,9 @@
 <li>常见控制器(workload)：ReplicationController、Replicaset、Deployment、Daemonset、Job、CronJob、Statefulset</li>
 </ul>
 <h2 id="语法定义"><a href="#语法定义" class="headerlink" title="语法定义"></a>语法定义</h2><ul>
-<li>标签选择器(selector)</li>
-<li>期望的副本数量(replicas)：scale命令支持对Deployment, ReplicaSet, Replication Controller, or StatefulSet进行扩容、缩容</li>
-<li>pod模板(template)</li>
+<li>selector：标签选择器</li>
+<li>replicas：期望的副本数量；scale命令支持对Deployment, ReplicaSet, Replication Controller, or StatefulSet进行扩容、缩容</li>
+<li>template：pod模板</li>
 <li>minReadySeconds：新建pod等待多久才会将其视为就绪可用</li>
 </ul>
 <h1 id="Replicaset"><a href="#Replicaset" class="headerlink" title="Replicaset"></a>Replicaset</h1><p>它是新版本的ReplicationController，相较于RC，它支持基于集合的标签选择器(set-based)</p>
