@@ -27,6 +27,10 @@ categories: ['python']
     - GB18030取代了GBK1.0的正式国家标准。该标准收录了27484个汉字，同时还收录了藏文、蒙文、维吾尔文等主要的少数民族文字。
     - 现在的PC平台必须支持GB18030，GB18030在windows中的代码页是CP54936。
 
+## python文件设置
+python3默认使用utf-8编码读取文件，支持读取中文  
+python2默认使用ASCII编码读取文件，不支持读取中文；在文件中设置`#-*- coding:utf8 -*-`可以使python2使用UTF-8编码方式读取文件，从而支持读取中文  
+
 ## python2与python3
 * python3
     - str即为unicode

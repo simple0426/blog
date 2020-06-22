@@ -52,10 +52,10 @@ https://git-scm.com/download/win
 在环境变量PATH中添加路径【C:\Git\bin；C:\Git\usr\bin】以方便适用其中的linux命令
 
 # pycharm
->设置py文件默认头部信息
+设置py文件默认头部信息【file and code templates】
 
 ```
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : ${DATE} ${TIME}
 # @Author  : simple0426
