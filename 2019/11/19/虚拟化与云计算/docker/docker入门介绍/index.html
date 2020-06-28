@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="虚拟化产生背景 部署非常慢：采购服务器、安装操作系统、安装软件环境 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足 软件难于迁移和扩展 软件被限定只能运行在特定硬件上  技术优势  资源池：一个物理机的资源可以分配到不同虚拟机里 容易扩展：加物理机或加虚拟机 容易云化：比如AWS、阿里云等  虚拟化产品 openstack：数据中心级别的虚拟化管理方案 kvm：基于内核实">
+<meta name="description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
 <meta name="keywords" content="容器,虚拟化">
 <meta property="og:type" content="article">
-<meta property="og:title" content="虚拟化和容器技术docker">
-<meta property="og:url" content="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/虚拟化和容器技术docker/index.html">
+<meta property="og:title" content="docker入门介绍">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/docker入门介绍/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="虚拟化产生背景 部署非常慢：采购服务器、安装操作系统、安装软件环境 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足 软件难于迁移和扩展 软件被限定只能运行在特定硬件上  技术优势  资源池：一个物理机的资源可以分配到不同虚拟机里 容易扩展：加物理机或加虚拟机 容易云化：比如AWS、阿里云等  虚拟化产品 openstack：数据中心级别的虚拟化管理方案 kvm：基于内核实">
+<meta property="og:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/virtual-tech.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg">
-<meta property="og:updated_time" content="2020-02-24T11:34:30.837Z">
+<meta property="og:image" content="https://docs.docker.com/engine/images/architecture.svg">
+<meta property="og:updated_time" content="2020-06-28T14:40:14.374Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="虚拟化和容器技术docker">
-<meta name="twitter:description" content="虚拟化产生背景 部署非常慢：采购服务器、安装操作系统、安装软件环境 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足 软件难于迁移和扩展 软件被限定只能运行在特定硬件上  技术优势  资源池：一个物理机的资源可以分配到不同虚拟机里 容易扩展：加物理机或加虚拟机 容易云化：比如AWS、阿里云等  虚拟化产品 openstack：数据中心级别的虚拟化管理方案 kvm：基于内核实">
-<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/virtual-tech.jpg">
+<meta name="twitter:title" content="docker入门介绍">
+<meta name="twitter:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/虚拟化和容器技术docker/">
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/docker入门介绍/">
 
 
 
 
 
-  <title>虚拟化和容器技术docker | 运维自动化之路</title>
+  <title>docker入门介绍 | 运维自动化之路</title>
   
 
 
@@ -290,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/虚拟化和容器技术docker/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/19/虚拟化与云计算/docker/docker入门介绍/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -307,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">虚拟化和容器技术docker</h1>
+          <h1 class="post-title" itemprop="name headline">docker入门介绍</h1>
         
 
         <div class="post-meta">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-24T19:34:30+08:00">
-                2020-02-24
+              <time title="更新于" itemprop="dateModified" datetime="2020-06-28T22:40:14+08:00">
+                2020-06-28
               </time>
             
           </span>
@@ -391,33 +391,18 @@
       
 
       
-        <h1 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h1><h2 id="产生背景"><a href="#产生背景" class="headerlink" title="产生背景"></a>产生背景</h2><ul>
-<li>部署非常慢：采购服务器、安装操作系统、安装软件环境</li>
+        <h1 id="docker引入"><a href="#docker引入" class="headerlink" title="docker引入"></a>docker引入</h1><h2 id="传统IT面临问题"><a href="#传统IT面临问题" class="headerlink" title="传统IT面临问题"></a>传统IT面临问题</h2><ul>
+<li>部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求)</li>
+<li>环境不一致：开发、测试、生产环境不一致</li>
 <li>资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足</li>
-<li>软件难于迁移和扩展</li>
-<li>软件被限定只能运行在特定硬件上</li>
 </ul>
-<h2 id="技术优势"><a href="#技术优势" class="headerlink" title="技术优势"></a>技术优势</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/virtual-tech.jpg" alt=""></p>
-<ul>
-<li>资源池：一个物理机的资源可以分配到不同虚拟机里</li>
-<li>容易扩展：加物理机或加虚拟机</li>
-<li>容易云化：比如AWS、阿里云等</li>
+<h2 id="容器优势"><a href="#容器优势" class="headerlink" title="容器优势"></a>容器优势</h2><ul>
+<li>更快且保持一致性的交付应用程序【保持多阶段环境的一致性】</li>
+<li>响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩】</li>
+<li>在同一个硬件上运行更多的负载</li>
 </ul>
-<h2 id="虚拟化产品"><a href="#虚拟化产品" class="headerlink" title="虚拟化产品"></a>虚拟化产品</h2><ul>
-<li>openstack：数据中心级别的虚拟化管理方案</li>
-<li>kvm：基于内核实现的虚拟化解决方案，一般用于多租户计算资源管理；KVM整体效率最高</li>
-<li>vmware：和kvm一样，是基于内核的虚拟化解决方案；功能全面</li>
-<li>virtualbox：与vmware类似，但比vmware轻量、运行效率也比vmware高；oracle开源产品，中文用户多。</li>
-</ul>
-<h2 id="虚拟化局限性"><a href="#虚拟化局限性" class="headerlink" title="虚拟化局限性"></a>虚拟化局限性</h2><p>每一个虚拟机都是一个完整的操作系统，操作系统本身需要消耗资源</p>
-<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1><h2 id="容器出现"><a href="#容器出现" class="headerlink" title="容器出现"></a>容器出现</h2><p>通过标准化“应用运行环境”，沟通开发(dev)和运维(ops)流程</p>
+<h2 id="容器化devops"><a href="#容器化devops" class="headerlink" title="容器化devops"></a>容器化devops</h2><p>通过标准化“应用运行环境”，沟通开发(dev)和运维(ops)流程</p>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg" alt=""></p>
-<h2 id="容器特点"><a href="#容器特点" class="headerlink" title="容器特点"></a>容器特点</h2><ul>
-<li>对软件和其依赖的标准化打包</li>
-<li>应用之间相互隔离</li>
-<li>共享同一个os内核</li>
-<li>可以运行在多个主流操作系统上</li>
-</ul>
 <h2 id="容器与虚拟机"><a href="#容器与虚拟机" class="headerlink" title="容器与虚拟机"></a>容器与虚拟机</h2><ul>
 <li>区别：容器是在操作系统层面实现虚拟化，直接复用本地操作系统内核，它的技术基础是linux容器技术（LXC，即cgroups）；传统虚拟化方式则基于硬件层面实现虚拟化。</li>
 </ul>
@@ -426,7 +411,13 @@
 <li>融合：由于目前docker不支持热迁移，可以将docker容器放在KVM虚拟机里，通过虚拟机的迁移完成容器的迁移</li>
 </ul>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg" alt=""></p>
-<h1 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<h1 id="docker介绍"><a href="#docker介绍" class="headerlink" title="docker介绍"></a><a href="https://docs.docker.com/get-started/overview/#docker-architecture" target="_blank" rel="noopener">docker介绍</a></h1><h2 id="docker架构"><a href="#docker架构" class="headerlink" title="docker架构"></a>docker架构</h2><ul>
+<li>docker daemon(dockerd)：监听API请求、管理docker对象（镜像、容器、网络、卷）</li>
+<li>docker client：用户管理docker的入口</li>
+<li>docker registry：镜像仓库</li>
+</ul>
+<p><img src="https://docs.docker.com/engine/images/architecture.svg" alt=""></p>
+<h2 id="docker对象"><a href="#docker对象" class="headerlink" title="docker对象"></a>docker对象</h2><ul>
 <li>容器：视图隔离、资源可限制、独立文件系统的进程集合<ul>
 <li>可以把容器看做是一个简易的linux环境和运行在其中的应用程序</li>
 <li>docker利用容器来运行应用</li>
@@ -439,7 +430,6 @@
 <li>容器在启动时会创建一个可写层作为多层文件系统的最上层</li>
 </ul>
 </li>
-<li>镜像仓库：存放镜像文件的场所</li>
 </ul>
 <h2 id="核心技术"><a href="#核心技术" class="headerlink" title="核心技术"></a>核心技术</h2><ul>
 <li>视图隔离(namespace)：pid、net、ipc、mnt、uts</li>
@@ -450,17 +440,18 @@
 <li>容器在启动时会创建一个可写层作为多层文件系统的最上层</li>
 </ul>
 </li>
+<li>容器格式(container format)：docker engine将namespace、cgroups、UnionFS组合到容器格式的包装器中，默认的容器格式为libcontainer</li>
 </ul>
-<h2 id="相关产品"><a href="#相关产品" class="headerlink" title="相关产品"></a>相关产品</h2><ul>
-<li>moby：是继承了原先的docker的项目，是社区维护的的开源项目，谁都可以在moby的基础打造自己的容器产品</li>
-<li>docker-ce是docker公司维护的开源项目，是一个基于moby项目的免费的容器产品</li>
-<li>docker-ee是docker公司维护的闭源产品，是docker公司的商业产品。</li>
+<h2 id="docker产品"><a href="#docker产品" class="headerlink" title="docker产品"></a>docker产品</h2><ul>
+<li><a href="https://docs.docker.com/engine/" target="_blank" rel="noopener">docker engine</a>：docker服务端引擎</li>
+<li><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">docker compose</a>：简单的多容器部署工具，通过简单的命令和配置，管理服务于某个应用的多个容器</li>
+<li><a href="https://docs.docker.com/desktop/" target="_blank" rel="noopener">docker desktop</a>：适用于Mac或Windows环境的易于安装的应用程序，可让您构建和共享容器化的应用程序和微服务；</li>
+<li><a href="https://hub.docker.com/repositories" target="_blank" rel="noopener">docker hub</a>：公共镜像仓库</li>
 </ul>
-<h2 id="工具集"><a href="#工具集" class="headerlink" title="工具集"></a>工具集</h2><ul>
-<li><a href="https://github.com/docker/compose" target="_blank" rel="noopener">compose</a>：简单的多容器部署工具，通过简单的命令和配置，管理服务于某个应用的多个容器</li>
-<li><a href="https://github.com/docker/machine" target="_blank" rel="noopener">machine</a>：将docker安装在指定主机，比如虚拟机、本地、远端云主机</li>
-<li><a href="https://github.com/docker/kitematic" target="_blank" rel="noopener">kitematic</a>：桌面版的docker客户端</li>
-<li><a href="https://github.com/docker/toolbox" target="_blank" rel="noopener">toolbox</a>：将docker安装在mac和windows下的传统方式【官方已有新的解决方案】，安装包含如下<ul>
+<h2 id="过时的工具集"><a href="#过时的工具集" class="headerlink" title="过时的工具集"></a>过时的工具集</h2><ul>
+<li><a href="https://docs.docker.com/machine/overview/" target="_blank" rel="noopener">machine</a>：将docker安装在指定主机，比如虚拟机、本地、远端云主机</li>
+<li><a href="https://docs.docker.com/kitematic/userguide/" target="_blank" rel="noopener">kitematic</a>：桌面版的docker客户端</li>
+<li><a href="https://docs.docker.com/toolbox/overview/" target="_blank" rel="noopener">toolbox</a>：将docker安装在mac和windows下的传统方式，安装包含如下<ul>
 <li>docker machine</li>
 <li>docker engine【docker command】</li>
 <li>docker compose</li>
@@ -469,10 +460,11 @@
 <li>Oracle VirtualBox</li>
 </ul>
 </li>
-<li>swarm：容器编排工具</li>
+<li>swarm：docker默认支持的容器编排工具</li>
 </ul>
-<h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><ul>
-<li>阿里云安装参考：<a href="https://yq.aliyun.com/articles/110806" target="_blank" rel="noopener">https://yq.aliyun.com/articles/110806</a></li>
+<h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><ul>
+<li><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></li>
+<li><a href="https://developer.aliyun.com/mirror/docker-ce" target="_blank" rel="noopener">阿里云镜像</a></li>
 </ul>
 <h2 id="engine配置"><a href="#engine配置" class="headerlink" title="engine配置"></a>engine配置</h2><blockquote>
 <p>/etc/docker/daemon.json</p>
@@ -714,7 +706,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟化"><span class="nav-number">1.</span> <span class="nav-text">虚拟化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#产生背景"><span class="nav-number">1.1.</span> <span class="nav-text">产生背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术优势"><span class="nav-number">1.2.</span> <span class="nav-text">技术优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化产品"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟化产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化局限性"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟化局限性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器"><span class="nav-number">2.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器出现"><span class="nav-number">2.1.</span> <span class="nav-text">容器出现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器特点"><span class="nav-number">2.2.</span> <span class="nav-text">容器特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">2.3.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker"><span class="nav-number">3.</span> <span class="nav-text">docker</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">3.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">3.2.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关产品"><span class="nav-number">3.3.</span> <span class="nav-text">相关产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具集"><span class="nav-number">3.4.</span> <span class="nav-text">工具集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.5.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.6.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">3.7.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.8.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.8.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.8.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.8.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker引入"><span class="nav-number">1.</span> <span class="nav-text">docker引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统IT面临问题"><span class="nav-number">1.1.</span> <span class="nav-text">传统IT面临问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器优势"><span class="nav-number">1.2.</span> <span class="nav-text">容器优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化devops"><span class="nav-number">1.3.</span> <span class="nav-text">容器化devops</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">1.4.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker介绍"><span class="nav-number">2.</span> <span class="nav-text">docker介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker架构"><span class="nav-number">2.1.</span> <span class="nav-text">docker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker对象"><span class="nav-number">2.2.</span> <span class="nav-text">docker对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">2.3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker产品"><span class="nav-number">2.4.</span> <span class="nav-text">docker产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过时的工具集"><span class="nav-number">2.5.</span> <span class="nav-text">过时的工具集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装与配置"><span class="nav-number">3.</span> <span class="nav-text">docker安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.2.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">3.3.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.4.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.4.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.4.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.4.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
