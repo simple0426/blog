@@ -40,9 +40,11 @@ date: 2019-12-02 23:51:37
 
 # 网络类型-bridge
 ## 互通原理
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/docekr-bridge.jpg)
+
 * 每个容器通过veth(虚拟以太网链接对)和宿主机连通
 * 多个veth包含在一个bridge(桥接网络)中，因此多个容器可以互通
-* 桥接网卡(一般为docker)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网
+* 桥接网卡(一般为docker0)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网
 
 ## 操作
 ### docker-network命令
@@ -56,6 +58,7 @@ date: 2019-12-02 23:51:37
 * 已存在的容器连接指定网络：docker network connect my-bridge test1
 
 ### brctl命令
+* 软件安装：bridge-utils【centos】
 * 查看桥接网卡包含的容器链接对(veth)：brctl show 
 * 添加桥接网卡
     + brctl addbr bridge0
@@ -65,11 +68,30 @@ date: 2019-12-02 23:51:37
 ## 容器端口映射
 docker run -p host_port:container_port
 
-# 网络类型-其他
->docker network ls看到的网络
-
+# 网络类型-none/host
 * none：容器绑定此网络后，除了回环接口外，容器没有其他网络地址
 * host：容器绑定此网络后，容器直接使用宿主机的所有网络地址
+
+# 网络类型-overlay
+## 简介
+* 使用etcd分布式存储，docker创建的overlay网络可以实现跨主机容器互联
+* 以下操作都是在双机(192.168.2.151,192.168.2.152)上运行，且需要先[安装并配置etcd](#分布式kv存储-etcd)
+
+## docker配置调整并重启
+```
+{
+    "registry-mirrors": ["https://2x97hcl1.mirror.aliyuncs.com"],
+    "host": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"],
+    "cluster-advertise": "192.168.2.151:2375",
+    "cluster-store": "etcd://192.168.2.151:2379"
+}
+```
+## 建立并使用overlay网络
+* 创建网络：docker network create -d overlay demo
+* 查看网络：docker network ls
+* 在两台宿主机使用此网络启动：docker run -d --name test2 --network demo busybox sh -c "while true;do sleep 3600;done"
+* 在两个容器内ping测试：docker exec -it test1 /bin/sh
+* 在etcd中查看网络信息：etcdctl ls /docker
 
 # 分布式kv存储-etcd
 ## 简介
@@ -125,27 +147,6 @@ initial-cluster: "node1=http://192.168.2.151:2380,node2=http://192.168.2.152:238
 - 集群状态：
     + v2版本：etcdctl cluster-health
     + v3版本：etcdctl --write-out=table --endpoints=192.168.2.151:2379,192.168.2.152:2379 endpoint status/health
-
-# 网络类型-overlay
-## 简介
-* 使用etcd分布式存储，docker创建的overlay网络可以实现跨主机容器互联
-* 以下操作都是在双机(192.168.2.151,192.168.2.152)上运行，且需要先[安装并配置etcd](#分布式kv存储-etcd)
-
-## docker配置调整并重启
-```
-{
-    "registry-mirrors": ["https://2x97hcl1.mirror.aliyuncs.com"],
-    "host": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"],
-    "cluster-advertise": "192.168.2.151:2375",
-    "cluster-store": "etcd://192.168.2.151:2379"
-}
-```
-## 建立并使用overlay网络
-* 创建网络：docker network create -d overlay demo
-* 查看网络：docker network ls
-* 在两台宿主机使用此网络启动：docker run -d --name test2 --network demo busybox sh -c "while true;do sleep 3600;done"
-* 在两个容器内ping测试：docker exec -it test1 /bin/sh
-* 在etcd中查看网络信息：etcdctl ls /docker
 
 # 其他跨主机容器互联方式
 ## 静态路由
