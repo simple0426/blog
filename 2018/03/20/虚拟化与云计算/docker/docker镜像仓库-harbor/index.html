@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 docker-engine 17.06.0-ce+ or higher docker-com">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-28T14:43:45.424Z">
+<meta property="og:updated_time" content="2020-06-29T07:08:23.095Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker镜像仓库-harbor">
 <meta name="twitter:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 docker-engine 17.06.0-ce+ or higher docker-com">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-06-28T22:43:45+08:00">
-                2020-06-28
+              <time title="更新于" itemprop="dateModified" datetime="2020-06-29T15:08:23+08:00">
+                2020-06-29
               </time>
             
           </span>
@@ -406,7 +406,6 @@
 </li>
 <li>data_volume: 镜像等数据的存储位置，默认/data</li>
 <li>log.location：日志位置，默认/var/log/harbor</li>
-<li><a href="https://goharbor.io/docs/2.0.0/install-config/configure-https/" target="_blank" rel="noopener">https配置</a></li>
 </ul>
 </li>
 <li>hostname配置要点<ul>
@@ -420,6 +419,29 @@
 </ul>
 </li>
 <li>web访问：<a href="http://ip:80" target="_blank" rel="noopener">http://ip:80</a></li>
+</ul>
+<h2 id="https设置"><a href="#https设置" class="headerlink" title="https设置"></a>https设置</h2><ul>
+<li>使用公有证书或自签名证书</li>
+<li>harbor.yml中设置<ul>
+<li>hostname：设置域名或ip地址</li>
+<li>certificate、private_key：设置证书和秘钥的路径</li>
+</ul>
+</li>
+<li>重新部署harbor<ul>
+<li>关闭服务：docker-compose down</li>
+<li>重新部署：./install.sh</li>
+</ul>
+</li>
+<li>客户端设置<ul>
+<li>如果使用公有证书，客户端无需设置</li>
+<li>如果使用自签名证书，将ca根证书放入如下位置：/etc/docker/certs.d/myregistry:5000/ca.crt<ul>
+<li>myregistry为harbor主机的ip地址或域名，如果使用非443端口则要添加端口信息</li>
+<li>ca.crt为根证书且名称必须是这样</li>
+</ul>
+</li>
+<li>重启docker服务</li>
+</ul>
+</li>
 </ul>
 <h1 id="harbor服务控制"><a href="#harbor服务控制" class="headerlink" title="harbor服务控制"></a>harbor服务控制</h1><h2 id="容器控制"><a href="#容器控制" class="headerlink" title="容器控制"></a>容器控制</h2><ul>
 <li>docker-compose up -d 创建和启动容器【后台】</li>
@@ -660,7 +682,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor介绍"><span class="nav-number">1.</span> <span class="nav-text">harbor介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor服务控制"><span class="nav-number">3.</span> <span class="nav-text">harbor服务控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器控制"><span class="nav-number">3.1.</span> <span class="nav-text">容器控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器介绍"><span class="nav-number">3.2.</span> <span class="nav-text">容器介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor管理"><span class="nav-number">4.</span> <span class="nav-text">harbor管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">4.1.</span> <span class="nav-text">用户管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端使用"><span class="nav-number">5.</span> <span class="nav-text">客户端使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor介绍"><span class="nav-number">1.</span> <span class="nav-text">harbor介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#https设置"><span class="nav-number">2.1.</span> <span class="nav-text">https设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor服务控制"><span class="nav-number">3.</span> <span class="nav-text">harbor服务控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器控制"><span class="nav-number">3.1.</span> <span class="nav-text">容器控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器介绍"><span class="nav-number">3.2.</span> <span class="nav-text">容器介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#harbor管理"><span class="nav-number">4.</span> <span class="nav-text">harbor管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">4.1.</span> <span class="nav-text">用户管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端使用"><span class="nav-number">5.</span> <span class="nav-text">客户端使用</span></a></li></ol></div>
             
 
           </div>

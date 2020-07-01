@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="安装配置java8运行环境jenkins安装 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkins -">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T09:15:25.133Z">
+<meta property="og:updated_time" content="2020-07-01T06:41:12.620Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins安装与配置">
 <meta name="twitter:description" content="安装配置java8运行环境jenkins安装 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkins -">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-04-14T17:15:25+08:00">
-                2020-04-14
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T14:41:12+08:00">
+                2020-07-01
               </time>
             
           </span>
@@ -411,33 +411,44 @@
 </li>
 </ul>
 <h3 id="docker部署"><a href="#docker部署" class="headerlink" title="docker部署"></a>docker部署</h3><ul>
-<li>镜像：使用预装blueocean的【jenkinsci/blueocean】</li>
-<li>启动参数：<code>docker run --name jenkinsci-blueocean -u root --rm -d -p 7005:8080 -p 50000:50000 -v /data/jenkins/:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin jenkinsci/blueocean</code></li>
-<li>参数详解：<ul>
+<li><p>启动参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run --name jenkins \</span><br><span class="line">  -u root -d \</span><br><span class="line">  -p 80:8080 -p 50000:50000 \</span><br><span class="line">  -v /data/jenkins/:/var/jenkins_home \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /usr/bin/docker:/usr/bin/docker \</span><br><span class="line">  -v /usr/local/maven:/usr/local/maven \</span><br><span class="line">  -v /usr/local/jdk:/usr/local/jdk \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  -e JAVA_OPTS=&quot;-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true&quot; \</span><br><span class="line">  --restart=always \</span><br><span class="line">  jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参数详解：</p>
+<ul>
 <li>–name：设置容器名称</li>
 <li>-u：以root启动，防止出现权限问题</li>
-<li>–rm：运行结束即删除</li>
 <li>-d：后台运行</li>
 <li>-p 7005:8080：映射服务端口【宿主机7005-》容器8080】</li>
 <li>-p 50000:50000：agent连接master的端口</li>
 <li>-v /data/jenkins/:/var/jenkins_home：jenkins主目录持久化存储</li>
 <li>-v /var/run/docker.sock:/var/run/docker.sock：确保jenkins容器内可以操作宿主机的docker</li>
-<li>-v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin：挂载宿主机maven到jenkins容器</li>
+<li>-v /usr/local/maven:/usr/local/maven：挂载宿主机maven到jenkins容器</li>
+<li>-v /usr/local/jdk:/usr/local/jdk：挂载宿主机jdk到容器</li>
+<li>-v /etc/localtime:/etc/localtime：设置容器时间</li>
+<li>-e JAVA_OPTS=”-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true”：关闭csrf保护</li>
 </ul>
 </li>
-<li>初始化密码：/data/jenkins/secrets/initialAdminPassword</li>
+<li>csrf设置：由于jenkins2.0版本默认开启CSRF且不能关闭，所以需要在启动jenkins服务时关闭csrf<ul>
+<li><a href="https://www.jenkins.io/doc/upgrade-guide/2.222/#always-enabled-csrf-protection" target="_blank" rel="noopener">官方说明</a></li>
+<li><a href="https://www.cnblogs.com/kazihuo/p/12937071.html" target="_blank" rel="noopener">网友设置</a></li>
+</ul>
+</li>
 </ul>
 <h1 id="web设置"><a href="#web设置" class="headerlink" title="web设置"></a>web设置</h1><ul>
-<li>访问地址：<a href="http://JENKINS_URL:8080" target="_blank" rel="noopener">http://JENKINS_URL:8080</a></li>
-<li>使用国内镜像中心的步骤<ol>
-<li>更新简体中文插件到1.0.10+</li>
-<li>点击页面右下角（确保浏览器的语言为中文）的Jenkins中文社区</li>
-<li>点击使用按钮</li>
-<li>修改更新中心的地址为<code>https://updates.jenkins-zh.cn/update-center.json</code></li>
-<li>在插件管理的高级页面，点击立即获取</li>
-</ol>
+<li>访问地址：<a href="http://JENKINS_URL:8080" target="_blank" rel="noopener">http://JENKINS_URL:8080</a><ul>
+<li>初始化密码：/data/jenkins/secrets/initialAdminPassword</li>
+</ul>
 </li>
-<li>邮件设置(Mailer插件)<ul>
+<li><p>使用国内镜像的步骤</p>
+<ul>
+<li>修改插件更新中心URL：<a href="https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</a></li>
+<li>修改json配置【/var/jenkins_home/updates/default.json】<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i &apos;s/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g&apos; default.json &amp;&amp; \</span><br><span class="line">sed -i &apos;s/http:\/\/www.google.com/https:\/\/www.baidu.com/g&apos; default.json</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>邮件设置(Mailer插件)</p>
+<ul>
 <li>系统管理员帐户</li>
 <li>SMTP服务器户</li>
 <li>SMTP认证</li>
@@ -519,8 +530,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/18/持续集成与部署/gitlab的CICD使用/" rel="next" title="gitlab的CICD使用">
-                <i class="fa fa-chevron-left"></i> gitlab的CICD使用
+              <a href="/2020/01/18/持续集成与部署/gitlab之ci-runner使用/" rel="next" title="gitlab之ci-runner使用">
+                <i class="fa fa-chevron-left"></i> gitlab之ci-runner使用
               </a>
             
           </div>

@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg">
 <meta property="og:image" content="https://docs.docker.com/engine/images/architecture.svg">
-<meta property="og:updated_time" content="2020-06-28T14:40:14.374Z">
+<meta property="og:updated_time" content="2020-07-01T07:17:41.004Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker入门介绍">
 <meta name="twitter:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-06-28T22:40:14+08:00">
-                2020-06-28
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T15:17:41+08:00">
+                2020-07-01
               </time>
             
           </span>
@@ -485,11 +485,6 @@
 </ul>
 </li>
 </ul>
-<h2 id="图形化"><a href="#图形化" class="headerlink" title="图形化"></a>图形化</h2><ul>
-<li>使用软件：portainer</li>
-<li>启动：docker run -d -p 9000:9000 –restart=always -v /var/run/docker.sock:/var/run/docker.sock –name portainer portainer/portainer</li>
-<li>web访问：<a href="http://ip:9000" target="_blank" rel="noopener">http://ip:9000</a></li>
-</ul>
 <h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1"></a>问题1</h3><ul>
 <li>现象：通过路由实现跨主机docker容器互联，如果ping对端容器出现：Dest Unreachable, Unknown Code: 10或Destination Host Prohibited</li>
 <li>解决：则是由于对端宿主机开启防火墙或iptables原因导致</li>
@@ -513,6 +508,28 @@
 <li>重新登录服务器终端</li>
 </ul>
 </li>
+</ul>
+<h1 id="运维管理"><a href="#运维管理" class="headerlink" title="运维管理"></a>运维管理</h1><h2 id="图形化"><a href="#图形化" class="headerlink" title="图形化"></a>图形化</h2><ul>
+<li>使用软件：portainer</li>
+<li>启动：<code>docker run -d -p 9000:9000 --restart=always -v /var/run/docker.sock:/var/run/docker.sock --name portainer portainer/portainer</code></li>
+<li>web访问：<a href="http://ip:9000" target="_blank" rel="noopener">http://ip:9000</a></li>
+</ul>
+<h2 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h2><ul>
+<li>使用软件：<a href="https://github.com/google/cadvisor" target="_blank" rel="noopener">cadvisor</a></li>
+<li>服务启动<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">  --volume=/:/rootfs:ro \</span><br><span class="line">  --volume=/var/run:/var/run:ro \</span><br><span class="line">  --volume=/sys:/sys:ro \</span><br><span class="line">  --volume=/var/lib/docker/:/var/lib/docker:ro \</span><br><span class="line">  --volume=/dev/disk/:/dev/disk:ro \</span><br><span class="line">  --publish=8080:8080 \</span><br><span class="line">  --detach=true \</span><br><span class="line">  --name=cadvisor \</span><br><span class="line">  --device=/dev/kmsg \</span><br><span class="line">  google/cadvisor:latest</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="监控报警"><a href="#监控报警" class="headerlink" title="监控报警"></a>监控报警</h2><ul>
+<li>使用软件：<a href="https://prometheus.io/" target="_blank" rel="noopener">prometheus</a> 、<a href="https://github.com/prometheus" target="_blank" rel="noopener">github地址</a></li>
+<li>服务启动：<code>docker run --name prometheus -d -p 9090:9090 prom/prometheus</code></li>
+<li>添加cadvisor数据【重启prometheus】：/etc/prometheus/prometheus.yml<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- job_name: &apos;cadvisor&apos;                 </span><br><span class="line">                              </span><br><span class="line">  # metrics_path defaults to &apos;/metrics&apos;</span><br><span class="line">  # scheme defaults to &apos;http&apos;.</span><br><span class="line">                               </span><br><span class="line">  static_configs:     </span><br><span class="line">  - targets: [&apos;172.17.8.51:8080&apos;,&apos;172.17.8.52:8080&apos;]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="度量分析和可视化系统"><a href="#度量分析和可视化系统" class="headerlink" title="度量分析和可视化系统"></a>度量分析和可视化系统</h2><ul>
+<li>使用软件：<a href="https://grafana.com/grafana/" target="_blank" rel="noopener">grafana</a></li>
+<li>服务启动：<code>docker run -d -p 3000:3000 --name grafana grafana/grafana</code></li>
+<li>添加数据源-prometheus</li>
+<li>添加docker监控模板【ID：193】</li>
 </ul>
 
       
@@ -706,7 +723,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker引入"><span class="nav-number">1.</span> <span class="nav-text">docker引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统IT面临问题"><span class="nav-number">1.1.</span> <span class="nav-text">传统IT面临问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器优势"><span class="nav-number">1.2.</span> <span class="nav-text">容器优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化devops"><span class="nav-number">1.3.</span> <span class="nav-text">容器化devops</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">1.4.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker介绍"><span class="nav-number">2.</span> <span class="nav-text">docker介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker架构"><span class="nav-number">2.1.</span> <span class="nav-text">docker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker对象"><span class="nav-number">2.2.</span> <span class="nav-text">docker对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">2.3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker产品"><span class="nav-number">2.4.</span> <span class="nav-text">docker产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过时的工具集"><span class="nav-number">2.5.</span> <span class="nav-text">过时的工具集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装与配置"><span class="nav-number">3.</span> <span class="nav-text">docker安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.2.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">3.3.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.4.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.4.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.4.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.4.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker引入"><span class="nav-number">1.</span> <span class="nav-text">docker引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统IT面临问题"><span class="nav-number">1.1.</span> <span class="nav-text">传统IT面临问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器优势"><span class="nav-number">1.2.</span> <span class="nav-text">容器优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化devops"><span class="nav-number">1.3.</span> <span class="nav-text">容器化devops</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">1.4.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker介绍"><span class="nav-number">2.</span> <span class="nav-text">docker介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker架构"><span class="nav-number">2.1.</span> <span class="nav-text">docker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker对象"><span class="nav-number">2.2.</span> <span class="nav-text">docker对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">2.3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker产品"><span class="nav-number">2.4.</span> <span class="nav-text">docker产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过时的工具集"><span class="nav-number">2.5.</span> <span class="nav-text">过时的工具集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装与配置"><span class="nav-number">3.</span> <span class="nav-text">docker安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.2.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.3.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.3.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.3.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.3.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">4.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">4.1.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据采集"><span class="nav-number">4.2.</span> <span class="nav-text">数据采集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控报警"><span class="nav-number">4.3.</span> <span class="nav-text">监控报警</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#度量分析和可视化系统"><span class="nav-number">4.4.</span> <span class="nav-text">度量分析和可视化系统</span></a></li></ol></li></ol></div>
             
 
           </div>
