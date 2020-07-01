@@ -33,28 +33,47 @@ sudo apt-get install jenkins
         + 解决：ln -s /usr/local/jdk1.8.0_241/bin/java /usr/bin/
 
 ### docker部署
-* 镜像：使用预装blueocean的【jenkinsci/blueocean】
-* 启动参数：`docker run --name jenkinsci-blueocean -u root --rm -d -p 7005:8080 -p 50000:50000 -v /data/jenkins/:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin jenkinsci/blueocean`
+* 启动参数
+```
+docker run --name jenkins \
+  -u root -d \
+  -p 80:8080 -p 50000:50000 \
+  -v /data/jenkins/:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /usr/bin/docker:/usr/bin/docker \
+  -v /usr/local/maven:/usr/local/maven \
+  -v /usr/local/jdk:/usr/local/jdk \
+  -v /etc/localtime:/etc/localtime \
+  -e JAVA_OPTS="-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true" \
+  --restart=always \
+  jenkins/jenkins:lts
+```
 * 参数详解：
     - --name：设置容器名称
     - -u：以root启动，防止出现权限问题
-    - --rm：运行结束即删除
     - -d：后台运行
     - -p 7005:8080：映射服务端口【宿主机7005-》容器8080】
     - -p 50000:50000：agent连接master的端口
     - -v /data/jenkins/:/var/jenkins_home：jenkins主目录持久化存储
     - -v /var/run/docker.sock:/var/run/docker.sock：确保jenkins容器内可以操作宿主机的docker
-    - -v /usr/local/apache-maven-3.6.3:/usr/local/apache-maven-3.6.3 -e MAVEN_HOME=/usr/local/apache-maven-3.6.3 -e PATH=$PATH:${MAVEN_HOME}/bin：挂载宿主机maven到jenkins容器
-* 初始化密码：/data/jenkins/secrets/initialAdminPassword
+    - -v /usr/local/maven:/usr/local/maven：挂载宿主机maven到jenkins容器
+    - -v /usr/local/jdk:/usr/local/jdk：挂载宿主机jdk到容器
+    - -v /etc/localtime:/etc/localtime：设置容器时间
+    - -e JAVA_OPTS="-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true"：关闭csrf保护
+* csrf设置：由于jenkins2.0版本默认开启CSRF且不能关闭，所以需要在启动jenkins服务时关闭csrf
+    - [官方说明](https://www.jenkins.io/doc/upgrade-guide/2.222/#always-enabled-csrf-protection)
+    - [网友设置](https://www.cnblogs.com/kazihuo/p/12937071.html)
 
 # web设置
 * 访问地址：http://JENKINS_URL:8080
-* 使用国内镜像中心的步骤
-    1. 更新简体中文插件到1.0.10+
-    2. 点击页面右下角（确保浏览器的语言为中文）的Jenkins中文社区
-    3. 点击使用按钮
-    4. 修改更新中心的地址为`https://updates.jenkins-zh.cn/update-center.json`
-    5. 在插件管理的高级页面，点击立即获取
+    - 初始化密码：/data/jenkins/secrets/initialAdminPassword
+* 使用国内镜像的步骤
+    - 修改插件更新中心URL：https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json
+    - 修改json配置【/var/jenkins_home/updates/default.json】
+    ```
+    sed -i 's/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g' default.json && \
+    sed -i 's/http:\/\/www.google.com/https:\/\/www.baidu.com/g' default.json
+    ```
 * 邮件设置(Mailer插件)
     - 系统管理员帐户
     - SMTP服务器户

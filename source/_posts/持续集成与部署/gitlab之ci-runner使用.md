@@ -1,5 +1,5 @@
 ---
-title: gitlab的CICD使用
+title: gitlab之ci-runner使用
 tags:
   - gitlab
   - runner

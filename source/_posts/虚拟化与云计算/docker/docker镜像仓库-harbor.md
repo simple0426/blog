@@ -20,7 +20,6 @@ categories: ['docker']
         + password: root123
     - data_volume: 镜像等数据的存储位置，默认/data
     - log.location：日志位置，默认/var/log/harbor
-    - [https配置](https://goharbor.io/docs/2.0.0/install-config/configure-https/)
 * hostname配置要点
     - 当配置hostname为内网地址时，虽然登陆地址可以通过地址映射使用外网地址；但是认证时，服务端回传客户端的认证地址，依然是内网地址造成无法登陆认证。
     - 当配置hostname为外网地址时，由于外网带宽限制，内网服务器不能高速的进行镜像传输
@@ -28,6 +27,21 @@ categories: ['docker']
 * harbor安装
     - 包装命令：sudo ./install.sh
 * web访问：http://ip:80
+
+## https设置
+* 使用公有证书或自签名证书
+* harbor.yml中设置
+    - hostname：设置域名或ip地址
+    - certificate、private_key：设置证书和秘钥的路径
+* 重新部署harbor
+    - 关闭服务：docker-compose down
+    - 重新部署：./install.sh
+* 客户端设置
+    - 如果使用公有证书，客户端无需设置
+    - 如果使用自签名证书，将ca根证书放入如下位置：/etc/docker/certs.d/myregistry:5000/ca.crt
+        + myregistry为harbor主机的ip地址或域名，如果使用非443端口则要添加端口信息
+        + ca.crt为根证书且名称必须是这样
+    - 重启docker服务
 
 # harbor服务控制 
 ## 容器控制

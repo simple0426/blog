@@ -110,11 +110,6 @@ date: 2019-11-19 23:24:32
 * storage-opts：存储驱动的选项
     - dm.basesize=5G：限制容器磁盘的最大容量
 
-## 图形化
-* 使用软件：portainer
-* 启动：docker run -d -p 9000:9000 --restart=always -v /var/run/docker.sock:/var/run/docker.sock --name portainer portainer/portainer
-* web访问：http://ip:9000
-
 ## 常见问题
 ### 问题1
 * 现象：通过路由实现跨主机docker容器互联，如果ping对端容器出现：Dest Unreachable, Unknown Code: 10或Destination Host Prohibited
@@ -135,3 +130,50 @@ Got permission denied while trying to connect to the Docker daemon socket at uni
     + 将当前用户加入docker组中：gpasswd -a python docker
     + 重启docker进程：systemctl restart docker
     + 重新登录服务器终端
+
+# 运维管理
+## 图形化
+* 使用软件：portainer
+* 启动：`docker run -d -p 9000:9000 --restart=always -v /var/run/docker.sock:/var/run/docker.sock --name portainer portainer/portainer`
+* web访问：http://ip:9000
+
+## 数据采集
+* 使用软件：[cadvisor][1]
+* 服务启动
+```
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  --device=/dev/kmsg \
+  google/cadvisor:latest
+```
+
+## 监控报警
+* 使用软件：[prometheus][3] 、[github地址](https://github.com/prometheus)
+* 服务启动：`docker run --name prometheus -d -p 9090:9090 prom/prometheus`
+* 添加cadvisor数据【重启prometheus】：/etc/prometheus/prometheus.yml
+```
+  - job_name: 'cadvisor'                 
+                                
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+                                 
+    static_configs:     
+    - targets: ['172.17.8.51:8080','172.17.8.52:8080']
+```
+
+## 度量分析和可视化系统
+* 使用软件：[grafana][2]
+* 服务启动：`docker run -d -p 3000:3000 --name grafana grafana/grafana`
+* 添加数据源-prometheus
+* 添加docker监控模板【ID：193】
+
+[1]: https://github.com/google/cadvisor
+[2]: https://grafana.com/grafana/
+[3]: https://prometheus.io/
