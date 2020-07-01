@@ -82,7 +82,20 @@ date: 2018-04-03 10:28:44
 * API server通知相应的节点进行pod部署
 * 相应节点的kubelet得到通知后，调用container runtime启动容器、调度存储插件配置存储、调度网络插件配置网络
 
-# 简单使用-[minikube](https://minikube.sigs.k8s.io/)
+# 集群部署方式
+* [minikube方式](#minikube)
+* 二进制手动方式
+    - [文档参考](https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html)
+    - [源码参考](https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster)
+    - kubernetes源码下载：https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz
+* [kubeadm部署工具](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+
+# 集群运行模式
+* 独立组件【二进制安装方式】：系统组件直接以守护进程方式运行在节点上
+* 静态pod模式【kubeadm默认方式】，除了kubelet和docker之外其他组件(etcd/api/scheduler/controller-manager)都以静态pod方式运行在master主机上
+* 自托管模式(self-hosted)【可通过kubeadm由静态pod转换而来】：类似静态pod方式，除了kubelet和docker之外其他组件都是集群上的pod对象，但这些pod受控于daemonset控制器
+
+# [minikube](https://minikube.sigs.k8s.io/)
 ## 软件安装
 * [下载安装minikube](https://github.com/kubernetes/minikube)
     - minikube是类似于vagrant的工具，需要借助本地虚拟化的支持（hyper-v、virtualbox）
