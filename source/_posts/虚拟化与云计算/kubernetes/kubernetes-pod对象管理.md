@@ -3,7 +3,7 @@ title: kubernetes-pod对象管理
 tags:
   - 初始化容器
   - 钩子函数
-  - 容器探测
+  - 健康检查
   - 资源
   - pod定义
 categories:
@@ -52,19 +52,19 @@ spec:
   restartPolicy: Never
   volumes:
   - name: shared-data
-     hostPath:
-        path: /data
+    hostPath:
+      path: /data
   containers:
   - name: nginx-container
-     image: nginx
-     volumeMounts:
+    image: nginx
+    volumeMounts:
       - name: shared-data
-         mountPath: /usr/sharr/nginx/html
+        mountPath: /usr/share/nginx/html
   - name: debian-container
-     image: debian
-     volumeMounts:
+    image: debian
+    volumeMounts:
       - name: shared-data
-         mountPath: /pod-data
+        mountPath: /pod-data
     command: ["/bin/sh"]
     args: ["-c", "echo Hello from the debian container > /pod-data/index.html"]
 ```
@@ -125,7 +125,8 @@ apiVersion: v1
 metadata:
   name: nginx-pod
 spec:
-  imagePullSecret: aliyun-simple
+  imagePullSecrets:
+  - name: aliyun-simple
   containers:
   - name: nginx #容器名称
     images: nginx:latest #镜像名称
@@ -276,7 +277,7 @@ spec:
 * pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，恶意通过校验部署来排查【kubectl apply --validate -f pod.yml】
 * service无法正常工作：在排除网络插件自身的问题外，最有可能是label配置有问题，可以通过查看endpoint的方式进行查看
 
-## 容器重启策略
+## 重启策略-restartPolicy
 >重启策略适用于所有容器(包含initContainer)  
 >首次需要重启时立即重启，后续重启操作时延为10/20/40/80/160/300，最大时延为300
 
@@ -289,11 +290,11 @@ spec:
 * 运行初始化容器(init container)
 * 创建主容器(main container)【必须】
 * 容器启动后钩子(post start hook)
-* 容器就绪型探测(readiness probe)
-* 容器存活性探测(liveness probe)
+* 容器就绪型检查(readiness probe)
+* 容器存活性检查(liveness probe)
 * 容器终止前钩子(pre stop hook)
 
-## initContainer
+## 初始化容器-initContainer
 可用于普通containers启动前的初始化或前置条件检验(如检测网络连通性)
 ### 与普通containers区别
 * initContainer会先于普通containers启动执行，所有initContainer执行成功后，普通containers才会被启动
@@ -318,7 +319,7 @@ spec:
       image: ikubernetes/myapp:v1
 ```
 
-## 生命周期钩子函数
+## 钩子函数
 ### 使用说明
 * 生命周期节点
     - postStart：容器建立后立即运行的功能，但是k8s无法保证它一定运行在entrypoint之前
@@ -347,15 +348,15 @@ spec:
             path: zhangmingli_summer/article/details/82145852
             port: 443
 ```
-## 容器探测
-### 探测种类
-- livenessProbe(存活性探测)：探测容器是否处于running状态，检测不通过时根据重启策略(restartPolicy)确定是否重启
-- readinessProbe(就绪性探测)：判断容器是否准备就绪，可以对外提供服务；未通过时，会将此pod从endpoint(如service对象)中移除，直到pod就绪
+## 健康检查
+### 检查种类
+- livenessProbe(存活性检查)：检查容器是否处于running状态，检测不通过时根据重启策略(restartPolicy)确定是否重启
+- readinessProbe(就绪性检查)：判断容器是否准备就绪，可以对外提供服务；未通过时，会将此pod从endpoint(如service对象)中移除，直到pod就绪
 
-### 探测方式
+### 检查方式
 * exec：执行用户自定义命令
     - 命令参数：command
-    - 注意事项：exec探测会消耗容器资源，所以需要探测命令简单、轻量
+    - 注意事项：exec检查会消耗容器资源，所以需要检查命令简单、轻量
 * httpGet：向指定url发起get请求，响应码2xx、3xx为成功
     - 命令参数：
         + host：请求主机，默认pod ip
@@ -363,16 +364,16 @@ spec:
         + httpHeaders：自定义header信息
         + path：请求的http资源url
         + scheme：连接协议，HTTP/HTTPS,默认HTTP
-    - 注意事项：在多层架构中，只能针对当前服务层进行探测(其他两种方式也一样)；如果后端服务不可用，会造成pod一次次重启，直到后端服务可用
+    - 注意事项：在多层架构中，只能针对当前服务层进行检查(其他两种方式也一样)；如果后端服务不可用，会造成pod一次次重启，直到后端服务可用
 * tcpSocket：与容器tcp端口建立连接，端口打开即为成功
     - 命令参数：
         + host：请求主机，默认pod ip
         + port：端口，必选字段
 
-### 通用探测属性
-* initialDelaySeconds：容器启动多长时间后进行首次探测，默认0s
-* timeoutSeconds：探测超时时间，默认1s
-* periodSeconds：探测频率，默认间隔10s，最小1s
+### 通用检查属性
+* initialDelaySeconds：容器启动多长时间后进行首次检查，默认0s
+* timeoutSeconds：检查超时时间，默认1s
+* periodSeconds：检查频率，默认间隔10s，最小1s
 * successThreshold：处于失败状态时，多少次成功才认为是成功；默认1，最小1
 * failureThreshold：处于成功状态时，多少次失败才认为是失败；默认3，最小1
 
