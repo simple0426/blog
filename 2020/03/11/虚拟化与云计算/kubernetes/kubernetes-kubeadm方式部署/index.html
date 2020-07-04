@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-02T03:37:11.310Z">
+<meta property="og:updated_time" content="2020-07-04T06:48:42.345Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-02T11:37:11+08:00">
-                2020-07-02
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-04T14:48:42+08:00">
+                2020-07-04
               </time>
             
           </span>
@@ -482,6 +482,7 @@
 </ul>
 </li>
 <li><a href="https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md" target="_blank" rel="noopener">建立管理员</a></li>
+<li>登录token获取：<code>kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk &#39;{print $1}&#39;)</code></li>
 <li>web访问：<a href="https://172.17.8.202:8443/" target="_blank" rel="noopener">https://172.17.8.202:8443/</a></li>
 </ul>
 <h2 id="ingress-nginx"><a href="#ingress-nginx" class="headerlink" title="ingress-nginx"></a>ingress-nginx</h2><ul>
@@ -690,7 +691,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">235</span>
+                  <span class="site-state-item-count">236</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -79,21 +79,22 @@
 
 
 
-<meta name="description" content="核心功能 自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率 自我修复：支持容器故障后自动重启，节点故障后重新调度容器 水平扩展：支持通过命令、UI或HPA方式完成扩容、缩容等弹性伸缩 服务发现、负载均衡：通过使用DNS插件为系统内置服务发现功能，它为每个service配置DNS名称；而service通过iptables或ipvs内建了负载均衡">
+<meta name="description" content="容器平台分层架构  基础设施(openstack)：虚拟机、网络、存储、数据库、公有云 容器引擎：docker 容器编排：kubernetes PaaS层：为开发、测试、运维提供统一的平台服务 访问和工具层：web控制台、CICD、监控、日志  官方文档使用 概念 任务：具体的任务 教程：有状态和无状态应用案例 参考：API、kubectl、二进制命令参数  核心功能 自动装箱：构建于容器技术之上">
 <meta name="keywords" content="kubernetes,k8s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-入门基础">
 <meta property="og:url" content="http://blog.unlazy.cn/2018/04/03/虚拟化与云计算/kubernetes/kubernetes-入门基础/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="核心功能 自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率 自我修复：支持容器故障后自动重启，节点故障后重新调度容器 水平扩展：支持通过命令、UI或HPA方式完成扩容、缩容等弹性伸缩 服务发现、负载均衡：通过使用DNS插件为系统内置服务发现功能，它为每个service配置DNS名称；而service通过iptables或ipvs内建了负载均衡">
+<meta property="og:description" content="容器平台分层架构  基础设施(openstack)：虚拟机、网络、存储、数据库、公有云 容器引擎：docker 容器编排：kubernetes PaaS层：为开发、测试、运维提供统一的平台服务 访问和工具层：web控制台、CICD、监控、日志  官方文档使用 概念 任务：具体的任务 教程：有状态和无状态应用案例 参考：API、kubectl、二进制命令参数  核心功能 自动装箱：构建于容器技术之上">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container-scheme.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s%E6%9E%B6%E6%9E%84.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg">
-<meta property="og:updated_time" content="2020-07-01T15:38:38.307Z">
+<meta property="og:updated_time" content="2020-07-04T06:27:42.565Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-入门基础">
-<meta name="twitter:description" content="核心功能 自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率 自我修复：支持容器故障后自动重启，节点故障后重新调度容器 水平扩展：支持通过命令、UI或HPA方式完成扩容、缩容等弹性伸缩 服务发现、负载均衡：通过使用DNS插件为系统内置服务发现功能，它为每个service配置DNS名称；而service通过iptables或ipvs内建了负载均衡">
-<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s%E6%9E%B6%E6%9E%84.png">
+<meta name="twitter:description" content="容器平台分层架构  基础设施(openstack)：虚拟机、网络、存储、数据库、公有云 容器引擎：docker 容器编排：kubernetes PaaS层：为开发、测试、运维提供统一的平台服务 访问和工具层：web控制台、CICD、监控、日志  官方文档使用 概念 任务：具体的任务 教程：有状态和无状态应用案例 参考：API、kubectl、二进制命令参数  核心功能 自动装箱：构建于容器技术之上">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container-scheme.jpg">
 
 
 
@@ -333,8 +334,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T23:38:38+08:00">
-                2020-07-01
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-04T14:27:42+08:00">
+                2020-07-04
               </time>
             
           </span>
@@ -389,7 +390,21 @@
       
 
       
-        <h1 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h1><ul>
+        <h1 id="容器平台分层架构"><a href="#容器平台分层架构" class="headerlink" title="容器平台分层架构"></a>容器平台分层架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container-scheme.jpg" alt=""></p>
+<ul>
+<li>基础设施(openstack)：虚拟机、网络、存储、数据库、公有云</li>
+<li>容器引擎：docker</li>
+<li>容器编排：kubernetes</li>
+<li>PaaS层：为开发、测试、运维提供统一的平台服务</li>
+<li>访问和工具层：web控制台、CICD、监控、日志</li>
+</ul>
+<h1 id="官方文档使用"><a href="#官方文档使用" class="headerlink" title="官方文档使用"></a><a href="https://kubernetes.io/docs/home/" target="_blank" rel="noopener">官方文档使用</a></h1><ul>
+<li>概念</li>
+<li>任务：具体的任务</li>
+<li>教程：有状态和无状态应用案例</li>
+<li>参考：API、kubectl、二进制命令参数</li>
+</ul>
+<h1 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h1><ul>
 <li>自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率</li>
 <li>自我修复：支持容器故障后自动重启，节点故障后重新调度容器</li>
 <li>水平扩展：支持通过命令、UI或HPA方式完成扩容、缩容等弹性伸缩</li>
@@ -433,7 +448,7 @@
 </ul>
 <h1 id="架构和功能组件"><a href="#架构和功能组件" class="headerlink" title="架构和功能组件"></a>架构和功能组件</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s%E6%9E%B6%E6%9E%84.png" alt=""></p>
 <h2 id="master组件"><a href="#master组件" class="headerlink" title="master组件"></a>master组件</h2><ul>
-<li>etcd：分布式配置存储服务，保存资源的定义和状态；它不属于kubernetes集群自身</li>
+<li>etcd：分布式配置存储服务，保存资源的定义和状态；它不属于kubernetes集群本身</li>
 <li>apiserver：是kubernetes系统的入口，封装了对资源对象的增删改查操作，以restful接口的形式提供给外部和内部使用。它维护的rest对象持久化到etcd中</li>
 <li>scheduler：负责集群资源调度，根据预定的调度策略将pod调度到相应的机器上</li>
 <li>controller-manager：确保各资源的当前状态(status)可以匹配用户期望的状态(spec)；实现此功能的操作有：故障检测、自动扩展、滚动更新等；实现此功能的控制器有：各类pod控制器，endpoint控制器、ServiceAccount控制器、node控制器等</li>
@@ -445,7 +460,7 @@
 <li>通过存储插件、网络插件，管理Volume(CVI)和网络(CNI)。</li>
 </ul>
 </li>
-<li>kube-proxy：按需为service对象生产iptables或ipvs规则，从而捕获访问当前service的流量将其转发到正确的后端pod对象</li>
+<li>kube-proxy：按需为service对象生成相应的iptables或ipvs规则，从而将访问service的流量转发到相应的pod对象</li>
 <li>container runtime(容器运行环境)：负责镜像管理以及容器的真正运行(CRI)，比如docker</li>
 </ul>
 <h2 id="核心附件"><a href="#核心附件" class="headerlink" title="核心附件"></a>核心附件</h2><ul>
@@ -458,7 +473,7 @@
 </li>
 <li>IngressController：在service之上，为集群提供7层代理；实现项目:nginx、traefik</li>
 </ul>
-<h2 id="组件交互范例"><a href="#组件交互范例" class="headerlink" title="组件交互范例"></a>组件交互范例</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg" alt=""></p>
+<h2 id="创建pod流程"><a href="#创建pod流程" class="headerlink" title="创建pod流程"></a>创建pod流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg" alt=""></p>
 <ul>
 <li>用户通过UI或CLI提交一个pod给API Server进行部署</li>
 <li>API Server将信息写入etcd存储</li>
@@ -469,14 +484,14 @@
 <li>相应节点的kubelet得到通知后，调用container runtime启动容器、调度存储插件配置存储、调度网络插件配置网络</li>
 </ul>
 <h1 id="集群部署方式"><a href="#集群部署方式" class="headerlink" title="集群部署方式"></a>集群部署方式</h1><ul>
-<li><a href="#minikube">minikube方式</a></li>
-<li>二进制手动方式<ul>
-<li><a href="https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html" target="_blank" rel="noopener">文档参考</a></li>
-<li><a href="https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster" target="_blank" rel="noopener">源码参考</a></li>
-<li>kubernetes源码下载：<a href="https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz" target="_blank" rel="noopener">https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz</a></li>
+<li><a href="#minikube">minikube方式</a>：<a href="https://kubernetes.io/docs/setup/learning-environment/minikube/" target="_blank" rel="noopener">官方</a></li>
+<li><a href="https://github.com/kubernetes/kubernetes/releases" target="_blank" rel="noopener">二进制手动方式</a><ul>
+<li>参考1： <a href="https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html" target="_blank" rel="noopener">文档参考</a>、<a href="https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster" target="_blank" rel="noopener">源码参考</a></li>
+<li><a href="https://github.com/lizhenliang/ansible-install-k8s" target="_blank" rel="noopener">参考2</a></li>
+<li>kubernetes源码下载：<code>https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz</code></li>
 </ul>
 </li>
-<li><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener">kubeadm部署工具</a></li>
+<li><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener">kubeadm工具部署</a></li>
 </ul>
 <h1 id="集群运行模式"><a href="#集群运行模式" class="headerlink" title="集群运行模式"></a>集群运行模式</h1><ul>
 <li>独立组件【二进制安装方式】：系统组件直接以守护进程方式运行在节点上</li>
@@ -498,10 +513,10 @@
 <h2 id="集群管理"><a href="#集群管理" class="headerlink" title="集群管理"></a>集群管理</h2><ul>
 <li>启动命令：<code>minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.7.3.iso</code><ul>
 <li>start其他配置选项<ul>
-<li>–cpus=2：为minikube虚拟机配置的cpu数量</li>
-<li>–disk-size=20000mb：为minikube虚拟机配置的磁盘大小</li>
-<li>–memory=2000mb’：为minikube虚拟机分配的内存</li>
-<li>–kubernetes-version=v1.16.2：minikube使用的kubernetes版本</li>
+<li><code>--cpus=2</code>：为minikube虚拟机配置的cpu数量</li>
+<li><code>--disk-size=20000mb</code>：为minikube虚拟机配置的磁盘大小</li>
+<li><code>--memory=2000mb</code>：为minikube虚拟机分配的内存</li>
+<li><code>--kubernetes-version=v1.16.2</code>：minikube使用的kubernetes版本</li>
 </ul>
 </li>
 </ul>
@@ -516,11 +531,12 @@
 <li>扩容：kubectl apply -f <a href="https://k8s.io/examples/application/deployment-scale.yaml" target="_blank" rel="noopener">https://k8s.io/examples/application/deployment-scale.yaml</a></li>
 </ul>
 <h2 id="集群运维"><a href="#集群运维" class="headerlink" title="集群运维"></a>集群运维</h2><ul>
-<li>kubect get node：查看节点状态</li>
-<li>kubectl get –watch deployments：持续查看deployments信息</li>
-<li>kubectl describe deployment：显示deployments详情</li>
-<li>kubectl delete deployment nginx-deployment：删除deployment</li>
+<li><code>kubect get node</code>：查看节点状态</li>
+<li><code>kubectl get --watch deployments</code>：持续查看deployments信息</li>
+<li><code>kubectl describe deployment</code>：显示deployments详情</li>
+<li><code>kubectl delete deployment nginx-deployment</code>：删除deployment</li>
 </ul>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><h2 id="使用限额"><a href="#使用限额" class="headerlink" title="使用限额"></a>使用限额</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：</span><br><span class="line">节点数不超过 5000</span><br><span class="line">Pod 总数不超过 150000</span><br><span class="line">容器总数不超过 300000</span><br><span class="line">每个节点的 pod 数量不超过 100</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -664,7 +680,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">235</span>
+                  <span class="site-state-item-count">236</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -713,7 +729,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#核心功能"><span class="nav-number">1.</span> <span class="nav-text">核心功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概念术语"><span class="nav-number">2.</span> <span class="nav-text">概念术语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#name和namespace"><span class="nav-number">2.1.</span> <span class="nav-text">name和namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label和selector"><span class="nav-number">2.2.</span> <span class="nav-text">label和selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">2.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod控制器"><span class="nav-number">2.4.</span> <span class="nav-text">pod控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service"><span class="nav-number">2.5.</span> <span class="nav-text">Service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构和功能组件"><span class="nav-number">3.</span> <span class="nav-text">架构和功能组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#master组件"><span class="nav-number">3.1.</span> <span class="nav-text">master组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node组件"><span class="nav-number">3.2.</span> <span class="nav-text">node组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心附件"><span class="nav-number">3.3.</span> <span class="nav-text">核心附件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件交互范例"><span class="nav-number">3.4.</span> <span class="nav-text">组件交互范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群部署方式"><span class="nav-number">4.</span> <span class="nav-text">集群部署方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群运行模式"><span class="nav-number">5.</span> <span class="nav-text">集群运行模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#minikube"><span class="nav-number">6.</span> <span class="nav-text">minikube</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">6.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">6.2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群管理"><span class="nav-number">6.3.</span> <span class="nav-text">集群管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用管理"><span class="nav-number">6.4.</span> <span class="nav-text">应用管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群运维"><span class="nav-number">6.5.</span> <span class="nav-text">集群运维</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器平台分层架构"><span class="nav-number">1.</span> <span class="nav-text">容器平台分层架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#官方文档使用"><span class="nav-number">2.</span> <span class="nav-text">官方文档使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心功能"><span class="nav-number">3.</span> <span class="nav-text">核心功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概念术语"><span class="nav-number">4.</span> <span class="nav-text">概念术语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#name和namespace"><span class="nav-number">4.1.</span> <span class="nav-text">name和namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label和selector"><span class="nav-number">4.2.</span> <span class="nav-text">label和selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">4.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod控制器"><span class="nav-number">4.4.</span> <span class="nav-text">pod控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service"><span class="nav-number">4.5.</span> <span class="nav-text">Service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构和功能组件"><span class="nav-number">5.</span> <span class="nav-text">架构和功能组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#master组件"><span class="nav-number">5.1.</span> <span class="nav-text">master组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node组件"><span class="nav-number">5.2.</span> <span class="nav-text">node组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心附件"><span class="nav-number">5.3.</span> <span class="nav-text">核心附件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建pod流程"><span class="nav-number">5.4.</span> <span class="nav-text">创建pod流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群部署方式"><span class="nav-number">6.</span> <span class="nav-text">集群部署方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群运行模式"><span class="nav-number">7.</span> <span class="nav-text">集群运行模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#minikube"><span class="nav-number">8.</span> <span class="nav-text">minikube</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">8.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">8.2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群管理"><span class="nav-number">8.3.</span> <span class="nav-text">集群管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用管理"><span class="nav-number">8.4.</span> <span class="nav-text">应用管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群运维"><span class="nav-number">8.5.</span> <span class="nav-text">集群运维</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">9.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用限额"><span class="nav-number">9.1.</span> <span class="nav-text">使用限额</span></a></li></ol></li></ol></div>
             
 
           </div>
