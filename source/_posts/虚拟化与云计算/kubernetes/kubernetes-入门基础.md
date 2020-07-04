@@ -8,6 +8,21 @@ categories:
 date: 2018-04-03 10:28:44
 ---
 
+# 容器平台分层架构
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container-scheme.jpg)
+
+* 基础设施(openstack)：虚拟机、网络、存储、数据库、公有云
+* 容器引擎：docker
+* 容器编排：kubernetes
+* PaaS层：为开发、测试、运维提供统一的平台服务
+* 访问和工具层：web控制台、CICD、监控、日志
+
+# [官方文档使用](https://kubernetes.io/docs/home/)
+* 概念
+* 任务：具体的任务
+* 教程：有状态和无状态应用案例
+* 参考：API、kubectl、二进制命令参数
+
 # 核心功能
 * 自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率
 * 自我修复：支持容器故障后自动重启，节点故障后重新调度容器
@@ -50,7 +65,7 @@ date: 2018-04-03 10:28:44
 # 架构和功能组件
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s%E6%9E%B6%E6%9E%84.png)
 ## master组件
-* etcd：分布式配置存储服务，保存资源的定义和状态；它不属于kubernetes集群自身
+* etcd：分布式配置存储服务，保存资源的定义和状态；它不属于kubernetes集群本身
 * apiserver：是kubernetes系统的入口，封装了对资源对象的增删改查操作，以restful接口的形式提供给外部和内部使用。它维护的rest对象持久化到etcd中
 * scheduler：负责集群资源调度，根据预定的调度策略将pod调度到相应的机器上
 * controller-manager：确保各资源的当前状态(status)可以匹配用户期望的状态(spec)；实现此功能的操作有：故障检测、自动扩展、滚动更新等；实现此功能的控制器有：各类pod控制器，endpoint控制器、ServiceAccount控制器、node控制器等
@@ -60,7 +75,7 @@ date: 2018-04-03 10:28:44
     * 从apiserver接收关于pod对象的配置信息，并确保他们处于期望的状态
     * 在APIServer注册当前节点，并汇报当前节点的资源使用情况
     * 通过存储插件、网络插件，管理Volume(CVI)和网络(CNI)。
-* kube-proxy：按需为service对象生产iptables或ipvs规则，从而捕获访问当前service的流量将其转发到正确的后端pod对象
+* kube-proxy：按需为service对象生成相应的iptables或ipvs规则，从而将访问service的流量转发到相应的pod对象
 * container runtime(容器运行环境)：负责镜像管理以及容器的真正运行(CRI)，比如docker
 
 ## 核心附件
@@ -71,7 +86,7 @@ date: 2018-04-03 10:28:44
     + 现在使用metrics server+prometheus
 * IngressController：在service之上，为集群提供7层代理；实现项目:nginx、traefik
 
-## 组件交互范例
+## 创建pod流程
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg)
 
 * 用户通过UI或CLI提交一个pod给API Server进行部署
@@ -83,12 +98,12 @@ date: 2018-04-03 10:28:44
 * 相应节点的kubelet得到通知后，调用container runtime启动容器、调度存储插件配置存储、调度网络插件配置网络
 
 # 集群部署方式
-* [minikube方式](#minikube)
-* 二进制手动方式
-    - [文档参考](https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html)
-    - [源码参考](https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster)
-    - kubernetes源码下载：https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz
-* [kubeadm部署工具](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+* [minikube方式](#minikube)：[官方](https://kubernetes.io/docs/setup/learning-environment/minikube/)
+* [二进制手动方式](https://github.com/kubernetes/kubernetes/releases)
+    - 参考1： [文档参考](https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html)、[源码参考](https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster)
+    - [参考2](https://github.com/lizhenliang/ansible-install-k8s)
+    - kubernetes源码下载：`https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz`
+* [kubeadm工具部署](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
 # 集群运行模式
 * 独立组件【二进制安装方式】：系统组件直接以守护进程方式运行在节点上
@@ -109,10 +124,10 @@ date: 2018-04-03 10:28:44
 ## 集群管理
 * 启动命令：`minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://2x97hcl1.mirror.aliyuncs.com --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.7.3.iso`
     - start其他配置选项
-        + --cpus=2：为minikube虚拟机配置的cpu数量
-        + --disk-size=20000mb：为minikube虚拟机配置的磁盘大小
-        + --memory=2000mb'：为minikube虚拟机分配的内存
-        + --kubernetes-version=v1.16.2：minikube使用的kubernetes版本
+        + `--cpus=2`：为minikube虚拟机配置的cpu数量
+        + `--disk-size=20000mb`：为minikube虚拟机配置的磁盘大小
+        + `--memory=2000mb`：为minikube虚拟机分配的内存
+        + `--kubernetes-version=v1.16.2`：minikube使用的kubernetes版本
 * 停止命令：minikube stop
 * web界面使用：minikube dashboard
 * 集群信息查看：kubectl config view、kubectl cluster-info
@@ -123,7 +138,17 @@ date: 2018-04-03 10:28:44
 * 扩容：kubectl apply -f https://k8s.io/examples/application/deployment-scale.yaml
 
 ## 集群运维
-* kubect get node：查看节点状态
-* kubectl get --watch deployments：持续查看deployments信息
-* kubectl describe deployment：显示deployments详情
-* kubectl delete deployment nginx-deployment：删除deployment
+* `kubect get node`：查看节点状态
+* `kubectl get --watch deployments`：持续查看deployments信息
+* `kubectl describe deployment`：显示deployments详情
+* `kubectl delete deployment nginx-deployment`：删除deployment
+
+# 最佳实践
+## 使用限额
+```
+在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：
+节点数不超过 5000
+Pod 总数不超过 150000
+容器总数不超过 300000
+每个节点的 pod 数量不超过 100
+```

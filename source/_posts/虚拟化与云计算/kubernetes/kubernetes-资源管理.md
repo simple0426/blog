@@ -9,9 +9,9 @@ categories:
 date: 2020-03-21 00:20:49
 ---
 
-# 实现方式-API
+# 管理实现方式-API
 kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，  
-用于查询和修改集群的状态，并加结果存储于etcd中。
+用于查询和修改集群的状态，并将结果存储于etcd中。
 ## API设计模式
 * 声明式
     - 天然记录了状态
@@ -34,19 +34,6 @@ kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful�
 * 使系统自动化和无人值守成为可能
 * 便于扩展(自定义资源和控制器)
 
-# kubernetes资源对象
-* 工作负载（workload）：replicaset、job、deployment、statefulset、daemonset
-* 发现和负载均衡（Discovery&LB）：service、endpoint、ingress
-* 配置和存储（config&storage）：ConfigMap、secret、volume
-* 集群级别资源（cluster）：
-    - namespace
-    - Node
-    - Role：名称空间级别的权限集合，可被RoleBinding引用
-    - ClusterRole：cluster级别的权限集合，可被RoleBinding、ClusterRoleBinding医用
-    - RoleBinding：将Role或ClusterRole许可的权限绑定在一个或一组用户之上，隶属于且仅能作用于一个名称空间
-    - ClusterRoleBinding：将ClusterRole许可的权限绑定在一个或一组用户之上
-* 元数据（metadata）：HPA(自动弹性伸缩)、pod模板、LimitRange(限制pod的资源使用)
-
 ## 查看api资源
 * 支持的api接口版本：kubectl api-versions
 * 支持的api资源信息：kubectl api-resources
@@ -64,7 +51,21 @@ kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful�
 * web界面：kubernetes dashboard
 * 自动化配置管理(kube-applier)：用户将配置推送到git仓库中，配置工具自动将配置同步到集群中
 
-# 资源对象格式
+# 资源对象
+## 资源对象分类
+* 工作负载（workload）：replicaset、job、deployment、statefulset、daemonset
+* 发现和负载均衡（Discovery&LB）：service、endpoint、ingress
+* 配置和存储（config&storage）：ConfigMap、secret、volume
+* 集群级别资源（cluster）：
+    - namespace
+    - Node
+    - Role：名称空间级别的权限集合，可被RoleBinding引用
+    - ClusterRole：cluster级别的权限集合，可被RoleBinding、ClusterRoleBinding医用
+    - RoleBinding：将Role或ClusterRole许可的权限绑定在一个或一组用户之上，隶属于且仅能作用于一个名称空间
+    - ClusterRoleBinding：将ClusterRole许可的权限绑定在一个或一组用户之上
+* 元数据（metadata）：HPA(自动弹性伸缩)、pod模板、LimitRange(限制pod的资源使用)
+
+## 资源对象格式
 ```
 apiVersion: v1
 kind: Pod
@@ -83,8 +84,8 @@ spec:
 * kind：资源类型
 * apiVersion：API群组及相关的版本
 * metadata：为资源提供元数据，如名称、隶属的名称空间、标签
-* spec：用户期望的状态
-* status：活动对象的当前状态【由kubernetes集群维护，对用户只读】
+* spec：用户期望的状态；资源配置详情
+* status(集群维护，用户只读)：活动对象的当前状态
 
 ## 资源对象文档
 * 查看资源对象语法：kubectl explain resources_name.field_name
@@ -93,7 +94,7 @@ spec:
 ### 必选字段
 * namespace：所属名称空间【默认default】
 * name：对象名称
-* uid：当前对象的唯一标识符【由集群自动生成】
+* uid(集群自动生成)：当前对象的唯一标识符
 
 ### 可选字段
 * labels:设定用于标识当前对象的键值对，常用作筛选条件
@@ -151,11 +152,11 @@ spec:
     - 相等型：kubectl get deployment --show-labels -l env=test,env!=prod
     - 集合型：kubectl get deployment --show-labels -l "Env in (test,gray)，Tie notin (front,back)，release，!release"
 * selector使用【deployment、service、replicaset等使用】：
-    - matchLabels:相等型关系匹配
+    - matchLabels：相等型关系匹配
     - matchExpressions：集合型关系匹配
         + key：key_name
-        + operator：【In,NotIn,Exists,DoesNotExist】
-        + values:\[values1,values2...\]
+        + operator：In、NotIn、Exists、DoesNotExist
+        + values：\[values1,values2...\]
 ```
 selector:
   matchLables:
@@ -264,7 +265,7 @@ kubectl sub_command resource_type resource_name cmd_option
     - --image：指定使用的工具镜像【默认的镜像：nicolaka/netshoot】
     - -c container-name：指定要进入的容器内
 
-# 资源对象操作
+# 常见对象操作
 ## 创建资源对象
 - 直接通过各种子命令管理资源对象：kubectl run
 - 根据资源文件创建资源对象：kubectl create
@@ -278,10 +279,16 @@ kubectl sub_command resource_type resource_name cmd_option
     - -n namespace 名称空间
     - -l key=value 指定过滤标签
 
+## 修改资源对象
+* edit: 编辑运行中的资源
+* apply：应用修改的资源文件
+
+## 删除资源对象
+* delete命令:：kubectl delete resource_type resource_name
+
 ## 查看pod日志
 * logs命令:kubectl logs pod_id
-* 参数：
-    - -c 指定容器名称
+* 参数： -c 指定容器名称
 
 ## 容器中执行命令
 * exec命令: kubectl exec -it pod_name -c container_name /bin/bash
@@ -289,8 +296,7 @@ kubectl sub_command resource_type resource_name cmd_option
 ## pod弹性伸缩
 * scale命令: kubectl scale rc nginx --replicas=4
 
-## 修改资源对象
-* edit: 编辑运行中的资源
-
-## 删除资源对象
-* delete命令:：kubectl delete resource_type resource_name
+## 镜像升级和回滚
+* 查看当前版本：kubectl get deploy -o wide
+* 更新镜像：kubectl set image deploy/nginx-deployment nginx=nginx:1.13
+* 回滚到上个版本：kubectl rollout undo deploy nginx-deployment

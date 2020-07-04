@@ -147,6 +147,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
     + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443
     + dashboard部署在node02上：nodeSelector--》kubernetes.io/hostname: "node02"
 - [建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
+- 登录token获取：`kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')`
 - web访问：https://172.17.8.202:8443/
 
 ## ingress-nginx
