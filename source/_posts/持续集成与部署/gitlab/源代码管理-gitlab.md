@@ -4,6 +4,7 @@ date: 2020-07-06 14:48:16
 tags:
   - gitlab
 categories:
+  - CICD
 ---
 # gitlab服务
 ## [软件安装][gitlab-repo]
