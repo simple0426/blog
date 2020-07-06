@@ -1,5 +1,5 @@
 ---
-title: jenkins之pipeline使用
+title: jenkins之声明式pipeline
 date: 2020-02-10 15:12:41
 tags:
     - jenkins

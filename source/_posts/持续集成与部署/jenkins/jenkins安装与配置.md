@@ -23,7 +23,7 @@ sudo apt-get update
 sudo apt-get install jenkins
 ```
 * 源码包安装
-    - 软件源：https://mirrors.tuna.tsinghua.edu.cn/jenkins/ `debian-stable|redhat-stable`
+    - 软件源：`https://mirrors.tuna.tsinghua.edu.cn/jenkins/` `debian-stable|redhat-stable`
     - deb包安装失败
         + sudo apt-get update # 更新
         + sudo apt-get -f install # 解决依赖关系
@@ -66,14 +66,15 @@ docker run --name jenkins \
 
 # web设置
 * 访问地址：http://JENKINS_URL:8080
-    - 初始化密码：/data/jenkins/secrets/initialAdminPassword
+    - 初始化密码：/var/jenkins_home/secrets/initialAdminPassword
 * 使用国内镜像的步骤
-    - 修改插件更新中心URL：https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json
+    - 修改插件更新中心URL：`https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json`
     - 修改json配置【/var/jenkins_home/updates/default.json】
     ```
     sed -i 's/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g' default.json && \
     sed -i 's/http:\/\/www.google.com/https:\/\/www.baidu.com/g' default.json
     ```
+    - 重启jenkins：`docker restart jenkins`
 * 邮件设置(Mailer插件)
     - 系统管理员帐户
     - SMTP服务器户
