@@ -20,8 +20,8 @@ date: 2018-04-03 10:28:44
 # [官方文档使用](https://kubernetes.io/docs/home/)
 * 概念
 * 任务：具体的任务
-* 教程：有状态和无状态应用案例
-* 参考：API、kubectl、二进制命令参数
+* 教程：有状态应用案例、无状态应用案例、CICD pipeline
+* 参考：API、kubectl、k8s组件二进制命令
 
 # 核心功能
 * 自动装箱：构建于容器技术之上，基于资源依赖和其他约束性自动完成程序部署；通过调度机制，提升节点资源利用率
@@ -86,23 +86,9 @@ date: 2018-04-03 10:28:44
     + 现在使用metrics server+prometheus
 * IngressController：在service之上，为集群提供7层代理；实现项目:nginx、traefik
 
-## 创建pod流程
-![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg)
-
-* 用户通过UI或CLI提交一个pod给API Server进行部署
-* API Server将信息写入etcd存储
-* Scheduler通过API Server的watch或notification机制获取这个信息
-* Scheduler通过资源使用情况进行调度决策(pod在哪个节点部署)，并把决策信息返回给API server
-* API server将决策结果写入etcd
-* API server通知相应的节点进行pod部署
-* 相应节点的kubelet得到通知后，调用container runtime启动容器、调度存储插件配置存储、调度网络插件配置网络
-
 # 集群部署方式
 * [minikube方式](#minikube)：[官方](https://kubernetes.io/docs/setup/learning-environment/minikube/)
 * [二进制手动方式](https://github.com/kubernetes/kubernetes/releases)
-    - 参考1： [文档参考](https://jimmysong.io/kubernetes-handbook/practice/install-kubernetes-on-centos.html)、[源码参考](https://github.com/rootsongjc/kubernetes-vagrant-centos-cluster)
-    - [参考2](https://github.com/lizhenliang/ansible-install-k8s)
-    - kubernetes源码下载：`https://storage.googleapis.com/kubernetes-release/release/v1.16.2/kubernetes-server-linux-amd64.tar.gz`
 * [kubeadm工具部署](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
 # 集群运行模式
@@ -144,6 +130,15 @@ date: 2018-04-03 10:28:44
 * `kubectl delete deployment nginx-deployment`：删除deployment
 
 # 最佳实践
+## 集群部署硬件要求
+|   环境   |   节点类型  |     配置     |
+|----------|-------------|--------------|
+| 实验环境 | master/node | 2C/2G+       |
+| 测试环境 | master      | 2C/4G/40G    |
+| -        | node        | 4C/8G/40G    |
+| 生产环境 | master      | 4C/8G/100G  |
+| -        | node        | 8C/64G/500G |
+
 ## 使用限额
 ```
 在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：

@@ -131,10 +131,10 @@ spec:
   4. 验证通过后恢复滚动升级：`kubectl rollout resume deploy nginx-deployment`
 * 查看滚动更新状态:`kubectl rollout status deploy nginx-deployment`
 * 回滚镜像到上一版本：`kubectl rollout undo deployment nginx-deployment`
-* 扩容缩容：kubectl scale --replicas=2 deployment/nginx-deployment
+* 扩容缩容：`kubectl scale --replicas=2 deployment/nginx-deployment`
 
 # Job
-相当于linux系统下的定时任务at/crontab
+相当于linux系统下的一次性任务at
 ## 使用场景
 * 创建一定数量的pod，并保证可以成功地运行终止
 * 跟踪pod状态，并根据重试策略进行失败重试
@@ -176,7 +176,10 @@ spec:
         args: ["-c", "sleep 30; date"]
       restartPolicy: OnFailure #失败重启
 ```
-* 周期任务CronJob(相当于linux中的crontab)
+
+# CronJob
+周期性任务,相当于linux中的crontab
+
 ```
 apiVersion: batch/v1beta1
 kind: CronJob

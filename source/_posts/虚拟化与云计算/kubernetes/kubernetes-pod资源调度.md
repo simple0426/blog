@@ -11,6 +11,17 @@ categories:
 date: 2020-03-24 17:28:48
 ---
 
+# 创建pod流程
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg)
+
+* 用户通过UI或CLI提交一个pod给API Server进行部署
+* API Server将信息写入etcd存储
+* Scheduler通过API Server的watch或notification机制获取这个信息
+* Scheduler通过资源使用情况进行调度决策(pod在哪个节点部署)，并把决策信息返回给API server
+* API server将决策结果写入etcd
+* API server通知相应的节点进行pod部署
+* 相应节点的kubelet得到通知后，调用container runtime启动容器、调度存储插件配置存储、调度网络插件配置网络
+
 # pod调度器
 * apiserver接收用户创建pod对象请求后，调度器会从集群中选择一个可用的最佳节点来运行它  
 * kube-scheduler是默认的调度器  
@@ -61,6 +72,15 @@ date: 2020-03-24 17:28:48
 * CalculateAntiAffinityPriorityMap：计算pod的反亲和性优先级
 * EqualPriorityMap：给所有的节点相同的权重
 
+# 节点选择-nodeName
+* 位置：spec.nodeName
+* 功能：以下两者功能相同
+```
+nodeName: minikube
+nodeSelector:
+  - kubernetes.io/hostname=minikube
+```
+
 # 节点选择器-nodeSelector
 将pod调度至特定节点运行
 ## 节点标签定义
@@ -69,7 +89,7 @@ date: 2020-03-24 17:28:48
 
 ## [内置节点标签](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#built-in-node-labels)
 - kubernetes.io/os=linux：操作系统类型
-- kubernetes.io/hostname=minikube：节点主机名【spec.nodeName】
+- kubernetes.io/hostname=minikube：节点主机名
 
 ## pod定义nodeSelector
 ```
@@ -179,14 +199,14 @@ spec:
 ```
 # 污点和容忍度
 * 污点（taint）：是定义在节点上的键值对，用于让节点拒绝将pod部署于其上，除非该pod对象具有接纳该污点的容忍度
-* 容忍度（toleration）：是定义在pod对象之上的键值对，用于配置其可以容忍的节点污点，而且调度器仅能将pod对象调度至其能容忍该节点污点的节点上
+* 容忍度（toleration）：是定义在pod对象之上的键值对，用于配置其可以容忍的节点污点，而且调度器仅能将pod对象调度至能容忍该污点的节点上
 
 ## 污点和容忍度语法
 * 污点定义在节点node.spec，容忍度定义在pod的pod.spec
 * 他们都是键值对型数据，语法：key=value:effect
 * effect定义对pod对象的排斥等级
     - NoSchedule：不能容忍此污点的pod对象不能调度到此节点
-    - PreferNoSchedule:不能容忍此污点的pod对象可以调度到此节点
+    - PreferNoSchedule：不能容忍此污点的pod对象可以调度到此节点
     - NoExecute：不能容忍此污点的pod对象不能调度到此节点，pod对象的容忍度或节点的污点变动时，pod对象将被驱逐
 * pod定义容忍度，支持两种操作符（operator）
     - Equal：容忍度和污点在key、value、effect完全相同
@@ -195,7 +215,7 @@ spec:
 
 ## 管理节点的污点
 * 添加污点：kubectl taint node node1 node-type=prod:NoSchedule
-* 查看污点：kubectl get node node1 -o custom-columns=taint:spec.taints
+* 查看污点：kubectl describe node node01|grep -i taint
 * 删除key的不同effect：kubectl taint node node1 node-type:PreferNoSchedule-
 * 删除key：kubectl taint node node1 node-type-
 
@@ -207,7 +227,6 @@ spec:
     operator: "Equal"
     value: "value1"
     effect: "NoSchedule"
-    tolerationSeconds: 3600
   - key: "key1"
     operator: "Exists"
     effect: "NoExecute"

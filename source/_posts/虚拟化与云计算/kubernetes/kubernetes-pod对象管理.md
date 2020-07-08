@@ -58,13 +58,13 @@ spec:
   - name: nginx-container
     image: nginx
     volumeMounts:
-      - name: shared-data
-        mountPath: /usr/share/nginx/html
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
   - name: debian-container
     image: debian
     volumeMounts:
-      - name: shared-data
-        mountPath: /pod-data
+    - name: shared-data
+      mountPath: /pod-data
     command: ["/bin/sh"]
     args: ["-c", "echo Hello from the debian container > /pod-data/index.html"]
 ```
@@ -95,24 +95,24 @@ metadata:
 spec:
   initContainers:
   - image: resouer/sample:v2
-     name: war
-     command: ["cp", "/sample.war", "/app"]
-     volumeMounts:
-     - mountPath: /app
-        name: app-volume
-  contaners:
+    name: war
+    command: ["cp", "/sample.war", "/app"]
+    volumeMounts:
+    - mountPath: /app
+      name: app-volume
+  containers:
   - image: resouer/tomcat:7.0
-     name: tomcat
-     command: ["sh", "-c", "/root/apache-tomcat-7.0.42-v2/bin/start.sh"]
-     volumeMounts:
-      - mountPath: /root/apache-tomcat-7.0.42-v2/webapps
-         name: app-volume
-      ports:
-      - containerPort: 8080
-         hostPort: 8001
-    volumes:
-    - name: app-volume
-       emptyDir: {}
+    name: tomcat
+    command: ["sh", "-c", "/root/apache-tomcat-7.0.42-v2/bin/start.sh"]
+    volumeMounts:
+    - mountPath: /root/apache-tomcat-7.0.42-v2/webapps
+      name: app-volume
+    ports:
+    - containerPort: 8080
+      hostPort: 8001
+  volumes:
+  - name: app-volume
+    emptyDir: {}
 ```
 
 # pod容器定义
@@ -151,10 +151,10 @@ spec:
   - name: myapp
     images: ikubernetes/myapp:v1
     ports:
-      - name: http #端口名称
-        containerPort: 80 #指向容器监听的端口
-        protocol: TCP #端口协议类型
-        hostPort: 8000
+    - name: http #端口名称
+      containerPort: 80 #指向容器监听的端口
+      protocol: TCP #端口协议类型
+      hostPort: 8000
 ```
 * 选项说明：端口设置仅为说明性内容；为端口设置名称，方便被service调用
 * 设置选项
@@ -196,14 +196,21 @@ spec:
   containers:
   - name: filebeat
     image: ikubernetes/filebeat:5.6.5-alpine
+    command: ["echo"]
+    args: ["$(HOSTNAME)"]
     env:
-      - name: REDIS_HOST #变量名称
-        value: db.ilinux.io:6379 #变量值
-      - name: LOG_LEVEL
-        value: info
-
+    - name: HOSTNAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: REDIS_HOST #变量名称
+      value: db.ilinux.io:6379 #变量值
 ```
-* 选项说明：向pod传递变量之有两种方式：env和envFrom【参见配置管理ConfigMap和secret】
+* 选项说明：向pod传递变量有两种方式：env和envFrom
+  - env
+    + value：自定义变量
+    + valueFrom：读取pod环境变量
+  - envFrom【从ConfigMap和secret获取值】
 
 ## 使用节点网络-hostNetwork
 * 范例
@@ -286,9 +293,10 @@ spec:
 * Never：从不重启
 
 # 全生命周期操作
-## 操作概述
+## 包含操作
 * 运行初始化容器(init container)
 * 创建主容器(main container)【必须】
+* 容器启动检查(startup probe)
 * 容器启动后钩子(post start hook)
 * 容器就绪型检查(readiness probe)
 * 容器存活性检查(liveness probe)
@@ -352,6 +360,7 @@ spec:
 ### 检查种类
 - livenessProbe(存活性检查)：检查容器是否处于running状态，检测不通过时根据重启策略(restartPolicy)确定是否重启
 - readinessProbe(就绪性检查)：判断容器是否准备就绪，可以对外提供服务；未通过时，会将此pod从endpoint(如service对象)中移除，直到pod就绪
+- [startupProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes)(启动检查)：判断容器是否启动完成
 
 ### 检查方式
 * exec：执行用户自定义命令
@@ -377,7 +386,7 @@ spec:
 * successThreshold：处于失败状态时，多少次成功才认为是成功；默认1，最小1
 * failureThreshold：处于成功状态时，多少次失败才认为是失败；默认3，最小1
 
-### 应用实践
+### 最佳实践
 * 调大判断的阈值(超时、次数等)，防止容器压力过大时出现误判
 * exec执行shell脚本时，在容器内执行的时间会比较长(可以使用go等编译型语言执行)
 * 使用tcpSocket时遇到TLS，需要判断业务层是否有影响

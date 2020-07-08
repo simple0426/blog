@@ -96,6 +96,7 @@ systemctl restart docker
 
 * 注意事项：此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致，由于阿里镜像源滞后，所以不能安装最新版本k8s
 * 指定版本安装：`yum install kubelet-1.17.3 kubeadm-1.17.3 kubectl-1.17.3 -y`
+* kubelet开启启动：`systemctl enable kubelet`
 
 ## 集群初始化
 >master操作
@@ -111,15 +112,34 @@ kubeadm init --kubernetes-version=v1.17.3 \
 
 ## 根据init结果提示操作
 * 配置kubectl【master】
-* [安装网络插件](#flannel部署)【master】
-  - 下载[资源文件](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
-  - kube-flannel.yml文件修改
-    + pod网络设置(net-conf.json)
-    + 镜像地址修改
-    + 主机间通信接口设置(假设eth1为主机间通信接口：`--iface=eth1`)
-  - 应用资源文件：kubectl apply -f kube-flannel.yml
+* [安装网络插件](#网络插件)【master】
 * 允许master部署负载【master/可选】:`kubectl taint nodes --all node-role.kubernetes.io/master-`
 * 使用kubeadm join命令将node加入集群【node】
+
+## 网络插件
+### 插件分类
+* flannel，包含模式如下
+  - vxlan：隧道模式
+  - host-gw：路由模式，性能最好
+* calico，包含模式如下
+  - ipip
+  - bgp
+
+### 插件选择
+* 网络规模大小
+  - 网络规模小，使用flannel的host-gw模式
+  - 网络规模小，但是有路由等网络限制，使用flannel的vxlan
+  - 网络规模大，使用calico
+* 多租户使用，且有ACL访问限制，使用calico
+* 维护成本，flannel小，calico大
+
+### flannel安装
+- 下载[资源文件](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
+- kube-flannel.yml文件修改
+  + pod网络设置(net-conf.json)
+  + 镜像地址修改
+  + 主机间通信接口设置(假设eth1为主机间通信接口：`--iface=eth1`)
+- 应用资源文件：kubectl apply -f kube-flannel.yml
 
 # kubeadm管理
 ## 移除节点
@@ -132,13 +152,18 @@ kubeadm init --kubernetes-version=v1.17.3 \
 
 ## join认证信息
 * token：默认24小时过期
-    - 查看：kubeadm token list
-    - 产生新的：kubeadm token create
+    - 查看：`kubeadm token list`
+    - 产生新的：`kubeadm token create --print-join-command`
 * cert-hash查看
 ```
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | \
    openssl dgst -sha256 -hex | sed 's/^.* //'
 ```
+
+## 证书管理
+* 查看证书过期时间(默认1年)：`kubeadm alpha certs check-expiration`
+* 证书续签(默认1年)：`kubeadm alpha certs renew all`
+  - 续签后重启控制平台组件：systemctl restart kubelet
 
 # 附加组件部署
 ## dashboard
@@ -151,8 +176,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 - web访问：https://172.17.8.202:8443/
 
 ## ingress-nginx
-- 下载[pod文件](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/static/mandatory.yaml)
-- 下载[service文件](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/static/provider/baremetal/service-nodeport.yaml)
+- [下载资源文件](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/static/provider/baremetal/deploy.yaml)
 - pod及service修改配置
     + ingress部署在node02上：nodeSelector--》kubernetes.io/hostname: "node02"
     + 修改nginx-ingress-controller镜像地址
@@ -161,30 +185,30 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 ## [metric-server](https://github.com/kubernetes-sigs/metrics-server)
 * 设置api-server：
     - 文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml
-    - 配置：--enable-aggregator-routing=true
+    - 配置：`--enable-aggregator-routing=true`
     - 重载配置：删除api-server的pod使其自动重建
-* [下载资源文件](https://github.com/kubernetes-sigs/metrics-server/tree/master/deploy/kubernetes)
+* [下载资源文件](https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml)
 * 修改配置(deployment)
     - 修改镜像地址(image)
     - 容器启动参数(args)
-        + --kubelet-insecure-tls
-        + --kubelet-preferred-address-types=InternalIP
+        + `--kubelet-insecure-tls`
+        + `--kubelet-preferred-address-types=InternalIP`
 * 验证资源指标API可用性
-    - kubectl get --raw "/apis/metrics.k8s.io/v1beta1/pods"
-    - kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
-* 获取node或pod对象的资源使用情况；kubectl top node/pod
+    - `kubectl get --raw "/apis/metrics.k8s.io/v1beta1/pods"`
+    - `kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"`
+* 获取node或pod对象的资源使用情况：`kubectl top node/pod`
 
 ## prometheus
 * 设置api-server：
     - 文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml
     - 配置：--enable-aggregator-routing=true
     - 重载配置：删除api-server的pod使其自动重建
-* 设置kubelet
-    - --authentication-token-webhook=true 
-    - --authorization-mode=Webhook
+* 设置kubelet【/etc/sysconfig/kubelet】
+    - `--authentication-token-webhook=true`
+    - `--authorization-mode=Webhook`
 * [下载资源文件](https://github.com/coreos/kube-prometheus/tree/master/manifests)
-    - kubectl create -f manifests/setup
-    - kubectl create -f manifests/
+    - `kubectl create -f manifests/setup`
+    - `kubectl create -f manifests/`
 * hosts设置【由于nginx-ingress部署在172.17.8.202】
 ```
 172.17.8.202 alertmanager.myapp.com
