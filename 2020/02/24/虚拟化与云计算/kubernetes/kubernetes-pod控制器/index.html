@@ -88,7 +88,7 @@
 <meta property="og:description" content="pod控制器需求来源 自主式pod被调度到节点后，由kubelet负责容器的存活性； 容器主进程崩溃后，kubelet自动重启相应的容器； 非主进程崩溃类型的容器错误，需要用户自定义存活性探测(liveness probe),以便kubelet可以探测到此类故障   pod意外删除或节点故障，需要节点以外的pod控制器负责其重建  原理 pod控制器由master的kube-controller-">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-deployment.jpg">
-<meta property="og:updated_time" content="2020-03-31T16:34:31.539Z">
+<meta property="og:updated_time" content="2020-07-07T17:01:07.231Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-pod控制器">
 <meta name="twitter:description" content="pod控制器需求来源 自主式pod被调度到节点后，由kubelet负责容器的存活性； 容器主进程崩溃后，kubelet自动重启相应的容器； 非主进程崩溃类型的容器错误，需要用户自定义存活性探测(liveness probe),以便kubelet可以探测到此类故障   pod意外删除或节点故障，需要节点以外的pod控制器负责其重建  原理 pod控制器由master的kube-controller-">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-04-01T00:34:31+08:00">
-                2020-04-01
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-08T01:01:07+08:00">
+                2020-07-08
               </time>
             
           </span>
@@ -461,9 +461,9 @@
 </li>
 <li>查看滚动更新状态:<code>kubectl rollout status deploy nginx-deployment</code></li>
 <li>回滚镜像到上一版本：<code>kubectl rollout undo deployment nginx-deployment</code></li>
-<li>扩容缩容：kubectl scale –replicas=2 deployment/nginx-deployment</li>
+<li>扩容缩容：<code>kubectl scale --replicas=2 deployment/nginx-deployment</code></li>
 </ul>
-<h1 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h1><p>相当于linux系统下的定时任务at/crontab</p>
+<h1 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h1><p>相当于linux系统下的一次性任务at</p>
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>创建一定数量的pod，并保证可以成功地运行终止</li>
 <li>跟踪pod状态，并根据重试策略进行失败重试</li>
@@ -477,10 +477,9 @@
 <li><p>并发参数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: batch/v1</span><br><span class="line">kind: Job</span><br><span class="line">metadata:</span><br><span class="line">  name: paral</span><br><span class="line">spec:</span><br><span class="line">  completions: 8 #执行的pod总数</span><br><span class="line">  parallelism: 2 #并行执行的pod数</span><br><span class="line">  template:</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: param </span><br><span class="line">        image: ubuntu</span><br><span class="line">        command: [&quot;/bin/sh&quot;]</span><br><span class="line">        args: [&quot;-c&quot;, &quot;sleep 30; date&quot;]</span><br><span class="line">      restartPolicy: OnFailure #失败重启</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>周期任务CronJob(相当于linux中的crontab)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: batch/v1beta1</span><br><span class="line">kind: CronJob</span><br><span class="line">metadata:</span><br><span class="line">  name: hello</span><br><span class="line">spec:</span><br><span class="line">  schedule: &quot;*/1 * * * *&quot; #周期参数，与crontab相同</span><br><span class="line">  jobTemplate:</span><br><span class="line">    spec:</span><br><span class="line">      template:</span><br><span class="line">        spec:</span><br><span class="line">          containers:</span><br><span class="line">          - name: hello</span><br><span class="line">            image: busybox</span><br><span class="line">            args:</span><br><span class="line">            - /bin/sh</span><br><span class="line">            - -c</span><br><span class="line">            - date; echo Hello from the kubernetes cluster</span><br><span class="line">          restartPolicy: OnFailure</span><br><span class="line">  startingDeadlineSeconds: 10 #最长启动时间</span><br><span class="line">  concurrencyPolicy: Allow #是否允许并行运行(解决情况：任务的执行时间超过周期间隔)</span><br><span class="line">  successfulJobsHistoryLimit: 3 #允许留存的成功job数</span><br></pre></td></tr></table></figure>
-</li>
 </ul>
+<h1 id="CronJob"><a href="#CronJob" class="headerlink" title="CronJob"></a>CronJob</h1><p>周期性任务,相当于linux中的crontab</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: batch/v1beta1</span><br><span class="line">kind: CronJob</span><br><span class="line">metadata:</span><br><span class="line">  name: hello</span><br><span class="line">spec:</span><br><span class="line">  schedule: &quot;*/1 * * * *&quot; #周期参数，与crontab相同</span><br><span class="line">  jobTemplate:</span><br><span class="line">    spec:</span><br><span class="line">      template:</span><br><span class="line">        spec:</span><br><span class="line">          containers:</span><br><span class="line">          - name: hello</span><br><span class="line">            image: busybox</span><br><span class="line">            args:</span><br><span class="line">            - /bin/sh</span><br><span class="line">            - -c</span><br><span class="line">            - date; echo Hello from the kubernetes cluster</span><br><span class="line">          restartPolicy: OnFailure</span><br><span class="line">  startingDeadlineSeconds: 10 #最长启动时间</span><br><span class="line">  concurrencyPolicy: Allow #是否允许并行运行(解决情况：任务的执行时间超过周期间隔)</span><br><span class="line">  successfulJobsHistoryLimit: 3 #允许留存的成功job数</span><br></pre></td></tr></table></figure>
 <h1 id="DaemonSet"><a href="#DaemonSet" class="headerlink" title="DaemonSet"></a>DaemonSet</h1><p>相当于linux的守护进程，例如supervisor</p>
 <h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>保证集群中的每个节点都运行一个相同的pod</li>
@@ -538,7 +537,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/02/11/持续集成与部署/jenkins-gitlab部署实践/" rel="next" title="jenkins-gitlab部署实践">
+              <a href="/2020/02/11/持续集成与部署/jenkins/jenkins-gitlab部署实践/" rel="next" title="jenkins-gitlab部署实践">
                 <i class="fa fa-chevron-left"></i> jenkins-gitlab部署实践
               </a>
             
@@ -627,7 +626,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-count">118</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -649,7 +648,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">236</span>
+                  <span class="site-state-item-count">235</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -698,7 +697,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pod控制器"><span class="nav-number">1.</span> <span class="nav-text">pod控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求来源"><span class="nav-number">1.1.</span> <span class="nav-text">需求来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法定义"><span class="nav-number">1.3.</span> <span class="nav-text">语法定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replicaset"><span class="nav-number">2.</span> <span class="nav-text">Replicaset</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#与自主式pod区别"><span class="nav-number">2.1.</span> <span class="nav-text">与自主式pod区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.2.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更操作"><span class="nav-number">2.3.</span> <span class="nav-text">变更操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Deployment"><span class="nav-number">3.</span> <span class="nav-text">Deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键配置项"><span class="nav-number">3.2.</span> <span class="nav-text">关键配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">3.3.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更操作-1"><span class="nav-number">3.4.</span> <span class="nav-text">变更操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Job"><span class="nav-number">4.</span> <span class="nav-text">Job</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-2"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DaemonSet"><span class="nav-number">5.</span> <span class="nav-text">DaemonSet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景-1"><span class="nav-number">5.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-3"><span class="nav-number">5.2.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pod控制器"><span class="nav-number">1.</span> <span class="nav-text">pod控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求来源"><span class="nav-number">1.1.</span> <span class="nav-text">需求来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法定义"><span class="nav-number">1.3.</span> <span class="nav-text">语法定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replicaset"><span class="nav-number">2.</span> <span class="nav-text">Replicaset</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#与自主式pod区别"><span class="nav-number">2.1.</span> <span class="nav-text">与自主式pod区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.2.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更操作"><span class="nav-number">2.3.</span> <span class="nav-text">变更操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Deployment"><span class="nav-number">3.</span> <span class="nav-text">Deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键配置项"><span class="nav-number">3.2.</span> <span class="nav-text">关键配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-1"><span class="nav-number">3.3.</span> <span class="nav-text">范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更操作-1"><span class="nav-number">3.4.</span> <span class="nav-text">变更操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Job"><span class="nav-number">4.</span> <span class="nav-text">Job</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-2"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CronJob"><span class="nav-number">5.</span> <span class="nav-text">CronJob</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DaemonSet"><span class="nav-number">6.</span> <span class="nav-text">DaemonSet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景-1"><span class="nav-number">6.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例-3"><span class="nav-number">6.2.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></div>
             
 
           </div>
