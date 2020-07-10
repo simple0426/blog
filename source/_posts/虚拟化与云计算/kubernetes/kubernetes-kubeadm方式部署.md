@@ -163,7 +163,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 ## 证书管理
 * 查看证书过期时间(默认1年)：`kubeadm alpha certs check-expiration`
 * 证书续签(默认1年)：`kubeadm alpha certs renew all`
-  - 续签后重启控制平台组件：systemctl restart kubelet
+  - 续签后使用证书的组件重启：kubelet/kube-proxy/apiserver/scheduler/control-manager
 
 # 附加组件部署
 ## dashboard
