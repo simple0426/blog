@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="编码,格式化,字符串,">
+  <meta name="keywords" content="格式化,字符串,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="编码通用编码 ASCII[1个字节] 只支持英文字母和一些常用的符号 Unicode[2个字节] UTF-8 把一个Unicode字符根据不同的数字大小编码成1-6个字节 常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节 ASCII编码实际上可以被看成是UTF-8编码的一部分    中文编码 gb2312 GB2312(1980年)一共收录了7445个字">
-<meta name="keywords" content="编码,格式化,字符串">
+<meta name="description" content="字符串方法 isdecimal/isdigit/isnumberic：判断是否为数字型字符串 1234v1 = a.isdecimal() #2v2 = a.isdigit() #2 ②v3 = a.isnumeric() #2 ② 二/贰print(v1, v2, v3)  istitle：判断首字母是否大写  isidentifier：变量名有效性判断  123n = &apos;temp&apos;v = n.">
+<meta name="keywords" content="格式化,字符串">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python数据类型之字符串">
 <meta property="og:url" content="http://blog.unlazy.cn/2018/05/02/软件开发/python开发/python数据类型之字符串/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="编码通用编码 ASCII[1个字节] 只支持英文字母和一些常用的符号 Unicode[2个字节] UTF-8 把一个Unicode字符根据不同的数字大小编码成1-6个字节 常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节 ASCII编码实际上可以被看成是UTF-8编码的一部分    中文编码 gb2312 GB2312(1980年)一共收录了7445个字">
+<meta property="og:description" content="字符串方法 isdecimal/isdigit/isnumberic：判断是否为数字型字符串 1234v1 = a.isdecimal() #2v2 = a.isdigit() #2 ②v3 = a.isnumeric() #2 ② 二/贰print(v1, v2, v3)  istitle：判断首字母是否大写  isidentifier：变量名有效性判断  123n = &apos;temp&apos;v = n.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-22T01:46:04.347Z">
+<meta property="og:updated_time" content="2020-07-10T09:56:10.418Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python数据类型之字符串">
-<meta name="twitter:description" content="编码通用编码 ASCII[1个字节] 只支持英文字母和一些常用的符号 Unicode[2个字节] UTF-8 把一个Unicode字符根据不同的数字大小编码成1-6个字节 常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节 ASCII编码实际上可以被看成是UTF-8编码的一部分    中文编码 gb2312 GB2312(1980年)一共收录了7445个字">
+<meta name="twitter:description" content="字符串方法 isdecimal/isdigit/isnumberic：判断是否为数字型字符串 1234v1 = a.isdecimal() #2v2 = a.isdigit() #2 ②v3 = a.isnumeric() #2 ② 二/贰print(v1, v2, v3)  istitle：判断首字母是否大写  isidentifier：变量名有效性判断  123n = &apos;temp&apos;v = n.">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-06-22T09:46:04+08:00">
-                2020-06-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-10T17:56:10+08:00">
+                2020-07-10
               </time>
             
           </span>
@@ -386,66 +386,12 @@
       
 
       
-        <h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><h2 id="通用编码"><a href="#通用编码" class="headerlink" title="通用编码"></a>通用编码</h2><ul>
-<li>ASCII[1个字节] 只支持英文字母和一些常用的符号</li>
-<li>Unicode[2个字节]</li>
-<li>UTF-8 把一个Unicode字符根据不同的数字大小编码成1-6个字节<ul>
-<li>常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节</li>
-<li>ASCII编码实际上可以被看成是UTF-8编码的一部分</li>
-</ul>
+        <h1 id="字符串方法"><a href="#字符串方法" class="headerlink" title="字符串方法"></a>字符串方法</h1><ul>
+<li><p>isdecimal/isdigit/isnumberic：判断是否为数字型字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v1 = a.isdecimal() #2</span><br><span class="line">v2 = a.isdigit() #2 ②</span><br><span class="line">v3 = a.isnumeric() #2 ② 二/贰</span><br><span class="line">print(v1, v2, v3)</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<h2 id="中文编码"><a href="#中文编码" class="headerlink" title="中文编码"></a>中文编码</h2><ul>
-<li>gb2312<ul>
-<li>GB2312(1980年)一共收录了7445个字符，在windows中的代码页是CP936</li>
-<li>原来的CP936和GB 2312-80一模一样</li>
-</ul>
+<li><p>istitle：判断首字母是否大写</p>
 </li>
-<li>gbk<ul>
-<li>GBK最初是由微软对GB2312的扩展，也就是CP936字码表 (Code Page 936)的扩展</li>
-<li>gbk并非国家正式标准</li>
-</ul>
-</li>
-<li>GB18030<ul>
-<li>GB18030取代了GBK1.0的正式国家标准。该标准收录了27484个汉字，同时还收录了藏文、蒙文、维吾尔文等主要的少数民族文字。</li>
-<li>现在的PC平台必须支持GB18030，GB18030在windows中的代码页是CP54936。</li>
-</ul>
-</li>
-</ul>
-<h2 id="python文件设置"><a href="#python文件设置" class="headerlink" title="python文件设置"></a>python文件设置</h2><p>python3默认使用utf-8编码读取文件，支持读取中文<br>python2默认使用ASCII编码读取文件，不支持读取中文；在文件中设置<code>#-*- coding:utf8 -*-</code>可以使python2使用UTF-8编码方式读取文件，从而支持读取中文  </p>
-<h2 id="python2与python3"><a href="#python2与python3" class="headerlink" title="python2与python3"></a>python2与python3</h2><ul>
-<li>python3<ul>
-<li>str即为unicode</li>
-<li>bytes即为str.encode()的结果</li>
-</ul>
-</li>
-<li>python2<ul>
-<li>str是bytes</li>
-<li>u’str’为unicode</li>
-</ul>
-</li>
-</ul>
-<h2 id="str与bytes转换"><a href="#str与bytes转换" class="headerlink" title="str与bytes转换"></a>str与bytes转换</h2><blockquote>
-<p>python3下</p>
-</blockquote>
-<ul>
-<li>在内存中，统一使用unicode编码，数据为str类型</li>
-<li>如果数据需要在网络上传输或保存到硬盘上，就需要把str变成bytes，使用encode方法</li>
-<li>反之，如果我们从网络或磁盘读取了字节流，需要使用decode方法将数据由bytes类型转换为str类型</li>
-</ul>
-<h2 id="单字符的编码"><a href="#单字符的编码" class="headerlink" title="单字符的编码"></a>单字符的编码</h2><ul>
-<li>ord(ordinals)：获取单字符的unicode编码(整数)<ul>
-<li>print(ord(‘中’))</li>
-</ul>
-</li>
-<li>chr(character)：把Unicode编码(整数)转换为对应的字符<ul>
-<li>print(chr(20013))</li>
-</ul>
-</li>
-</ul>
-<h1 id="字符串方法"><a href="#字符串方法" class="headerlink" title="字符串方法"></a>字符串方法</h1><ul>
-<li>isdigit：判断是否为数字型字符串</li>
-<li>istitle：判断首字母是否大写</li>
 <li>isidentifier：变量名有效性判断</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="string">'temp'</span></span><br><span class="line">v = n.isidentifier()</span><br><span class="line">print(v)</span><br></pre></td></tr></table></figure>
@@ -482,12 +428,12 @@
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ori = <span class="string">'my name is &#123;name&#125;, my age is &#123;age&#125;'</span></span><br><span class="line"><span class="comment"># new = ori.format(name='he', age=12)</span></span><br><span class="line">new = ori.format_map(&#123;<span class="string">'name'</span>: <span class="string">'he'</span>, <span class="string">'age'</span>: <span class="number">12</span>&#125;)</span><br><span class="line">print(new)</span><br></pre></td></tr></table></figure>
 <ul>
-<li>join：join拼接可以迭代的字符(串)对象，比如字符串、列表等，调用此方法的字符串插入给定的字符串之间</li>
+<li>join：join可以拼接任意数量的字符串，调用此方法的字符串将被插入多个字符串之间形成一个新的字符串</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">'0'</span></span><br><span class="line">d = [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>]</span><br><span class="line">c = <span class="string">'xyz'</span></span><br><span class="line">e = a.join(d)</span><br><span class="line">h = a.join(c)</span><br><span class="line">print(e, h)</span><br></pre></td></tr></table></figure>
 <h1 id="子串判断"><a href="#子串判断" class="headerlink" title="子串判断"></a>子串判断</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a <span class="keyword">in</span> b: <span class="comment">#如果a在b中</span></span><br><span class="line">    print(a)</span><br><span class="line"><span class="keyword">if</span> a <span class="keyword">is</span> b: <span class="comment">#如果a和b相等</span></span><br><span class="line">    print(<span class="string">'ok'</span>)</span><br></pre></td></tr></table></figure>
 <h1 id="索引和切片"><a href="#索引和切片" class="headerlink" title="索引和切片"></a>索引和切片</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">"abcd"</span></span><br><span class="line">print(a[<span class="number">1</span>], a[::<span class="number">2</span>]) <span class="comment"># 取第2个元素；从第一次元素开始，每隔一个取一个元素。</span></span><br></pre></td></tr></table></figure>
-<h1 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h1><h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><ul>
+<h1 id="字符串格式化"><a href="#字符串格式化" class="headerlink" title="字符串格式化"></a>字符串格式化</h1><h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><ul>
 <li>%d 十进制整数(decimal)</li>
 <li>%s 字符串(string)</li>
 <li>%f 浮点数(float)</li>
@@ -546,8 +492,6 @@
     <footer class="post-footer">
       
         <div class="post-tags">
-          
-            <a href="/tags/编码/" rel="tag"># 编码</a>
           
             <a href="/tags/格式化/" rel="tag"># 格式化</a>
           
@@ -653,7 +597,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">118</span>
+                  <span class="site-state-item-count">120</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -724,7 +668,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编码"><span class="nav-number">1.</span> <span class="nav-text">编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用编码"><span class="nav-number">1.1.</span> <span class="nav-text">通用编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中文编码"><span class="nav-number">1.2.</span> <span class="nav-text">中文编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python文件设置"><span class="nav-number">1.3.</span> <span class="nav-text">python文件设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python2与python3"><span class="nav-number">1.4.</span> <span class="nav-text">python2与python3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#str与bytes转换"><span class="nav-number">1.5.</span> <span class="nav-text">str与bytes转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单字符的编码"><span class="nav-number">1.6.</span> <span class="nav-text">单字符的编码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串方法"><span class="nav-number">2.</span> <span class="nav-text">字符串方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子串判断"><span class="nav-number">3.</span> <span class="nav-text">子串判断</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引和切片"><span class="nav-number">4.</span> <span class="nav-text">索引和切片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#格式化"><span class="nav-number">5.</span> <span class="nav-text">格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#占位符"><span class="nav-number">5.1.</span> <span class="nav-text">占位符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百分号方式"><span class="nav-number">5.2.</span> <span class="nav-text">百分号方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#format方式"><span class="nav-number">5.3.</span> <span class="nav-text">format方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数字格式化"><span class="nav-number">6.</span> <span class="nav-text">数字格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小数一般处理"><span class="nav-number">6.1.</span> <span class="nav-text">小数一般处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字的格式化处理"><span class="nav-number">6.2.</span> <span class="nav-text">数字的格式化处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元组格式化"><span class="nav-number">7.</span> <span class="nav-text">元组格式化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串方法"><span class="nav-number">1.</span> <span class="nav-text">字符串方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子串判断"><span class="nav-number">2.</span> <span class="nav-text">子串判断</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引和切片"><span class="nav-number">3.</span> <span class="nav-text">索引和切片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串格式化"><span class="nav-number">4.</span> <span class="nav-text">字符串格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#占位符"><span class="nav-number">4.1.</span> <span class="nav-text">占位符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百分号方式"><span class="nav-number">4.2.</span> <span class="nav-text">百分号方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#format方式"><span class="nav-number">4.3.</span> <span class="nav-text">format方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数字格式化"><span class="nav-number">5.</span> <span class="nav-text">数字格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小数一般处理"><span class="nav-number">5.1.</span> <span class="nav-text">小数一般处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字的格式化处理"><span class="nav-number">5.2.</span> <span class="nav-text">数字的格式化处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元组格式化"><span class="nav-number">6.</span> <span class="nav-text">元组格式化</span></a></li></ol></div>
             
 
           </div>

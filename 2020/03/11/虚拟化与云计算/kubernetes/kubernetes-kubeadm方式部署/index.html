@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-07T08:05:21.458Z">
+<meta property="og:updated_time" content="2020-07-11T04:45:18.040Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-07T16:05:21+08:00">
-                2020-07-07
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-11T12:45:18+08:00">
+                2020-07-11
               </time>
             
           </span>
@@ -401,7 +401,7 @@
 <li>os：Ubuntu 16.04+、CentOS 7</li>
 <li>内存：2G以上</li>
 <li>cpu：2核以上</li>
-<li>主机互联（公网或私网）</li>
+<li>网络：主机互联、且可以连接公网（下载镜像）</li>
 <li>主机名、MAC地址唯一，在hosts中做手动解析</li>
 <li><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports" target="_blank" rel="noopener">个别端口放开</a></li>
 <li><p>关闭swap</p>
@@ -500,7 +500,7 @@
 <h2 id="证书管理"><a href="#证书管理" class="headerlink" title="证书管理"></a>证书管理</h2><ul>
 <li>查看证书过期时间(默认1年)：<code>kubeadm alpha certs check-expiration</code></li>
 <li>证书续签(默认1年)：<code>kubeadm alpha certs renew all</code><ul>
-<li>续签后重启控制平台组件：systemctl restart kubelet</li>
+<li>续签后使用证书的组件重启：kubelet/kube-proxy/apiserver/scheduler/control-manager</li>
 </ul>
 </li>
 </ul>
@@ -698,7 +698,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">118</span>
+                  <span class="site-state-item-count">120</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
