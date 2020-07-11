@@ -22,7 +22,7 @@ kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns
 * os：Ubuntu 16.04+、CentOS 7
 * 内存：2G以上
 * cpu：2核以上
-* 主机互联（公网或私网）
+* 网络：主机互联、且可以连接公网（下载镜像）
 * 主机名、MAC地址唯一，在hosts中做手动解析
 * [个别端口放开](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports)
 * 关闭swap
