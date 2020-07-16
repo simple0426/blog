@@ -195,6 +195,13 @@ CMD /usr/sbin/sshd -D
 # stage build
 # 使用as为多阶段构建中的某一阶段命名
 FROM maven:3.6.3-jdk-8 as build
+RUN sed -i '/<mirrors>/a\ \
+<mirror> \n\
+     <id>nexus-aliyun</id> \n\
+     <mirrorOf>central</mirrorOf> \n\
+     <name>Nexus aliyun</name> \n\
+     <url>http://maven.aliyun.com/nexus/content/groups/public</url>\n\
+</mirror>' /usr/share/maven/conf/settings.xml
 COPY . /tomcat-java-demo
 WORKDIR /tomcat-java-demo
 RUN mvn clean package -Dmaven.test.skip=true
