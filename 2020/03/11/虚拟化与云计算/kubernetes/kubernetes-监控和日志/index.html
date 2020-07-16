@@ -88,7 +88,7 @@
 <meta property="og:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png">
-<meta property="og:updated_time" content="2020-03-11T09:23:00.769Z">
+<meta property="og:updated_time" content="2020-07-15T12:49:20.933Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-监控和日志">
 <meta name="twitter:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-11T17:23:00+08:00">
-                2020-03-11
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-15T20:49:20+08:00">
+                2020-07-15
               </time>
             
           </span>
@@ -444,18 +444,18 @@
 <p>错误：metric-server x509: certificate signed by unknown authority</p>
 </blockquote>
 <ul>
-<li><a href="#安装cfssl">需要先安装cfssl工具</a></li>
+<li><a href="https://pkg.cfssl.org/" target="_blank" rel="noopener">需要先安装cfssl工具</a></li>
 <li>cd /etc/kubernetes/pki/</li>
-<li><p>创建签名</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; metrics-server-csr.json &lt;&lt;EOF</span><br><span class="line">&#123;&quot;CN&quot;: &quot;aggregator&quot;,&quot;hosts&quot;: [],&quot;key&quot;: &#123;&quot;algo&quot;: &quot;rsa&quot;,&quot;size&quot;: 2048&#125;,&quot;names&quot;: [&#123;&quot;C&quot;: &quot;CN&quot;,&quot;ST&quot;: &quot;Hangzhou&quot;,&quot;L&quot;: &quot;Hangzhou&quot;,&quot;O&quot;: &quot;k8s&quot;,&quot;OU&quot;: &quot;4Paradigm&quot;&#125;]&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<li><p>创建签名请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; metrics-server-csr.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;CN&quot;: &quot;aggregator&quot;,</span><br><span class="line">  &quot;hosts&quot;: [],</span><br><span class="line">  &quot;key&quot;: &#123;</span><br><span class="line">    &quot;algo&quot;: &quot;rsa&quot;,</span><br><span class="line">    &quot;size&quot;: 2048</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;names&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;C&quot;: &quot;CN&quot;,</span><br><span class="line">      &quot;ST&quot;: &quot;Hangzhou&quot;,</span><br><span class="line">      &quot;L&quot;: &quot;Hangzhou&quot;,</span><br><span class="line">      &quot;O&quot;: &quot;k8s&quot;,</span><br><span class="line">      &quot;OU&quot;: &quot;4Paradigm&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>创建证书和私钥：<code>cfssl gencert -ca=/etc/kubernetes/pki/ca.pem -ca-key=/etc/kubernetes/pki/ca-key.pem -config=/etc/kubernetes/pki/ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server</code></p>
+<li><p>使用CA签发证书和私钥：<code>cfssl gencert -ca=/etc/kubernetes/pki/ca.pem -ca-key=/etc/kubernetes/pki/ca-key.pem -config=/etc/kubernetes/pki/ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server</code></p>
 </li>
 </ul>
 <h2 id="apiserver开启聚合配置"><a href="#apiserver开启聚合配置" class="headerlink" title="apiserver开启聚合配置"></a>apiserver开启聚合配置</h2><blockquote>
 <p>错误：I0313 05:18:36.447202 1 serving.go:273] Generated self-signed cert (apiserver.local.config/certificates/apiserver.crt, apiserver.local.config/certificates/apiserver.key)Error: cluster doesn’t provide requestheader-client-ca-file</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--proxy-client-cert-file=/etc/kubernetes/pki/metrics-server.pem --proxy-client-key-file=/etc/kubernetes/pki/metrics-server-key.pem --runtime-config=api/all=true --requestheader-client-ca-file=/etc/kubernetes/pki/ca.crt --requestheader-allowed-names=aggregator --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">--proxy-client-cert-file=/etc/kubernetes/pki/metrics-server.pem \</span><br><span class="line">--proxy-client-key-file=/etc/kubernetes/pki/metrics-server-key.pem \</span><br><span class="line">--runtime-config=api/all=true \</span><br><span class="line">--requestheader-client-ca-file=/etc/kubernetes/pki/ca.crt \</span><br><span class="line">--requestheader-allowed-names=aggregator \</span><br><span class="line">--requestheader-extra-headers-prefix=X-Remote-Extra- \</span><br><span class="line">--requestheader-group-headers=X-Remote-Group \</span><br><span class="line">--requestheader-username-headers=X-Remote-User</span><br></pre></td></tr></table></figure>
 <h2 id="容器网络配置"><a href="#容器网络配置" class="headerlink" title="容器网络配置"></a>容器网络配置</h2><blockquote>
 <p>错误【容器解析的主机名不是节点ip】：E0313 08:23:41.193222 1 manager.go:102] unable to fully collect metrics: [unable to fully scrape metrics from source kubelet_summary:192.168.209.130: unable to fetch metrics from Kubelet 192.168.209.130 (192.168.209.130)</p>
 </blockquote>
@@ -515,23 +515,6 @@
 <li>架构感知</li>
 <li>故障演练</li>
 <li>流控降级</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h1 id="安装cfssl"><a href="#安装cfssl" class="headerlink" title="安装cfssl"></a>安装<a href="https://github.com/cloudflare/cfssl" target="_blank" rel="noopener">cfssl</a></h1><ul>
-<li><a href="https://golang.google.cn/doc/install" target="_blank" rel="noopener">安装golang</a><ul>
-<li>下载：wget <a href="https://dl.google.com/go/go1.14.linux-amd64.tar.gz" target="_blank" rel="noopener">https://dl.google.com/go/go1.14.linux-amd64.tar.gz</a></li>
-<li>tar -C /usr/local/ -xzf go1.14.linux-amd64.tar.gz  </li>
-<li>export PATH=$PATH:/usr/local/go/bin</li>
-</ul>
-</li>
-<li>编译cfssl<ul>
-<li>下载：<a href="https://github.com/cloudflare/cfssl.git" target="_blank" rel="noopener">https://github.com/cloudflare/cfssl.git</a></li>
-<li>安装gcc库：yum install gcc*</li>
-<li>cd cfssl</li>
-<li>make</li>
-<li>export PATH=$PATH:/root/vendor/cfssl/bin</li>
 </ul>
 </li>
 </ul>
@@ -660,7 +643,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">120</span>
+                  <span class="site-state-item-count">121</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -682,7 +665,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">235</span>
+                  <span class="site-state-item-count">236</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -731,7 +714,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控类型"><span class="nav-number">1.</span> <span class="nav-text">监控类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案-heapster"><span class="nav-number">2.</span> <span class="nav-text">监控方案-heapster</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合方案"><span class="nav-number">2.2.</span> <span class="nav-text">整合方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heapter缺点"><span class="nav-number">2.3.</span> <span class="nav-text">heapter缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">3.</span> <span class="nav-text">新一代监控方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#metric-server部署"><span class="nav-number">4.</span> <span class="nav-text">metric-server部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装metric-server证书"><span class="nav-number">4.1.</span> <span class="nav-text">安装metric-server证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apiserver开启聚合配置"><span class="nav-number">4.2.</span> <span class="nav-text">apiserver开启聚合配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器网络配置"><span class="nav-number">4.3.</span> <span class="nav-text">容器网络配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus"><span class="nav-number">5.</span> <span class="nav-text">prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构-1"><span class="nav-number">5.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件"><span class="nav-number">5.2.</span> <span class="nav-text">插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">5.3.</span> <span class="nav-text">部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">6.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志采集"><span class="nav-number">7.</span> <span class="nav-text">日志采集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#阿里云产品实践"><span class="nav-number">8.</span> <span class="nav-text">阿里云产品实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装cfssl"><span class="nav-number">9.</span> <span class="nav-text">安装cfssl</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控类型"><span class="nav-number">1.</span> <span class="nav-text">监控类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案-heapster"><span class="nav-number">2.</span> <span class="nav-text">监控方案-heapster</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合方案"><span class="nav-number">2.2.</span> <span class="nav-text">整合方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heapter缺点"><span class="nav-number">2.3.</span> <span class="nav-text">heapter缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">3.</span> <span class="nav-text">新一代监控方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#metric-server部署"><span class="nav-number">4.</span> <span class="nav-text">metric-server部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装metric-server证书"><span class="nav-number">4.1.</span> <span class="nav-text">安装metric-server证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apiserver开启聚合配置"><span class="nav-number">4.2.</span> <span class="nav-text">apiserver开启聚合配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器网络配置"><span class="nav-number">4.3.</span> <span class="nav-text">容器网络配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus"><span class="nav-number">5.</span> <span class="nav-text">prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构-1"><span class="nav-number">5.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件"><span class="nav-number">5.2.</span> <span class="nav-text">插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">5.3.</span> <span class="nav-text">部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">6.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志采集"><span class="nav-number">7.</span> <span class="nav-text">日志采集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#阿里云产品实践"><span class="nav-number">8.</span> <span class="nav-text">阿里云产品实践</span></a></li></ol></div>
             
 
           </div>

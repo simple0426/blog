@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="简介 vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等） 软件安装 vagrant下载与安装 VirtualBox下载与安装   存储位置设置 box镜像位置(vagrant管理)：设置变量VAGRANT_HOME 虚拟机位置(vi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.482Z">
+<meta property="og:updated_time" content="2020-07-15T15:06:10.592Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="虚拟机管理-vagrant">
 <meta name="twitter:description" content="简介 vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等） 软件安装 vagrant下载与安装 VirtualBox下载与安装   存储位置设置 box镜像位置(vagrant管理)：设置变量VAGRANT_HOME 虚拟机位置(vi">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-15T23:06:10+08:00">
+                2020-07-15
               </time>
             
           </span>
@@ -410,7 +410,6 @@
 <h1 id="box管理"><a href="#box管理" class="headerlink" title="box管理"></a>box管理</h1><ul>
 <li>作用：作为运行中虚拟机的基础镜像（类似docker的镜像）</li>
 <li>box镜像下载<ul>
-<li><a href="http://www.vagrantbox.es/" target="_blank" rel="noopener">第三方下载</a></li>
 <li><a href="http://cloud-images.ubuntu.com/" target="_blank" rel="noopener">ubuntu系列下载</a></li>
 <li><a href="http://cloud.centos.org/" target="_blank" rel="noopener">centos系列下载</a></li>
 </ul>
@@ -442,6 +441,13 @@
 <li>vagrant resume：恢复一个挂起的虚拟机【vagrant up也可以恢复一个挂起的虚拟机】</li>
 <li>vagrant suspend：挂起一个虚拟机</li>
 <li>vagrant validate：检测Vagrantfile语法</li>
+<li>vagrant snapshot：快照管理<ul>
+<li>list：显示快照列表</li>
+<li>save [vm_name] snapshot_name：保存快照</li>
+<li>restore [vm_name]  snapshot_name：恢复快照</li>
+<li>delete [vm_name] snapshot_name：删除快照</li>
+</ul>
+</li>
 </ul>
 <h1 id="插件管理-scp"><a href="#插件管理-scp" class="headerlink" title="插件管理-scp"></a>插件管理-scp</h1><ul>
 <li>查看已安装插件列表：vagrant plugin list</li>
@@ -658,7 +664,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">120</span>
+                  <span class="site-state-item-count">121</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -680,7 +686,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">235</span>
+                  <span class="site-state-item-count">236</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
