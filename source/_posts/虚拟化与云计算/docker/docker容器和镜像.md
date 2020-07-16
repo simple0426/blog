@@ -85,6 +85,9 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * search：查询docker公共仓库中的镜像
 * pull：从registry获取镜像
 * push：推送镜像到镜像仓库
+    * 登录仓库：docker login --username=perfect_0426@qq.com registry.cn-hangzhou.aliyuncs.com
+    * 本地打包：docker build -t registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest .
+    * 推送镜像到仓库：docker push registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest
 * tag：给镜像添加一个标签
 * image prune [-a]：移除没有标签的镜像、移除没有使用及没有标签的镜像(-a)
 * images：查看本地镜像列表
@@ -161,34 +164,42 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 
 ## Dockerfile范例
 ```
-FROM ubuntu
-MAINTAINER hejingqi@zj-inv.cn
+FROM ubuntu:14.04
+LABEL maintainer hejingqi@zj-inv.cn
 ENV LANG C.UTF-8
-COPY sources.list /etc/apt/sources.list
-RUN apt-get update && \
-    apt-get install -y openssh-server supervisor vim iputils-ping net-tools lrzsz && \
-    mkdir -p /var/run/sshd && \
-    mkdir -p /var/log/supervisor && \
-    echo "root:zjht4321"|chpasswd && \
-    echo "Asia/Shanghai" > /etc/timezone && \
-    echo "export LANG=C.UTF-8" >> /etc/profile
-COPY sshd_config /etc/ssh/sshd_config
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY Shanghai /etc/localtime
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\
+	deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\
+	deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
+	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
+	deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
+	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
+	deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\
+	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n'\
+	> /etc/apt/sources.list && \
+	rm -rf /etc/apt/sources.list.d/* && \
+	apt-get update && \
+	apt-get install -y openssh-server vim iputils-ping net-tools lrzsz && \
+	mkdir -p /var/run/sshd && \
+	sed -i '/^PermitRootLogin/s/without-password/yes/' /etc/ssh/sshd_config && \
+	sed -i '/^#PasswordAuthentication/s/#//' /etc/ssh/sshd_config && \
+	echo "root:zjht4321"|chpasswd && \
+	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+	rm -rf /var/cache/apt/*
 EXPOSE 22
-CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+CMD /usr/sbin/sshd -D
 ```
 
 ## 多阶段构建范例
 
 ```yaml
+# stage build
 # 使用as为多阶段构建中的某一阶段命名
 FROM maven:3.6.3-jdk-8 as build
-ADD tomcat-java-demo.tar.gz /
-COPY settings.xml /usr/share/maven/ref/
+COPY . /tomcat-java-demo
 WORKDIR /tomcat-java-demo
 RUN mvn clean package -Dmaven.test.skip=true
-FROM tomcat:8.47 as prod
+# stage prod
+FROM tomcat:8.5.47 as prod
 RUN rm -rf /usr/local/tomcat/webapps/*
 # 从构建的某一阶段复制文件
 COPY --from=build /tomcat-java-demo/target/*.war /usr/local/tomcat/webapps/ROOT.war
@@ -196,25 +207,6 @@ WORKDIR /usr/local/tomcat/bin
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
-
-# 镜像的推送和自动化构建
-
-## 可选仓库
-* [阿里云容器镜像服务][aliyun-docker-repo]
-* [docker hub][docker-hub]
-
-## push方式
-* 本地打包：docker build -t registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest .
-* 登录阿里云仓库：docker login --username=perfect_0426@qq.com registry.cn-hangzhou.aliyuncs.com
-* 推送镜像到仓库：docker push registry.cn-hangzhou.aliyuncs.com/simple00426/flask_test:latest
-
-## 自动化构建
-* 将dockerfile等文件放入代码库管理，比如：https://github.com/simple0426/docker-registry.git
-* 在镜像仓库新建镜像，配置自动化构建关联到代码仓库(具体关联到Dockerfile所在目录)
-* 只要Dockerfile所在仓库有代码变动，镜像仓库就会自动构建新的镜像
-
-[docker-hub]: https://hub.docker.com/repositories
-[aliyun-docker-repo]: https://cr.console.aliyun.com/cn-hangzhou/instances/repositories
 
 # 应用运行
 ## 镜像内固定运行参数
@@ -266,3 +258,19 @@ deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
 * 容器运行
     - 前台：docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s
     - 后台：docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose
+
+# 公有仓库镜像自动化构建
+
+## 可选仓库
+
+* [阿里云容器镜像服务][aliyun-docker-repo]
+* [docker hub][docker-hub]
+
+## 自动化构建
+
+* 将Dockerfile等文件放入代码库管理，比如：https://github.com/simple0426/tomcat-java-demo.git
+* 在镜像仓库新建镜像，配置自动化构建关联到代码仓库(具体关联到Dockerfile所在目录)
+* 只要Dockerfile所在仓库有代码变动，镜像仓库就会自动构建新的镜像
+
+[docker-hub]: https://hub.docker.com/repositories
+[aliyun-docker-repo]: https://cr.console.aliyun.com/cn-hangzhou/instances/repositories
