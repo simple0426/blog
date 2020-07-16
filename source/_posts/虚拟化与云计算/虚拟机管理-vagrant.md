@@ -27,7 +27,6 @@ date: 2019-11-18 21:24:01
 # box管理
 * 作用：作为运行中虚拟机的基础镜像（类似docker的镜像）
 * box镜像下载
-    - [第三方下载](http://www.vagrantbox.es/)
     - [ubuntu系列下载](http://cloud-images.ubuntu.com/)
     - [centos系列下载](http://cloud.centos.org/)
 * 命令：
@@ -51,6 +50,11 @@ date: 2019-11-18 21:24:01
 * vagrant resume：恢复一个挂起的虚拟机【vagrant up也可以恢复一个挂起的虚拟机】
 * vagrant suspend：挂起一个虚拟机
 * vagrant validate：检测Vagrantfile语法
+* vagrant snapshot：快照管理
+    * list：显示快照列表
+    * save [vm_name] snapshot_name：保存快照
+    * restore [vm_name]  snapshot_name：恢复快照
+    * delete [vm_name] snapshot_name：删除快照
 
 # 插件管理-scp
 * 查看已安装插件列表：vagrant plugin list

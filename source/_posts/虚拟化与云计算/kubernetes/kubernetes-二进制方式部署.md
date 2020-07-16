@@ -21,7 +21,7 @@ tags:
   * docker：19.03
   * kubernetes：1.18
 * 硬件要求：2核2G以上
-* 网络：主机间互联、且可以连接公网（下载镜像）
+* 网络：主机间互联、且可以连接公网（下载容器镜像）
 * 主机名、MAC地址唯一，在hosts中做手动解析
 * [个别端口放开](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports)
 * 关闭swap
@@ -30,6 +30,8 @@ swapoff -a
 sed -i '/swap/s/^/#/' /etc/fstab
 ```
 * 时间同步
+
+  > 所有主机时间和互联网时间都需要同步，否则使用证书进行连接认证时会出错
 ```
 yum install -y ntp
 ntpdate times.aliyun.com
@@ -97,8 +99,9 @@ sudo sysctl --system
 
 * master节点部署master组件（apiserver、scheduler、controller-manager）和node（kubelet、kube-proxy）组件，所以工作负载也可以在master上运行
 * etcd部署在3个节点上（211/212/213）
-* 高可用架构采用nginx+keepalived实现，nginx和keepalived也部署在master节点
+* k8s集群和etcd使用两台证书(即2个CA)
 * 先实现单master架构，后扩容为多master架构
+* 高可用架构采用nginx+keepalived实现，nginx和keepalived也部署在master节点
 
 # 部署etcd集群
 
@@ -286,7 +289,7 @@ mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
   cp ~/tls/etcd/ca*.pem ~/tls/etcd/server*.pem /opt/etcd/ssl/
   ```
 
-* 启动并设置开机启动
+* 启动并设置开机启动【第一台etcd启动时会挂起，只需查看日志和进程是否存在即可】
 
   ```
   systemctl daemon-reload

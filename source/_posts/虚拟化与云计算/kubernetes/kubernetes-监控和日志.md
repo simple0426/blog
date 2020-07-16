@@ -49,21 +49,44 @@ date: 2020-03-11 17:03:40
 ## 安装metric-server证书
 >错误：metric-server x509: certificate signed by unknown authority
 
-* [需要先安装cfssl工具](#安装cfssl)
+* [需要先安装cfssl工具](https://pkg.cfssl.org/)
 * cd /etc/kubernetes/pki/
-* 创建签名
+* 创建签名请求
 ```
 cat > metrics-server-csr.json <<EOF
-{"CN": "aggregator","hosts": [],"key": {"algo": "rsa","size": 2048},"names": [{"C": "CN","ST": "Hangzhou","L": "Hangzhou","O": "k8s","OU": "4Paradigm"}]}
+{
+  "CN": "aggregator",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "Hangzhou",
+      "L": "Hangzhou",
+      "O": "k8s",
+      "OU": "4Paradigm"
+    }
+  ]
+}
 EOF
 ```
-* 创建证书和私钥：`cfssl gencert -ca=/etc/kubernetes/pki/ca.pem -ca-key=/etc/kubernetes/pki/ca-key.pem -config=/etc/kubernetes/pki/ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server`
+* 使用CA签发证书和私钥：`cfssl gencert -ca=/etc/kubernetes/pki/ca.pem -ca-key=/etc/kubernetes/pki/ca-key.pem -config=/etc/kubernetes/pki/ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server`
 
 ## apiserver开启聚合配置
 >错误：I0313 05:18:36.447202 1 serving.go:273] Generated self-signed cert (apiserver.local.config/certificates/apiserver.crt, apiserver.local.config/certificates/apiserver.key)Error: cluster doesn't provide requestheader-client-ca-file
 
 ```
---proxy-client-cert-file=/etc/kubernetes/pki/metrics-server.pem --proxy-client-key-file=/etc/kubernetes/pki/metrics-server-key.pem --runtime-config=api/all=true --requestheader-client-ca-file=/etc/kubernetes/pki/ca.crt --requestheader-allowed-names=aggregator --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User
+--proxy-client-cert-file=/etc/kubernetes/pki/metrics-server.pem \
+--proxy-client-key-file=/etc/kubernetes/pki/metrics-server-key.pem \
+--runtime-config=api/all=true \
+--requestheader-client-ca-file=/etc/kubernetes/pki/ca.crt \
+--requestheader-allowed-names=aggregator \
+--requestheader-extra-headers-prefix=X-Remote-Extra- \
+--requestheader-group-headers=X-Remote-Group \
+--requestheader-username-headers=X-Remote-User
 ```
 
 ## 容器网络配置
@@ -125,16 +148,3 @@ EOF
     - 架构感知
     - 故障演练
     - 流控降级
-
----
-# 安装[cfssl](https://github.com/cloudflare/cfssl)
-* [安装golang](https://golang.google.cn/doc/install)
-    - 下载：wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
-    - tar -C /usr/local/ -xzf go1.14.linux-amd64.tar.gz  
-    - export PATH=$PATH:/usr/local/go/bin
-* 编译cfssl
-    - 下载：https://github.com/cloudflare/cfssl.git
-    - 安装gcc库：yum install gcc*
-    - cd cfssl
-    - make
-    - export PATH=$PATH:/root/vendor/cfssl/bin

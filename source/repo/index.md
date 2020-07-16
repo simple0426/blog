@@ -5,7 +5,7 @@ date: 2019-06-24 21:54:01
 # docker镜像
 * cirros（约12M）：CirrOS是一个Tiny操作系统，专门用于在云计算环境上运行；包含curl命令
 * nicolaka/netshoot（约204M）：包含各种网络调试工具
-* busybox（约1M）：包含300多个linux命令的软件集合
+* busybox:1.28.4（约1M）：包含300多个linux命令的软件集合
 * alpine（约5M）：基于alpine linux的最小docker镜像
 
 # docker仓库

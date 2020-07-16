@@ -135,7 +135,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * COPY src dest：复制本地主机的src到容器的dest，
 * ADD src dest：
     - add和copy功能类似(复制指定的src到容器的dest)，优先使用copy
-    - 额外功能：解压src到dest
+    - 额外功能：解压src到dest【但必须是gzip, bzip2 or xz格式的tar包】
     - 其中src可以是Dockerfile所在目录的相对路径，也可以是一个url 
 * EXPOSE port：告诉宿主机容器暴露的端口
 * VOLUME ["/data"]：容器运行时，自动创建一个绑定到特定目录的数据卷
@@ -179,7 +179,26 @@ EXPOSE 22
 CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 ```
 
+## 多阶段构建范例
+
+```yaml
+# 使用as为多阶段构建中的某一阶段命名
+FROM maven:3.6.3-jdk-8 as build
+ADD tomcat-java-demo.tar.gz /
+COPY settings.xml /usr/share/maven/ref/
+WORKDIR /tomcat-java-demo
+RUN mvn clean package -Dmaven.test.skip=true
+FROM tomcat:8.47 as prod
+RUN rm -rf /usr/local/tomcat/webapps/*
+# 从构建的某一阶段复制文件
+COPY --from=build /tomcat-java-demo/target/*.war /usr/local/tomcat/webapps/ROOT.war
+WORKDIR /usr/local/tomcat/bin
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+```
+
 # 镜像的推送和自动化构建
+
 ## 可选仓库
 * [阿里云容器镜像服务][aliyun-docker-repo]
 * [docker hub][docker-hub]
