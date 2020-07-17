@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器（vim、">
+<meta name="description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器(vim、">
 <meta name="keywords" content="open,json,xml,ini">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python文件操作">
 <meta property="og:url" content="http://blog.unlazy.cn/2018/05/11/软件开发/python开发/python文件操作/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器（vim、">
+<meta property="og:description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器(vim、">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.505Z">
+<meta property="og:updated_time" content="2020-07-17T17:31:21.943Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python文件操作">
-<meta name="twitter:description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器（vim、">
+<meta name="twitter:description" content="open函数with使用 上下文管理   可以一次打开多个文件进行操作 不用自己处理文件关闭操作  123with open(&apos;test.txt&apos;, encoding=&apos;utf-8&apos;) as f1,open(&apos;b.txt&apos;, mode=&apos;w&apos;, encoding=&apos;utf-8&apos;) as f2:    print(f1.read())    f2.write(&apos;ok&apos;) 读操作 文本编辑器(vim、">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-18T01:31:21+08:00">
+                2020-07-18
               </time>
             
           </span>
@@ -395,22 +395,27 @@
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">'test.txt'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> f1,open(<span class="string">'b.txt'</span>, mode=<span class="string">'w'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> f2:</span><br><span class="line">    print(f1.read())</span><br><span class="line">    f2.write(<span class="string">'ok'</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="读操作"><a href="#读操作" class="headerlink" title="读操作"></a>读操作</h2><blockquote>
-<p>文本编辑器（vim、sublime、记事本等）和python解释器（如open函数）,默认使用系统的编码方式保存和打开文件,<br>如windows的gbk，linux的utf-8;当然也可以指定这俩种方式下的编码方式。</p>
+<p>文本编辑器(vim、记事本等)和python解释器(如open函数)默认使用系统的编码方式(windows的gbk，linux的utf-8)保存和打开文件</p>
+<p>当然也可以指定这俩种方式下的编码方式(encoding)</p>
 </blockquote>
 <ul>
 <li>文件的默认操作模式：mode=’r’</li>
 <li>文件对象的读方法<ul>
-<li>read：一次读取整个文件，或指定字节数</li>
+<li>read：一次读取整个文件，或指定字符数</li>
 <li>readline：一次读取一行</li>
 <li>readlines：将读取的整个文件保存为列表输出</li>
 </ul>
 </li>
 </ul>
 <h2 id="写操作"><a href="#写操作" class="headerlink" title="写操作"></a>写操作</h2><ul>
-<li>文件操作模式：mode=’w’[覆盖写]和mode=’a’[追加写]</li>
+<li>文件写模式：<ul>
+<li>mode=’w’(覆盖写)</li>
+<li>mode=’a’(追加写)</li>
+</ul>
+</li>
 <li>文件对象的写方法<ul>
 <li>write：一次写入整个内容</li>
-<li>writelines：将列表或元组写入文件【自己处理换行】</li>
+<li>writelines：将列表或元组写入文件（列表或元组的元素必须是字符串，此时相当于将多个字符串拼接为单个字符串后写入文件）</li>
 </ul>
 </li>
 </ul>
@@ -422,11 +427,20 @@
 <li>b 以bytes形式读取【默认str】</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 复制的实现</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'a.png'</span>, mode=<span class="string">'wb'</span>) <span class="keyword">as</span> w, open(<span class="string">'test.png'</span>, mode=<span class="string">'rb'</span>) <span class="keyword">as</span> r:</span><br><span class="line">    w.write(r.read())</span><br></pre></td></tr></table></figure>
-<h2 id="文件对象操作"><a href="#文件对象操作" class="headerlink" title="文件对象操作"></a>文件对象操作</h2><ul>
-<li>seek 移动光标；参数1为偏移量，参数2为起始位置<ul>
-<li>起始位置0表示数据流的开始【默认】：可以在str或bytes下使用；偏移量必须大于等于0。</li>
-<li>起始位置1表示当前光标位置：在str模式下，偏移量只能为0；在bytes模式下，偏移量可正可负。</li>
-<li>起始位置2表示数据流的末尾：在str模式下，偏移量只能为0；在bytes模式下，偏移量通常是负数。</li>
+<h2 id="文件对象操作-seek"><a href="#文件对象操作-seek" class="headerlink" title="文件对象操作-seek"></a>文件对象操作-seek</h2><ul>
+<li>seek 移动光标；参数1为偏移量(字节数)，参数2为起始位置<ul>
+<li>起始位置0表示数据流的开始(默认)、1表示当前光标位置、2表示数据流的末尾</li>
+<li>str模式下<ul>
+<li>起始位置为0，偏移量必须大于等于0</li>
+<li>起始位置为1、2，偏移量必须等于0</li>
+</ul>
+</li>
+<li>bytes模式下<ul>
+<li>起始位置为0，偏移量必须大于等于0</li>
+<li>其实位置为1，偏移量可正可负</li>
+<li>起始位置为2，偏移量为负数</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>tell 显示当前光标位置</li>
@@ -434,7 +448,7 @@
 <h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><ul>
 <li>模拟tailf</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'shuzi.txt'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.seek(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        line = f.read().strip()</span><br><span class="line">        <span class="keyword">if</span> line:</span><br><span class="line">            print(line)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'db.txt'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.seek(<span class="number">0</span>,<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        data = f.read().strip()</span><br><span class="line">        <span class="keyword">if</span> data:</span><br><span class="line">            print(data)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure>
 <ul>
 <li>模拟文件修改</li>
 </ul>
@@ -692,7 +706,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#open函数"><span class="nav-number">1.</span> <span class="nav-text">open函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#with使用"><span class="nav-number">1.1.</span> <span class="nav-text">with使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读操作"><span class="nav-number">1.2.</span> <span class="nav-text">读操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写操作"><span class="nav-number">1.3.</span> <span class="nav-text">写操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件打开模式"><span class="nav-number">1.4.</span> <span class="nav-text">文件打开模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件对象操作"><span class="nav-number">1.5.</span> <span class="nav-text">文件对象操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">1.6.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#json与序列化"><span class="nav-number">2.</span> <span class="nav-text">json与序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pickle"><span class="nav-number">2.1.</span> <span class="nav-text">pickle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#json"><span class="nav-number">2.2.</span> <span class="nav-text">json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#json和python"><span class="nav-number">2.2.1.</span> <span class="nav-text">json和python</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#序列化"><span class="nav-number">2.2.2.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反序列化"><span class="nav-number">2.2.3.</span> <span class="nav-text">反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非标准类型"><span class="nav-number">2.2.4.</span> <span class="nav-text">非标准类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xml解析"><span class="nav-number">3.</span> <span class="nav-text">xml解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">3.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找"><span class="nav-number">3.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更"><span class="nav-number">3.3.</span> <span class="nav-text">变更</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ini解析"><span class="nav-number">4.</span> <span class="nav-text">ini解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法-1"><span class="nav-number">4.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找-1"><span class="nav-number">4.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更-1"><span class="nav-number">4.3.</span> <span class="nav-text">变更</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#open函数"><span class="nav-number">1.</span> <span class="nav-text">open函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#with使用"><span class="nav-number">1.1.</span> <span class="nav-text">with使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读操作"><span class="nav-number">1.2.</span> <span class="nav-text">读操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写操作"><span class="nav-number">1.3.</span> <span class="nav-text">写操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件打开模式"><span class="nav-number">1.4.</span> <span class="nav-text">文件打开模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件对象操作-seek"><span class="nav-number">1.5.</span> <span class="nav-text">文件对象操作-seek</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">1.6.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#json与序列化"><span class="nav-number">2.</span> <span class="nav-text">json与序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pickle"><span class="nav-number">2.1.</span> <span class="nav-text">pickle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#json"><span class="nav-number">2.2.</span> <span class="nav-text">json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#json和python"><span class="nav-number">2.2.1.</span> <span class="nav-text">json和python</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#序列化"><span class="nav-number">2.2.2.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反序列化"><span class="nav-number">2.2.3.</span> <span class="nav-text">反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非标准类型"><span class="nav-number">2.2.4.</span> <span class="nav-text">非标准类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xml解析"><span class="nav-number">3.</span> <span class="nav-text">xml解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">3.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找"><span class="nav-number">3.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更"><span class="nav-number">3.3.</span> <span class="nav-text">变更</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ini解析"><span class="nav-number">4.</span> <span class="nav-text">ini解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法-1"><span class="nav-number">4.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找-1"><span class="nav-number">4.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更-1"><span class="nav-number">4.3.</span> <span class="nav-text">变更</span></a></li></ol></li></ol></div>
             
 
           </div>

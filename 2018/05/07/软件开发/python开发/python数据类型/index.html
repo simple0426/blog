@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="数据类型基本数据类型 整数 小数 小数之所以称为浮点数，是因为按照科学计数法的表示时，小数点的位置是可变的 对于很大或很小的浮点数，就必须用科学计数法表示，把10用e替代，1.23x10^9就是1.23e9   字符串 使用\转义特殊字符如\t 使用r’’表示内部字符串不转义 使用三引号显示多行内容   布尔值 数字中的0为False，其他均为True 空字符串为False，其他均为True">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-10T14:37:00.432Z">
+<meta property="og:updated_time" content="2020-07-17T17:33:47.625Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python数据类型">
 <meta name="twitter:description" content="数据类型基本数据类型 整数 小数 小数之所以称为浮点数，是因为按照科学计数法的表示时，小数点的位置是可变的 对于很大或很小的浮点数，就必须用科学计数法表示，把10用e替代，1.23x10^9就是1.23e9   字符串 使用\转义特殊字符如\t 使用r’’表示内部字符串不转义 使用三引号显示多行内容   布尔值 数字中的0为False，其他均为True 空字符串为False，其他均为True">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-10T22:37:00+08:00">
-                2020-07-10
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-18T01:33:47+08:00">
+                2020-07-18
               </time>
             
           </span>
@@ -478,8 +478,8 @@
 <li>成员判断：in、not in</li>
 </ul>
 <h2 id="变与不变"><a href="#变与不变" class="headerlink" title="变与不变"></a>变与不变</h2><ul>
-<li>可变对象，比如list，对list进行操作，list内部的内容会发生变化</li>
-<li>不可变对象，比如str、tuple，调用对象自身的任意方法也不会改变对象自身的内容；相反，这些方法会创建新的对象并返回。</li>
+<li>可变对象，比如字典、列表、集合；对list进行操作，list内部的内容会发生变化</li>
+<li>不可变对象，比如str、tuple；调用对象自身的任意方法也不会改变对象自身的内容；相反，这些方法会创建新的对象并返回。</li>
 </ul>
 <h2 id="list和dict对比"><a href="#list和dict对比" class="headerlink" title="list和dict对比"></a>list和dict对比</h2><table>
 <thead>
@@ -553,12 +553,9 @@
 <li>索引和切片</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = (1, 3 , 4, 2)</span><br><span class="line">a[1]</span><br><span class="line">a[2:]</span><br></pre></td></tr></table></figure>
-<h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><ul>
+<h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><ul>
 <li>字典的键值对都是无序的，字典的存储顺序和放入顺序无关</li>
-<li>字典的key必须是不可变对象<ul>
-<li>内存中的key以hash值的方式存储，而只有不可变对象才可hash</li>
-</ul>
-</li>
+<li>字典的key必须是不可变对象【内存中的key以hash值的方式存储，而只有不可变对象才可hash】</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">a = &#123;(<span class="number">1</span>, <span class="number">2</span>): <span class="string">'a'</span>, <span class="string">'a'</span>: <span class="string">'c'</span>&#125;</span><br><span class="line"><span class="comment"># True和1等效 False和0等效 会相互覆盖</span></span><br><span class="line">b = &#123;</span><br><span class="line">    <span class="keyword">True</span>: <span class="string">'a'</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="string">'c'</span>,</span><br><span class="line">    <span class="number">12</span>: <span class="string">'d'</span></span><br><span class="line">&#125;</span><br><span class="line">print(a, b)</span><br></pre></td></tr></table></figure>
 <ul>
@@ -597,12 +594,12 @@
 <ul>
 <li>fromkeys：用于创建一个新字典，以序列seq中元素作为字典的键，value为字典所有键对应的初始值【没有则为None】</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">new_dic = dict.fromkeys([<span class="string">'k1'</span>, <span class="string">'k2'</span>, <span class="string">'k3'</span>], [<span class="number">345</span>])</span><br><span class="line"><span class="comment"># 赋值操作新开辟一个内存空间</span></span><br><span class="line"><span class="comment"># new_dic['k1'] = 12</span></span><br><span class="line"><span class="comment"># 因为k1,k2,k3对应同一块内存空间，列表操作为对原空间进行操作</span></span><br><span class="line">new_dic[<span class="string">'k1'</span>].append(<span class="number">12</span>)</span><br><span class="line">print(new_dic)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">new_dic = dict.fromkeys([<span class="string">'k1'</span>, <span class="string">'k2'</span>, <span class="string">'k3'</span>], [<span class="number">345</span>])</span><br><span class="line"><span class="comment"># new_dic['k1'] = 12</span></span><br><span class="line"><span class="comment"># 因为k1,k2,k3对应同一块内存空间</span></span><br><span class="line"><span class="comment"># 原空间为不可变对象时(如元组、常量、字符串)，只能使用赋值操作变更对应的变量值，而赋值操作新开辟一个内存空间</span></span><br><span class="line"><span class="comment"># 原空间为可变对象时（如列表、字典、集合），可以在原空间进行操作改变对应的变量值，则此时k1,k2,k3值还是会相同</span></span><br><span class="line">new_dic[<span class="string">'k1'</span>].append(<span class="number">12</span>)</span><br><span class="line">print(new_dic)</span><br></pre></td></tr></table></figure>
 <ul>
 <li>keys：获取key列表【类似选项values、items】</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dict_1 = &#123;</span><br><span class="line">    <span class="string">'hejingqi'</span>: <span class="number">30</span>,</span><br><span class="line">    <span class="string">'yuanshuo'</span>: <span class="number">24</span>,</span><br><span class="line">    <span class="string">'yangxiaomeng'</span>: <span class="number">29</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> k, v <span class="keyword">in</span> dict_1.items():</span><br><span class="line">    print(k, v)</span><br></pre></td></tr></table></figure>
-<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><ul>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><ul>
 <li>没有重复值的列表，没有value的字典</li>
 <li>集合会自动排序和去重</li>
 <li>集合的数学运算</li>
@@ -816,7 +813,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型"><span class="nav-number">1.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">python数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量和常量"><span class="nav-number">1.3.</span> <span class="nav-text">变量和常量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算符"><span class="nav-number">1.4.</span> <span class="nav-text">运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变与不变"><span class="nav-number">1.5.</span> <span class="nav-text">变与不变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#list和dict对比"><span class="nav-number">1.6.</span> <span class="nav-text">list和dict对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#列表"><span class="nav-number">2.</span> <span class="nav-text">列表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">2.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引和切片"><span class="nav-number">2.2.</span> <span class="nav-text">索引和切片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列表推导式"><span class="nav-number">2.3.</span> <span class="nav-text">列表推导式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代函数"><span class="nav-number">2.4.</span> <span class="nav-text">迭代函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.5.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元组"><span class="nav-number">3.</span> <span class="nav-text">元组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字典"><span class="nav-number">4.</span> <span class="nav-text">字典</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法-1"><span class="nav-number">4.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">5.</span> <span class="nav-text">集合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法-2"><span class="nav-number">5.1.</span> <span class="nav-text">方法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型"><span class="nav-number">1.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">python数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量和常量"><span class="nav-number">1.3.</span> <span class="nav-text">变量和常量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算符"><span class="nav-number">1.4.</span> <span class="nav-text">运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变与不变"><span class="nav-number">1.5.</span> <span class="nav-text">变与不变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#list和dict对比"><span class="nav-number">1.6.</span> <span class="nav-text">list和dict对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#列表"><span class="nav-number">2.</span> <span class="nav-text">列表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">2.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引和切片"><span class="nav-number">2.2.</span> <span class="nav-text">索引和切片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列表推导式"><span class="nav-number">2.3.</span> <span class="nav-text">列表推导式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代函数"><span class="nav-number">2.4.</span> <span class="nav-text">迭代函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">2.5.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元组"><span class="nav-number">3.</span> <span class="nav-text">元组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字典"><span class="nav-number">4.</span> <span class="nav-text">字典</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法-1"><span class="nav-number">4.2.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">5.</span> <span class="nav-text">集合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义-1"><span class="nav-number">5.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法-2"><span class="nav-number">5.2.</span> <span class="nav-text">方法</span></a></li></ol></li></ol></div>
             
 
           </div>
