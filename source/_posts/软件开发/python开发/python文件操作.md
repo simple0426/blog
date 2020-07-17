@@ -24,20 +24,23 @@ with open('test.txt', encoding='utf-8') as f1,open('b.txt', mode='w', encoding='
 ```
 
 ## 读操作
->文本编辑器（vim、sublime、记事本等）和python解释器（如open函数）,默认使用系统的编码方式保存和打开文件,
->如windows的gbk，linux的utf-8;当然也可以指定这俩种方式下的编码方式。
+>文本编辑器(vim、记事本等)和python解释器(如open函数)默认使用系统的编码方式(windows的gbk，linux的utf-8)保存和打开文件
+>
+>当然也可以指定这俩种方式下的编码方式(encoding)
 
 * 文件的默认操作模式：mode='r'
 * 文件对象的读方法
-    - read：一次读取整个文件，或指定字节数
+    - read：一次读取整个文件，或指定字符数
     - readline：一次读取一行
     - readlines：将读取的整个文件保存为列表输出
 
 ## 写操作
-* 文件操作模式：mode='w'[覆盖写]和mode='a'[追加写]
+* 文件写模式：
+    * mode='w'(覆盖写)
+    * mode='a'(追加写)
 * 文件对象的写方法
     - write：一次写入整个内容
-    - writelines：将列表或元组写入文件【自己处理换行】
+    - writelines：将列表或元组写入文件（列表或元组的元素必须是字符串，此时相当于将多个字符串拼接为单个字符串后写入文件）
 
 ```python
 shuzi = list(range(0,10))
@@ -58,11 +61,16 @@ with open('a.png', mode='wb') as w, open('test.png', mode='rb') as r:
     w.write(r.read())
 ```
 
-## 文件对象操作
-* seek 移动光标；参数1为偏移量，参数2为起始位置
-    - 起始位置0表示数据流的开始【默认】：可以在str或bytes下使用；偏移量必须大于等于0。
-    - 起始位置1表示当前光标位置：在str模式下，偏移量只能为0；在bytes模式下，偏移量可正可负。
-    - 起始位置2表示数据流的末尾：在str模式下，偏移量只能为0；在bytes模式下，偏移量通常是负数。
+## 文件对象操作-seek
+* seek 移动光标；参数1为偏移量(字节数)，参数2为起始位置
+    * 起始位置0表示数据流的开始(默认)、1表示当前光标位置、2表示数据流的末尾
+    * str模式下
+        * 起始位置为0，偏移量必须大于等于0
+        * 起始位置为1、2，偏移量必须等于0
+    * bytes模式下
+        * 起始位置为0，偏移量必须大于等于0
+        * 其实位置为1，偏移量可正可负
+        * 起始位置为2，偏移量为负数
 * tell 显示当前光标位置
 
 ## 范例
@@ -70,12 +78,12 @@ with open('a.png', mode='wb') as w, open('test.png', mode='rb') as r:
 
 ```python
 import time
-with open('shuzi.txt', encoding='utf-8') as f:
-    f.seek(0, 2)
+with open('db.txt', encoding='utf-8') as f:
+    f.seek(0,2)
     while True:
-        line = f.read().strip()
-        if line:
-            print(line)
+        data = f.read().strip()
+        if data:
+            print(data)
         time.sleep(0.5)
 ```
 
