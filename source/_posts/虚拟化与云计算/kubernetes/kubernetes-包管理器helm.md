@@ -159,30 +159,3 @@ dependencies:
 * 语法检查：helm lint mychart
 * 安装部署：helm install --name myapp ./mychart --set service.type=NodePort
 * 打包：helm package ./mychart
-
-# charts仓库
-## 公有仓库
-* bitnami
-    - web地址：http://hub.kubeapps.com/
-    - 仓库：https://cetic.github.io/helm-charts/
-* helm
-    - web地址：https://hub.helm.sh/
-    - 仓库：https://kubernetes-charts.storage.googleapis.com、http://storage.googleapis.com/kubernetes-charts
-* 阿里云：
-    - web地址：https://developer.aliyun.com/hub/
-    - 仓库：https://apphub.aliyuncs.com
-    - 源码：https://github.com/cloudnativeapp/charts
-
-## 内置仓库服务
-* helm serve：运行charts仓库服务
-* helm search local：搜索本地仓库
-
-## 仓库服务实践
-* 任何支持传输文件的的web服务器都可以作为charts仓库，如apache、nginx
-* 仓库中有一个index.yaml用于描述仓库的所有charts信息(本地制作的charts可以使用helm repo index生成索引文件)
-
-## repo命令
-* 添加仓库：helm repo add name URL
-* 显示仓库列表：helm repo list
-* 更新仓库元信息：helm repo update
-* 删除仓库：helm repo remove
