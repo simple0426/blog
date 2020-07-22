@@ -70,15 +70,6 @@ spec:
       targetPort: 6379
 ```
 
-## Headless类型service
-* 设置：【clusterIp:None】
-* 实现：不为service对象创建clusterIP，客户端直接通过pod-ip访问pod
-* 实现方式：
-  - 有标签选择器(selector)：DNS直接将service_name解析为后端各pod对象的ip；客户端访问时，每次接入的pod资源则是由DNS服务器接收到查询请求时以轮询(roundrobin)方式返回的IP地址
-  - 无标签选择器
-    + 为ExternalName类型创建CNAME记录，例子如上
-    + 对其他类型来说，为那些与当前service共享名称的所有Endpoints对象创建一条记录
-
 # service语法范例
 * service部署
 ```
