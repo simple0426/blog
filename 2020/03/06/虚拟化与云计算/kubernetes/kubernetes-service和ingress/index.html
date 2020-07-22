@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="service实现目标 服务发现：在pod的弹性伸缩变化过程中，保持外部访问入口不变 负载均衡：定义访问pod资源的策略  实现方式 服务发现：service定义一个访问入口(service_name、clusterIP)，并基于标签选择器选择一组pod 负载均衡：kube-proxy根据service和pod的映射关系(endpoints)，在节点上创建相应的iptables或ipvs规则  服">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-16T03:05:41.345Z">
+<meta property="og:updated_time" content="2020-07-21T04:39:38.187Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-service和ingress">
 <meta name="twitter:description" content="service实现目标 服务发现：在pod的弹性伸缩变化过程中，保持外部访问入口不变 负载均衡：定义访问pod资源的策略  实现方式 服务发现：service定义一个访问入口(service_name、clusterIP)，并基于标签选择器选择一组pod 负载均衡：kube-proxy根据service和pod的映射关系(endpoints)，在节点上创建相应的iptables或ipvs规则  服">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-16T11:05:41+08:00">
-                2020-07-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-21T12:39:38+08:00">
+                2020-07-21
               </time>
             
           </span>
@@ -425,19 +425,6 @@
 <li>NodePort：建构于clusterIP类型之上，在节点绑定端口，可以在集群外部访问；实现方式：【NodePort==》ClusterIP:port】</li>
 <li>LoadBalancer：建构于NodePort类型之上，指向云厂商设置的负载均衡设备(如阿里云SLB)，可以在集群外部访问；实现方式：【LoadBalancer==》NodePort==》ClusterIP】</li>
 <li>ExternalName：不是定义k8s集群提供的服务，而是把集群外部的某服务以CNAME记录的方式映射到集群内，从而让集群内的pod资源能够访问外部的service;externlName只能是外部服务的域名(不能是ip)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: redis-svc</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  type: ExternalName</span><br><span class="line">  externalName: redis.example.com</span><br><span class="line">  ports:</span><br><span class="line">    - protocol: TCP</span><br><span class="line">      port: 6379</span><br><span class="line">      targetPort: 6379</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="Headless类型service"><a href="#Headless类型service" class="headerlink" title="Headless类型service"></a>Headless类型service</h2><ul>
-<li>设置：【clusterIp:None】</li>
-<li>实现：不为service对象创建clusterIP，客户端直接通过pod-ip访问pod</li>
-<li>实现方式：<ul>
-<li>有标签选择器(selector)：DNS直接将service_name解析为后端各pod对象的ip；客户端访问时，每次接入的pod资源则是由DNS服务器接收到查询请求时以轮询(roundrobin)方式返回的IP地址</li>
-<li>无标签选择器<ul>
-<li>为ExternalName类型创建CNAME记录，例子如上</li>
-<li>对其他类型来说，为那些与当前service共享名称的所有Endpoints对象创建一条记录</li>
-</ul>
-</li>
-</ul>
 </li>
 </ul>
 <h1 id="service语法范例"><a href="#service语法范例" class="headerlink" title="service语法范例"></a>service语法范例</h1><ul>
@@ -633,7 +620,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">121</span>
+                  <span class="site-state-item-count">120</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -655,7 +642,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">236</span>
+                  <span class="site-state-item-count">238</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -704,7 +691,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#service"><span class="nav-number">1.</span> <span class="nav-text">service</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">1.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">1.2.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现的实现"><span class="nav-number">1.3.</span> <span class="nav-text">服务发现的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡的实现"><span class="nav-number">1.4.</span> <span class="nav-text">负载均衡的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现方式-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数配置"><span class="nav-number">1.4.2.</span> <span class="nav-text">参数配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service类型"><span class="nav-number">2.</span> <span class="nav-text">service类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Headless类型service"><span class="nav-number">2.1.</span> <span class="nav-text">Headless类型service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service语法范例"><span class="nav-number">3.</span> <span class="nav-text">service语法范例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service与ingress对比"><span class="nav-number">4.</span> <span class="nav-text">service与ingress对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress"><span class="nav-number">5.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress-Controller"><span class="nav-number">6.</span> <span class="nav-text">Ingress-Controller</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress语法范例"><span class="nav-number">7.</span> <span class="nav-text">Ingress语法范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于域名的虚拟主机"><span class="nav-number">7.1.</span> <span class="nav-text">基于域名的虚拟主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于URL路径-rewrite"><span class="nav-number">7.2.</span> <span class="nav-text">基于URL路径-rewrite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS设置"><span class="nav-number">7.3.</span> <span class="nav-text">HTTPS设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化设置-annotation"><span class="nav-number">7.4.</span> <span class="nav-text">个性化设置-annotation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ingress-controller高可用"><span class="nav-number">8.</span> <span class="nav-text">ingress-controller高可用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#service"><span class="nav-number">1.</span> <span class="nav-text">service</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">1.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">1.2.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现的实现"><span class="nav-number">1.3.</span> <span class="nav-text">服务发现的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡的实现"><span class="nav-number">1.4.</span> <span class="nav-text">负载均衡的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现方式-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数配置"><span class="nav-number">1.4.2.</span> <span class="nav-text">参数配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service类型"><span class="nav-number">2.</span> <span class="nav-text">service类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service语法范例"><span class="nav-number">3.</span> <span class="nav-text">service语法范例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#service与ingress对比"><span class="nav-number">4.</span> <span class="nav-text">service与ingress对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress"><span class="nav-number">5.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress-Controller"><span class="nav-number">6.</span> <span class="nav-text">Ingress-Controller</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress语法范例"><span class="nav-number">7.</span> <span class="nav-text">Ingress语法范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于域名的虚拟主机"><span class="nav-number">7.1.</span> <span class="nav-text">基于域名的虚拟主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于URL路径-rewrite"><span class="nav-number">7.2.</span> <span class="nav-text">基于URL路径-rewrite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS设置"><span class="nav-number">7.3.</span> <span class="nav-text">HTTPS设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化设置-annotation"><span class="nav-number">7.4.</span> <span class="nav-text">个性化设置-annotation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ingress-controller高可用"><span class="nav-number">8.</span> <span class="nav-text">ingress-controller高可用</span></a></li></ol></div>
             
 
           </div>
