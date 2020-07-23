@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="归档,流复制,高可用,">
+  <meta name="keywords" content="高可用,归档,流复制,">
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="文件级别备份限制条件 在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】 无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复  不停机处理 获取数据目录的一致性”快照”； 数据目录和WAL日志在不同磁盘，或表空间文件在不同文件系统时，获取一致">
-<meta name="keywords" content="归档,流复制,高可用">
+<meta name="keywords" content="高可用,归档,流复制">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pgsql-归档和流复制">
 <meta property="og:url" content="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/index.html">
@@ -620,11 +620,11 @@
       
         <div class="post-tags">
           
+            <a href="/tags/高可用/" rel="tag"># 高可用</a>
+          
             <a href="/tags/归档/" rel="tag"># 归档</a>
           
             <a href="/tags/流复制/" rel="tag"># 流复制</a>
-          
-            <a href="/tags/高可用/" rel="tag"># 高可用</a>
           
         </div>
       
