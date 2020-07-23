@@ -7,155 +7,387 @@ tags:
 categories: ['kubernetes']
 ---
 
-# [简介](https://helm.sh)
-## 实现目标
-* 能够管理复杂的程序结构
-* 方便升级：可使用就地升级和自定义钩子
-* 便于分享：使用charts构建和分享程序
-* 便于回滚：使用helm rollback快速回滚
+# [helm简介](https://helm.sh/)
 
-## 核心术语
-* Helm：是k8s的应用程序管理器，也是helm的客户端；相当于linux系统的apt、yum；主要完成如下工作
-    - 本地charts开发
-    - 管理charts仓库
-    - 与tiller服务交互：发送charts以安装、查询Release的相关信息、升级或卸载已有的Release
-* Tiller server：它是运行于k8s集群中的应用；helm的服务端程序，接收helm客户端请求，与kubernetes API Server交互，完成以下任务：
+* 优点
+  * 能够管理复杂的程序结构，将各种配置文件(service/deployment/configmap)作为整体管理
+  * 使用模板后，资源文件可以复用、分享
+  * 可以支持应用级别的版本管理：更新、回滚
+
+* 核心概念
+  * helm：helm二进制管理工具，主要用于k8s应用的创建、打包、发布、管理；类似linux上的apt/yum工具
+  * Chart：描述一个应用的所有k8s资源文件集合；相当于linux中的的rpm、deb包
+  * Release：Chart的部署实体，chart被部署后会生成一个对应的Release；相当于linux中的服务进程
+  * 【v2版本】Tiller server：它是运行于k8s集群中的应用；helm的服务端程序，接收helm客户端请求，与kubernetes API Server交互，完成以下任务：
     - 监听来自helm客户端的请求
     - 安装应用，合并charts和Config为一个Release
     - 跟踪Release状态
     - 升级或卸载Release
-* Chart：是helm的核心打包组件，用于将kubernetes的资源(deployments/service/configmap等)打包进一个charts中
-* Charts：一个Helm程序包，相当于linux的rpm、deb包
-* Repository：charts仓库，存储charts程序，相当于linux的yum或apt仓库源
-* Config：charts程序实例化运行时使用的配置文件
-* Release：charts实例化配置后运行于k8s集群中的一个charts实例；在同一个集群中，一个charts可以使用不同的Config重复安装多次，每次安装都会创建一个新的Release；相当于linux的进程
+  
+* helm版本对比：
+  * v2：有服务端tiller组件
+  * v3：无服务端组件
 
-## 应用管理流程
-* 从0开始创建charts：helm create
-* 将charts及相关的文件打包为归档格式：helm package
-* 将charts存储于仓库中并与之交互：helm repo
-* 在kubernetes集群中安装或卸载charts：helm install、delete
-* 管理经Helm安装的应用的版本发行周期：helm rollback
+* helm下载：
 
-# helm安装
-## 安装helm-client
-* [源码下载]
-    - [官方](https://github.com/helm/helm/releases)【被墙不可用，可以查询版本】
-    - google:可基于github版本和google地址前缀下载源码
-        + [linux](https://storage.googleapis.com/kubernetes-helm/helm-v2.14.1-linux-amd64.tar.gz)
-        + [windows](https://storage.googleapis.com/kubernetes-helm/helm-v2.14.1-windows-amd64.zip)
-* 解压：tar -xzvf helm-v2.14.1-linux-amd64.tar.gz
-* 移动二进制文件：mvn linux-amd64/helm /usr/local/bin/
-* 注意事项：helm命令运行的节点应该可以正常运行kubectl命令，或者至少有可用kubeconfig配置文件，这样才可以和运行于k8s集群中的tiller server进行通信
+  * 官方版本信息：https://github.com/helm/helm/tags
+  * 国内下载地址：https://mirrors.huaweicloud.com/helm/
 
-## 安装tiller-server
-* rbac配置--资源清单方式
-```
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authoriation.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-RoleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
-```
-* rbac配置--命令行方式
-    - `kubectl create serviceaccount --namespace kube-system tiller`
-    - `kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller`
+## v2版本服务端安装
+
+* rbac配置
+  - `kubectl create serviceaccount --namespace kube-system tiller`
+  - `kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller`
 * 初始化安装tiller server：`helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://apphub.aliyuncs.com --debug`
 * 卸载：
-    - kubectl delete deploy tiller-deploy -n kube-system
-    - helm reset
+  - `kubectl delete deploy tiller-deploy -n kube-system`
+  - `helm reset`
 
-# 操作命令
-* helm repo update：更新本地仓库元信息
-* helm search charts_name：搜索软件包
-* helm inspect charts_name：显示包详情
-* helm install charts_name -n release_name：安装软件包
-    - -n release_name：部署的release名称
-    - --dry-run：测试
-    - --debug：调试
-    - -f Config：使用自定义配置文件
-    - --set key=value：使用自定义配置
-    - 安装源(charts_name)：目录、压缩包、仓库、URL
-* helm list：显示已安装的Release
-* helm status release_name：显示release的状态和提示信息
-* helm delete release_name：删除release
-* helm upgrade：升级
-* helm rollback：回滚
-* helm history：显示版本历史
+## helm命令
 
-# charts语法
-charts是helm使用的kubernetes程序打包格式，一个charts就是一个描述k8s资源文件的集合
-## 目录结构
+* 集群认证：读取本地的kubeconfig用于k8s集群认证
+
+* 管理命令
+
+| 命令       | 详解                     | 范例                           |
+| ---------- | ------------------------ | ------------------------------ |
+| completion | 命令行补全               | source <(helm completion bash) |
+| env        | 显示配置、数据和缓存目录 | helm env                       |
+| plugin     | chart插件管理            | -                              |
+
+# 应用管理
+
+## [chart目录结构](https://helm.sh/docs/topics/charts/#the-chartyaml-file)
+
 ```
-mychart #charts名称
-├── Chart.yaml charts元数据信息
-├── LICENSE 许可证信息【可选】
-├── README.md README文件【可选】
-├── requirements.yaml 当前charts的依赖关系【可选】
-├── charts 当前charts依赖的其他charts文件
-│   ├── mysql-6.8.0.tgz
-├── templates 模板文件，用于生成kubernetes资源
+├── LICENSE # 许可证信息【可选】
+├── README.md # README文件【可选】
+├── Chart.yaml  # chart的元数据信息，包括名字、描述信息、版本、依赖等
+├── charts/  # 当前chart依赖的其他chart文件
+│   └── mysql-6.8.0.tgz
+├── crds/ # 自定义资源
+├── templates/  # 模板文件，用于生成kubernetes资源
 │   ├── deployment.yaml
-│   ├── _helpers.tpl
+│   ├── _helpers.tpl  # 模板助手，会在模板文件中定义可公用的子模板
+│   ├── hpa.yaml
 │   ├── ingress.yaml
-│   ├── NOTES.txt 模板注解文件，描述如何使用charts；helm status命令也会输出此内容
-│   ├── service.yaml
-│   └── tests
-│       └── test-connection.yaml
-└── values.yaml #默认配置文件，helm install -f参数会覆盖此默认配置
+│   ├── NOTES.txt # 使用帮助文件；helm install部署后或helm status会显示此信息
+│   ├── serviceaccount.yaml
+│   └── service.yaml
+└── values.yaml   # chart默认配置文件(模板文件中变量的值)，install/upgrade -f/--set会覆盖其中的值
 ```
-## Chart.yaml
-```
-apiVersion: v1 
-appVersion: 5.0.7 #程序版本，redis版本
-description: Open source, advanced key-value store. It is often referred to as a data
-  structure server since keys can contain strings, hashes, lists, sets and sorted
-  sets. #描述信息
-engine: gotpl #模板引擎，go模板
-home: http://redis.io/ #项目主页
-icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png #项目图标
-keywords: #项目关键词
-- redis
-- keyvalue
-- database
-maintainers: #项目维护者
-- email: containers@bitnami.com
-  name: Bitnami
-- email: cedric@desaintmartin.fr
-  name: desaintmartin
-name: redis #charts名称
-sources: #项目源码
-- https://github.com/bitnami/bitnami-docker-redis
-version: 10.5.3 #charts版本
-```
-## requirements.yaml
-```
-dependencies:
-- name: mysql #被依赖的charts名称
-  version: 6.8.0 #被依赖的charts版本
-  repository: https://apphub.aliyuncs.com #依赖的软件所属仓库（需要事前添加仓库）
-  alias：给被依赖的charts建立别名
-```
-* 使用helm dependency update命令更新依赖关系，自动下载被依赖的charts到charts目录
 
-# 自定义charts
-* 创建空charts：helm create mychart
-* 修改配置：
-    - values.yaml中的默认配置、镜像信息
-    - chart.yaml中的描述信息
-* 语法检查：helm lint mychart
-* 安装部署：helm install --name myapp ./mychart --set service.type=NodePort
-* 打包：helm package ./mychart
+### Chart.yaml
+
+```
+apiVersion: chart API版本 (必选项)
+name: chart名称 (必选项)
+version: chart项目版本 (必选项)
+kubeVersion: 支持的k8s版本(可选项)
+description: 项目描述信息 (可选项)
+type: chart类型 (可选项)
+keywords:
+  - 项目涉及的关键词 (可选项)
+home: 项目主页 (可选项)
+sources:
+  - 项目源代码 (可选项)
+dependencies: # 项目依赖的其他chart (可选项)
+  - name: chart名称 (如nginx)
+    version: chart版本 ("1.2.3")
+    repository: 仓库地址 ("https://example.com/charts") 或仓库别名 ("@repo-name")
+    condition、tags、enabled: (可选项) 综合逻辑启用或停止此依赖
+    alias: (可选项) chart别名，在多次使用chart依赖时可用
+maintainers: # 项目维护信息(可选项)
+  - name: 
+    email: 
+    url:
+icon: 项目图标url (可选项).
+appVersion: 应用版本信息 【比如redis、nginx的版本】(可选项)
+deprecated: 是否被遗弃(可选项, boolean)
+annotations:
+  注解信息 (可选项).
+```
+
+* apiVersion版本（v1到v2）
+  * v1的依赖定义使用requirements.yaml文件，v2的依赖使用chart.yaml文件中的dependencies字段
+  * v2增加type字段，描述chart类型
+* type：chart类型
+  * application：这是一个应用，可以直接部署为Release
+  * library：这是一个库，只能被application依赖使用
+
+## chart管理
+
+* 安装chart：helm install redis apphub/redis
+* 下载chart(当前目录)：helm pull apphub/nginx      
+* 查看chart内容：helm show all/chart/readme/values redis
+* 管理chart依赖：helm dependency
+  * 查看依赖：helm dependency list mychart
+  * 下载依赖：helm dependency update mychart
+
+## release管理
+
+* 查看运行中的release列表：helm list
+* 查看release部署历史：helm history web1
+* 查看release详情：helm get  all/hooks/manifest/notes/values
+* 查看release信息：helm status nginx
+* 升级release：helm upgrade web1 --set image.tag="1.19" mychart
+* 回滚到上一版本：helm rollback web1
+* 卸载release：helm uninstall
+
+## 安装和升级参数
+
+* 使用方式：helm install/upgrade
+
+  * 命令行传参(--set)：helm install db --set persistence.storageClass="example-nfs" microsoft/mysql
+  * 配置文件方式(-f)：helm install db -f mysql.yal microsoft/mysql
+    * 先使用show values获取chart默认值文件后修改：helm show values apphub/nginx > nginx.yaml
+
+* 文件与命令使用形式对照
+
+| yaml                    | set                      |
+| ----------------------- | ------------------------ |
+| name:value              | --set name=value         |
+| name:<br>-a<br>-b<br>-c | --set name={a,b,c}       |
+| servers:<br>-port:80    | --set servers[0].port=80 |
+| image:<br>tag:"1.16"    | --set image.tag="1.16"   |
+
+# chart仓库
+
+## 公有hub
+
+> 可使用web搜索
+
+* 官方：https://hub.helm.sh/
+  * 代码地址(开发者)：https://github.com/helm/charts
+  * charts仓库：
+    * stable：https://kubernetes-charts.storage.googleapis.com
+    * incubator：https://kubernetes-charts-incubator.storage.googleapis.com
+  * 微软镜像charts仓库【适合国内】
+    * stable：http://mirror.azure.cn/kubernetes/charts/
+    * incubator：http://mirror.azure.cn/kubernetes/charts-incubator/
+* kubeapps：https://hub.kubeapps.com/
+  * 代码地址(开发者)：https://github.com/kubeapps/kubeapps
+  * charts仓库：https://charts.bitnami.com/bitnami
+* 阿里云：https://developer.aliyun.com/hub/
+  * 代码地址(开发者)：https://github.com/cloudnativeapp/charts
+  * charts仓库：https://apphub.aliyuncs.com【适合国内】
+
+## 命令使用
+
+* 显示仓库列表：helm repo list
+* 添加仓库：helm repo add name URL
+* 更新仓库元数据：helm repo update
+* 删除仓库：helm repo remove name
+* 搜索仓库：helm search repo chart_name
+* 搜索hub：helm search hub chart_name 
+  * --endpoint 指定要搜索的hub地址（默认官方）
+  * 可以搜索由[Monocular](https://github.com/helm/monocular)渲染的charts hub
+
+## 搭建私有charts仓库
+
+* 创建索引文件：helm repo index my-repo --url http://49.232.17.71:8900
+
+  * my-repo为多个chart压缩包所在目录
+  * url为helm下载chart使用的主机地址
+
+* 将chart压缩包目录(包含索引文件和chart压缩包)使用web服务发布出去
+
+  ```
+  docker run -d --name=chart-repo --restart=always \
+  -v $(pwd)/my-repo:/usr/share/nginx/html \
+  -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf \
+  -p 8900:80 nginx
+  ```
+
+  可以在nginx配置文件中开启文件目录索引，这样使用者就可以在web界面查看charts仓库包含的chart
+
+  ```
+  autoindex on;
+  autoindex_exact_size off;
+  autoindex_localtime on;
+  charset utf-8;
+  ```
+
+* 
+
+# [chart模板语法与开发](https://helm.sh/docs/chart_template_guide/)
+
+* 创建一个chart：helm create mychart 
+* 检查chart语法：helm lint mychart
+* 渲染模板并输出：helm template sample mychart
+* 打包chart为压缩包：helm package mychart
+
+## 内置变量
+
+> 内置值始终以大写字母开头
+
+* `.Release.*`：引用Release中的内容
+
+  ```
+  {{ .Release.Name }}
+  ```
+
+* `.Values.*`：引用values.yaml文件中的内容【也包括安装升级-f、--set设置的值】
+
+  ```
+  {{ .Values.image.repository }}
+  --set image.repository="tomcat"
+  ```
+
+* `.Chart.*`：引用Chart.yaml文件中的内容
+
+  ```
+  {{ .Chart.Name }}-{{ .Chart.Version }} #chart名称和版本
+  ```
+
+* `.Capabilitie.*`：获取k8s信息
+
+  ```
+  {{ .Capabilities.KubeVersion }} #k8s版本
+  ```
+
+* `.Template.*`：模板信息
+
+  ```
+  {{ .Template.Name }} #当前模板文件路径
+  ```
+
+## [模板函数和管道](https://helm.sh/docs/chart_template_guide/function_list/)
+
+* quote：将变量值加双引号
+
+  ```
+  {{ quote .Values.image.repository }}
+  {{ .Values.image.repository|quote }}
+  ```
+
+* repeat：重复
+
+  ```
+  {{ .Template.Name|repeat 4 }}
+  ```
+
+* default：设置默认值
+
+  ```
+  {{ .Template.Name1|default "test" }}
+  ```
+
+* indent：缩进，左边空出空格【nindent，创建新行并缩进】
+
+  ```
+    toppings: |
+    {{- range .Values.pizzaToppings }}
+    {{ indent 2 .|title }}
+    {{- end}}
+  ```
+
+## 流程控制
+
+* if-else：本例中同时使用短横线来消除左边的空白
+
+  ```
+    {{- if .Template.Name1 }}
+    mug: true
+    {{- else }}
+    mug: false
+    {{- end }}
+  ```
+
+* with：限制使用范围【本例中限定在Chart文件中，可以直接使用Name(等效.Chart.Name)】
+
+  ```
+    {{- with .Chart }}
+    name: {{  .Name }}
+    {{- end }}
+  ```
+
+* range：循环【循环values文件中pizzaToppings】
+
+  ```
+    toppings: |
+      {{- range .Values.pizzaToppings }}
+      - {{ .|title|quote }}
+      {{- end}}
+  ```
+
+* toYaml：将当前变量值(字典)转换为yaml格式【toYaml . | nindent 8】
+
+  ```
+  values文件定义
+  test1: {"a1": "cest", "b1": "dfsdfs"}
+  
+  引用：
+    test_dict:
+      {{- toYaml .Values.test1|nindent 4 }}
+  ```
+
+## 变量
+
+* with中引用其他变量的值
+
+```
+  {{- $relname := .Release.Name -}} #定义变量$relname
+  {{- with .Chart }}
+  name: {{  .Name }}
+  relname: {{ $relname }} #引用变量
+  {{- end }}
+```
+
+* 循环列表产生索引和变量值
+
+  ```
+    toppings: |
+    {{- range $index,$value := .Values.pizzaToppings }}
+      {{ $index }}: {{ $value }}
+    {{- end }}
+  ```
+
+* 循环字典产生key和value
+
+  ```
+    {{- range $key,$val := .Values.service }}
+    {{ $key }}: {{ $val|quote }}
+    {{- end}}
+  ```
+
+## 模板定义和引用
+
+* define：
+
+  * 在_helpers.tpl中定义命名模板【下划线开始的文件都不是k8s资源清单，可以定义模板】
+
+  * 模板名称定义规范：chart_name.func_name，以chart名称为前缀
+
+  * 模板功能注释：
+
+    ```
+    {{/* generate basic lables */}}
+    {{- define "mychart.labels" }}
+      labels:
+        generator: helm
+        date: {{ now|htmlDate }}
+        chart: {{ .Chart.Name }}
+        version: {{ .Chart.Version }}
+    {{- end }}
+    {{- define "mychart.app" }}
+    app_name: {{ .Chart.Name }}
+    app_version: "{{ .Chart.Version }}"
+    {{- end }}
+    ```
+
+* template：引用子模板内容【使用点定义子模板可以继承当前模板内容】
+
+  ```
+  metadata:
+    name: {{ .Release.Name }}-configmap
+    {{- template "mychart.labels" . }}
+  ```
+
+* include：引用子模板并调用其他函数进行格式化处理【相比template更推荐使用】
+
+  ```
+  metadata:
+    labels:
+  {{- include "mychart.app" .|indent 4 }}
+  ```
