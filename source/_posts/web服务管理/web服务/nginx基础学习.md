@@ -203,7 +203,27 @@ ssl自定义证书设置
 2.使用openssl产生证书【pem格式】和私钥【pem格式】
 openssl req -x509 -nodes -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 ```
+## php配置
+
+> nginx默认没有配置SCRIPT_FILENAME
+
+```
+location ~ \.php$ {
+    root  /var/www/html;
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    include        fastcgi_params;
+    fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+}
+```
+
+* root定义php文件的根目录
+* SCRIPT_FILENAME，定义web访问时php文件路径【/var/www/html/index.php】
+  * document_root即为本区域或父区域定义的文件根目录【/var/www/html】
+  * fastcgi_script_name即为文件在根目录下的位置【/index.php】
+
 ## auth与status
+
 ```
 # 编译参数：--with-http_stub_status_module
 server {
