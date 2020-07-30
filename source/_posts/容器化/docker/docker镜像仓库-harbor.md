@@ -43,6 +43,15 @@ categories: ['docker']
         + ca.crt为根证书且名称必须是这样
     - 重启docker服务
 
+## 重新设置
+
+```
+docker-compose down
+vim harbor.yml
+prepare
+docker-compose up -d
+```
+
 # harbor服务控制 
 ## 容器控制
 * docker-compose up -d 创建和启动容器【后台】

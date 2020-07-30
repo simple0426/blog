@@ -247,6 +247,6 @@ spec:
           servicePort: 9093
 ```
 * 访问：
-    - grafana：http://grafana.myapp.com:30080/
-    - alert：http://alertmanager.myapp.com:30080/
-    - prometheus：http://prometheus.myapp.com:30080/
+    - grafana：http://grafana.myapp.com/
+    - alertmanager：http://alertmanager.myapp.com/
+    - prometheus：http://prometheus.myapp.com/
