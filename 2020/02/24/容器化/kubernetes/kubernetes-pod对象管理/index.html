@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="初始化容器,钩子函数,健康检查,资源,pod定义,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
+<meta name="keywords" content="初始化容器,钩子函数,健康检查,资源,pod定义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes-pod对象管理">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-pod对象管理/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-07-15T09:29:48.917Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubernetes-pod对象管理">
+<meta name="twitter:description" content="容器与pod容器 容器的本质是一个进程，是一个视图被隔离、资源受限制的进程 容器里pid=1的进程就是应用本身 管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程) kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包  Pod 容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理 如果需要运行多进程，则pid=1的进程要具有管理其">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-pod对象管理/">
+
+
+
+
+
+  <title>kubernetes-pod对象管理 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-pod对象管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kubernetes-pod对象管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-24T19:46:38+08:00">
+                2020-02-24
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-15T17:29:48+08:00">
+                2020-07-15
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="容器与pod"><a href="#容器与pod" class="headerlink" title="容器与pod"></a>容器与pod</h1><h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><ul>
+<li>容器的本质是一个进程，是一个视图被隔离、资源受限制的进程</li>
+<li>容器里pid=1的进程就是应用本身</li>
+<li>管理虚拟机就是管理基础设施(操作系统)，管理容器就是管理应用本身(进程)</li>
+<li>kubernetes相当于云时代的操作系统，容器镜像相当于操作系统的软件安装包</li>
+</ul>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><ul>
+<li>容器设计本身就是一种“单进程”模型；可以运行多个进程，但是不便于直接管理<ul>
+<li>如果需要运行多进程，则pid=1的进程要具有管理其他进程的能力(systemd)</li>
+<li>也可以直接运行systemd，由systemd管理多进程；但是，此时：【容器管理】=【管理systemd】!=【直接管理应用本身】</li>
+</ul>
+</li>
+<li>作为类比，容器相当于进程(linux中的线程)，pod相当于进程组(linux进程，包含至少一个线程)</li>
+<li>在k8s中，pod是一个逻辑单位，它包含多个相互协作的容器，共享某些资源(volume/网络)<ul>
+<li>pod是资源分配单位【类比，进程是操作系统资源分配的单位】</li>
+<li>pod也是原子调度单位</li>
+</ul>
+</li>
+<li>pod与多容器<ul>
+<li>如果只是亲密关系，可以通过调度器让俩个应用部署在同一台宿主机上</li>
+<li>如果是超亲密关系(比如：产生日志的应用和写日志的应用)，则需要将多个应用定义在一个pod中<ul>
+<li>会发生直接的文件交互</li>
+<li>使用localhost或socket进行本地通信</li>
+<li>会发生频繁的RPC调用</li>
+<li>会共享某些namespace</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="pod实现"><a href="#pod实现" class="headerlink" title="pod实现"></a>pod实现</h2><h3 id="网络实现"><a href="#网络实现" class="headerlink" title="网络实现"></a>网络实现</h3><ul>
+<li>启动一个infra container容器，pod里的其他容器通过join namespace的方式加入infra container的network namespace中</li>
+<li>pod的网络地址即是infra的地址</li>
+<li>pod的生命周期也即infra的生命周期</li>
+</ul>
+<h3 id="存储实现"><a href="#存储实现" class="headerlink" title="存储实现"></a>存储实现</h3><p>在pod级别创建volume，然后pod内的所有容器挂载这个volume</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: two-containers</span><br><span class="line">spec:</span><br><span class="line">  restartPolicy: Never</span><br><span class="line">  volumes:</span><br><span class="line">  - name: shared-data</span><br><span class="line">    hostPath:</span><br><span class="line">      path: /data</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx-container</span><br><span class="line">    image: nginx</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: shared-data</span><br><span class="line">      mountPath: /usr/share/nginx/html</span><br><span class="line">  - name: debian-container</span><br><span class="line">    image: debian</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: shared-data</span><br><span class="line">      mountPath: /pod-data</span><br><span class="line">    command: [&quot;/bin/sh&quot;]</span><br><span class="line">    args: [&quot;-c&quot;, &quot;echo Hello from the debian container &gt; /pod-data/index.html&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="容器设计模式"><a href="#容器设计模式" class="headerlink" title="容器设计模式"></a>容器设计模式</h3><ul>
+<li>sidecar：在pod里定义一些专门的容器，来执行主业务容器所需要的辅助工作</li>
+<li>通过sidecar方式，可以实现功能的解耦和重用</li>
+</ul>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><ul>
+<li>日志收集(log)</li>
+<li>Debug应用(debug)</li>
+<li>容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互</li>
+<li>适配器(adapter)：单独写一个应用用来处理URL变更、数据格式变更的操作，以完成对现有业务的兼容</li>
+</ul>
+<h4 id="应用范例-war包"><a href="#应用范例-war包" class="headerlink" title="应用范例-war包"></a>应用范例-war包</h4><ul>
+<li>可选方式<ul>
+<li>将war包和tomcat都打包进镜像中，但是代码和tomcat的更新都需要更新镜像</li>
+<li>制作单独的tomcat镜像，在容器运行时将war包挂载到容器内，此时则需要单独维护war包和一个分布式文件系统</li>
+</ul>
+</li>
+<li>sidecar方式-initContainer<ul>
+<li>先启动一个initContainer，将war包拷贝到共享目录</li>
+<li>再启动container，这个容器启动tomcat(共享目录webapps中包含war包)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: javaweb-2</span><br><span class="line">spec:</span><br><span class="line">  initContainers:</span><br><span class="line">  - image: resouer/sample:v2</span><br><span class="line">    name: war</span><br><span class="line">    command: [&quot;cp&quot;, &quot;/sample.war&quot;, &quot;/app&quot;]</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - mountPath: /app</span><br><span class="line">      name: app-volume</span><br><span class="line">  containers:</span><br><span class="line">  - image: resouer/tomcat:7.0</span><br><span class="line">    name: tomcat</span><br><span class="line">    command: [&quot;sh&quot;, &quot;-c&quot;, &quot;/root/apache-tomcat-7.0.42-v2/bin/start.sh&quot;]</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - mountPath: /root/apache-tomcat-7.0.42-v2/webapps</span><br><span class="line">      name: app-volume</span><br><span class="line">    ports:</span><br><span class="line">    - containerPort: 8080</span><br><span class="line">      hostPort: 8001</span><br><span class="line">  volumes:</span><br><span class="line">  - name: app-volume</span><br><span class="line">    emptyDir: &#123;&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="pod容器定义"><a href="#pod容器定义" class="headerlink" title="pod容器定义"></a>pod容器定义</h1><p>spec.containers</p>
+<h2 id="镜像-images"><a href="#镜像-images" class="headerlink" title="镜像-images"></a>镜像-images</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-pod</span><br><span class="line">spec:</span><br><span class="line">  imagePullSecrets:</span><br><span class="line">  - name: aliyun-simple</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx #容器名称</span><br><span class="line">    images: nginx:latest #镜像名称</span><br><span class="line">    imagePullPolicy: Always</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置选项</p>
+<ul>
+<li>仓库认证：imagePullSecrets【参见secret章节】</li>
+<li>镜像获取策略：imagePullPolicy<ul>
+<li>Always：镜像版本为latest或本地不存在的镜像则从远端仓库拉取</li>
+<li>IfNotPresent：本地镜像不存在则从远端仓库拉取</li>
+<li>Never：禁止从远端仓库拉取镜像，只使用本地镜像  </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="端口-ports"><a href="#端口-ports" class="headerlink" title="端口-ports"></a>端口-ports</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-example</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    images: ikubernetes/myapp:v1</span><br><span class="line">    ports:</span><br><span class="line">    - name: http #端口名称</span><br><span class="line">      containerPort: 80 #指向容器监听的端口</span><br><span class="line">      protocol: TCP #端口协议类型</span><br><span class="line">      hostPort: 8000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明：端口设置仅为说明性内容；为端口设置名称，方便被service调用</p>
+</li>
+<li>设置选项<ul>
+<li>hostPort：将节点端口映射到容器端口</li>
+<li>hostIP：节点端口绑定的ip【默认为0.0.0.0，一般不设置】</li>
+</ul>
+</li>
+<li>注意事项：hostPort和service下的NodePort区别<ul>
+<li>hostPort在pod下设置，只绑定到pod所在节点</li>
+<li>NodePort在service下设置，绑定到所有节点</li>
+</ul>
+</li>
+</ul>
+<h2 id="自定义命令-command"><a href="#自定义命令-command" class="headerlink" title="自定义命令-command"></a>自定义命令-command</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-example</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: alpine:latest</span><br><span class="line">    command: [&quot;/bin/sh&quot;] #命令</span><br><span class="line">    args: [&quot;-c&quot;, &quot;while true;do sleep 30;done&quot;] #参数</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>说明：查看镜像默认运行的命令</p>
+<ul>
+<li>cmd方式：<code>docker inspect nginx:1.13 -f {\{\.Config.Cmd}\}</code></li>
+<li>entrypoint方式：<code>docker inspect nginx:1.13 -f {\{\.Config.Entrypoint}\}</code></li>
+</ul>
+</li>
+<li>设置选项：命令和参数<ul>
+<li>command：会覆盖默认运行命令</li>
+<li>args：则会给command或默认的运行命令提供参数</li>
+</ul>
+</li>
+</ul>
+<h2 id="环境变量-env"><a href="#环境变量-env" class="headerlink" title="环境变量-env"></a>环境变量-env</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-env</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: filebeat</span><br><span class="line">    image: ikubernetes/filebeat:5.6.5-alpine</span><br><span class="line">    command: [&quot;echo&quot;]</span><br><span class="line">    args: [&quot;$(HOSTNAME)&quot;]</span><br><span class="line">    env:</span><br><span class="line">    - name: HOSTNAME</span><br><span class="line">      valueFrom:</span><br><span class="line">        fieldRef:</span><br><span class="line">          fieldPath: spec.nodeName</span><br><span class="line">    - name: REDIS_HOST #变量名称</span><br><span class="line">      value: db.ilinux.io:6379 #变量值</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明：向pod传递变量有两种方式：env和envFrom</p>
+<ul>
+<li>env<ul>
+<li>value：自定义变量</li>
+<li>valueFrom：读取pod环境变量<ul>
+<li>configMapKeyRef</li>
+<li>secretKeyRef</li>
+<li>fieldRef：【metadata.name, metadata.namespace,<pre><code>metadata.labels, metadata.annotations, spec.nodeName,
+spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs】
+</code></pre></li>
+<li>resourceFieldRef：【limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu,<pre><code>requests.memory and requests.ephemeral-storage】
+</code></pre></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>envFrom【从ConfigMap和secret获取值】<ul>
+<li>configMapRef</li>
+<li>secretRef</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用节点网络-hostNetwork"><a href="#使用节点网络-hostNetwork" class="headerlink" title="使用节点网络-hostNetwork"></a>使用节点网络-hostNetwork</h2><ul>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-network</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br><span class="line">  hostNetwork: true #共享节点网络</span><br><span class="line">  hostPID: true #共享节点PID</span><br><span class="line">  hostIPC: true #共享节点IPC</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选项说明:默认情况下，pod的所有容器会建立一个独立的网络名称空间；但是一些特殊的pod需要运行在节点的网络名称空间下，执行系统级的任务</p>
+</li>
+<li>应用范例：<ul>
+<li>使用kubeadm部署的kube-controller-manager、kube-apiserver、kube-scheduler、kube-proxy组件</li>
+<li>flannel网络部署</li>
+</ul>
+</li>
+<li>其他选项<ul>
+<li>hostPID: 共享节点PID</li>
+<li>hostIPC: 共享节点IPC</li>
+</ul>
+</li>
+</ul>
+<h2 id="安全上下文-securityContext"><a href="#安全上下文-securityContext" class="headerlink" title="安全上下文-securityContext"></a>安全上下文-securityContext</h2><p>securityContext主要用于容器运行时的安全管控，类似linux的selinux、sudo等内容，通过限制容器的行为，从而保障系统和其他容器的安全</p>
+<h3 id="选项位置"><a href="#选项位置" class="headerlink" title="选项位置"></a>选项位置</h3><ul>
+<li>容器级别的securityContext：对指定容器生效</li>
+<li>pod级别的securityContext：对指定pod中的所有容器有效</li>
+<li>Pod Security Policies(PSP)：对集群内的所有pod有效</li>
+</ul>
+<h3 id="选项类别"><a href="#选项类别" class="headerlink" title="选项类别"></a>选项类别</h3><ul>
+<li>根据用户id和组id控制访问对象</li>
+<li>基于selinux的安全标签</li>
+<li>以特权或非特权方式运行(privileged)</li>
+<li>是否能够权限升级(allowPrivilegeEscalation)</li>
+<li>通过Linux Capablities为其提供部分特权</li>
+<li>基于seccomp过滤进程可以操作的系统调用</li>
+</ul>
+<h3 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h3><blockquote>
+<p>以uid为1000的非特权用户运行容器，并禁止提权</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-with-securitycontext</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: busybox</span><br><span class="line">      image: busybox</span><br><span class="line">      command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sleep 86400&quot;]</span><br><span class="line">      securityContext: #容器级别securitycontext</span><br><span class="line">        runAsNonRoot: true</span><br><span class="line">        runAsUser: 1000</span><br><span class="line">        allowPrivilegeEscalation: false</span><br></pre></td></tr></table></figure>
+<h1 id="pod状态和重启"><a href="#pod状态和重启" class="headerlink" title="pod状态和重启"></a>pod状态和重启</h1><h2 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h2><ul>
+<li>pending：api server创建了pod资源对象，但尚未被调度完成；或者处于拉取镜像的过程中</li>
+<li>running：pod已被调度到某节点，并且所有容器都被kubelet创建完成</li>
+<li>succeeded：pod中的所有容器已成功终止并且不会被重启</li>
+<li>failed：所有容器都已被终止，但至少有一个容器终止失败</li>
+<li>unknown：api server无法获取pod的正常状态信息，通常是由api无法与kubelet通信所致</li>
+</ul>
+<h2 id="pod异常状态诊断"><a href="#pod异常状态诊断" class="headerlink" title="pod异常状态诊断"></a>pod异常状态诊断</h2><ul>
+<li>pod停留在pending状态：pending表示调度器没有介入，使用【kubectl describe pod】命令查看事件排查，通常和资源使用有关</li>
+<li>pod停留在waiting状态：pod拉取镜像失败</li>
+<li>pod不断被拉起且可以看到crashing：pod已被调度，但是启动失败；通常是由于配置、权限造成，需要查看pod日志【kubectl logs pod】</li>
+<li>pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，恶意通过校验部署来排查【kubectl apply –validate -f pod.yml】</li>
+<li>service无法正常工作：在排除网络插件自身的问题外，最有可能是label配置有问题，可以通过查看endpoint的方式进行查看</li>
+</ul>
+<h2 id="重启策略-restartPolicy"><a href="#重启策略-restartPolicy" class="headerlink" title="重启策略-restartPolicy"></a>重启策略-restartPolicy</h2><blockquote>
+<p>重启策略适用于所有容器(包含initContainer)<br>首次需要重启时立即重启，后续重启操作时延为10/20/40/80/160/300，最大时延为300</p>
+</blockquote>
+<ul>
+<li>Always：pod对象终止就将其重启，此为默认值</li>
+<li>OnFailure：仅在pod对象出错时才将其重启</li>
+<li>Never：从不重启</li>
+</ul>
+<h1 id="全生命周期操作"><a href="#全生命周期操作" class="headerlink" title="全生命周期操作"></a>全生命周期操作</h1><h2 id="包含操作"><a href="#包含操作" class="headerlink" title="包含操作"></a>包含操作</h2><ul>
+<li>运行初始化容器(init container)</li>
+<li>创建主容器(main container)【必须】</li>
+<li>容器启动检查(startup probe)</li>
+<li>容器启动后钩子(post start hook)</li>
+<li>容器就绪型检查(readiness probe)</li>
+<li>容器存活性检查(liveness probe)</li>
+<li>容器终止前钩子(pre stop hook)</li>
+</ul>
+<h2 id="初始化容器-initContainer"><a href="#初始化容器-initContainer" class="headerlink" title="初始化容器-initContainer"></a>初始化容器-initContainer</h2><p>可用于普通containers启动前的初始化或前置条件检验(如检测网络连通性)</p>
+<h3 id="与普通containers区别"><a href="#与普通containers区别" class="headerlink" title="与普通containers区别"></a>与普通containers区别</h3><ul>
+<li>initContainer会先于普通containers启动执行，所有initContainer执行成功后，普通containers才会被启动</li>
+<li>pod中多个initContainer之间是按定义顺序依次启动执行，而pod中多个普通containers时并行启动的</li>
+<li>initContainer执行成功就退出，而普通containers可能会一直执行或重启</li>
+</ul>
+<h3 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-pod</span><br><span class="line">  labels:</span><br><span class="line">    app: myapp</span><br><span class="line">spec:</span><br><span class="line">  initContainers:</span><br><span class="line">    - name: init-something</span><br><span class="line">      image: busybox</span><br><span class="line">      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 10&quot;]</span><br><span class="line">  containers:</span><br><span class="line">    - name: myapp-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
+<h2 id="钩子函数"><a href="#钩子函数" class="headerlink" title="钩子函数"></a>钩子函数</h2><h3 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h3><ul>
+<li>生命周期节点<ul>
+<li>postStart：容器建立后立即运行的功能，但是k8s无法保证它一定运行在entrypoint之前</li>
+<li>preStop：容器终止前执行的功能，此操作完成前阻塞删除容器的操作</li>
+</ul>
+</li>
+<li>实现方式：<ul>
+<li>exec：执行用户定义的命令</li>
+<li>http：向执行url发起http请求</li>
+</ul>
+</li>
+</ul>
+<h3 id="范例-2"><a href="#范例-2" class="headerlink" title="范例"></a>范例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: lifecycle-demo</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: lifecycle-demo-container</span><br><span class="line">      image: ikubernetes/myapp:v1</span><br><span class="line">      lifecycle: #定义钩子函数</span><br><span class="line">        postStart: #容器启动后执行</span><br><span class="line">          exec: #执行用户自定义命令</span><br><span class="line">            command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo &apos;lifecycle hooks handler&apos; &gt; /usr/share/nginx/html/test.html&quot;]</span><br><span class="line">        preStop: #容器终止前执行</span><br><span class="line">          httpGet: #发起http请求</span><br><span class="line">            host: blog.csdn.net</span><br><span class="line">            path: zhangmingli_summer/article/details/82145852</span><br><span class="line">            port: 443</span><br></pre></td></tr></table></figure>
+<h2 id="健康检查"><a href="#健康检查" class="headerlink" title="健康检查"></a>健康检查</h2><h3 id="检查种类"><a href="#检查种类" class="headerlink" title="检查种类"></a>检查种类</h3><ul>
+<li>livenessProbe(存活性检查)：检查容器是否处于running状态，检测不通过时根据重启策略(restartPolicy)确定是否重启</li>
+<li>readinessProbe(就绪性检查)：判断容器是否准备就绪，可以对外提供服务；未通过时，会将此pod从endpoint(如service对象)中移除，直到pod就绪</li>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes" target="_blank" rel="noopener">startupProbe</a>(启动检查)：判断容器是否启动完成</li>
+</ul>
+<h3 id="检查方式"><a href="#检查方式" class="headerlink" title="检查方式"></a>检查方式</h3><ul>
+<li>exec：执行用户自定义命令<ul>
+<li>命令参数：command</li>
+<li>注意事项：exec检查会消耗容器资源，所以需要检查命令简单、轻量</li>
+</ul>
+</li>
+<li>httpGet：向指定url发起get请求，响应码2xx、3xx为成功<ul>
+<li>命令参数：<ul>
+<li>host：请求主机，默认pod ip</li>
+<li>port：端口，必选字段</li>
+<li>httpHeaders：自定义header信息</li>
+<li>path：请求的http资源url</li>
+<li>scheme：连接协议，HTTP/HTTPS,默认HTTP</li>
+</ul>
+</li>
+<li>注意事项：在多层架构中，只能针对当前服务层进行检查(其他两种方式也一样)；如果后端服务不可用，会造成pod一次次重启，直到后端服务可用</li>
+</ul>
+</li>
+<li>tcpSocket：与容器tcp端口建立连接，端口打开即为成功<ul>
+<li>命令参数：<ul>
+<li>host：请求主机，默认pod ip</li>
+<li>port：端口，必选字段</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="通用检查属性"><a href="#通用检查属性" class="headerlink" title="通用检查属性"></a>通用检查属性</h3><ul>
+<li>initialDelaySeconds：容器启动多长时间后进行首次检查，默认0s</li>
+<li>timeoutSeconds：检查超时时间，默认1s</li>
+<li>periodSeconds：检查频率，默认间隔10s，最小1s</li>
+<li>successThreshold：处于失败状态时，多少次成功才认为是成功；默认1，最小1</li>
+<li>failureThreshold：处于成功状态时，多少次失败才认为是失败；默认3，最小1</li>
+</ul>
+<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><ul>
+<li>调大判断的阈值(超时、次数等)，防止容器压力过大时出现误判</li>
+<li>exec执行shell脚本时，在容器内执行的时间会比较长(可以使用go等编译型语言执行)</li>
+<li>使用tcpSocket时遇到TLS，需要判断业务层是否有影响</li>
+</ul>
+<h3 id="范例-3"><a href="#范例-3" class="headerlink" title="范例"></a>范例</h3><ul>
+<li><p>readinessProbe</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: readiness-exec</span><br><span class="line">  labels:</span><br><span class="line">    test: readiness-exec</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: readiness-exec-demo</span><br><span class="line">      image: busybox</span><br><span class="line">      args: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;while true;do rm -f /tmp/ready;sleep 30;touch /tmp/ready;sleep 300;done&quot;]</span><br><span class="line">      readinessProbe:</span><br><span class="line">        exec:</span><br><span class="line">          command: [&quot;test&quot;, &quot;-e&quot;, &quot;/tmp/ready&quot;]</span><br><span class="line">        initialDelaySeconds: 5</span><br><span class="line">        periodSeconds: 5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>livenessProbe</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: liveness-http</span><br><span class="line">  labels:</span><br><span class="line">    test: liveness-http</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: liveness-http-container</span><br><span class="line">      image: nginx:1.12-alpine</span><br><span class="line">      ports:</span><br><span class="line">        - name: http</span><br><span class="line">          containerPort: 80</span><br><span class="line">      lifecycle:</span><br><span class="line">        postStart:</span><br><span class="line">          exec:</span><br><span class="line">            command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo Healthy &gt; /usr/share/nginx/html/Healthz&quot;]</span><br><span class="line">      livenessProbe:</span><br><span class="line">        httpGet:</span><br><span class="line">          path: /Healthz</span><br><span class="line">          port: http</span><br><span class="line">          scheme: HTTP</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="资源需求和限制"><a href="#资源需求和限制" class="headerlink" title="资源需求和限制"></a>资源需求和限制</h1><ul>
+<li>cpu：单位：millicore(1core=1000millicore)<ul>
+<li>500m相当于0.5个核心</li>
+</ul>
+</li>
+<li>memory:单位：Bytes，与日常使用单位相同<ul>
+<li>300M</li>
+</ul>
+</li>
+<li>ephemeral(临时存储)：单位：Byte</li>
+<li>自定义资源：配置时必须为整数</li>
+<li>范例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: wp</span><br><span class="line">    image: wordpress</span><br><span class="line">    resources:</span><br><span class="line">      requests: #请求的资源</span><br><span class="line">        memory: 64Mi</span><br><span class="line">        cpu: 250m</span><br><span class="line">        ephemeral-storage: 2Gi</span><br><span class="line">      limits: # 最多可以使用的资源</span><br><span class="line">        memory: 128Mi</span><br><span class="line">        cpu: 500m</span><br><span class="line">        ephemeral-storage: 4Gi</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="pod服务-QOS"><a href="#pod服务-QOS" class="headerlink" title="pod服务-QOS"></a>pod服务-QOS</h2><p>依据容器对cpu、memory资源的request/limits需求，pod服务质量分为</p>
+<ul>
+<li>Guaranteed:<ul>
+<li>每个容器都为cpu设置了具有相同值的requests、limits属性</li>
+<li>每个容器都为memory设置了具有相同值的requests、limits属性</li>
+</ul>
+</li>
+<li>Burstable：至少一个容器设置了cpu或memory的requests属性，但不满足Guaranteed的要求</li>
+<li>BestEffort：没有为pod中的任何一个容器设置requests、limits属性</li>
+</ul>
+<p>当节点上的memory资源不足时，将依据BestEffort、Burstable、Guaranteed的优先级顺序驱逐pod</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/初始化容器/" rel="tag"># 初始化容器</a>
+          
+            <a href="/tags/钩子函数/" rel="tag"># 钩子函数</a>
+          
+            <a href="/tags/健康检查/" rel="tag"># 健康检查</a>
+          
+            <a href="/tags/资源/" rel="tag"># 资源</a>
+          
+            <a href="/tags/pod定义/" rel="tag"># pod定义</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/24/容器化/kubernetes/kubernetes-配置管理/" rel="next" title="kubernetes-配置管理">
+                <i class="fa fa-chevron-left"></i> kubernetes-配置管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/" rel="prev" title="kubernetes-网络模型和策略控制">
+                kubernetes-网络模型和策略控制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">122</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">240</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器与pod"><span class="nav-number">1.</span> <span class="nav-text">容器与pod</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器"><span class="nav-number">1.1.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod实现"><span class="nav-number">1.3.</span> <span class="nav-text">pod实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络实现"><span class="nav-number">1.3.1.</span> <span class="nav-text">网络实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储实现"><span class="nav-number">1.3.2.</span> <span class="nav-text">存储实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器设计模式"><span class="nav-number">1.3.3.</span> <span class="nav-text">容器设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用范例-war包"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">应用范例-war包</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pod容器定义"><span class="nav-number">2.</span> <span class="nav-text">pod容器定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像-images"><span class="nav-number">2.1.</span> <span class="nav-text">镜像-images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#端口-ports"><span class="nav-number">2.2.</span> <span class="nav-text">端口-ports</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义命令-command"><span class="nav-number">2.3.</span> <span class="nav-text">自定义命令-command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量-env"><span class="nav-number">2.4.</span> <span class="nav-text">环境变量-env</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用节点网络-hostNetwork"><span class="nav-number">2.5.</span> <span class="nav-text">使用节点网络-hostNetwork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全上下文-securityContext"><span class="nav-number">2.6.</span> <span class="nav-text">安全上下文-securityContext</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项位置"><span class="nav-number">2.6.1.</span> <span class="nav-text">选项位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选项类别"><span class="nav-number">2.6.2.</span> <span class="nav-text">选项类别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例"><span class="nav-number">2.6.3.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pod状态和重启"><span class="nav-number">3.</span> <span class="nav-text">pod状态和重启</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#状态"><span class="nav-number">3.1.</span> <span class="nav-text">状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod异常状态诊断"><span class="nav-number">3.2.</span> <span class="nav-text">pod异常状态诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启策略-restartPolicy"><span class="nav-number">3.3.</span> <span class="nav-text">重启策略-restartPolicy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全生命周期操作"><span class="nav-number">4.</span> <span class="nav-text">全生命周期操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#包含操作"><span class="nav-number">4.1.</span> <span class="nav-text">包含操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化容器-initContainer"><span class="nav-number">4.2.</span> <span class="nav-text">初始化容器-initContainer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与普通containers区别"><span class="nav-number">4.2.1.</span> <span class="nav-text">与普通containers区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#钩子函数"><span class="nav-number">4.3.</span> <span class="nav-text">钩子函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用说明"><span class="nav-number">4.3.1.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#健康检查"><span class="nav-number">4.4.</span> <span class="nav-text">健康检查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检查种类"><span class="nav-number">4.4.1.</span> <span class="nav-text">检查种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查方式"><span class="nav-number">4.4.2.</span> <span class="nav-text">检查方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用检查属性"><span class="nav-number">4.4.3.</span> <span class="nav-text">通用检查属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最佳实践"><span class="nav-number">4.4.4.</span> <span class="nav-text">最佳实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-3"><span class="nav-number">4.4.5.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源需求和限制"><span class="nav-number">5.</span> <span class="nav-text">资源需求和限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod服务-QOS"><span class="nav-number">5.1.</span> <span class="nav-text">pod服务-QOS</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

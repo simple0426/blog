@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="kubectl,标签,选择器,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="管理实现方式-APIkubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，用于查询和修改集群的状态，并将结果存储于etcd中。 API设计模式 声明式 天然记录了状态 幂等操作，可在任意时刻反复操作 正常操作即巡检 可合并多个变更   命令式 如果命令没有响应，需要反复重试、记录当前的操作 如果多次重试、操作有可能出问题 需要单独的巡检操作，巡检本身也">
+<meta name="keywords" content="kubectl,标签,选择器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes-资源管理">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/03/21/容器化/kubernetes/kubernetes-资源管理/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="管理实现方式-APIkubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，用于查询和修改集群的状态，并将结果存储于etcd中。 API设计模式 声明式 天然记录了状态 幂等操作，可在任意时刻反复操作 正常操作即巡检 可合并多个变更   命令式 如果命令没有响应，需要反复重试、记录当前的操作 如果多次重试、操作有可能出问题 需要单独的巡检操作，巡检本身也">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-control-circle.jpg">
+<meta property="og:updated_time" content="2020-07-04T14:24:19.808Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubernetes-资源管理">
+<meta name="twitter:description" content="管理实现方式-APIkubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，用于查询和修改集群的状态，并将结果存储于etcd中。 API设计模式 声明式 天然记录了状态 幂等操作，可在任意时刻反复操作 正常操作即巡检 可合并多个变更   命令式 如果命令没有响应，需要反复重试、记录当前的操作 如果多次重试、操作有可能出问题 需要单独的巡检操作，巡检本身也">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-control-circle.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/03/21/容器化/kubernetes/kubernetes-资源管理/">
+
+
+
+
+
+  <title>kubernetes-资源管理 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/21/容器化/kubernetes/kubernetes-资源管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kubernetes-资源管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-21T00:20:49+08:00">
+                2020-03-21
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-04T22:24:19+08:00">
+                2020-07-04
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="管理实现方式-API"><a href="#管理实现方式-API" class="headerlink" title="管理实现方式-API"></a>管理实现方式-API</h1><p>kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，<br>用于查询和修改集群的状态，并将结果存储于etcd中。</p>
+<h2 id="API设计模式"><a href="#API设计模式" class="headerlink" title="API设计模式"></a>API设计模式</h2><ul>
+<li>声明式<ul>
+<li>天然记录了状态</li>
+<li>幂等操作，可在任意时刻反复操作</li>
+<li>正常操作即巡检</li>
+<li>可合并多个变更</li>
+</ul>
+</li>
+<li>命令式<ul>
+<li>如果命令没有响应，需要反复重试、记录当前的操作</li>
+<li>如果多次重试、操作有可能出问题</li>
+<li>需要单独的巡检操作，巡检本身也可能会有问题或带来额外影响</li>
+<li>多并发操作，需要加锁处理；不仅复杂，也降低了系统执行效率</li>
+</ul>
+</li>
+</ul>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><blockquote>
+<p>API-&gt;Controller</p>
+</blockquote>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-control-circle.jpg" alt=""></p>
+<ul>
+<li>由声明式的API驱动(k8s资源对象)</li>
+<li>由控制器异步地控制系统向终态趋近</li>
+<li>使系统自动化和无人值守成为可能</li>
+<li>便于扩展(自定义资源和控制器)</li>
+</ul>
+<h2 id="查看api资源"><a href="#查看api资源" class="headerlink" title="查看api资源"></a>查看api资源</h2><ul>
+<li>支持的api接口版本：kubectl api-versions</li>
+<li>支持的api资源信息：kubectl api-resources</li>
+</ul>
+<h2 id="自定义api资源"><a href="#自定义api资源" class="headerlink" title="自定义api资源"></a>自定义api资源</h2><ul>
+<li>修改kubernetes源码自定义类型</li>
+<li>创建自定义API server，并将其聚合至集群中</li>
+<li>使用自定义资源CRD</li>
+</ul>
+<h2 id="API使用"><a href="#API使用" class="headerlink" title="API使用"></a>API使用</h2><ul>
+<li>客户端命令(kubectl)：默认使用https访问接口，并且需要进行认证检查(kubeconfig)</li>
+<li>http方式：为了使用通用的HTTP方式访问API接口，可以使用kubectl proxy在本地启动一个网关代理<ul>
+<li>启动代理网关：kubectl proxy –port 8080</li>
+<li>访问接口：curl localhost:8080/api/v1/namespaces/</li>
+</ul>
+</li>
+<li>web界面：kubernetes dashboard</li>
+<li>自动化配置管理(kube-applier)：用户将配置推送到git仓库中，配置工具自动将配置同步到集群中</li>
+</ul>
+<h1 id="资源对象"><a href="#资源对象" class="headerlink" title="资源对象"></a>资源对象</h1><h2 id="资源对象分类"><a href="#资源对象分类" class="headerlink" title="资源对象分类"></a>资源对象分类</h2><ul>
+<li>工作负载（workload）：replicaset、job、deployment、statefulset、daemonset</li>
+<li>发现和负载均衡（Discovery&amp;LB）：service、endpoint、ingress</li>
+<li>配置和存储（config&amp;storage）：ConfigMap、secret、volume</li>
+<li>集群级别资源（cluster）：<ul>
+<li>namespace</li>
+<li>Node</li>
+<li>Role：名称空间级别的权限集合，可被RoleBinding引用</li>
+<li>ClusterRole：cluster级别的权限集合，可被RoleBinding、ClusterRoleBinding医用</li>
+<li>RoleBinding：将Role或ClusterRole许可的权限绑定在一个或一组用户之上，隶属于且仅能作用于一个名称空间</li>
+<li>ClusterRoleBinding：将ClusterRole许可的权限绑定在一个或一组用户之上</li>
+</ul>
+</li>
+<li>元数据（metadata）：HPA(自动弹性伸缩)、pod模板、LimitRange(限制pod的资源使用)</li>
+</ul>
+<h2 id="资源对象格式"><a href="#资源对象格式" class="headerlink" title="资源对象格式"></a>资源对象格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx</span><br><span class="line">  lables:</span><br><span class="line">    name: nginx</span><br><span class="line">spec: </span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx</span><br><span class="line">     image: nginx</span><br><span class="line">     ports:</span><br><span class="line">     - containerPort: 80</span><br></pre></td></tr></table></figure>
+<ul>
+<li>kind：资源类型</li>
+<li>apiVersion：API群组及相关的版本</li>
+<li>metadata：为资源提供元数据，如名称、隶属的名称空间、标签</li>
+<li>spec：用户期望的状态；资源配置详情</li>
+<li>status(集群维护，用户只读)：活动对象的当前状态</li>
+</ul>
+<h2 id="资源对象文档"><a href="#资源对象文档" class="headerlink" title="资源对象文档"></a>资源对象文档</h2><ul>
+<li>查看资源对象语法：kubectl explain resources_name.field_name</li>
+</ul>
+<h2 id="metadata"><a href="#metadata" class="headerlink" title="metadata"></a>metadata</h2><h3 id="必选字段"><a href="#必选字段" class="headerlink" title="必选字段"></a>必选字段</h3><ul>
+<li>namespace：所属名称空间【默认default】</li>
+<li>name：对象名称</li>
+<li>uid(集群自动生成)：当前对象的唯一标识符</li>
+</ul>
+<h3 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h3><ul>
+<li>labels:设定用于标识当前对象的键值对，常用作筛选条件</li>
+<li>annotations：非标识性键值对，用于labels的补充</li>
+</ul>
+<h1 id="标签和标签选择器"><a href="#标签和标签选择器" class="headerlink" title="标签和标签选择器"></a>标签和标签选择器</h1><p>标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上</p>
+<h2 id="标签定义"><a href="#标签定义" class="headerlink" title="标签定义"></a>标签定义</h2><ul>
+<li>键由键前缀和健名组成<ul>
+<li>健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点</li>
+<li>键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或第三方组件为用户添加的键必须使用键前缀；“kubernetes.io”是系统核心组件使用的</li>
+</ul>
+</li>
+<li>键值：和健名规则相同</li>
+</ul>
+<h2 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h2><ul>
+<li>版本标签：release：stable，release：canary，release：beta</li>
+<li>环境标签：environment：dev，environment：qa，environment：prod</li>
+<li>应用标签：app：ui，app：as，app：pc，app：sc</li>
+<li>服务分层标签：tier：frontend，tier：backend，backend：cache</li>
+<li>分区标签：partition：customerA，partition：customerB</li>
+<li>品控级别标签：track：daily，track：weekly</li>
+</ul>
+<h2 id="创建时添加标签"><a href="#创建时添加标签" class="headerlink" title="创建时添加标签"></a>创建时添加标签</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-label</span><br><span class="line">  labels:</span><br><span class="line">    env: qa</span><br><span class="line">    tier: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
+<h2 id="动态修改标签"><a href="#动态修改标签" class="headerlink" title="动态修改标签"></a>动态修改标签</h2><ul>
+<li>修改已存在标签：kubectl label pods/pod-label env=prod –overwrite</li>
+<li>添加新标签：kubectl label pods/pod-label release=alpha</li>
+<li>删除标签：kubectl label pods/pod-label release-</li>
+</ul>
+<h2 id="标签显示"><a href="#标签显示" class="headerlink" title="标签显示"></a>标签显示</h2><ul>
+<li>显示所有标签：kubectl get pod –show-labels</li>
+<li>显示特定键标签：kubectl get pod -L env,tier</li>
+</ul>
+<h2 id="标签选择器"><a href="#标签选择器" class="headerlink" title="标签选择器"></a>标签选择器</h2><ul>
+<li>标签选择器逻辑<ul>
+<li>多个选择器之间为逻辑“与”关系</li>
+<li>空值的标签选择器意味着所有对象都被选中</li>
+<li>空标签选择器意味着没有对象被选中</li>
+</ul>
+</li>
+<li>选择器种类<ul>
+<li>等值关系，操作符：“=”，“==”，“！=”</li>
+<li>集合关系，操作符：in，notin，exists(key-存在，!key-不存在)</li>
+</ul>
+</li>
+<li>命令行使用：<ul>
+<li>相等型：kubectl get deployment –show-labels -l env=test,env!=prod</li>
+<li>集合型：kubectl get deployment –show-labels -l “Env in (test,gray)，Tie notin (front,back)，release，!release”</li>
+</ul>
+</li>
+<li>selector使用【deployment、service、replicaset等使用】：<ul>
+<li>matchLabels：相等型关系匹配</li>
+<li>matchExpressions：集合型关系匹配<ul>
+<li>key：key_name</li>
+<li>operator：In、NotIn、Exists、DoesNotExist</li>
+<li>values：[values1,values2…]<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">selector:</span><br><span class="line">  matchLables:</span><br><span class="line">    component: redis</span><br><span class="line">  matchExpressions:</span><br><span class="line">    - key: tier</span><br><span class="line">      operator: In</span><br><span class="line">      values: [cache]</span><br><span class="line">    - key: environment</span><br><span class="line">      operator: Exists</span><br><span class="line">      values:</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="注解-annotations"><a href="#注解-annotations" class="headerlink" title="注解-annotations"></a>注解-annotations</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据<br>注解中的数据不受字符数量、特殊字符限制，可以是结构化(如json)也可以是非结构化数据  </p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
+<li>在为某资源引入新字段时，先以注解的方式提供；确定支持使用后，在资源中添加新字段，同时删除相关注解</li>
+<li>资源的相关描述信息</li>
+</ul>
+<h2 id="查看注解"><a href="#查看注解" class="headerlink" title="查看注解"></a>查看注解</h2><ul>
+<li>describe：kubectl describe pod storage-provisioner -n kube-system</li>
+<li>get -o yaml：<code>kubectl get pod storage-provisioner -n kube-system -o yaml</code></li>
+</ul>
+<h2 id="手动添加注解"><a href="#手动添加注解" class="headerlink" title="手动添加注解"></a>手动添加注解</h2><p>kubectl annotate pods pod-label ilinux.io/created-by=”cluster admin”</p>
+<h1 id="kubectl命令"><a href="#kubectl命令" class="headerlink" title="kubectl命令"></a>kubectl命令</h1><h2 id="语法格式"><a href="#语法格式" class="headerlink" title="语法格式"></a>语法格式</h2><p>kubectl sub_command resource_type resource_name cmd_option</p>
+<h2 id="子命令"><a href="#子命令" class="headerlink" title="子命令"></a>子命令</h2><ul>
+<li>基础命令-初级<ul>
+<li>create：从文件或标准输入创建资源</li>
+<li>expose： 基于RC、service、deployment或pod创建service</li>
+<li>run：通过创建Deployment在集群运行指定的镜像</li>
+<li>set：设置指定资源的属性</li>
+</ul>
+</li>
+<li>基础命令-中级<ul>
+<li>explain：资源文档</li>
+<li>get：显示一个或多个资源</li>
+<li>edit：编辑集群上的资源，相当于先get后apply</li>
+<li>delete：基于标准输入、文件名、资源名，或者资源标签删除资源</li>
+</ul>
+</li>
+<li>部署命令<ul>
+<li>rollout：管理资源的滚动更新</li>
+<li>scale：设置资源Deployment、Replicaset、ReplicationController、Job的副本数</li>
+<li>autoscale：自动设置Deployment、Replicaset、ReplicationController的副本数</li>
+</ul>
+</li>
+<li>集群管理命令<ul>
+<li>certificate：配置数字证书资源</li>
+<li>cluster-info：显示集群信息</li>
+<li>top：显示资源(CPU/内存/存储)使用率</li>
+<li>cordon：标记节点为“不可调度”状态</li>
+<li>uncordon：标记节点为“可调度”状态</li>
+<li>drain：驱逐节点上的工作负载进入“维护”模式</li>
+<li>taint：更新节点的污点</li>
+</ul>
+</li>
+<li>排错和调试命令<ul>
+<li>describe：显示资源或资源组详情</li>
+<li>logs：显示pod内容器的日志</li>
+<li>attach：挂载终端到一个运行中的容器</li>
+<li>exec：在容器中执行命令</li>
+<li>port-forward：转发一个或多个本地端口流量到pod</li>
+<li>proxy：创建一个可以访问APIServer的代理</li>
+<li>cp：在容器间复制文件和目录</li>
+<li>auth：显示授权信息</li>
+</ul>
+</li>
+<li>高级命令<ul>
+<li>diff：对比活动的资源信息和将要应用的资源信息</li>
+<li>apply：基于文件名或标准输入应用资源配置信息</li>
+<li>patch：使用策略合并补丁更新资源的字段信息</li>
+<li>replace：基于文件名或标准输入替换一个资源</li>
+<li>wait：实验性功能，等待一个或多个资源的特定条件</li>
+<li>convert：为不同api版本转换配置文件</li>
+</ul>
+</li>
+<li>设置命令<ul>
+<li>label：更新资源标签</li>
+<li>annotate：更新资源注解</li>
+<li>completion：输出指定shell的命令补全代码</li>
+</ul>
+</li>
+<li>其他命令：<ul>
+<li>api-resources：显示k8s支持的api资源</li>
+<li>api-versions：显示k8s支持的api资源，以“group/version”形式</li>
+<li>config：配置kubeconfig文件</li>
+<li>plugin：提供和插件交互的工具</li>
+<li>version：显示客户端和服务端的版本信息</li>
+</ul>
+</li>
+</ul>
+<h2 id="命令选项"><a href="#命令选项" class="headerlink" title="命令选项"></a>命令选项</h2><ul>
+<li>-f：指定资源文件<ul>
+<li>可以读取json、yaml格式资源清单</li>
+<li>指定清单文件路径、URL、目录</li>
+<li>可以多次使用</li>
+<li>-R递归获取多级目录清单文件</li>
+</ul>
+</li>
+<li>-o：指定输出格式<ul>
+<li>wide：宽格式显示</li>
+<li>yaml、json：yaml、json格式显示资源对象</li>
+<li>go-template：以自定义的go模板格式显示资源对象</li>
+<li>custom-columns：自定义输出字段：<code>kubectl get pod -o custom-columns=NAME:metadata.name,IMAGE:spec.containers[0].image</code></li>
+</ul>
+</li>
+<li>-l：通过标签过滤资源</li>
+<li>-n：指定名称空间</li>
+<li>-s：指定apiserver地址</li>
+<li>–kubeconfig：指定kubeconfig文件【默认~/.kube/config】</li>
+</ul>
+<h2 id="插件-kubectl-debug"><a href="#插件-kubectl-debug" class="headerlink" title="插件-kubectl-debug"></a>插件-kubectl-debug</h2><ul>
+<li><a href="https://github.com/aylei/kubectl-debug/blob/master/docs/zh-cn.md" target="_blank" rel="noopener">简介</a>:通过启动一个安装了各种排障工具的容器，来诊断目标容器</li>
+<li><a href="https://github.com/aylei/kubectl-debug/releases" target="_blank" rel="noopener">安装</a></li>
+<li>命令使用：<code>kubectl debug pod_name --agentless</code></li>
+<li>命令参数：<ul>
+<li>–fork：诊断一个处于CrashLookBackoff的pod</li>
+<li>–agentless：启动无代理模式【命令使用时自动创建一个agent】</li>
+<li>–image：指定使用的工具镜像【默认的镜像：nicolaka/netshoot】</li>
+<li>-c container-name：指定要进入的容器内</li>
+</ul>
+</li>
+</ul>
+<h1 id="常见对象操作"><a href="#常见对象操作" class="headerlink" title="常见对象操作"></a>常见对象操作</h1><h2 id="创建资源对象"><a href="#创建资源对象" class="headerlink" title="创建资源对象"></a>创建资源对象</h2><ul>
+<li>直接通过各种子命令管理资源对象：kubectl run</li>
+<li>根据资源文件创建资源对象：kubectl create</li>
+<li>根据声明式资源文件让kubernetes集群自动调整资源状态：kubectl apply</li>
+</ul>
+<h2 id="查看资源对象"><a href="#查看资源对象" class="headerlink" title="查看资源对象"></a>查看资源对象</h2><ul>
+<li>get命令：kubectl get resource_type resource_name </li>
+<li>describe命令：kubectl describe resource_type resource_name</li>
+<li>参数：<ul>
+<li>-o wide/yaml/json/custom-columns:显示格式</li>
+<li>-n namespace 名称空间</li>
+<li>-l key=value 指定过滤标签</li>
+</ul>
+</li>
+</ul>
+<h2 id="修改资源对象"><a href="#修改资源对象" class="headerlink" title="修改资源对象"></a>修改资源对象</h2><ul>
+<li>edit: 编辑运行中的资源</li>
+<li>apply：应用修改的资源文件</li>
+</ul>
+<h2 id="删除资源对象"><a href="#删除资源对象" class="headerlink" title="删除资源对象"></a>删除资源对象</h2><ul>
+<li>delete命令:：kubectl delete resource_type resource_name</li>
+</ul>
+<h2 id="查看pod日志"><a href="#查看pod日志" class="headerlink" title="查看pod日志"></a>查看pod日志</h2><ul>
+<li>logs命令:kubectl logs pod_id</li>
+<li>参数： -c 指定容器名称</li>
+</ul>
+<h2 id="容器中执行命令"><a href="#容器中执行命令" class="headerlink" title="容器中执行命令"></a>容器中执行命令</h2><ul>
+<li>exec命令: kubectl exec -it pod_name -c container_name /bin/bash</li>
+</ul>
+<h2 id="pod弹性伸缩"><a href="#pod弹性伸缩" class="headerlink" title="pod弹性伸缩"></a>pod弹性伸缩</h2><ul>
+<li>scale命令: kubectl scale rc nginx –replicas=4</li>
+</ul>
+<h2 id="镜像升级和回滚"><a href="#镜像升级和回滚" class="headerlink" title="镜像升级和回滚"></a>镜像升级和回滚</h2><ul>
+<li>查看当前版本：kubectl get deploy -o wide</li>
+<li>更新镜像：kubectl set image deploy/nginx-deployment nginx=nginx:1.13</li>
+<li>回滚到上个版本：kubectl rollout undo deploy nginx-deployment</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/kubectl/" rel="tag"># kubectl</a>
+          
+            <a href="/tags/标签/" rel="tag"># 标签</a>
+          
+            <a href="/tags/选择器/" rel="tag"># 选择器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/18/容器化/分布式存储glusterfs与heketi/" rel="next" title="分布式存储glusterfs与heketi">
+                <i class="fa fa-chevron-left"></i> 分布式存储glusterfs与heketi
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/24/容器化/kubernetes/kubernetes-pod资源调度/" rel="prev" title="kubernetes-pod资源调度">
+                kubernetes-pod资源调度 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">122</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">240</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#管理实现方式-API"><span class="nav-number">1.</span> <span class="nav-text">管理实现方式-API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计模式"><span class="nav-number">1.1.</span> <span class="nav-text">API设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-number">1.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看api资源"><span class="nav-number">1.3.</span> <span class="nav-text">查看api资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义api资源"><span class="nav-number">1.4.</span> <span class="nav-text">自定义api资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API使用"><span class="nav-number">1.5.</span> <span class="nav-text">API使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源对象"><span class="nav-number">2.</span> <span class="nav-text">资源对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象分类"><span class="nav-number">2.1.</span> <span class="nav-text">资源对象分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象格式"><span class="nav-number">2.2.</span> <span class="nav-text">资源对象格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象文档"><span class="nav-number">2.3.</span> <span class="nav-text">资源对象文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metadata"><span class="nav-number">2.4.</span> <span class="nav-text">metadata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必选字段"><span class="nav-number">2.4.1.</span> <span class="nav-text">必选字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选字段"><span class="nav-number">2.4.2.</span> <span class="nav-text">可选字段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签和标签选择器"><span class="nav-number">3.</span> <span class="nav-text">标签和标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签定义"><span class="nav-number">3.1.</span> <span class="nav-text">标签定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用标签"><span class="nav-number">3.2.</span> <span class="nav-text">常用标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建时添加标签"><span class="nav-number">3.3.</span> <span class="nav-text">创建时添加标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态修改标签"><span class="nav-number">3.4.</span> <span class="nav-text">动态修改标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签显示"><span class="nav-number">3.5.</span> <span class="nav-text">标签显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签选择器"><span class="nav-number">3.6.</span> <span class="nav-text">标签选择器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解-annotations"><span class="nav-number">4.</span> <span class="nav-text">注解-annotations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看注解"><span class="nav-number">4.3.</span> <span class="nav-text">查看注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动添加注解"><span class="nav-number">4.4.</span> <span class="nav-text">手动添加注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectl命令"><span class="nav-number">5.</span> <span class="nav-text">kubectl命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法格式"><span class="nav-number">5.1.</span> <span class="nav-text">语法格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子命令"><span class="nav-number">5.2.</span> <span class="nav-text">子命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令选项"><span class="nav-number">5.3.</span> <span class="nav-text">命令选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件-kubectl-debug"><span class="nav-number">5.4.</span> <span class="nav-text">插件-kubectl-debug</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见对象操作"><span class="nav-number">6.</span> <span class="nav-text">常见对象操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建资源对象"><span class="nav-number">6.1.</span> <span class="nav-text">创建资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看资源对象"><span class="nav-number">6.2.</span> <span class="nav-text">查看资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改资源对象"><span class="nav-number">6.3.</span> <span class="nav-text">修改资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除资源对象"><span class="nav-number">6.4.</span> <span class="nav-text">删除资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看pod日志"><span class="nav-number">6.5.</span> <span class="nav-text">查看pod日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器中执行命令"><span class="nav-number">6.6.</span> <span class="nav-text">容器中执行命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod弹性伸缩"><span class="nav-number">6.7.</span> <span class="nav-text">pod弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像升级和回滚"><span class="nav-number">6.8.</span> <span class="nav-text">镜像升级和回滚</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
