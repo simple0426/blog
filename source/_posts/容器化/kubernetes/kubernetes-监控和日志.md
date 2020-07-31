@@ -42,7 +42,42 @@ date: 2020-03-11 17:03:40
 | Custom metrics    | custom.metrics.k8s.io   | 主要的实现为prometheus，提供资源监控和自定义监控             |
 | External metrics  | external.metrics.k8s.io | 主要的实现为云厂商的provider，提供云资源的监控指标           |
 
+# prometheus
+
+## 监控指标
+
+* node节点状态、资源利用率
+* 资源对象(serivce/deployment/pod)状态、数量
+* 容器资源利用率
+* 应用程序
+  * 程序性能数据，例如java项目jvm exporter
+  * 业务数据
+
+## 架构组件
+
+* prometheus
+* 客户端组件
+  * cadvisor(kubelet)：采集容器cpu、内存使用情况；PromQL查询关键词：`container_`
+  * node_exporter：采集linux节点cpu、内存使用情况；PromQL查询关键词：`node_`
+  * kube-state-metrics：通过API Server收集资源对象的状态并生成相关的指标；PromQL查询关键词：`kube_`
+* altertmanager【在prometheus中配置告警规则】
+* pushgateway：用于支持短周期任务push数据的网关
+* grafana：[dashboard模板](https://grafana.com/grafana/dashboards)
+
+## 快速部署
+
+* [kube-prometheus](https://github.com/coreos/kube-prometheus)：提供了基于prometheus operator和prometheus的完整集群监控技术栈的示例配置，包含如下
+  * [Prometheus Operator](https://github.com/coreos/prometheus-operator)：设置在k8s集群中运行的prometheus，以获取k8s资源对象
+  * 高可用[Prometheus](https://prometheus.io/)
+  * 高可用[Alertmanager](https://github.com/prometheus/alertmanager)
+  * [Prometheus node-exporter](https://github.com/prometheus/node_exporter)
+  * [Prometheus Adapter for Kubernetes Metrics APIs](https://github.com/DirectXMan12/k8s-prometheus-adapter)：prometheus实现k8s资源监控(metrics-server)的适配器
+  * [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)：收集k8s资源对象的相关信息
+  * [Grafana](https://grafana.com/)
+* [stable/prometheus-operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator)：helm社区维护的prometheus监控技术栈，类似于kube-prometheus
+
 # 日志分类
+
 * 宿主机和核心组件日志，通过hostpath挂载/var/log/messages收集日志
     - apiserver日志用来审计
     - scheduler日志可以诊断调度

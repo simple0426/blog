@@ -183,7 +183,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
     + 将ingress的访问端口暴露在宿主机上：nodePort：30080/30443
 
 ## [metric-server](https://github.com/kubernetes-sigs/metrics-server)
-* 设置api-server：
+* 设置api-server【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：
     - 文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml
     - 配置：`--enable-aggregator-routing=true`
     - 重载配置：删除api-server的pod使其自动重建

@@ -712,7 +712,18 @@ cp kubelet kube-proxy /opt/kubernetes/bin   # 本地拷贝
   ```
 
   * cgroupDriver：docker的cgroups驱动，默认cgroupfs，需要和docker-engin的配置一致
+
   * clusterDNS：集群dns地址，后续安装的dns插件使用
+
+  * 其他预留资源选项【给系统和 k8s组件预留资源】
+
+    ```
+    -system-reserved=cpu=200m,memory=250Mi --kube-reserved=cpu=200m,memory=250Mi \
+    --eviction-hard=memory.available<1Gi,nodefs.available<1Gi,imagefs.available<1Gi \
+    --eviction-minimum-reclaim=memory.available=500Mi,nodefs.available=500Mi,imagefs.available=1Gi \
+    --node-status-update-frequency=10s \
+    --eviction-pressure-transition-period=180s
+    ```
 
 * 生成bootstrap.kubeconfig
 
@@ -1065,7 +1076,7 @@ kubectl apply -f apiserver-to-kubelet-rbac.yaml
 
 * 将证书复制到配置文件路径：`cp metrics-server*.pem /opt/kubernetes/ssl/`
 
-* apiserver设置并重启：
+* apiserver设置并重启【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：
 
   ```
   --enable-aggregator-routing=true \
