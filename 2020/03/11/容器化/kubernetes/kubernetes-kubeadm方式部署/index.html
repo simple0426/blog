@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-29T13:29:58.420Z">
+<meta property="og:updated_time" content="2020-07-31T06:37:25.983Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-29T21:29:58+08:00">
-                2020-07-29
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-31T14:37:25+08:00">
+                2020-07-31
               </time>
             
           </span>
@@ -525,7 +525,7 @@
 </li>
 </ul>
 <h2 id="metric-server"><a href="#metric-server" class="headerlink" title="metric-server"></a><a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">metric-server</a></h2><ul>
-<li>设置api-server：<ul>
+<li>设置api-server【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：<ul>
 <li>文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml</li>
 <li>配置：<code>--enable-aggregator-routing=true</code></li>
 <li>重载配置：删除api-server的pod使其自动重建</li>

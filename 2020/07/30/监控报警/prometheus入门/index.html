@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alter-status.jpg">
-<meta property="og:updated_time" content="2020-07-30T13:41:36.760Z">
+<meta property="og:updated_time" content="2020-07-31T16:25:52.329Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="prometheus入门">
 <meta name="twitter:description" content="主要特点 一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据 PromQL，灵活的数据查询语言 不依赖分布式存储，数据保存在服务器节点上 通过http的pull模型拉取时间序列数据 可以通过推送网关(pushgateway)支持push模型获取数据 可以通过服务发现或静态配置发现目标节点 支持多种图形和仪表盘  核">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-30T21:41:36+08:00">
-                2020-07-30
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-01T00:25:52+08:00">
+                2020-08-01
               </time>
             
           </span>
@@ -398,17 +398,49 @@
 <li>可以通过服务发现或静态配置发现目标节点</li>
 <li>支持多种图形和仪表盘</li>
 </ul>
-<h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><ul>
-<li><p>数据模型(data model)</p>
-<ul>
+<h1 id="核心概念-数据"><a href="#核心概念-数据" class="headerlink" title="核心概念-数据"></a>核心概念-数据</h1><h2 id="数据格式-data-model"><a href="#数据格式-data-model" class="headerlink" title="数据格式(data model)"></a>数据格式(data model)</h2><ul>
 <li>语法：<code>&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}</code></li>
 <li>范例：<code>api_http_requests_total{method=&quot;POST&quot;, handler=&quot;/messages&quot;}</code></li>
+<li>数据产生流程<ul>
+<li>客户端metrics接口的数据格式：【node_boot_time_seconds 1.585383507e+09】</li>
+<li>prometheus接收数据后根据数据来源添加标签后进行存储【node_boot_time_seconds{instance=”localhost:9100”,job=”node_exporter”}  1585383507】</li>
 </ul>
 </li>
-<li><p>度量类型(metric types)</p>
-</li>
-<li><p>作业和实例(jobs and instances)</p>
+</ul>
+<h2 id="数据类型-metric-types"><a href="#数据类型-metric-types" class="headerlink" title="数据类型(metric types)"></a>数据类型(metric types)</h2><ul>
+<li><p>计数器类型(counter)：计数器是一个累计度量指标，</p>
 <ul>
+<li>代表一个单调递增的计数器(除非系统重启)</li>
+<li>例如代表请求数、任务完成数、错误数</li>
+</ul>
+</li>
+<li><p>测量类型(gauge)：反应应用的当前状态</p>
+<ul>
+<li>数据可增可减</li>
+<li>例如服务器的内存、cpu、磁盘使用率等</li>
+</ul>
+</li>
+<li><p>直方图类型(Histogram)：显示一段时间内值在各区间的分布情况【概率分布】</p>
+<ul>
+<li><p>数据类型名称：度量基础名称+不同类型统计数据</p>
+<ul>
+<li>bucket类型：获取值在统计区间(bucket)的个数，名称如<basename>_bucket{le=”<upper inclusive="" bound="">“}</upper></basename></li>
+<li>sum类型：所有获取数值的总和，名称如<basename>_sum</basename></li>
+<li>count类型：所有获取值的个数，名称如<basename>_count【等同于<basename>_bucket{le=”+Inf”}（小于无穷大的个数）】</basename></basename></li>
+</ul>
+</li>
+<li><p>范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;100&quot;&#125; 0 #http响应小于1000字节的个数</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;1000&quot;&#125; 0 </span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;10000&quot;&#125; 163</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;100000&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;1e+06&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;1e+07&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;1e+08&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;1e+09&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_bucket&#123;handler=&quot;/metrics&quot;,le=&quot;+Inf&quot;&#125; 170</span><br><span class="line">prometheus_http_response_size_bytes_sum&#123;handler=&quot;/metrics&quot;&#125; 1.578861e+06 # #170次http响应的字节总和</span><br><span class="line">prometheus_http_response_size_bytes_count&#123;handler=&quot;/metrics&quot;&#125; 170 #一共抓取170次http响应数据</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据处理：histogram_quantile(a float, b instant-vector)函数可计算区间b中超过分数a的个体情况；例如：统计http请求超过10分钟的90%场景中的情况(剔除极端值)：histogram_quantile(0.9, rate(http_request_duration_seconds_bucket[10m]))</p>
+</li>
+</ul>
+</li>
+<li><p>摘要类型(Summary)：和直方图数据类似，它是由客户端直接提供(histogram_quantile)的计算结果提供给prometheus</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">prometheus_target_interval_length_seconds&#123;interval=&quot;15s&quot;,quantile=&quot;0.01&quot;&#125; 14.999831807</span><br><span class="line">prometheus_target_interval_length_seconds&#123;interval=&quot;15s&quot;,quantile=&quot;0.05&quot;&#125; 14.999910011</span><br><span class="line">prometheus_target_interval_length_seconds&#123;interval=&quot;15s&quot;,quantile=&quot;0.5&quot;&#125; 15.000031073</span><br><span class="line">prometheus_target_interval_length_seconds&#123;interval=&quot;15s&quot;,quantile=&quot;0.9&quot;&#125; 15.000114733</span><br><span class="line">prometheus_target_interval_length_seconds&#123;interval=&quot;15s&quot;,quantile=&quot;0.99&quot;&#125; 15.000228675</span><br><span class="line">prometheus_target_interval_length_seconds_sum&#123;interval=&quot;15s&quot;&#125; 10170.020818119998</span><br><span class="line">prometheus_target_interval_length_seconds_count&#123;interval=&quot;15s&quot;&#125; 678</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="作业和实例-jobs-and-instances"><a href="#作业和实例-jobs-and-instances" class="headerlink" title="作业和实例(jobs and instances)"></a>作业和实例(jobs and instances)</h2><ul>
 <li><p>instance：可以抓取数据的目标端点</p>
 </li>
 <li><p>jobs：具有相同目标的实例(instance)集合</p>
@@ -417,69 +449,102 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">scrape_configs:</span><br><span class="line">- job_name: &apos;prometheus&apos;</span><br><span class="line">  static_configs:</span><br><span class="line">  - targets: [&apos;localhost:9090&apos;]</span><br><span class="line">- job_name: &apos;node&apos;</span><br><span class="line">  static_configs:</span><br><span class="line">  - targets: [&apos;192.168.1.10:9090&apos;]</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-</li>
-</ul>
-<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png" alt=""></p>
+<h1 id="架构与组件"><a href="#架构与组件" class="headerlink" title="架构与组件"></a>架构与组件</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png" alt=""></p>
 <ul>
 <li>数据采集(pull模型)：<ul>
-<li>短周期任务(short-lived jobs)：通过pushgateway短期存储指标数据</li>
+<li>短周期任务(short-lived jobs)：通过<strong>pushgateway</strong>组件短期存储指标数据</li>
 <li>持续性任务：exporter</li>
-<li>服务发现(service discovery)：自动发现监控指标，例如：文件系统、k8s、consul</li>
+<li>服务发现(service discovery)：自动发现监控指标，例如：文件、k8s、consul</li>
 </ul>
 </li>
-<li>数据存储：node-hdd/ssd(本地存储)、influxDB</li>
-<li>告警：altermanager</li>
-<li>查询&amp;展示：promQL(查询语言)、api clients、grafana、web UI</li>
+<li>数据存储(<strong>prometheus server</strong>)：node-hdd/ssd(本地存储)、influxDB</li>
+<li>告警(<strong>altermanager</strong>)</li>
+<li>查询&amp;展示：promQL(查询语言)、api clients、<strong>grafana</strong>、web UI</li>
 </ul>
-<h1 id="k8s监控"><a href="#k8s监控" class="headerlink" title="k8s监控"></a>k8s监控</h1><h2 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h2><ul>
-<li>node节点状态、资源利用率</li>
-<li>资源对象(serivce/deployment/pod)状态、数量</li>
-<li>容器资源利用率</li>
-<li>应用程序<ul>
-<li>程序性能数据，例如java项目jvm exporter</li>
-<li>业务数据</li>
+<h1 id="prometheus-server"><a href="#prometheus-server" class="headerlink" title="prometheus-server"></a>prometheus-server</h1><h2 id="启动参数"><a href="#启动参数" class="headerlink" title="启动参数"></a>启动参数</h2><ul>
+<li>–config.file=/etc/config/prometheus.yml：指定配置文件</li>
+<li>–storage.tsdb.path=/data：指定数据目录</li>
+<li>–web.enable-lifecycle：允许通过http POST方式关闭服务或重载配置</li>
+<li>–storage.tsdb.retention.time：数据保留时间(默认15天)【y,w, d, h, m, s, ms】</li>
+<li>–storage.tsdb.no-lockfile：不创建lockfile【如果使用k8s的deployment管理时需要开启】</li>
+</ul>
+<h2 id="主配置"><a href="#主配置" class="headerlink" title="主配置"></a>主配置</h2><ul>
+<li>主配置示例：<a href="https://github.com/prometheus/prometheus/blob/release-2.20/config/testdata/conf.good.yml" target="_blank" rel="noopener">https://github.com/prometheus/prometheus/blob/release-2.20/config/testdata/conf.good.yml</a></li>
+<li>抓取设置和标签设置示例：<a href="https://github.com/prometheus/prometheus/blob/release-2.20/documentation/examples/prometheus-kubernetes.yml" target="_blank" rel="noopener">https://github.com/prometheus/prometheus/blob/release-2.20/documentation/examples/prometheus-kubernetes.yml</a></li>
+<li>主配置</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="comment"># 收集数据时间间隔(default = 1m)</span></span><br><span class="line"><span class="attr">  scrape_interval:</span> <span class="number">30</span><span class="string">s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 收集数据超时(default = 10s)</span></span><br><span class="line"><span class="attr">  scrape_timeout:</span> <span class="number">15</span><span class="string">s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 评估规则时间间隔(default = 1m)</span></span><br><span class="line">  <span class="comment">#evaluation_interval: 30s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 和外部通信(联邦、远程存储、报警)时添加的到任意时间序列或警报的标签</span></span><br><span class="line">  <span class="comment">#external_labels:</span></span><br><span class="line">  <span class="comment">#  [ &lt;labelname&gt;: &lt;labelvalue&gt; ... ]</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># PromQL查询日志，重载配置文件会重新打开一个文件</span></span><br><span class="line">  <span class="comment">#query_log_file: query.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 报警规则文件，可以使用正则表达式进行文件匹配</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line"><span class="comment">#- "first.rules"</span></span><br><span class="line"><span class="comment">#- "my/*.rules"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 抓取数据的配置</span></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="comment"># 默认添加标签`job=&lt;job_name&gt;`到时序数据</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">'prometheus'</span></span><br><span class="line">    <span class="comment"># metrics_path 数据指标节点url，默认'/metrics'</span></span><br><span class="line">    <span class="comment"># scheme 使用的协议，默认'http'.</span></span><br><span class="line"></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">    - targets:</span> <span class="string">['localhost:9090']</span></span><br><span class="line"><span class="comment"># 指定与Alertmanager相关的配置</span></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line"><span class="attr">  alertmanagers:</span></span><br><span class="line"><span class="attr">  - static_configs:</span></span><br><span class="line"><span class="attr">    - targets:</span></span><br><span class="line">      <span class="comment"># - alertmanager:9093</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以将数据写入其他时序数据库【如influxDB】</span></span><br><span class="line"><span class="comment">#remote_write:</span></span><br><span class="line"><span class="comment">#  - url: "http://localhost:8086/api/v1/prom/write?db=prometheus&amp;u=username&amp;p=password"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以读取其他时序数据库【如influxDB】</span></span><br><span class="line"><span class="comment">#remote_read:</span></span><br><span class="line"><span class="comment">#  - url: "http://localhost:8086/api/v1/prom/read?db=prometheus&amp;u=username&amp;p=password"</span></span><br></pre></td></tr></table></figure>
+<h2 id="抓取目标设置-scrape-configs"><a href="#抓取目标设置-scrape-configs" class="headerlink" title="抓取目标设置-scrape_configs"></a>抓取目标设置-scrape_configs</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span> <span class="comment">#抓取设置</span></span><br><span class="line"><span class="attr">- job_name:</span> <span class="string">prometheus</span> <span class="comment">#分组设置，这个分组下的所有目标会被添加job=prometheus的标签</span></span><br><span class="line"><span class="attr">  static_configs:</span>   <span class="comment"># 配置文件中设置抓取目标</span></span><br><span class="line"><span class="attr">  - targets:</span> <span class="string">['127.0.0.1:9090']</span> <span class="comment">#抓取目标，同时也会在这个目标上添加标签instance=127.0.0.1:9090</span></span><br><span class="line"><span class="attr">    labels:</span>  <span class="comment">#从此数据源获取的数据都会添加标签my=label</span></span><br><span class="line"><span class="attr">      my:</span> <span class="string">label</span></span><br><span class="line"><span class="attr">- job_name:</span> <span class="string">node_export</span></span><br><span class="line"><span class="attr">  file_sd_configs:</span> <span class="comment"># 加载配置文件(yaml/json)获取抓取目标</span></span><br><span class="line"><span class="attr">    - files:</span> </span><br><span class="line"><span class="bullet">      -</span> <span class="string">foo/*.slow.json</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">foo/*.slow.yml</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">single/file.yml</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">10</span><span class="string">m</span> <span class="comment">#读取配置文件时间间隔【默认5min】</span></span><br><span class="line"><span class="attr">    - files:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">bar/*.yaml</span></span><br><span class="line"><span class="attr">- job_name:</span> <span class="string">service-y</span></span><br><span class="line"><span class="attr">  consul_sd_configs:</span> <span class="comment">#通过配置中心consul获取抓取目标</span></span><br><span class="line"><span class="attr">  - server:</span> <span class="string">'localhost:1234'</span></span><br><span class="line"><span class="attr">    token:</span> <span class="string">mysecret</span></span><br><span class="line"><span class="attr">    services:</span> <span class="string">['nginx',</span> <span class="string">'cache'</span><span class="string">,</span> <span class="string">'mysql'</span><span class="string">]</span> <span class="comment">#只抓取匹配的服务</span></span><br><span class="line"><span class="attr">    tags:</span> <span class="string">["canary",</span> <span class="string">"v1"</span><span class="string">]</span></span><br><span class="line"><span class="attr">    node_meta:</span></span><br><span class="line"><span class="attr">      rack:</span> <span class="string">"123"</span></span><br><span class="line"><span class="attr">    allow_stale:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">    scheme:</span> <span class="string">https</span></span><br><span class="line"><span class="attr">    tls_config:</span></span><br><span class="line"><span class="attr">      ca_file:</span> <span class="string">valid_ca_file</span></span><br><span class="line"><span class="attr">      cert_file:</span> <span class="string">valid_cert_file</span></span><br><span class="line"><span class="attr">      key_file:</span>  <span class="string">valid_key_file</span></span><br><span class="line"><span class="attr">      insecure_skip_verify:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>目标配置文件(json格式)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    &quot;targets&quot;: [ &quot;&lt;host&gt;&quot;, ... ],</span><br><span class="line">    &quot;labels&quot;: &#123;</span><br><span class="line">      &quot;&lt;labelname&gt;&quot;: &quot;&lt;labelvalue&gt;&quot;, ...</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="标签处理-relabel-configs"><a href="#标签处理-relabel-configs" class="headerlink" title="标签处理-relabel_configs"></a>标签处理-relabel_configs</h2><blockquote>
+<p>可以直接在数据抓取目标处设置label</p>
+</blockquote>
+<ul>
+<li><p>drop、keep：删除或保留正则匹配的原标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- action: keep #只保留原标签中值为default、kubernetes、https的标签</span><br><span class="line">  regex: default;kubernetes;https</span><br><span class="line">  source_labels:</span><br><span class="line">  - __meta_kubernetes_namespace</span><br><span class="line">  - __meta_kubernetes_service_name</span><br><span class="line">  - __meta_kubernetes_endpoint_port_name</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>replace：替换标签key或value</p>
+<ul>
+<li>替换标签内容【使用replacement】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- action: replace #执行替换操作</span><br><span class="line">  regex: ([^:]+)(?::\d+)?;(\d+) #对原标签的value进行匹配(分号分隔匹配不同标签的正则)</span><br><span class="line">  replacement: $1:$2 #目标标签value(可以使用正则的分组引用原标签的value)</span><br><span class="line">  source_labels: #原标签key</span><br><span class="line">  - __address__</span><br><span class="line">  - __meta_kubernetes_service_annotation_prometheus_io_port</span><br><span class="line">  target_label: __address__ #目标标签key</span><br><span class="line"># 此例子中使用正则匹配(regex)从原标签(source_labels)</span><br><span class="line"># 的值中提取值(replacement)赋值给目标标签(target_label)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>替换标签(重命名标签)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- action: replace</span><br><span class="line">  source_labels:</span><br><span class="line">  - __meta_kubernetes_service_name</span><br><span class="line">  target_label: kubernetes_name</span><br><span class="line"># 将原标签(source_labels)重命名为目标标签</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>labelmap：只保留标签名称的部分内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- action: labelmap</span><br><span class="line">  regex: __meta_kubernetes_service_label_(.+)</span><br><span class="line"># 如果标签名称为__meta_kubernetes_service_label_asdfg，则被简化为asdfg</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h2><ul>
+<li><p>记录规则【对原始的数据进行计算分类，避免使用过多数据的计算冲击prometheus的运行】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">groups:</span><br><span class="line">  - name: example</span><br><span class="line">    rules:</span><br><span class="line">    - record: job:http_inprogress_requests:sum</span><br><span class="line">      expr: sum by (job) (http_inprogress_requests)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>报警规则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">groups:</span><br><span class="line">- name: node.rules #分组名称</span><br><span class="line">  rules:</span><br><span class="line">  - alert: NodeFilesystemUsage #告警名称</span><br><span class="line">    expr: | #表达式</span><br><span class="line">      100 - (node_filesystem_free&#123;fstype=~&quot;ext4|xfs&quot;&#125; / </span><br><span class="line">      node_filesystem_size&#123;fstype=~&quot;ext4|xfs&quot;&#125; * 100) &gt; 20 </span><br><span class="line">    for: 1m #持续时间</span><br><span class="line">    labels: #标签【过滤选择资源】</span><br><span class="line">      severity: warning  #报警级别</span><br><span class="line">    annotations: #注解，告警详情</span><br><span class="line">      summary: &quot;Instance &#123;&#123; $labels.instance &#125;&#125; : &#123;&#123; $labels.mountpoint &#125;&#125; 分区使用率过高&quot;</span><br><span class="line">      description: &quot;&#123;&#123; $labels.instance &#125;&#125;: &#123;&#123; $labels.mountpoint &#125;&#125; 分区使用大于80% (当前值: &#123;&#123; $value &#125;&#125;)&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="pushgateway"><a href="#pushgateway" class="headerlink" title="pushgateway"></a>pushgateway</h1><ul>
+<li>prometheus配置抓取目标为pushgateway时，必须设置honor_labels为true，避免收集数据本身的job和instance被覆盖</li>
+<li>配置参数【–persistence.file】和–persistence.interval=5m将收集的数据持久化</li>
+</ul>
+<h1 id="PromQL语法"><a href="#PromQL语法" class="headerlink" title="PromQL语法"></a>PromQL语法</h1><blockquote>
+<p>学习方法：通过granfa的<a href="https://grafana.com/grafana/dashboards" target="_blank" rel="noopener">dashboard</a>模板</p>
+</blockquote>
+<ul>
+<li>瞬时数据：node_cpu_seconds_total</li>
+<li>区间数据：node_load1[3m]<ul>
+<li><code>s</code> - seconds</li>
+<li><code>m</code> - minutes</li>
+<li><code>h</code> - hours</li>
+<li><code>d</code> - days</li>
+<li><code>w</code> - weeks</li>
+<li><code>y</code> - years</li>
+</ul>
+</li>
+<li><p>标签选择指标：node_network_info{operstate=”up”,device=~”veth.*”}</p>
+<ul>
+<li>=：选择与字符串完全相等的标签</li>
+<li>!=：选择与字符串不相等的标签</li>
+<li>=~：选择与字符串正则匹配的标签</li>
+<li>!~：选择与字符串正则不匹配的标签</li>
+</ul>
+</li>
+<li><p>指标计算：(node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes)*100（可用内存）</p>
+<ul>
+<li>加减乘除：+、-、*、/、%、^</li>
+<li>比较运算(常用于报警)：==、!=、&gt;、&gt;=、&lt;、&lt;=</li>
+<li>逻辑运算：and、or</li>
+<li>聚合运算：sum、min、max、avg、count、topk(n,metric)</li>
+<li>内置函数：rate(区间内每秒增长量)、irate、abs、increase(区间内增长量)、sort_desc、sort</li>
 </ul>
 </li>
 </ul>
-<h2 id="客户端组件"><a href="#客户端组件" class="headerlink" title="客户端组件"></a>客户端组件</h2><ul>
-<li>cadvisor(kubelet)：采集容器cpu、内存使用情况；PromQL查询关键词：<code>container_</code></li>
-<li>node_exporter：采集linux节点cpu、内存使用情况；PromQL查询关键词：<code>node_</code></li>
-<li>kube-state-metrics：通过API Server收集资源对象的状态并生成相关的指标；PromQL查询关键词：<code>kube_</code></li>
-</ul>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><ul>
-<li>方式1：<a href="https://github.com/coreos/kube-prometheus" target="_blank" rel="noopener">kube-prometheus</a>【coreos】</li>
-<li>方式2：单独部署各组件<ul>
-<li>prometheus<ul>
-<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alertmanager_config" target="_blank" rel="noopener">配置文件</a></li>
-</ul>
-</li>
-<li>grafana<ul>
-<li>dashboard模板：<a href="https://grafana.com/grafana/dashboards" target="_blank" rel="noopener">https://grafana.com/grafana/dashboards</a></li>
-</ul>
-</li>
-<li>客户端组件【默认既有cadvisor】<ul>
-<li>node_exporter</li>
-<li>kube-state-metrics</li>
-</ul>
-</li>
-<li>altertmanager【在prometheus中配置告警规则】</li>
-</ul>
-</li>
-</ul>
-<h1 id="告警"><a href="#告警" class="headerlink" title="告警"></a>告警</h1><h2 id="告警规则"><a href="#告警规则" class="headerlink" title="告警规则"></a>告警规则</h2><pre><code>groups:
-- name: node.rules #分组名称
-  rules:
-  - alert: NodeFilesystemUsage #告警名称
-    expr: | #表达式
-      100 - (node_filesystem_free{fstype=~&quot;ext4|xfs&quot;} / 
-      node_filesystem_size{fstype=~&quot;ext4|xfs&quot;} * 100) &gt; 20 
-    for: 1m #持续时间
-    labels: #标签【过滤选择资源】
-      severity: warning 
-    annotations: #注解，告警详情
-      summary: &quot;Instance {{ $labels.instance }} : {{ $labels.mountpoint }} 分区使用率过高&quot;
-      description: &quot;{{ $labels.instance }}: {{ $labels.mountpoint }} 分区使用大于80% (当前值: {{ $value }})&quot;
-</code></pre><h2 id="告警状态"><a href="#告警状态" class="headerlink" title="告警状态"></a>告警状态</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alter-status.jpg" alt=""></p>
+<h1 id="altermanager-告警"><a href="#altermanager-告警" class="headerlink" title="altermanager-告警"></a>altermanager-告警</h1><h2 id="告警状态"><a href="#告警状态" class="headerlink" title="告警状态"></a>告警状态</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alter-status.jpg" alt=""></p>
 <ul>
 <li>inactive：当做什么都没发生</li>
 <li>pending：已触发阈值，但是为满足告警持续时间</li>
@@ -684,7 +749,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主要特点"><span class="nav-number">1.</span> <span class="nav-text">主要特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心概念"><span class="nav-number">2.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构"><span class="nav-number">3.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s监控"><span class="nav-number">4.</span> <span class="nav-text">k8s监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监控指标"><span class="nav-number">4.1.</span> <span class="nav-text">监控指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端组件"><span class="nav-number">4.2.</span> <span class="nav-text">客户端组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">4.3.</span> <span class="nav-text">部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#告警"><span class="nav-number">5.</span> <span class="nav-text">告警</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#告警规则"><span class="nav-number">5.1.</span> <span class="nav-text">告警规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#告警状态"><span class="nav-number">5.2.</span> <span class="nav-text">告警状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#告警收敛设置"><span class="nav-number">5.3.</span> <span class="nav-text">告警收敛设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#告警流程"><span class="nav-number">5.4.</span> <span class="nav-text">告警流程</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主要特点"><span class="nav-number">1.</span> <span class="nav-text">主要特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心概念-数据"><span class="nav-number">2.</span> <span class="nav-text">核心概念-数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式-data-model"><span class="nav-number">2.1.</span> <span class="nav-text">数据格式(data model)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型-metric-types"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型(metric types)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业和实例-jobs-and-instances"><span class="nav-number">2.3.</span> <span class="nav-text">作业和实例(jobs and instances)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构与组件"><span class="nav-number">3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus-server"><span class="nav-number">4.</span> <span class="nav-text">prometheus-server</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动参数"><span class="nav-number">4.1.</span> <span class="nav-text">启动参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主配置"><span class="nav-number">4.2.</span> <span class="nav-text">主配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抓取目标设置-scrape-configs"><span class="nav-number">4.3.</span> <span class="nav-text">抓取目标设置-scrape_configs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签处理-relabel-configs"><span class="nav-number">4.4.</span> <span class="nav-text">标签处理-relabel_configs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规则"><span class="nav-number">4.5.</span> <span class="nav-text">规则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pushgateway"><span class="nav-number">5.</span> <span class="nav-text">pushgateway</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PromQL语法"><span class="nav-number">6.</span> <span class="nav-text">PromQL语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#altermanager-告警"><span class="nav-number">7.</span> <span class="nav-text">altermanager-告警</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#告警状态"><span class="nav-number">7.1.</span> <span class="nav-text">告警状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#告警收敛设置"><span class="nav-number">7.2.</span> <span class="nav-text">告警收敛设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#告警流程"><span class="nav-number">7.3.</span> <span class="nav-text">告警流程</span></a></li></ol></li></ol></div>
             
 
           </div>

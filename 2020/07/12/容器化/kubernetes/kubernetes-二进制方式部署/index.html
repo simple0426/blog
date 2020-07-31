@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-16T03:24:22.976Z">
+<meta property="og:updated_time" content="2020-07-31T12:38:24.228Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-二进制方式部署">
 <meta name="twitter:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-16T11:24:22+08:00">
-                2020-07-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-31T20:38:24+08:00">
+                2020-07-31
               </time>
             
           </span>
@@ -639,8 +639,13 @@
 <li><p>配置参数文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /opt/kubernetes/cfg/kubelet-config.yml &lt;&lt; EOF</span><br><span class="line">kind: KubeletConfiguration</span><br><span class="line">apiVersion: kubelet.config.k8s.io/v1beta1</span><br><span class="line">address: 0.0.0.0</span><br><span class="line">port: 10250</span><br><span class="line">readOnlyPort: 10255</span><br><span class="line">cgroupDriver: systemd</span><br><span class="line">clusterDNS:</span><br><span class="line">- 10.0.0.2</span><br><span class="line">clusterDomain: cluster.local </span><br><span class="line">failSwapOn: false</span><br><span class="line">authentication:</span><br><span class="line">  anonymous:</span><br><span class="line">    enabled: false</span><br><span class="line">  webhook:</span><br><span class="line">    cacheTTL: 2m0s</span><br><span class="line">    enabled: true</span><br><span class="line">  x509:</span><br><span class="line">    clientCAFile: /opt/kubernetes/ssl/ca.pem </span><br><span class="line">authorization:</span><br><span class="line">  mode: Webhook</span><br><span class="line">  webhook:</span><br><span class="line">    cacheAuthorizedTTL: 5m0s</span><br><span class="line">    cacheUnauthorizedTTL: 30s</span><br><span class="line">evictionHard:</span><br><span class="line">  imagefs.available: 15%</span><br><span class="line">  memory.available: 100Mi</span><br><span class="line">  nodefs.available: 10%</span><br><span class="line">  nodefs.inodesFree: 5%</span><br><span class="line">maxOpenFiles: 1000000</span><br><span class="line">maxPods: 110</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 <ul>
-<li>cgroupDriver：docker的cgroups驱动，默认cgroupfs，需要和docker-engin的配置一致</li>
-<li>clusterDNS：集群dns地址，后续安装的dns插件使用</li>
+<li><p>cgroupDriver：docker的cgroups驱动，默认cgroupfs，需要和docker-engin的配置一致</p>
+</li>
+<li><p>clusterDNS：集群dns地址，后续安装的dns插件使用</p>
+</li>
+<li><p>其他预留资源选项【给系统和 k8s组件预留资源】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-system-reserved=cpu=200m,memory=250Mi --kube-reserved=cpu=200m,memory=250Mi \</span><br><span class="line">--eviction-hard=memory.available&lt;1Gi,nodefs.available&lt;1Gi,imagefs.available&lt;1Gi \</span><br><span class="line">--eviction-minimum-reclaim=memory.available=500Mi,nodefs.available=500Mi,imagefs.available=1Gi \</span><br><span class="line">--node-status-update-frequency=10s \</span><br><span class="line">--eviction-pressure-transition-period=180s</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 <li><p>生成bootstrap.kubeconfig</p>
@@ -762,7 +767,7 @@
 </li>
 <li><p>将证书复制到配置文件路径：<code>cp metrics-server*.pem /opt/kubernetes/ssl/</code></p>
 </li>
-<li><p>apiserver设置并重启：</p>
+<li><p>apiserver设置并重启【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">--enable-aggregator-routing=true \</span><br><span class="line">--requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \</span><br><span class="line">--requestheader-allowed-names=aggregator \</span><br><span class="line">--requestheader-extra-headers-prefix=X-Remote-Extra- \</span><br><span class="line">--requestheader-group-headers=X-Remote-Group \</span><br><span class="line">--requestheader-username-headers=X-Remote-User \</span><br><span class="line">--proxy-client-cert-file=/opt/kubernetes/ssl/metrics-server.pem \</span><br><span class="line">--proxy-client-key-file=/opt/kubernetes/ssl/metrics-server-key.pem \</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><a href="https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml" target="_blank" rel="noopener">资源文件下载</a>并修改</p>

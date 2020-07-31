@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-29T17:21:16.763Z">
+<meta property="og:updated_time" content="2020-07-31T16:24:12.073Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-监控和日志">
 <meta name="twitter:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-30T01:21:16+08:00">
-                2020-07-30
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-01T00:24:12+08:00">
+                2020-08-01
               </time>
             
           </span>
@@ -437,6 +437,41 @@
 </tr>
 </tbody>
 </table>
+<h1 id="prometheus"><a href="#prometheus" class="headerlink" title="prometheus"></a>prometheus</h1><h2 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h2><ul>
+<li>node节点状态、资源利用率</li>
+<li>资源对象(serivce/deployment/pod)状态、数量</li>
+<li>容器资源利用率</li>
+<li>应用程序<ul>
+<li>程序性能数据，例如java项目jvm exporter</li>
+<li>业务数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="架构组件"><a href="#架构组件" class="headerlink" title="架构组件"></a>架构组件</h2><ul>
+<li>prometheus</li>
+<li>客户端组件<ul>
+<li>cadvisor(kubelet)：采集容器cpu、内存使用情况；PromQL查询关键词：<code>container_</code></li>
+<li>node_exporter：采集linux节点cpu、内存使用情况；PromQL查询关键词：<code>node_</code></li>
+<li>kube-state-metrics：通过API Server收集资源对象的状态并生成相关的指标；PromQL查询关键词：<code>kube_</code></li>
+</ul>
+</li>
+<li>altertmanager【在prometheus中配置告警规则】</li>
+<li>pushgateway：用于支持短周期任务push数据的网关</li>
+<li>grafana：<a href="https://grafana.com/grafana/dashboards" target="_blank" rel="noopener">dashboard模板</a></li>
+</ul>
+<h2 id="快速部署"><a href="#快速部署" class="headerlink" title="快速部署"></a>快速部署</h2><ul>
+<li><a href="https://github.com/coreos/kube-prometheus" target="_blank" rel="noopener">kube-prometheus</a>：提供了基于prometheus operator和prometheus的完整集群监控技术栈的示例配置，包含如下<ul>
+<li><a href="https://github.com/coreos/prometheus-operator" target="_blank" rel="noopener">Prometheus Operator</a>：设置在k8s集群中运行的prometheus，以获取k8s资源对象</li>
+<li>高可用<a href="https://prometheus.io/" target="_blank" rel="noopener">Prometheus</a></li>
+<li>高可用<a href="https://github.com/prometheus/alertmanager" target="_blank" rel="noopener">Alertmanager</a></li>
+<li><a href="https://github.com/prometheus/node_exporter" target="_blank" rel="noopener">Prometheus node-exporter</a></li>
+<li><a href="https://github.com/DirectXMan12/k8s-prometheus-adapter" target="_blank" rel="noopener">Prometheus Adapter for Kubernetes Metrics APIs</a>：prometheus实现k8s资源监控(metrics-server)的适配器</li>
+<li><a href="https://github.com/kubernetes/kube-state-metrics" target="_blank" rel="noopener">kube-state-metrics</a>：收集k8s资源对象的相关信息</li>
+<li><a href="https://grafana.com/" target="_blank" rel="noopener">Grafana</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/helm/charts/tree/master/stable/prometheus-operator" target="_blank" rel="noopener">stable/prometheus-operator</a>：helm社区维护的prometheus监控技术栈，类似于kube-prometheus</li>
+</ul>
 <h1 id="日志分类"><a href="#日志分类" class="headerlink" title="日志分类"></a>日志分类</h1><ul>
 <li>宿主机和核心组件日志，通过hostpath挂载/var/log/messages收集日志<ul>
 <li>apiserver日志用来审计</li>
@@ -691,7 +726,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控类型"><span class="nav-number">1.</span> <span class="nav-text">监控类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案-heapster"><span class="nav-number">2.</span> <span class="nav-text">监控方案-heapster</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合方案"><span class="nav-number">2.2.</span> <span class="nav-text">整合方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heapter缺点"><span class="nav-number">2.3.</span> <span class="nav-text">heapter缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">3.</span> <span class="nav-text">新一代监控方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">4.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序日志收集"><span class="nav-number">5.</span> <span class="nav-text">程序日志收集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志采集方案"><span class="nav-number">6.</span> <span class="nav-text">日志采集方案</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控类型"><span class="nav-number">1.</span> <span class="nav-text">监控类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案-heapster"><span class="nav-number">2.</span> <span class="nav-text">监控方案-heapster</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合方案"><span class="nav-number">2.2.</span> <span class="nav-text">整合方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heapter缺点"><span class="nav-number">2.3.</span> <span class="nav-text">heapter缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">3.</span> <span class="nav-text">新一代监控方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus"><span class="nav-number">4.</span> <span class="nav-text">prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监控指标"><span class="nav-number">4.1.</span> <span class="nav-text">监控指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构组件"><span class="nav-number">4.2.</span> <span class="nav-text">架构组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速部署"><span class="nav-number">4.3.</span> <span class="nav-text">快速部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">5.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序日志收集"><span class="nav-number">6.</span> <span class="nav-text">程序日志收集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志采集方案"><span class="nav-number">7.</span> <span class="nav-text">日志采集方案</span></a></li></ol></div>
             
 
           </div>
