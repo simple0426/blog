@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="jenkins,k8s,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在k8s中部署jenkins 自定义资源文件地址：https://github.com/simple0426/sysadm/tree/master/kubernetes/jenkins 使用helm安装：helm search repo jenkins  安装插件 修改使用国内镜像地址后重启jenkins【删除pod】 安装插件后重启jenkins，使部分插件生效(如kubernetes插件)">
+<meta name="keywords" content="jenkins,k8s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jenkins与k8s的集成">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/08/03/持续集成与部署/jenkins/jenkins与k8s的集成/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="在k8s中部署jenkins 自定义资源文件地址：https://github.com/simple0426/sysadm/tree/master/kubernetes/jenkins 使用helm安装：helm search repo jenkins  安装插件 修改使用国内镜像地址后重启jenkins【删除pod】 安装插件后重启jenkins，使部分插件生效(如kubernetes插件)">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-08-03T11:35:10.940Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jenkins与k8s的集成">
+<meta name="twitter:description" content="在k8s中部署jenkins 自定义资源文件地址：https://github.com/simple0426/sysadm/tree/master/kubernetes/jenkins 使用helm安装：helm search repo jenkins  安装插件 修改使用国内镜像地址后重启jenkins【删除pod】 安装插件后重启jenkins，使部分插件生效(如kubernetes插件)">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/08/03/持续集成与部署/jenkins/jenkins与k8s的集成/">
+
+
+
+
+
+  <title>jenkins与k8s的集成 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/03/持续集成与部署/jenkins/jenkins与k8s的集成/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">jenkins与k8s的集成</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-03T19:35:10+08:00">
+                2020-08-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-03T19:35:10+08:00">
+                2020-08-03
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="在k8s中部署jenkins"><a href="#在k8s中部署jenkins" class="headerlink" title="在k8s中部署jenkins"></a>在k8s中部署jenkins</h1><ul>
+<li>自定义资源文件地址：<a href="https://github.com/simple0426/sysadm/tree/master/kubernetes/jenkins" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/kubernetes/jenkins</a></li>
+<li>使用helm安装：helm search repo jenkins</li>
+</ul>
+<h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><blockquote>
+<p>修改使用国内镜像地址后重启jenkins【删除pod】</p>
+<p>安装插件后重启jenkins，使部分插件生效(如kubernetes插件)</p>
+</blockquote>
+<ul>
+<li><a href="https://plugins.jenkins.io/git" target="_blank" rel="noopener">Git</a>：拉取代码</li>
+<li><a href="https://plugins.jenkins.io/git-parameter" target="_blank" rel="noopener">Git Parameter</a>：git参数化构建，支持在项目中使用分支、tag、revision拉取代码</li>
+<li><a href="https://plugins.jenkins.io/workflow-aggregator" target="_blank" rel="noopener">Pipeline</a>：流水线</li>
+<li><a href="https://plugins.jenkins.io/kubernetes" target="_blank" rel="noopener">Kubernetes</a>：在k8s中动态创建agent</li>
+<li><a href="https://plugins.jenkins.io/config-file-provider" target="_blank" rel="noopener">Config File Provider</a>：支持在web界面加载配置文件，并传递给job workspace</li>
+</ul>
+<h1 id="k8s中创建动态agent"><a href="#k8s中创建动态agent" class="headerlink" title="k8s中创建动态agent"></a>k8s中创建动态agent</h1><ul>
+<li><p>插件：<a href="https://plugins.jenkins.io/kubernetes" target="_blank" rel="noopener">Kubernetes</a></p>
+</li>
+<li><p>jenkins master：可以运行在k8s内，也可以运行在k8s外</p>
+</li>
+</ul>
+<h2 id="kubernetes插件配置"><a href="#kubernetes插件配置" class="headerlink" title="kubernetes插件配置"></a>kubernetes插件配置</h2><ul>
+<li>配置位置：manage nodes and clouds==》kubernetes</li>
+<li>配置选项：根据jenkins-master的部署位置不同，有如下方式：</li>
+</ul>
+<h3 id="jenkins-master部署在k8s集群中"><a href="#jenkins-master部署在k8s集群中" class="headerlink" title="jenkins-master部署在k8s集群中"></a>jenkins-master部署在k8s集群中</h3><ul>
+<li>名称：任意值，用于区分不同的k8s集群</li>
+<li>Kubernetes地址：kubernetes service的地址，例如：<a href="https://kubernetes.default" target="_blank" rel="noopener">https://kubernetes.default</a></li>
+<li>Kubernetes 命名空间：代理pod的运行的命名空间</li>
+<li>jenkins地址：jenkins的service地址，例如：<a href="http://jenkins.ops" target="_blank" rel="noopener">http://jenkins.ops</a></li>
+</ul>
+<h3 id="jenkins-master部署在k8s集群外"><a href="#jenkins-master部署在k8s集群外" class="headerlink" title="jenkins-master部署在k8s集群外"></a>jenkins-master部署在k8s集群外</h3><ul>
+<li><p>名称：任意值，用于区分不同的k8s集群</p>
+</li>
+<li><p>Kubernetes地址：k8s集群外部地址，例如：<a href="https://192.168.31.201:6443" target="_blank" rel="noopener">https://192.168.31.201:6443</a></p>
+</li>
+<li><p>Kubernetes 服务证书 key：kubernetes ca证书，例如：/etc/kubenetes/pki/ca.crt</p>
+</li>
+<li><p>Kubernetes 命名空间：代理pod的运行的命名空间</p>
+</li>
+<li><p>凭据(credential)：</p>
+<ul>
+<li><p>设置证书为 secret text类型</p>
+</li>
+<li><p>凭据的值为在k8s集群中创建的代理pod运行时使用的serviceaccount的token</p>
+</li>
+<li><p>token获取（代理pod-RBAC设置）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl create serviceaccount jenkins-slave -n ops #创建pod服务账号</span><br><span class="line">kubectl create clusterrolebinding jenkins-slave --clusterrole cluster-admin --serviceaccount=ops:jenkins-slave #给pod服务账号绑定权限</span><br><span class="line">kubectl describe secret -n ops jenkins-slave-token-4hb8b #获取pod服务账号的token</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Jenkins 地址：jenkins的web接口地址，例如：<a href="http://192.168.31.250:7080/" target="_blank" rel="noopener">http://192.168.31.250:7080/</a></p>
+</li>
+</ul>
+<h2 id="自定义agent镜像"><a href="#自定义agent镜像" class="headerlink" title="自定义agent镜像"></a>自定义agent镜像</h2><p>agent pod中默认包含一个jnlp的容器用于和jenkins master通信，可以增加一个容器用于执行特定的任务 </p>
+<p>此处即为增加特定任务镜像【包含maven和kubectl命令，以用于在k8s中部署资源】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM centos:7</span><br><span class="line">RUN yum install -y java-1.8.0-openjdk maven curl git libtool-ltdl-devel &amp;&amp; \ </span><br><span class="line">    yum clean all &amp;&amp; \</span><br><span class="line">    rm -rf /var/cache/yum/* &amp;&amp; \</span><br><span class="line">    mkdir -p /usr/share/jenkins</span><br><span class="line">COPY settings.xml /etc/maven/settings.xml</span><br><span class="line">COPY kubectl /usr/bin/</span><br></pre></td></tr></table></figure>
+<h1 id="部署k8s服务的Jenkinsfile"><a href="#部署k8s服务的Jenkinsfile" class="headerlink" title="部署k8s服务的Jenkinsfile"></a>部署k8s服务的Jenkinsfile</h1><ul>
+<li>jenkins的Credentials中新建<ul>
+<li>连接gitlab的认证信息</li>
+<li>连接harbor的认证信息</li>
+</ul>
+</li>
+<li><p>Config File Management（config provider插件功能）中新增kubeconfig文件</p>
+</li>
+<li><p>k8s部署时</p>
+<ul>
+<li>部署所需资源文件k8s-yaml/*在项目的根目录</li>
+<li>需要保证有相关的命名空间</li>
+<li>命名空间中含有连接harbor的secret信息</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"> // harbor地址</span><br><span class="line">def registry = &quot;www.unlazy.cn&quot;</span><br><span class="line">// gitlab地址</span><br><span class="line">def git_url = &quot;http://192.168.31.250:9080&quot; </span><br><span class="line">// 项目分组</span><br><span class="line">def project = &quot;test&quot;</span><br><span class="line">// 项目名称</span><br><span class="line">def app_name = &quot;tomcat-java-demo&quot;</span><br><span class="line">// 项目打包生成的镜像，BUILD_NUMBER为jenkins的内置变量，表示构建序列号</span><br><span class="line">def image_name = &quot;$&#123;registry&#125;/$&#123;project&#125;/$&#123;app_name&#125;:$&#123;BUILD_NUMBER&#125;&quot;</span><br><span class="line">// 项目git地址</span><br><span class="line">def git_address = &quot;$&#123;git_url&#125;/$&#123;project&#125;/$&#123;app_name&#125;.git&quot;</span><br><span class="line">// 部署deployment时需要使用的dockerregistry类型secret</span><br><span class="line">def k8s_dockerregistry_secret = &quot;registry-pull-secret&quot;</span><br><span class="line">// docker命令推送镜像使用的用户名和密码信息</span><br><span class="line">def dockerregistry_auth = &quot;3e8f2333-99a6-4367-8cf4-9b4bd5c2317f&quot;</span><br><span class="line">// 拉取git项目的用户名和密码信息</span><br><span class="line">def git_auth = &quot;e4cf739c-9ede-4469-822b-7e58d97c1869&quot;</span><br><span class="line">// 执行kubectl命令使用的kubeconfig文件</span><br><span class="line">def k8s_kubeconfig = &quot;35c55219-287f-41b9-b77b-2c4abaace04e&quot;</span><br><span class="line"></span><br><span class="line">pipeline &#123;</span><br><span class="line">  agent &#123;</span><br><span class="line">    // 此处使用k8s的动态agent执行构建任务</span><br><span class="line">    kubernetes &#123;</span><br><span class="line">        yaml &quot;&quot;&quot;</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">spec:</span><br><span class="line">  containers: #特定任务容器</span><br><span class="line">  - name: maven</span><br><span class="line">    image: www.unlazy.cn/library/maven-kubectl:v1</span><br><span class="line">    imagePullPolicy: Always</span><br><span class="line">    command:</span><br><span class="line">    - sleep</span><br><span class="line">    args:</span><br><span class="line">    - infinity</span><br><span class="line">    volumeMounts: #容器内可以执行docker命令用于镜像构建</span><br><span class="line">      - name: docker-cmd</span><br><span class="line">        mountPath: /usr/bin/docker</span><br><span class="line">      - name: docker-sock</span><br><span class="line">        mountPath: /var/run/docker.sock</span><br><span class="line">      - name: maven-cache</span><br><span class="line">        mountPath: /root/.m2</span><br><span class="line">  volumes:</span><br><span class="line">    - name: docker-cmd</span><br><span class="line">      hostPath:</span><br><span class="line">        path: /usr/bin/docker</span><br><span class="line">    - name: docker-sock</span><br><span class="line">      hostPath:</span><br><span class="line">        path: /var/run/docker.sock</span><br><span class="line">    - name: maven-cache</span><br><span class="line">      hostPath:</span><br><span class="line">        path: /tmp/m2</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        defaultContainer &apos;maven&apos;</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">      &#125;</span><br><span class="line">      // 参数化构建</span><br><span class="line">    parameters &#123;    </span><br><span class="line">        gitParameter branch: &apos;&apos;, branchFilter: &apos;.*&apos;, defaultValue: &apos;master&apos;, description: &apos;选择发布的分支&apos;, name: &apos;Branch&apos;, quickFilterEnabled: false, selectedValue: &apos;NONE&apos;, sortMode: &apos;NONE&apos;, tagFilter: &apos;*&apos;, type: &apos;PT_BRANCH&apos;</span><br><span class="line">        choice (choices: [&apos;1&apos;, &apos;3&apos;, &apos;5&apos;, &apos;7&apos;], description: &apos;副本数&apos;, name: &apos;ReplicaCount&apos;)</span><br><span class="line">        choice (choices: [&apos;dev&apos;,&apos;test&apos;,&apos;prod&apos;], description: &apos;命名空间&apos;, name: &apos;Namespace&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&apos;拉取代码&apos;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                checkout([$class: &apos;GitSCM&apos;, </span><br><span class="line">                branches: [[name: &quot;$&#123;params.Branch&#125;&quot;]], </span><br><span class="line">                doGenerateSubmoduleConfigurations: false, </span><br><span class="line">                extensions: [], submoduleCfg: [], </span><br><span class="line">                userRemoteConfigs: [[credentialsId: &quot;$&#123;git_auth&#125;&quot;, url: &quot;$&#123;git_address&#125;&quot;]]</span><br><span class="line">                ])</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;代码编译&apos;)&#123;</span><br><span class="line">           steps &#123;</span><br><span class="line">             sh &quot;&quot;&quot;</span><br><span class="line">                mvn clean package -Dmaven.test.skip=true</span><br><span class="line">                &quot;&quot;&quot; </span><br><span class="line">           &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;构建镜像&apos;)&#123;</span><br><span class="line">           steps &#123;</span><br><span class="line">                withCredentials([usernamePassword(credentialsId: &quot;$&#123;dockerregistry_auth&#125;&quot;, passwordVariable: &apos;password&apos;, usernameVariable: &apos;username&apos;)]) &#123;</span><br><span class="line">                sh &quot;&quot;&quot;</span><br><span class="line">                  echo &apos;</span><br><span class="line">                    FROM tomcat:8.5.57</span><br><span class="line">                    ADD target/*.war /usr/local/tomcat/webapps/ROOT.war</span><br><span class="line">                  &apos; &gt; Dockerfile</span><br><span class="line">                  docker build -t $&#123;image_name&#125; .</span><br><span class="line">                  docker login -u $&#123;username&#125; -p &apos;$&#123;password&#125;&apos; $&#123;registry&#125;</span><br><span class="line">                  docker push $&#123;image_name&#125;</span><br><span class="line">                &quot;&quot;&quot;</span><br><span class="line">                &#125;</span><br><span class="line">           &#125; </span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;部署到K8S平台&apos;)&#123;</span><br><span class="line">          steps &#123;</span><br><span class="line">              configFileProvider([configFile(fileId: &quot;$&#123;k8s_kubeconfig&#125;&quot;, targetLocation: &quot;admin.kubeconfig&quot;)])&#123;</span><br><span class="line">                sh &quot;&quot;&quot;</span><br><span class="line">                  sed -i &apos;s#IMAGE_NAME#$&#123;image_name&#125;#&apos; k8s-yaml/deployment.yaml</span><br><span class="line">                  sed -i &apos;s#SECRET_NAME#$&#123;k8s_dockerregistry_secret&#125;#&apos; k8s-yaml/deployment.yaml</span><br><span class="line">                  sed -i &apos;s#REPLICAS#$&#123;ReplicaCount&#125;#&apos; k8s-yaml/deployment.yaml</span><br><span class="line">                  kubectl apply -f k8s-yaml/ -n $&#123;Namespace&#125; --kubeconfig=admin.kubeconfig</span><br><span class="line">                &quot;&quot;&quot;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jenkins/" rel="tag"># jenkins</a>
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/30/监控报警/prometheus入门/" rel="next" title="prometheus入门">
+                <i class="fa fa-chevron-left"></i> prometheus入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">240</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在k8s中部署jenkins"><span class="nav-number">1.</span> <span class="nav-text">在k8s中部署jenkins</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装插件"><span class="nav-number">2.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s中创建动态agent"><span class="nav-number">3.</span> <span class="nav-text">k8s中创建动态agent</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubernetes插件配置"><span class="nav-number">3.1.</span> <span class="nav-text">kubernetes插件配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jenkins-master部署在k8s集群中"><span class="nav-number">3.1.1.</span> <span class="nav-text">jenkins-master部署在k8s集群中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jenkins-master部署在k8s集群外"><span class="nav-number">3.1.2.</span> <span class="nav-text">jenkins-master部署在k8s集群外</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义agent镜像"><span class="nav-number">3.2.</span> <span class="nav-text">自定义agent镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署k8s服务的Jenkinsfile"><span class="nav-number">4.</span> <span class="nav-text">部署k8s服务的Jenkinsfile</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
