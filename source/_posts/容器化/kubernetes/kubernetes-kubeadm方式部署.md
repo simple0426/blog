@@ -134,6 +134,11 @@ kubeadm init --kubernetes-version=v1.17.3 \
 * 维护成本，flannel小，calico大
 
 ### flannel安装
+
+> __注意__：由kubeadm安装的1.17~1.18版本k8s集群使用flannel插件有bug，会造成访问service的地址长时间无响应，需要执行
+>
+> 命令修复此问题：`ethtool --offload flannel.1 rx off tx off`
+
 - 下载[资源文件](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
 - kube-flannel.yml文件修改
   + pod网络设置(net-conf.json)
