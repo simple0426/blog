@@ -349,8 +349,8 @@ scrape_configs: #抓取设置
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alter-status.jpg)
 
 * inactive：当做什么都没发生
-* pending：已触发阈值，但是为满足告警持续时间
-* firing：触发阈值且满足告警持续时间；告警移送给接收者。
+* pending：已触发阈值，但是未满足告警持续时间
+* firing：触发阈值且满足告警持续时间；告警发给接收者。
 
 ## [告警收敛设置](https://prometheus.io/docs/alerting/latest/alertmanager/#alertmanager)
 
@@ -363,7 +363,7 @@ scrape_configs: #抓取设置
 * prometheus根据采集的数据和告警规则进行判断；满足条件后，将告警发送到altermanager
   * 是否触发阈值
   * 是否超过持续时间
-* altermanager根据告警收敛规则，决定是否、什么时间发送告警（邮件、微信、钉钉等）
+* altermanager根据告警收敛规则，决定是否、什么时间发送告警（邮件、企业微信、钉钉等）
 
 ## 启动配置-告警方式
 
