@@ -2,6 +2,7 @@
 title: prometheus入门
 tags:
   - prometheus
+  - altermanager
 categories:
   - prometheus
 date: 2020-07-30 21:41:36
@@ -82,7 +83,7 @@ date: 2020-07-30 21:41:36
 
 * instance：可以抓取数据的目标端点
 
-* jobs：具有相同目标的实例(instance)集合
+* jobs：具有相同目标的实例(instance)集合【如多个mysql实例】
 
 * 范例：
 
@@ -108,6 +109,13 @@ date: 2020-07-30 21:41:36
 * 数据存储(__prometheus server__)：node-hdd/ssd(本地存储)、influxDB
 * 告警(__altermanager__)
 * 查询&展示：promQL(查询语言)、api clients、__grafana__、web UI
+
+# 部署
+
+* k8s中分组件部署：https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus
+* k8s中快速部署：
+  * [kube-prometheus](https://github.com/coreos/kube-prometheus)：提供了基于prometheus operator和prometheus的完整集群监控技术栈
+  * [stable/prometheus-operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator)：helm社区维护的prometheus监控技术栈，类似于kube-prometheus
 
 # prometheus-server
 
@@ -222,7 +230,7 @@ scrape_configs: #抓取设置
 ]
 ```
 
-## 标签处理-relabel_configs
+## 目标标签处理-relabel_configs
 
 > 可以直接在数据抓取目标处设置label
 
@@ -303,7 +311,7 @@ scrape_configs: #抓取设置
 
 # pushgateway
 
-* prometheus配置抓取目标为pushgateway时，必须设置honor_labels为true，避免收集数据本身的job和instance被覆盖
+* prometheus配置抓取目标为pushgateway时，必须设置honor_labels为true，避免收集的数据本身的job和instance被覆盖
 * 配置参数【--persistence.file】和--persistence.interval=5m将收集的数据持久化
 
 # PromQL语法
@@ -329,6 +337,9 @@ scrape_configs: #抓取设置
   * 比较运算(常用于报警)：==、!=、>、>=、<、<=
   * 逻辑运算：and、or
   * 聚合运算：sum、min、max、avg、count、topk(n,metric)
+    * sum：
+      * 直接计算总和(所有节点可用内存)：sum(node_memory_MemAvailable/(1024*1024))
+      * 分类之后分别计算总和(计算每个pod的占用内存)：sum(container_memory_rss{image!=""}) by(pod) 
   * 内置函数：rate(区间内每秒增长量)、irate、abs、increase(区间内增长量)、sort_desc、sort
 
 # altermanager-告警
@@ -353,3 +364,144 @@ scrape_configs: #抓取设置
   * 是否触发阈值
   * 是否超过持续时间
 * altermanager根据告警收敛规则，决定是否、什么时间发送告警（邮件、微信、钉钉等）
+
+## 启动配置-告警方式
+
+* 启动参数
+  * 配置文件：--config.file="alertmanager.yml"
+  * 数据目录：--storage.path="data/"
+  * 外部访问url：--web.external-url=/
+* 主配置【邮件示例】
+
+```
+global: 
+  resolve_timeout: 5m
+  smtp_smarthost: 'smtp.163.com:25'
+  smtp_from: 'baojingtongzhi@163.com'
+  smtp_auth_username: 'baojingtongzhi@163.com'
+  smtp_auth_password: 'NCKBJTSASSXMRQBM'
+
+receivers:
+- name: default-receiver
+  email_configs:
+  - to: "zhenliang369@163.com"
+
+route:
+  group_interval: 1m
+  group_wait: 10s
+  receiver: default-receiver
+  repeat_interval: 1m
+```
+
+# prometheus高可用
+
+## 联邦功能
+
+prometheus原生支持联邦架构，能够实现从别的prometheus抓取符合特定条件的数据
+
+```
+scrape_configs:
+- job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job=~"kubernetes.*"}' #抓取目标prometheus中job为kubernetes开头的监控项
+    static_configs:
+      - targets:
+        - '192.168.31.201:30090'
+```
+
+## 高可用方案
+
+* HA方案：启动多个prometheus-server，每个prometheus配置都相同，收集相同目标的数据
+
+  ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha.jpg)
+
+  * 优点：只能保证prometheus服务的可用性问题
+  * 缺点：数据无法持久化、无法保证数据一致性；受制于单点性能限制(ServerA/ServerB)，无法进行动态扩展。
+  * 适用场景：小规模、短周期存储监控数据
+
+* HA+远程存储：多台配置相同的prometheus(ServerA/ServerB)，都可以向远程存储写数据；使用keepalived机制，保证同一时间只启动其中的一台prometheus-server，也只有存活的prometheus可以向远程存储写数据
+
+  ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-remote-storage.jpg)
+
+  * 优点：数据可以长期存储、保证了数据的一致性；保证了prometheus-server的可用性
+  * 缺点：单台server性能有限，无法收集更多监控数据
+  * 适用场景：小规模、长期数据存储
+
+* HA+远程存储+联邦集群：将不同的采集任务划分为不同功能区(ServerA/ServerB)，再启动一台单独的prometheus(ServerC)将重要的数据从ServerA和ServerB中汇总，同时启用外部存储进行数据持久化
+
+  ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha-federate.jpg)
+
+  * 优点：重要数据可以持久化、server可以灵活迁移；能够依据不同任务进行层级划分；ServerA/ServerB可以使用HA进行高可用
+
+## 监控范例
+
+* 监控需求：
+  * 系统监控(cpu、内存、磁盘、网络)数据量不大，但需要长期存储【需要做资源规划和分析】
+  * 业务监控(nginx/grpc等)和线上业务访问成正比，数据量巨大；业务监控主要做实时探测，一般需求不超过一周(主要做实时业务成功率报警，历史数据分析从ELK等日志系统操作)
+
+* 监控实现
+
+  ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-sample.jpg)
+
+# altermanager高可用
+
+单点架构中，由于收敛规则中的group可以去重(repeat)，所以altermanager可以对接多个具有相同配置的prometheus-server
+
+## 高可用方案
+
+* 使用负载均衡，将prometheus发送的告警分流到不同的altermanager上
+
+  ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alert-ha.jpg)
+
+* 使用altermanager的集群功能【使用gossip协议：去中心化、最终一致性】
+
+  * --cluster.listen-address="127.0.0.1:8001"：当前实例集群服务监听地址
+  * --cluster.peer=127.0.0.1:8001：初始化时关联的其他实例的集群服务地址【第一个启动的实例不用配置】
+
+## 集群实践
+
+* webhook项目编译
+
+  * webhook项目：https://github.com/prometheus/alertmanager/tree/master/examples/webhook
+
+  * 安装go环境：https://golang.google.cn/doc/install
+
+  * 配置go仓库：
+
+    ```
+    go env -w GO111MODULE=on
+    go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
+    ```
+
+  * 编译webhook项目：`go get github.com/prometheus/alertmanager/examples/webhook`
+
+  * webhook最新二进制文件位置：$HOME/go/bin/webhook
+
+* 启动altermanager和webhook
+
+  * [alertmanager.yml](https://github.com/prometheus/alertmanager/blob/master/examples/ha/alertmanager.yml)：关联本地webhook
+
+  ```
+  nohup ./alertmanager  --web.listen-address=":9093" --cluster.listen-address="127.0.0.1:8001" --config.file=alertmanager.yml --log.level=debug 2>&1 > alert1.log & 
+  nohup ./alertmanager  --web.listen-address=":9094" --cluster.listen-address="127.0.0.1:8002" --cluster.peer=127.0.0.1:8001 --config.file=alertmanager.yml --log.level=debug 2>&1 > alert2.log & 
+  nohup ./alertmanager  --web.listen-address=":9095" --cluster.listen-address="127.0.0.1:8003" --cluster.peer=127.0.0.1:8001 --config.file=alertmanager.yml --log.level=debug 2>&1 > alert3.log & 
+  nohup ./webhook --log.level=debug 2>&1 > webhook.log &
+  ```
+
+* 使用脚本测试最终收到的报警信息
+  * 报警脚本：https://github.com/prometheus/alertmanager/blob/master/examples/ha/send_alerts.sh
+  * 查看报警信息：`cat webhook.log`
+
+# 未完待续
+
+* service discovery
+
+* 自定义监控指标-API
+
+* prometheus-operator
+
+*  [高可用prometheus：thanos 实践](https://segmentfault.com/a/1190000022164038)
