@@ -1,5 +1,5 @@
 ---
-title: docker-k8s的CICD实践预览
+title: 容器化CICD实践
 tags:
   - gitlab
   - harbor

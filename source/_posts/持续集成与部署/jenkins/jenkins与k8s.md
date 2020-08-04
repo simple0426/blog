@@ -1,10 +1,10 @@
 ---
-title: jenkins与k8s的集成
+title: jenkins与k8s
 tags:
   - jenkins
   - k8s
 categories:
-  - jenkins
+  - CICD
 date: 2020-08-03 19:35:10
 ---
 
@@ -26,7 +26,7 @@ date: 2020-08-03 19:35:10
 * [Kubernetes](https://plugins.jenkins.io/kubernetes)：在k8s中动态创建agent
 * [Config File Provider](https://plugins.jenkins.io/config-file-provider)：支持在web界面加载配置文件，并传递给job workspace
 
-# k8s中创建动态agent
+# 在k8s中动态创建agent
 
 * 插件：[Kubernetes](https://plugins.jenkins.io/kubernetes)
 
@@ -86,7 +86,7 @@ COPY settings.xml /etc/maven/settings.xml
 COPY kubectl /usr/bin/
 ```
 
-# 部署k8s服务的Jenkinsfile
+# 使用jenkins部署k8s服务
 
 * jenkins的Credentials中新建
   * 连接gitlab的认证信息

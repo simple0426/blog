@@ -9,13 +9,12 @@ date: 2018-04-03 10:28:44
 ---
 
 # 容器平台分层架构
-![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container-scheme.jpg)
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg)
 
-* 基础设施(openstack)：虚拟机、网络、存储、数据库、公有云
-* 容器引擎：docker
-* 容器编排：kubernetes
-* PaaS层：为开发、测试、运维提供统一的平台服务
-* 访问和工具层：web控制台、CICD、监控、日志
+* 基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库
+* 容器引擎层：docker、harbor(镜像仓库)
+* 容器编排层：kubernetes
+* 访问和工具层-PaaS：web控制台、CICD、监控、日志
 
 # [官方文档使用](https://kubernetes.io/docs/home/)
 * 概念
@@ -87,14 +86,9 @@ date: 2018-04-03 10:28:44
 * IngressController：在service之上，为集群提供7层代理；实现项目:nginx、traefik
 
 # 集群部署方式
-* [minikube方式](#minikube)：[官方](https://kubernetes.io/docs/setup/learning-environment/minikube/)
-* [二进制手动方式](https://github.com/kubernetes/kubernetes/releases)
-* [kubeadm工具部署](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-
-# 集群运行模式
-* 独立组件【二进制安装方式】：系统组件直接以守护进程方式运行在节点上
-* 静态pod模式【kubeadm默认方式】，除了kubelet和docker之外其他组件(etcd/api/scheduler/controller-manager)都以静态pod方式运行在master主机上
-* 自托管模式(self-hosted)【可通过kubeadm由静态pod转换而来】：类似静态pod方式，除了kubelet和docker之外其他组件都是集群上的pod对象，但这些pod受控于daemonset控制器
+* [minikube方式](#minikube)【[官方](https://kubernetes.io/docs/setup/learning-environment/minikube/)】
+* [二进制手动方式](https://github.com/kubernetes/kubernetes/releases)：k8s核心组件以守护进程方式运行在节点上
+* [kubeadm工具部署](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)：除了kubelet和docker之外其他组件(etcd/api/scheduler/controller-manager)都以静态pod方式运行在master节点上
 
 # [minikube](https://minikube.sigs.k8s.io/)
 ## 软件安装
@@ -128,22 +122,3 @@ date: 2018-04-03 10:28:44
 * `kubectl get --watch deployments`：持续查看deployments信息
 * `kubectl describe deployment`：显示deployments详情
 * `kubectl delete deployment nginx-deployment`：删除deployment
-
-# 最佳实践
-## 集群部署硬件要求
-|   环境   |   节点类型  |     配置     |
-|----------|-------------|--------------|
-| 实验环境 | master/node | 2C/2G+       |
-| 测试环境 | master      | 2C/4G/40G    |
-| -        | node        | 4C/8G/40G    |
-| 生产环境 | master      | 4C/8G/100G  |
-| -        | node        | 8C/64G/500G |
-
-## 使用限额
-```
-在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：
-节点数不超过 5000
-Pod 总数不超过 150000
-容器总数不超过 300000
-每个节点的 pod 数量不超过 100
-```
