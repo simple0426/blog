@@ -104,6 +104,8 @@ date: 2020-03-11 17:03:40
 
 # 日志采集方案
 
+> [k8s中部署efk范例](https://github.com/simple0426/sysadm/tree/master/kubernetes/elk)
+
 * 数据采集：filebeat、fluentd
 * 过滤清洗：logstash
 * 消息队列：redis、kafka
