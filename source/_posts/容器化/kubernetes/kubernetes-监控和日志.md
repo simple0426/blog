@@ -78,6 +78,8 @@ date: 2020-03-11 17:03:40
 
 # 日志分类
 
+> 宿主机/k8s组件、pod标准输出日志可以通过在k8s中部署[filebeat](https://github.com/elastic/beats/blob/master/deploy/kubernetes/filebeat-kubernetes.yaml)收集
+
 * 宿主机和核心组件日志，通过hostpath挂载/var/log/messages收集日志
     - apiserver日志用来审计
     - scheduler日志可以诊断调度
