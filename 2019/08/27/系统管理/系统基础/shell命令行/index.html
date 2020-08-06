@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="系统管理 crontab：设置周期性任务 at：一次性任务（使用较少） head -n：显示前n行内容【默认10】 tail：末尾显示 -n：显示末尾n行内容【默认10】 -f：持续追踪末尾输出   echo：回显文本 -e：支持特殊转义符：【\n \t等】 -n：移除末尾换行   read：从标准输入读取一行内容 seq [start [step]] end：打印数字序列 -f printf格式">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.449Z">
+<meta property="og:updated_time" content="2020-08-05T07:45:00.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell命令行">
 <meta name="twitter:description" content="系统管理 crontab：设置周期性任务 at：一次性任务（使用较少） head -n：显示前n行内容【默认10】 tail：末尾显示 -n：显示末尾n行内容【默认10】 -f：持续追踪末尾输出   echo：回显文本 -e：支持特殊转义符：【\n \t等】 -n：移除末尾换行   read：从标准输入读取一行内容 seq [start [step]] end：打印数字序列 -f printf格式">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-05T15:45:00+08:00">
+                2020-08-05
               </time>
             
           </span>
@@ -631,6 +631,22 @@
 <li>关闭服务：systemctl stop crond</li>
 <li>重启服务：systemctl restart crond</li>
 </ul>
+<h1 id="非编译二进制程序安装"><a href="#非编译二进制程序安装" class="headerlink" title="非编译二进制程序安装"></a>非编译二进制程序安装</h1><ul>
+<li><p>下载可执行程序到工作目录</p>
+</li>
+<li><p>准备二进制程序启动所需配置文件</p>
+</li>
+<li><p>准备服务可systemd管理的文件/usr/lib/systemd/system/XXXXXX.service</p>
+<ul>
+<li>指定二进制文件路径</li>
+<li>指定程序主配置文件</li>
+<li>指定程序其他启动参数</li>
+</ul>
+</li>
+<li><p>启动服务并设置开机启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start XXXXXX</span><br><span class="line">systemctl enable XXXXXX</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
 <h1 id="程序源码安装"><a href="#程序源码安装" class="headerlink" title="程序源码安装"></a>程序源码安装</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
 <li>开放源码：人可以看懂的文本类型的程序源码</li>
 <li>编译程序：将程序源码编译成机器可以看懂的语言，类似翻译者的角色</li>
@@ -794,7 +810,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-count">127</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -816,7 +832,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">242</span>
+                  <span class="site-state-item-count">244</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -865,7 +881,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统管理"><span class="nav-number">1.</span> <span class="nav-text">系统管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软件管理"><span class="nav-number">2.</span> <span class="nav-text">软件管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统服务管理"><span class="nav-number">2.1.</span> <span class="nav-text">系统服务管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#crontab"><span class="nav-number">3.</span> <span class="nav-text">crontab</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令参数"><span class="nav-number">3.2.</span> <span class="nav-text">命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段含义"><span class="nav-number">3.3.</span> <span class="nav-text">字段含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#read"><span class="nav-number">4.</span> <span class="nav-text">read</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#选项"><span class="nav-number">4.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#时间"><span class="nav-number">5.</span> <span class="nav-text">时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS与系统时间"><span class="nav-number">5.1.</span> <span class="nav-text">BIOS与系统时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date命令"><span class="nav-number">5.2.</span> <span class="nav-text">date命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时间字符串"><span class="nav-number">5.2.1.</span> <span class="nav-text">时间字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间设置"><span class="nav-number">5.3.</span> <span class="nav-text">时间设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ntpdate与ntpd的区别"><span class="nav-number">5.4.</span> <span class="nav-text">ntpdate与ntpd的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpm"><span class="nav-number">6.</span> <span class="nav-text">rpm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yum"><span class="nav-number">7.</span> <span class="nav-text">yum</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">7.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源设置"><span class="nav-number">7.2.</span> <span class="nav-text">软件源设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dpkg"><span class="nav-number">8.</span> <span class="nav-text">dpkg</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#apt"><span class="nav-number">9.</span> <span class="nav-text">apt</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源"><span class="nav-number">9.1.</span> <span class="nav-text">软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chkconfig"><span class="nav-number">10.</span> <span class="nav-text">chkconfig</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemctl"><span class="nav-number">11.</span> <span class="nav-text">systemctl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd添加服务"><span class="nav-number">11.1.</span> <span class="nav-text">systemd添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd管理"><span class="nav-number">11.2.</span> <span class="nav-text">systemd管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序源码安装"><span class="nav-number">12.</span> <span class="nav-text">程序源码安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">12.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装前置条件"><span class="nav-number">12.2.</span> <span class="nav-text">安装前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码安装"><span class="nav-number">12.3.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数库"><span class="nav-number">12.4.</span> <span class="nav-text">函数库</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统管理"><span class="nav-number">1.</span> <span class="nav-text">系统管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软件管理"><span class="nav-number">2.</span> <span class="nav-text">软件管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统服务管理"><span class="nav-number">2.1.</span> <span class="nav-text">系统服务管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#crontab"><span class="nav-number">3.</span> <span class="nav-text">crontab</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令参数"><span class="nav-number">3.2.</span> <span class="nav-text">命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段含义"><span class="nav-number">3.3.</span> <span class="nav-text">字段含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#read"><span class="nav-number">4.</span> <span class="nav-text">read</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#选项"><span class="nav-number">4.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#时间"><span class="nav-number">5.</span> <span class="nav-text">时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BIOS与系统时间"><span class="nav-number">5.1.</span> <span class="nav-text">BIOS与系统时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date命令"><span class="nav-number">5.2.</span> <span class="nav-text">date命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时间字符串"><span class="nav-number">5.2.1.</span> <span class="nav-text">时间字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范例-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间设置"><span class="nav-number">5.3.</span> <span class="nav-text">时间设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ntpdate与ntpd的区别"><span class="nav-number">5.4.</span> <span class="nav-text">ntpdate与ntpd的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpm"><span class="nav-number">6.</span> <span class="nav-text">rpm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yum"><span class="nav-number">7.</span> <span class="nav-text">yum</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">7.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源设置"><span class="nav-number">7.2.</span> <span class="nav-text">软件源设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dpkg"><span class="nav-number">8.</span> <span class="nav-text">dpkg</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#apt"><span class="nav-number">9.</span> <span class="nav-text">apt</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件源"><span class="nav-number">9.1.</span> <span class="nav-text">软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chkconfig"><span class="nav-number">10.</span> <span class="nav-text">chkconfig</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemctl"><span class="nav-number">11.</span> <span class="nav-text">systemctl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd添加服务"><span class="nav-number">11.1.</span> <span class="nav-text">systemd添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd管理"><span class="nav-number">11.2.</span> <span class="nav-text">systemd管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非编译二进制程序安装"><span class="nav-number">12.</span> <span class="nav-text">非编译二进制程序安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序源码安装"><span class="nav-number">13.</span> <span class="nav-text">程序源码安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">13.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装前置条件"><span class="nav-number">13.2.</span> <span class="nav-text">安装前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码安装"><span class="nav-number">13.3.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数库"><span class="nav-number">13.4.</span> <span class="nav-text">函数库</span></a></li></ol></li></ol></div>
             
 
           </div>

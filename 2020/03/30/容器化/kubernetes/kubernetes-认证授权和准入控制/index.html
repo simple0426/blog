@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="访问控制对kubernetes安全的保护主要通过如下方式实现：  认证（authentication）：验证访问者的身份(即访问对象) 授权（authorization）：确定认证用户的权限和可以执行的操作，如增删改查指定的资源对象 准入控制（admission control）：验证操作是否符合规范 用默认值补足要创建的目标资源中未定义的各字段 检查目标namespace是否存在 检查是否违反系">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-22T05:31:42.445Z">
+<meta property="og:updated_time" content="2020-08-06T07:11:16.508Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-认证授权和准入控制">
 <meta name="twitter:description" content="访问控制对kubernetes安全的保护主要通过如下方式实现：  认证（authentication）：验证访问者的身份(即访问对象) 授权（authorization）：确定认证用户的权限和可以执行的操作，如增删改查指定的资源对象 准入控制（admission control）：验证操作是否符合规范 用默认值补足要创建的目标资源中未定义的各字段 检查目标namespace是否存在 检查是否违反系">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-22T13:31:42+08:00">
-                2020-07-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-06T15:11:16+08:00">
+                2020-08-06
               </time>
             
           </span>
@@ -553,7 +553,7 @@
 <li>–root-ca-file：根ca证书，此根证书颁发机构将包含在服务帐户的令牌密钥中</li>
 </ul>
 </li>
-<li><p>批准kubelet证书请求</p>
+<li><p><a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/#approval" target="_blank" rel="noopener">批准kubelet证书请求</a></p>
 <ul>
 <li><p>手动批准证书签名请求</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get csr</span><br><span class="line">kubectl certificate approve &lt;name&gt;</span><br></pre></td></tr></table></figure>
@@ -564,7 +564,10 @@
 </ul>
 </li>
 </ul>
-<h2 id="kubelet"><a href="#kubelet" class="headerlink" title="kubelet"></a>kubelet</h2><ul>
+<pre><code>* 使kubelet可以续订自己的客户端证书
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Approve renewal CSRs for the group &quot;system:nodes&quot;</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: auto-approve-renewals-for-nodes</span><br><span class="line">subjects:</span><br><span class="line">- kind: Group</span><br><span class="line">  name: system:nodes</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">roleRef:</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
+</code></pre><h2 id="kubelet"><a href="#kubelet" class="headerlink" title="kubelet"></a>kubelet</h2><ul>
 <li>配置项<ul>
 <li>–bootstrap-kubeconfig：bootstrap的kubeconfig配置，主要包含bootstrap token</li>
 <li>–kubeconfig：kubelet和apiserver通信的kubeconfig配置</li>
@@ -695,7 +698,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cfssl gencert -ca=/etc/kubernetes/pki/ca.crt -ca-key=/etc/kubernetes/pki/ca.key -config=ca-config.json -profile=kubernetes aliang-csr.json | cfssljson -bare aliang</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="配置kubeconfig"><a href="#配置kubeconfig" class="headerlink" title="配置kubeconfig"></a>配置kubeconfig</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl config set-cluster --embed-certs=true --server=&quot;https://192.168.31.201:6443&quot; --certificate-authority=/etc/kubernetes/pki/ca.crt --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config set-credentials aliang --embed-certs=true --client-certificate=aliang.pem --client-key=aliang-key.pem --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config set-context aliang@kubernetes --cluster=kubernetes --user=aliang --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config use-context aliang@kubernetes --kubeconfig=aliang.kubeconfig</span><br></pre></td></tr></table></figure>
+<h2 id="配置kubeconfig"><a href="#配置kubeconfig" class="headerlink" title="配置kubeconfig"></a>配置kubeconfig</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl config set-cluster kubernetes --embed-certs=true --server=&quot;https://192.168.31.201:6443&quot; --certificate-authority=/etc/kubernetes/pki/ca.crt --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config set-credentials aliang --embed-certs=true --client-certificate=aliang.pem --client-key=aliang-key.pem --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config set-context aliang@kubernetes --cluster=kubernetes --user=aliang --kubeconfig=aliang.kubeconfig</span><br><span class="line">kubectl config use-context aliang@kubernetes --kubeconfig=aliang.kubeconfig</span><br></pre></td></tr></table></figure>
 <h2 id="给用户aliang授权"><a href="#给用户aliang授权" class="headerlink" title="给用户aliang授权"></a>给用户aliang授权</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kind: Role</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">metadata:</span><br><span class="line">  namespace: default</span><br><span class="line">  name: pod-reader</span><br><span class="line">rules:</span><br><span class="line">- apiGroups: [&quot;&quot;]</span><br><span class="line">  resources: [&quot;pods&quot;,&quot;services&quot;]</span><br><span class="line">  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</span><br><span class="line">---</span><br><span class="line">kind: RoleBinding</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">metadata:</span><br><span class="line">  name: read-pods</span><br><span class="line">  namespace: default</span><br><span class="line">subjects:</span><br><span class="line">- kind: User</span><br><span class="line">  name: aliang</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">roleRef:</span><br><span class="line">  kind: Role</span><br><span class="line">  name: pod-reader</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
 <h2 id="kubectl命令测试"><a href="#kubectl命令测试" class="headerlink" title="kubectl命令测试"></a>kubectl命令测试</h2><blockquote>
 <p>kubectl默认使用的kubeconfig文件在用户主目录下的.kube中，例如</p>
@@ -959,7 +962,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-count">127</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -981,7 +984,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">242</span>
+                  <span class="site-state-item-count">244</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
