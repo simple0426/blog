@@ -201,7 +201,7 @@ controller-manager会用到这个组的默认审批控制器来决定是否颁�
     * --cluster-signing-key-file：用于颁发集群范围内证书的ca证书
     * --root-ca-file：根ca证书，此根证书颁发机构将包含在服务帐户的令牌密钥中
     
-* 批准kubelet证书请求
+* [批准kubelet证书请求](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/#approval)
 
     * 手动批准证书签名请求
 
@@ -227,7 +227,27 @@ controller-manager会用到这个组的默认审批控制器来决定是否颁�
           name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
           apiGroup: rbac.authorization.k8s.io
         ```
+        
+    * 使kubelet可以续订自己的客户端证书
+    
+        ```
+        # Approve renewal CSRs for the group "system:nodes"
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: auto-approve-renewals-for-nodes
+        subjects:
+        - kind: Group
+          name: system:nodes
+          apiGroup: rbac.authorization.k8s.io
+        roleRef:
+          kind: ClusterRole
+          name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
+          apiGroup: rbac.authorization.k8s.io
+        ```
+
 ## kubelet
+
 * 配置项
     - --bootstrap-kubeconfig：bootstrap的kubeconfig配置，主要包含bootstrap token
     - --kubeconfig：kubelet和apiserver通信的kubeconfig配置
@@ -447,7 +467,7 @@ rules:
 ## 配置kubeconfig
 
 ```
-kubectl config set-cluster --embed-certs=true --server="https://192.168.31.201:6443" --certificate-authority=/etc/kubernetes/pki/ca.crt --kubeconfig=aliang.kubeconfig
+kubectl config set-cluster kubernetes --embed-certs=true --server="https://192.168.31.201:6443" --certificate-authority=/etc/kubernetes/pki/ca.crt --kubeconfig=aliang.kubeconfig
 kubectl config set-credentials aliang --embed-certs=true --client-certificate=aliang.pem --client-key=aliang-key.pem --kubeconfig=aliang.kubeconfig
 kubectl config set-context aliang@kubernetes --cluster=kubernetes --user=aliang --kubeconfig=aliang.kubeconfig
 kubectl config use-context aliang@kubernetes --kubeconfig=aliang.kubeconfig

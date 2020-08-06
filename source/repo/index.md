@@ -16,16 +16,21 @@ date: 2019-06-24 21:54:01
 * busybox:1.28.4（约1M）：包含300多个linux命令的软件集合
 * alpine（约5M）：基于alpine linux的最小docker镜像
 
-# docker镜像仓库
+# docker-hub镜像加速
 - 阿里云：https://2x97hcl1.mirror.aliyuncs.com
 - 163：http://hub-mirror.c.163.com
-- docker-cn：https://registry.docker-cn.com
-- daocloud：http://f1361db2.m.daocloud.io
+- DaoCloud：https://f1361db2.m.daocloud.io
+- 七牛： https://reg-mirror.qiniu.com
 
-# [镜像代理-中科大](http://mirrors.ustc.edu.cn/)
-* docker.io：docker.mirrors.ustc.edu.cn
-* gcr.io：gcr.mirrors.ustc.edu.cn
-* quay.io：quay.mirrors.ustc.edu.cn
+# 容器镜像代理
+* k8s.gcr.io：gcr.io/google-containers
+* gcr.io：
+  * 中科大：gcr.mirrors.ustc.edu.cn
+  * 阿里云：registry.aliyuncs.com/google_containers
+  * 七牛：gcr-mirror.qiniu.com
+* quay.io：
+  * 中科大：quay.mirrors.ustc.edu.cn
+  * 七牛：quay-mirror.qiniu.com
 
 # pypi阿里云
 - 命令行设置：-i https://mirrors.aliyun.com/pypi/simple/
