@@ -85,9 +85,9 @@ controller-manager会用到这个组的默认审批控制器来决定是否颁�
           name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
           apiGroup: rbac.authorization.k8s.io
         ```
-        
+
     * 自动批准kubelet客户端证书续签
-    
+
         ```
         # Approve renewal CSRs for the group "system:nodes"
         apiVersion: rbac.authorization.k8s.io/v1
@@ -103,9 +103,9 @@ controller-manager会用到这个组的默认审批控制器来决定是否颁�
           name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
           apiGroup: rbac.authorization.k8s.io
         ```
-        
+
     * 自动批准kubelet服务端证书续签(kubelet暴露https接口作为服务端)
-    
+
         ```
         kubectl create clusterrolebinding node-server-auto-renew-crt --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeserver --group=system:nodes
         ```
@@ -149,5 +149,3 @@ kubectl config --kubeconfig=/var/lib/kubelet/bootstrap-kubeconfig use-context bo
   * kubeadm:node-autoapprove-bootstrap【默认】：自动批准首次申请证书的 CSR 请求
   * kubeadm:node-autoapprove-certificate-rotation【默认】：自动批准kubelet客户端证书续签
   * `kubectl create clusterrolebinding node-server-auto-renew-crt --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeserver --group=system:nodes`：自动批准kubelet服务端证书续签
-
-  
