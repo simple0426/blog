@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-01T14:26:07.916Z">
+<meta property="og:updated_time" content="2020-08-11T11:11:04.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-01T22:26:07+08:00">
-                2020-08-01
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-11T19:11:04+08:00">
+                2020-08-11
               </time>
             
           </span>
@@ -528,61 +528,6 @@
 </ul>
 </li>
 </ul>
-<h2 id="metric-server"><a href="#metric-server" class="headerlink" title="metric-server"></a><a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">metric-server</a></h2><ul>
-<li>设置api-server【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：<ul>
-<li>文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml</li>
-<li>配置：<code>--enable-aggregator-routing=true</code></li>
-<li>重载配置：删除api-server的pod使其自动重建</li>
-</ul>
-</li>
-<li><a href="https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml" target="_blank" rel="noopener">下载资源文件</a></li>
-<li>修改配置(deployment)<ul>
-<li>修改镜像地址(image)</li>
-<li>容器启动参数(args)<ul>
-<li><code>--kubelet-insecure-tls</code></li>
-<li><code>--kubelet-preferred-address-types=InternalIP</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>验证资源指标API可用性<ul>
-<li><code>kubectl get --raw &quot;/apis/metrics.k8s.io/v1beta1/pods&quot;</code></li>
-<li><code>kubectl get --raw &quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;</code></li>
-</ul>
-</li>
-<li>获取node或pod对象的资源使用情况：<code>kubectl top node/pod</code></li>
-</ul>
-<h2 id="prometheus"><a href="#prometheus" class="headerlink" title="prometheus"></a>prometheus</h2><ul>
-<li>设置api-server：<ul>
-<li>文件位置：/etc/kubernetes/manifests/kube-apiserver.yaml</li>
-<li>配置：–enable-aggregator-routing=true</li>
-<li>重载配置：删除api-server的pod使其自动重建</li>
-</ul>
-</li>
-<li>设置kubelet【/etc/sysconfig/kubelet】<ul>
-<li><code>--authentication-token-webhook=true</code></li>
-<li><code>--authorization-mode=Webhook</code></li>
-</ul>
-</li>
-<li><a href="https://github.com/coreos/kube-prometheus/tree/master/manifests" target="_blank" rel="noopener">下载资源文件</a><ul>
-<li><code>kubectl create -f manifests/setup</code></li>
-<li><code>kubectl create -f manifests/</code></li>
-</ul>
-</li>
-<li><p>hosts设置【由于nginx-ingress部署在172.17.8.202】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">172.17.8.202 alertmanager.myapp.com</span><br><span class="line">172.17.8.202 grafana.myapp.com</span><br><span class="line">172.17.8.202 prometheus.myapp.com</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>访问入口设置-ingress</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: prometheus-ingress</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  rules:</span><br><span class="line">  - host: prometheus.myapp.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: prometheus-k8s</span><br><span class="line">          servicePort: 9090</span><br><span class="line">  - host: grafana.myapp.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: grafana</span><br><span class="line">          servicePort: 3000</span><br><span class="line">  - host: alertmanager.myapp.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: alertmanager-main</span><br><span class="line">          servicePort: 9093</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>访问：</p>
-<ul>
-<li>grafana：<a href="http://grafana.myapp.com/" target="_blank" rel="noopener">http://grafana.myapp.com/</a></li>
-<li>alertmanager：<a href="http://alertmanager.myapp.com/" target="_blank" rel="noopener">http://alertmanager.myapp.com/</a></li>
-<li>prometheus：<a href="http://prometheus.myapp.com/" target="_blank" rel="noopener">http://prometheus.myapp.com/</a></li>
-</ul>
-</li>
-</ul>
 
       
     </div>
@@ -702,7 +647,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">129</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -724,7 +669,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">246</span>
+                  <span class="site-state-item-count">248</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -773,7 +718,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm介绍"><span class="nav-number">1.</span> <span class="nav-text">kubeadm介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署要求"><span class="nav-number">2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署步骤"><span class="nav-number">3.</span> <span class="nav-text">部署步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">3.1.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装kubelet、kubeadm、kubectl"><span class="nav-number">3.2.</span> <span class="nav-text">安装kubelet、kubeadm、kubectl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群初始化"><span class="nav-number">3.3.</span> <span class="nav-text">集群初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据init结果提示操作"><span class="nav-number">3.4.</span> <span class="nav-text">根据init结果提示操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络插件"><span class="nav-number">3.5.</span> <span class="nav-text">网络插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插件分类"><span class="nav-number">3.5.1.</span> <span class="nav-text">插件分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件选择"><span class="nav-number">3.5.2.</span> <span class="nav-text">插件选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel安装"><span class="nav-number">3.5.3.</span> <span class="nav-text">flannel安装</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm管理"><span class="nav-number">4.</span> <span class="nav-text">kubeadm管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#移除节点"><span class="nav-number">4.1.</span> <span class="nav-text">移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join认证信息"><span class="nav-number">4.2.</span> <span class="nav-text">join认证信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书管理"><span class="nav-number">4.3.</span> <span class="nav-text">证书管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附加组件部署"><span class="nav-number">5.</span> <span class="nav-text">附加组件部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dashboard"><span class="nav-number">5.1.</span> <span class="nav-text">dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-nginx"><span class="nav-number">5.2.</span> <span class="nav-text">ingress-nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metric-server"><span class="nav-number">5.3.</span> <span class="nav-text">metric-server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus"><span class="nav-number">5.4.</span> <span class="nav-text">prometheus</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm介绍"><span class="nav-number">1.</span> <span class="nav-text">kubeadm介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署要求"><span class="nav-number">2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署步骤"><span class="nav-number">3.</span> <span class="nav-text">部署步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">3.1.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装kubelet、kubeadm、kubectl"><span class="nav-number">3.2.</span> <span class="nav-text">安装kubelet、kubeadm、kubectl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群初始化"><span class="nav-number">3.3.</span> <span class="nav-text">集群初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据init结果提示操作"><span class="nav-number">3.4.</span> <span class="nav-text">根据init结果提示操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络插件"><span class="nav-number">3.5.</span> <span class="nav-text">网络插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插件分类"><span class="nav-number">3.5.1.</span> <span class="nav-text">插件分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件选择"><span class="nav-number">3.5.2.</span> <span class="nav-text">插件选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel安装"><span class="nav-number">3.5.3.</span> <span class="nav-text">flannel安装</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm管理"><span class="nav-number">4.</span> <span class="nav-text">kubeadm管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#移除节点"><span class="nav-number">4.1.</span> <span class="nav-text">移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join认证信息"><span class="nav-number">4.2.</span> <span class="nav-text">join认证信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书管理"><span class="nav-number">4.3.</span> <span class="nav-text">证书管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附加组件部署"><span class="nav-number">5.</span> <span class="nav-text">附加组件部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dashboard"><span class="nav-number">5.1.</span> <span class="nav-text">dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-nginx"><span class="nav-number">5.2.</span> <span class="nav-text">ingress-nginx</span></a></li></ol></li></ol></div>
             
 
           </div>

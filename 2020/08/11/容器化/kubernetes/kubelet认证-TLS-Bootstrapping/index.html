@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="TLS-Bootstrapping简介新的工作节点加入集群时需要配置相关的私钥和证书，可以由管理员手动配置，也可以让kubelet自行生成相关的私钥和证书但是集群规模扩大后，手动配置会增加管理员工作量，kubelet自动配置则会降低PKI本身的优势结合这两种方式，kubernetes提出了新方案(TLS Bootstrapping)：由kubelet自行生成私钥和证书签名请求然后向集群的证书签署进">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-11T03:36:47.280Z">
+<meta property="og:updated_time" content="2020-08-11T03:46:56.677Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubelet认证-TLS-Bootstrapping">
 <meta name="twitter:description" content="TLS-Bootstrapping简介新的工作节点加入集群时需要配置相关的私钥和证书，可以由管理员手动配置，也可以让kubelet自行生成相关的私钥和证书但是集群规模扩大后，手动配置会增加管理员工作量，kubelet自动配置则会降低PKI本身的优势结合这两种方式，kubernetes提出了新方案(TLS Bootstrapping)：由kubelet自行生成私钥和证书签名请求然后向集群的证书签署进">
@@ -330,7 +330,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-11T11:36:47+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-11T11:46:56+08:00">
                 2020-08-11
               </time>
             
@@ -426,18 +426,16 @@
 <li><p>自动批准首次申请证书的 CSR 请求(基于[system:bootstrappers]组用户)</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Approve all CSRs for the group &quot;system:bootstrappers&quot;</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: auto-approve-csrs-for-group</span><br><span class="line">subjects:</span><br><span class="line">- kind: Group</span><br><span class="line">  name: system:bootstrappers</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">roleRef:</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: system:certificates.k8s.io:certificatesigningrequests:nodeclient</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
 </li>
+<li><p>自动批准kubelet客户端证书续签</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Approve renewal CSRs for the group &quot;system:nodes&quot;</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: auto-approve-renewals-for-nodes</span><br><span class="line">subjects:</span><br><span class="line">- kind: Group</span><br><span class="line">  name: system:nodes</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">roleRef:</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动批准kubelet服务端证书续签(kubelet暴露https接口作为服务端)</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create clusterrolebinding node-server-auto-renew-crt --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeserver --group=system:nodes</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 </ul>
-<pre><code>* 自动批准kubelet客户端证书续签
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Approve renewal CSRs for the group &quot;system:nodes&quot;</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: auto-approve-renewals-for-nodes</span><br><span class="line">subjects:</span><br><span class="line">- kind: Group</span><br><span class="line">  name: system:nodes</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">roleRef:</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
-
-
-* 自动批准kubelet服务端证书续签(kubelet暴露https接口作为服务端)
-
-    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create clusterrolebinding node-server-auto-renew-crt --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeserver --group=system:nodes</span><br></pre></td></tr></table></figure>
-</code></pre><h1 id="kubelet"><a href="#kubelet" class="headerlink" title="kubelet"></a>kubelet</h1><ul>
+<h1 id="kubelet"><a href="#kubelet" class="headerlink" title="kubelet"></a>kubelet</h1><ul>
 <li>配置项<ul>
 <li>–bootstrap-kubeconfig：bootstrap的kubeconfig配置，主要包含bootstrap token</li>
 <li>–kubeconfig：kubelet和apiserver通信的kubeconfig配置</li>
@@ -506,6 +504,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/" rel="prev" title="kubernetes-弹性伸缩">
+                kubernetes-弹性伸缩 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -582,7 +584,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">129</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -604,7 +606,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">246</span>
+                  <span class="site-state-item-count">248</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -88,7 +88,7 @@
 <meta property="og:description" content="主要特点 一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据 PromQL，灵活的数据查询语言 不依赖分布式存储，数据保存在服务器节点上 通过http的pull模型拉取时间序列数据 可以通过推送网关(pushgateway)支持push模型获取数据 可以通过服务发现或静态配置发现目标节点 支持多种图形和仪表盘  核">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-architecture.png">
-<meta property="og:updated_time" content="2020-08-04T17:52:39.145Z">
+<meta property="og:updated_time" content="2020-08-12T06:11:24.767Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="prometheus入门">
 <meta name="twitter:description" content="主要特点 一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据 PromQL，灵活的数据查询语言 不依赖分布式存储，数据保存在服务器节点上 通过http的pull模型拉取时间序列数据 可以通过推送网关(pushgateway)支持push模型获取数据 可以通过服务发现或静态配置发现目标节点 支持多种图形和仪表盘  核">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-05T01:52:39+08:00">
-                2020-08-05
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-12T14:11:24+08:00">
+                2020-08-12
               </time>
             
           </span>
@@ -459,14 +459,6 @@
 <li>数据存储(<strong>prometheus server</strong>)：node-hdd/ssd(本地存储)、influxDB</li>
 <li>告警(<strong>altermanager</strong>)</li>
 <li>查询&amp;展示：promQL(查询语言)、api clients、<strong>grafana</strong>、web UI</li>
-</ul>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><ul>
-<li>k8s中分组件部署：<a href="https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus</a></li>
-<li>k8s中快速部署：<ul>
-<li><a href="https://github.com/coreos/kube-prometheus" target="_blank" rel="noopener">kube-prometheus</a>：提供了基于prometheus operator和prometheus的完整集群监控技术栈</li>
-<li><a href="https://github.com/helm/charts/tree/master/stable/prometheus-operator" target="_blank" rel="noopener">stable/prometheus-operator</a>：helm社区维护的prometheus监控技术栈，类似于kube-prometheus</li>
-</ul>
-</li>
 </ul>
 <h1 id="PromQL语法"><a href="#PromQL语法" class="headerlink" title="PromQL语法"></a>PromQL语法</h1><blockquote>
 <p>学习方法：通过granfa的<a href="https://grafana.com/grafana/dashboards" target="_blank" rel="noopener">dashboard</a>模板</p>
@@ -642,7 +634,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">129</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -664,7 +656,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">246</span>
+                  <span class="site-state-item-count">248</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -713,7 +705,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主要特点"><span class="nav-number">1.</span> <span class="nav-text">主要特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心概念-数据"><span class="nav-number">2.</span> <span class="nav-text">核心概念-数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式-data-model"><span class="nav-number">2.1.</span> <span class="nav-text">数据格式(data model)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型-metric-types"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型(metric types)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业和实例-jobs-and-instances"><span class="nav-number">2.3.</span> <span class="nav-text">作业和实例(jobs and instances)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构与组件"><span class="nav-number">3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署"><span class="nav-number">4.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PromQL语法"><span class="nav-number">5.</span> <span class="nav-text">PromQL语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pushgateway"><span class="nav-number">6.</span> <span class="nav-text">pushgateway</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续"><span class="nav-number">7.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主要特点"><span class="nav-number">1.</span> <span class="nav-text">主要特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心概念-数据"><span class="nav-number">2.</span> <span class="nav-text">核心概念-数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式-data-model"><span class="nav-number">2.1.</span> <span class="nav-text">数据格式(data model)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型-metric-types"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型(metric types)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业和实例-jobs-and-instances"><span class="nav-number">2.3.</span> <span class="nav-text">作业和实例(jobs and instances)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#架构与组件"><span class="nav-number">3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PromQL语法"><span class="nav-number">4.</span> <span class="nav-text">PromQL语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pushgateway"><span class="nav-number">5.</span> <span class="nav-text">pushgateway</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续"><span class="nav-number">6.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
             
 
           </div>

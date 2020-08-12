@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="prometheus,metrics-server,监控,日志,">
+  <meta name="keywords" content="prometheus,日志,监控,metrics-server,">
 
 
 
@@ -79,18 +79,21 @@
 
 
 
-<meta name="description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
-<meta name="keywords" content="prometheus,metrics-server,监控,日志">
+<meta name="description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
+<meta name="keywords" content="prometheus,日志,监控,metrics-server">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-监控和日志">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/03/11/容器化/kubernetes/kubernetes-监控和日志/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
+<meta property="og:description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-04T14:46:01.180Z">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png">
+<meta property="og:updated_time" content="2020-08-12T13:48:57.431Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-监控和日志">
-<meta name="twitter:description" content="监控类型 资源监控(cpu、内存、磁盘、带宽) 性能监控-APM(jvm) 安全监控 k8s事件监控  监控方案-heapster架构 数据采集：kubelet/cadvisor 数据接口：kubelet、summary、prometheus 数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top  整合方案 inflex">
+<meta name="twitter:description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png">
 
 
 
@@ -330,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-04T22:46:01+08:00">
-                2020-08-04
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-12T21:48:57+08:00">
+                2020-08-12
               </time>
             
           </span>
@@ -386,28 +389,34 @@
       
 
       
-        <h1 id="监控类型"><a href="#监控类型" class="headerlink" title="监控类型"></a>监控类型</h1><ul>
-<li>资源监控(cpu、内存、磁盘、带宽)</li>
-<li>性能监控-APM(jvm)</li>
-<li>安全监控</li>
-<li>k8s事件监控</li>
+        <h1 id="k8s监控指标"><a href="#k8s监控指标" class="headerlink" title="k8s监控指标"></a>k8s监控指标</h1><ul>
+<li>node节点资源(cpu、内存、磁盘、带宽)状态、数量</li>
+<li>资源对象(serivce/deployment/pod)状态(事件)、数量</li>
+<li>容器资源利用率</li>
+<li>应用程序<ul>
+<li>程序性能数据，例如java项目jvm exporter</li>
+<li>业务数据</li>
 </ul>
-<h1 id="监控方案-heapster"><a href="#监控方案-heapster" class="headerlink" title="监控方案-heapster"></a>监控方案-heapster</h1><h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
+</li>
+</ul>
+<h1 id="监控方案"><a href="#监控方案" class="headerlink" title="监控方案"></a>监控方案</h1><h2 id="早期方案-heapster"><a href="#早期方案-heapster" class="headerlink" title="早期方案-heapster"></a>早期方案-heapster</h2><ul>
+<li><p>架构</p>
+<ul>
 <li>数据采集：kubelet/cadvisor</li>
-<li>数据接口：kubelet、summary、prometheus</li>
-<li>数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top</li>
+<li>数据接口：heapster、kubelet、summary、prometheus</li>
+<li>数据存储：inflexDB</li>
+<li>数据消费：dashboard、horizontal pod autoscaler(HPA/pod弹性伸缩)、kubectl top、grafana(可视化)</li>
 </ul>
-<h2 id="整合方案"><a href="#整合方案" class="headerlink" title="整合方案"></a>整合方案</h2><ul>
-<li>inflexDB：存储</li>
-<li>grafana：可视化</li>
-<li>heapster：数据采集</li>
-</ul>
-<h2 id="heapter缺点"><a href="#heapter缺点" class="headerlink" title="heapter缺点"></a>heapter缺点</h2><ul>
+</li>
+<li><p>heapter缺点</p>
+<ul>
 <li>包含了太多的存储后端接口代码，某些代码已不再维护</li>
 <li>接口格式混乱，不支持prometheus</li>
 <li>仅支持以CPU为基础的弹性伸缩</li>
 </ul>
-<h1 id="新一代监控方案"><a href="#新一代监控方案" class="headerlink" title="新一代监控方案"></a>新一代监控方案</h1><ul>
+</li>
+</ul>
+<h2 id="新一代监控方案"><a href="#新一代监控方案" class="headerlink" title="新一代监控方案"></a>新一代监控方案</h2><ul>
 <li>资源指标API和自定义指标API被创建为API定义而非具体实现，他们作为聚合的API安装到kubernetes集群中，从而允许API在保持不变的情况下切换其具体的实现方案</li>
 <li>通过APIServer Aggregated API注册了三种不同的metrics接口，将监控的消费能力进行标准化和解耦，从而实现了与社区的融合 </li>
 </ul>
@@ -423,12 +432,12 @@
 <tr>
 <td>Resources metrics</td>
 <td>metrics.k8s.io</td>
-<td>主要的实现为<a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">metrics-server</a>，提供资源监控</td>
+<td>主要的实现为metrics-server，提供资源指标采集</td>
 </tr>
 <tr>
 <td>Custom metrics</td>
 <td>custom.metrics.k8s.io</td>
-<td>主要的实现为prometheus，提供资源监控和自定义监控</td>
+<td>主要的实现为prometheus，提供自定义指标采集</td>
 </tr>
 <tr>
 <td>External metrics</td>
@@ -437,30 +446,45 @@
 </tr>
 </tbody>
 </table>
-<h1 id="prometheus"><a href="#prometheus" class="headerlink" title="prometheus"></a>prometheus</h1><h2 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h2><ul>
-<li>node节点状态、资源利用率</li>
-<li>资源对象(serivce/deployment/pod)状态、数量</li>
-<li>容器资源利用率</li>
-<li>应用程序<ul>
-<li>程序性能数据，例如java项目jvm exporter</li>
-<li>业务数据</li>
+<h1 id="API聚合层"><a href="#API聚合层" class="headerlink" title="API聚合层"></a>API聚合层</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在kubernetes 1.7版本引入聚合层，允许第三方应用程序将自己注册到apiserver上，仍然通过apiserver的 HTTP URL对新的API进行访问和操作。为了实现这个机制，kubernetes在kube-apiserver服务中引入了一个API聚合层，用于将扩展的API的访问请求转发到用户服务的功能。当你访问apis/metrics.k8s.io/v1beta1的时候，实际上访问的是一个叫做kube-aggregator的代理。kube-apiserver是代理的一个后端，而Metrics server是另一个后端。通过这种方式，我们就可以很方便的扩展kubernetes的API了</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png" alt=""></p>
+<h2 id="功能启用"><a href="#功能启用" class="headerlink" title="功能启用"></a>功能启用</h2><p>在kube-apiserver中添加启动参数用以开启API聚合层功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">--enable-aggregator-routing=true \</span><br><span class="line">--requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \</span><br><span class="line">--requestheader-allowed-names=kubernetes \</span><br><span class="line">--requestheader-extra-headers-prefix=X-Remote-Extra- \</span><br><span class="line">--requestheader-group-headers=X-Remote-Group \</span><br><span class="line">--requestheader-username-headers=X-Remote-User \</span><br><span class="line">--proxy-client-cert-file=/opt/kubernetes/ssl/server.pem \</span><br><span class="line">--proxy-client-key-file=/opt/kubernetes/ssl/server-key.pem \</span><br></pre></td></tr></table></figure>
+<p>–requestheader-allowed-names：由ca签署的客户端证书的CN名称（可以是apiserver、kube-proxy、kubectl等证书的CN名称）</p>
+<h1 id="metrics-server"><a href="#metrics-server" class="headerlink" title="metrics-server"></a>metrics-server</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>metrics server从每个节点上的kubelet(cadvisor)公开的摘要API收集指标数据，然后通过kubernetes聚合器注册在master的APIServer中</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png" alt=""></p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>项目地址：<a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a> </p>
+<p>使用前提：API Server开启聚合层功能</p>
+<p>下载资源文件：<a href="https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml</a></p>
+<p>修改资源文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">containers:</span><br><span class="line">- name: metrics-server</span><br><span class="line">  image: lizhenliang/metrics-server:v0.3.7 </span><br><span class="line">  imagePullPolicy: IfNotPresent</span><br><span class="line">  args:  </span><br><span class="line">    - --cert-dir=/tmp</span><br><span class="line">    - --secure-port=4443</span><br><span class="line">    - --kubelet-insecure-tls</span><br><span class="line">    - --kubelet-preferred-address-types=InternalIP</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改镜像地址(image)</li>
+<li>设置容器启动参数(args)<ul>
+<li><code>--kubelet-insecure-tls</code>：metrics server连接kubelet(作为服务端)时，不对kubelet证书的ca进行校验</li>
+<li><code>--kubelet-preferred-address-types=InternalIP</code>：metrics server通过内部ip（kubectl describe node|grep InternalIP）访问kubelet，获取指标数据</li>
 </ul>
 </li>
 </ul>
-<h2 id="架构组件"><a href="#架构组件" class="headerlink" title="架构组件"></a>架构组件</h2><ul>
-<li>prometheus</li>
+<p>可通过Metrics API在Kubernetes中获得资源使用率指标，例如容器CPU和内存使用率。这些度量标准既可以由用户直接访问（例如，通过使用<code>kubectl top</code>命令），也可以由集群中的控制器（例如，Horizontal Pod Autoscaler）用于进行决策。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes</span><br><span class="line">kubectl top node/pod</span><br><span class="line">kubectl get apiservice</span><br></pre></td></tr></table></figure>
+<h1 id="prometheus"><a href="#prometheus" class="headerlink" title="prometheus"></a>prometheus</h1><h2 id="prometheus技术栈组件"><a href="#prometheus技术栈组件" class="headerlink" title="prometheus技术栈组件"></a>prometheus技术栈组件</h2><ul>
+<li>prometheus server：收集、存储、查询监控指标</li>
 <li>客户端组件<ul>
 <li>cadvisor(kubelet)：采集容器cpu、内存使用情况；PromQL查询关键词：<code>container_</code></li>
 <li>node_exporter：采集linux节点cpu、内存使用情况；PromQL查询关键词：<code>node_</code></li>
 <li>kube-state-metrics：通过API Server收集资源对象的状态并生成相关的指标；PromQL查询关键词：<code>kube_</code></li>
 </ul>
 </li>
-<li>altertmanager【在prometheus中配置告警规则】</li>
+<li>altertmanager：<em>告警规则需要在prometheus中配置</em></li>
 <li>pushgateway：用于支持短周期任务push数据的网关</li>
-<li>grafana：<a href="https://grafana.com/grafana/dashboards" target="_blank" rel="noopener">dashboard模板</a></li>
+<li>grafana：度量指标可视化</li>
 </ul>
-<h2 id="快速部署"><a href="#快速部署" class="headerlink" title="快速部署"></a>快速部署</h2><ul>
-<li><a href="https://github.com/coreos/kube-prometheus" target="_blank" rel="noopener">kube-prometheus</a>：提供了基于prometheus operator和prometheus的完整集群监控技术栈的示例配置，包含如下<ul>
+<h2 id="k8s中部署prometheus方式"><a href="#k8s中部署prometheus方式" class="headerlink" title="k8s中部署prometheus方式"></a>k8s中部署prometheus方式</h2><ul>
+<li><p>分组件部署：<a href="https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus</a></p>
+</li>
+<li><p><a href="https://github.com/coreos/kube-prometheus" target="_blank" rel="noopener">kube-prometheus</a>：提供了基于prometheus operator和prometheus的完整集群监控技术栈的示例配置，包含如下</p>
+<ul>
 <li><a href="https://github.com/coreos/prometheus-operator" target="_blank" rel="noopener">Prometheus Operator</a>：设置在k8s集群中运行的prometheus，以获取k8s资源对象</li>
 <li>高可用<a href="https://prometheus.io/" target="_blank" rel="noopener">Prometheus</a></li>
 <li>高可用<a href="https://github.com/prometheus/alertmanager" target="_blank" rel="noopener">Alertmanager</a></li>
@@ -471,6 +495,19 @@
 </ul>
 </li>
 <li><a href="https://github.com/helm/charts/tree/master/stable/prometheus-operator" target="_blank" rel="noopener">stable/prometheus-operator</a>：helm社区维护的prometheus监控技术栈，类似于kube-prometheus</li>
+</ul>
+<h2 id="kube-prometheus部署"><a href="#kube-prometheus部署" class="headerlink" title="kube-prometheus部署"></a>kube-prometheus部署</h2><ul>
+<li>设置api-server开启聚合层功能：–enable-aggregator-routing=true</li>
+<li>设置kubelet【/etc/sysconfig/kubelet】<ul>
+<li><code>--authentication-token-webhook=true</code></li>
+<li><code>--authorization-mode=Webhook</code></li>
+</ul>
+</li>
+<li><a href="https://github.com/coreos/kube-prometheus/tree/master/manifests" target="_blank" rel="noopener">下载资源文件</a><ul>
+<li><code>kubectl create -f manifests/setup</code></li>
+<li><code>kubectl create -f manifests/</code></li>
+</ul>
+</li>
 </ul>
 <h1 id="日志分类"><a href="#日志分类" class="headerlink" title="日志分类"></a>日志分类</h1><blockquote>
 <p>宿主机/k8s组件、pod标准输出日志可以通过在k8s中部署<a href="https://github.com/elastic/beats/blob/master/deploy/kubernetes/filebeat-kubernetes.yaml" target="_blank" rel="noopener">filebeat</a>收集</p>
@@ -526,7 +563,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="日志采集方案"><a href="#日志采集方案" class="headerlink" title="日志采集方案"></a>日志采集方案</h1><blockquote>
+<h1 id="日志处理方案"><a href="#日志处理方案" class="headerlink" title="日志处理方案"></a>日志处理方案</h1><blockquote>
 <p><a href="https://github.com/simple0426/sysadm/tree/master/kubernetes/elk" target="_blank" rel="noopener">k8s中部署efk范例</a></p>
 </blockquote>
 <ul>
@@ -555,11 +592,11 @@
           
             <a href="/tags/prometheus/" rel="tag"># prometheus</a>
           
-            <a href="/tags/metrics-server/" rel="tag"># metrics-server</a>
+            <a href="/tags/日志/" rel="tag"># 日志</a>
           
             <a href="/tags/监控/" rel="tag"># 监控</a>
           
-            <a href="/tags/日志/" rel="tag"># 日志</a>
+            <a href="/tags/metrics-server/" rel="tag"># metrics-server</a>
           
         </div>
       
@@ -661,7 +698,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-count">129</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -683,7 +720,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">246</span>
+                  <span class="site-state-item-count">248</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -732,7 +769,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控类型"><span class="nav-number">1.</span> <span class="nav-text">监控类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案-heapster"><span class="nav-number">2.</span> <span class="nav-text">监控方案-heapster</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合方案"><span class="nav-number">2.2.</span> <span class="nav-text">整合方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heapter缺点"><span class="nav-number">2.3.</span> <span class="nav-text">heapter缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">3.</span> <span class="nav-text">新一代监控方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus"><span class="nav-number">4.</span> <span class="nav-text">prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监控指标"><span class="nav-number">4.1.</span> <span class="nav-text">监控指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构组件"><span class="nav-number">4.2.</span> <span class="nav-text">架构组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速部署"><span class="nav-number">4.3.</span> <span class="nav-text">快速部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">5.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序日志收集"><span class="nav-number">6.</span> <span class="nav-text">程序日志收集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志采集方案"><span class="nav-number">7.</span> <span class="nav-text">日志采集方案</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s监控指标"><span class="nav-number">1.</span> <span class="nav-text">k8s监控指标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控方案"><span class="nav-number">2.</span> <span class="nav-text">监控方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#早期方案-heapster"><span class="nav-number">2.1.</span> <span class="nav-text">早期方案-heapster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新一代监控方案"><span class="nav-number">2.2.</span> <span class="nav-text">新一代监控方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API聚合层"><span class="nav-number">3.</span> <span class="nav-text">API聚合层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">3.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能启用"><span class="nav-number">3.2.</span> <span class="nav-text">功能启用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#metrics-server"><span class="nav-number">4.</span> <span class="nav-text">metrics-server</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">4.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">4.2.</span> <span class="nav-text">部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus"><span class="nav-number">5.</span> <span class="nav-text">prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus技术栈组件"><span class="nav-number">5.1.</span> <span class="nav-text">prometheus技术栈组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s中部署prometheus方式"><span class="nav-number">5.2.</span> <span class="nav-text">k8s中部署prometheus方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kube-prometheus部署"><span class="nav-number">5.3.</span> <span class="nav-text">kube-prometheus部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志分类"><span class="nav-number">6.</span> <span class="nav-text">日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序日志收集"><span class="nav-number">7.</span> <span class="nav-text">程序日志收集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志处理方案"><span class="nav-number">8.</span> <span class="nav-text">日志处理方案</span></a></li></ol></div>
             
 
           </div>
