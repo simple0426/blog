@@ -110,13 +110,6 @@ date: 2020-07-30 21:41:36
 * 告警(__altermanager__)
 * 查询&展示：promQL(查询语言)、api clients、__grafana__、web UI
 
-# 部署
-
-* k8s中分组件部署：https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus
-* k8s中快速部署：
-  * [kube-prometheus](https://github.com/coreos/kube-prometheus)：提供了基于prometheus operator和prometheus的完整集群监控技术栈
-  * [stable/prometheus-operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator)：helm社区维护的prometheus监控技术栈，类似于kube-prometheus
-
 # PromQL语法
 
 > 学习方法：通过granfa的[dashboard](https://grafana.com/grafana/dashboards)模板

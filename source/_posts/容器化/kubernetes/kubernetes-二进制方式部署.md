@@ -1047,57 +1047,6 @@ kubectl apply -f apiserver-to-kubelet-rbac.yaml
 * 测试：`kubectl run -it --rm dns-test --image=busybox:1.28.4 sh`
   * nslookup kubernetes
 
-## metrics-server部署
-
-* 创建metrics-server证书
-
-  ```
-  cat > metrics-server-csr.json <<EOF
-  {
-    "CN": "aggregator",
-    "hosts": [],
-    "key": {
-      "algo": "rsa",
-      "size": 2048
-    },
-    "names": [
-      {
-        "C": "CN",
-        "ST": "Hangzhou",
-        "L": "Hangzhou",
-        "O": "k8s",
-        "OU": "4Paradigm"
-      }
-    ]
-  }
-  EOF
-  cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes metrics-server-csr.json|cfssljson -bare metrics-server
-  ```
-
-* 将证书复制到配置文件路径：`cp metrics-server*.pem /opt/kubernetes/ssl/`
-
-* apiserver设置并重启【如果apiserver所在节点部署了kube-proxy，可以不设置aggregator选项】：
-
-  ```
-  --enable-aggregator-routing=true \
-  --requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \
-  --requestheader-allowed-names=aggregator \
-  --requestheader-extra-headers-prefix=X-Remote-Extra- \
-  --requestheader-group-headers=X-Remote-Group \
-  --requestheader-username-headers=X-Remote-User \
-  --proxy-client-cert-file=/opt/kubernetes/ssl/metrics-server.pem \
-  --proxy-client-key-file=/opt/kubernetes/ssl/metrics-server-key.pem \
-  ```
-
-* [资源文件下载](https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml)并修改
-
-  * 修改镜像地址
-  * 修改容器启动参数
-    * `--kubelet-insecure-tls`
-    * `--kubelet-preferred-address-types=InternalIP`
-
-* 测试：`kubectl top node/pod`
-
 # 高可用架构
 
 * 数据存储etcd：采用3节点组建etcd集群
