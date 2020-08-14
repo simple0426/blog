@@ -60,7 +60,7 @@ date: 2020-08-06 15:38:16
 
 ## 日志
 
-elk
+filebeat + kafka + logstash + elasticsearch + kibana
 
 ## CICD流程
 
@@ -73,9 +73,9 @@ elk
 * 权限控制：RBAC、网络策略
 * 降低使用难度：操作简化、web界面管理等
 
-# 资源要求和限制
+# 资源规划
 
-## 硬件要求
+## 硬件选择-通用
 | 环境     | 节点类型    | 配置        |
 | -------- | ----------- | ----------- |
 | 实验环境 | master/node | 2C/2G+      |
@@ -84,7 +84,27 @@ elk
 | 生产环境 | master      | 4C/8G/100G  |
 | -        | node        | 8C/64G/500G |
 
-## 使用限额
+## 容量规划
+
+* 应用占用资源(cpu/内存)：应用数量\*每个应用的副本数\*每个应用占用的cpu/内存资源+20%预留冗余(业务+故障飘逸)
+
+* 系统保留资源(cpu/内存、kubelet设置)：操作系统保留资源+k8s组件保留
+
+  ```
+  -system-reserved=cpu=200m,memory=250Mi --kube-reserved=cpu=200m,memory=250Mi \
+  --eviction-hard=memory.available<1Gi,nodefs.available<1Gi,imagefs.available<1Gi \
+  --eviction-minimum-reclaim=memory.available=500Mi,nodefs.available=500Mi,imagefs.available=1Gi \
+  --node-status-update-frequency=10s \
+  --eviction-pressure-transition-period=180s
+  ```
+
+* 本地硬盘
+
+  * worker节点容量：临时存储(emptyDir/hostpath)+镜像文件+系统组件日志
+  * master节点：由于保留系统元数据(etcd)，需要使用ssd提高系统性能
+
+## k8s最大限额
+
 ```
 在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：
 节点数不超过 5000
@@ -93,7 +113,7 @@ Pod 总数不超过 150000
 每个节点的 pod 数量不超过 100
 ```
 
-# k8s集群部署
+# 集群部署方式
 
 * [手动二进制]([https://simple0426.gitee.io/2020/07/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/](https://simple0426.gitee.io/2020/07/12/容器化/kubernetes/kubernetes-二进制方式部署/)) ：手动分组件一步一步搭建集群；可用于学习ks8集群运行细节、也可用于生产环境
 * [rancher](https://www.rancher.cn/)：企业级开源kubernetes管理平台
@@ -105,14 +125,14 @@ Pod 总数不超过 150000
     * github：https://github.com/kubernetes-sigs/kubespray
     * web：https://kubernetes.io/docs/setup/production-environment/tools/kubespray/
 
-# kubernetes高可用
+# 集群高可用
 
 * etcd高可用：推荐3、5个节点部署
 * apiserver(无状态http服务)：部署多个实例后，使用lvs/haproxy/nginx + keepalived做前端代理
 * scheduler、controller-manager：使用自身--leader-elect参数实现高可用【同一时间只有一个组件在使用】
-* CoreDNS：部署多个pod后，使用service代理
+* CoreDNS：扩展pod副本数
 
-# etcd备份
+# 数据备份-etcd
 
 ## kubeadm部署集群
 
@@ -222,3 +242,24 @@ Pod 总数不超过 150000
   * pod是否启动(describe)
   * 应用是否正常(logs)
 
+# 最佳实践
+
+## DNS名称解析
+
+* 可以配置cluster-proportional-autoscaler，根据node数量和vCore自动扩展副本数
+* 容器内打开nscd(镜像缓存服务)，可大幅提高解析性能
+* 禁止生产使用alpine作为基础镜像【可能出现dns解析异常】
+
+## 弹性伸缩
+
+* HPA：pod副本数伸缩
+* CA：集群node节点数伸缩
+
+## ingress controller
+
+ingress controller单独worker部署(污点)增加转发能力
+
+## 安全
+
+* apiserver访问限制、操作审计
+* k8s事件信息归档、报警
