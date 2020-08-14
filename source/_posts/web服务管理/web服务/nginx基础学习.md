@@ -243,6 +243,7 @@ server {
 auth_basic是Nginx的一种认证机制。auth_basic_user_file用来指定认证的密码文件，
 由于Nginx的auth_basic认证采用的是与Apache兼容的密码文件，
 因此需要用Apache的htpasswd命令来生成密码文件，例如要添加一个webadmin用户，可以使用下面方式生成密码文件：
+yum install httpd-tools -y
 htpasswd -c htpasswd webadmin
 此命令会在当前目录生产一个文件htpasswd，其中用户名webadmin
 ```

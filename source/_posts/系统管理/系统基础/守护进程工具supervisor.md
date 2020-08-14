@@ -28,6 +28,8 @@ command=/home/zj-ops/logstash-5.1.1/bin/logstash -f /home/zj-ops/logstash-5.1.1/
 ;主要用于启动时间过长的进程
 startsec=10
 ;是否随supervisor一起启动
+priority=10
+;不同服务的启动优先级，默认999
 autostart=true
 ;异常退出后是否自动重启
 autorestart=true
