@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  123456789101112131415161718192021[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001  use">
+<meta name="description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  1234567891011121314151617181920212223[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001">
 <meta name="keywords" content="supervisor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="守护进程工具supervisor">
 <meta property="og:url" content="http://blog.unlazy.cn/2018/05/30/系统管理/系统基础/守护进程工具supervisor/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  123456789101112131415161718192021[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001  use">
+<meta property="og:description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  1234567891011121314151617181920212223[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.452Z">
+<meta property="og:updated_time" content="2020-08-14T05:10:25.291Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="守护进程工具supervisor">
-<meta name="twitter:description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  123456789101112131415161718192021[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001  use">
+<meta name="twitter:description" content="介绍supervisor用于管理非daemon进程 安装 可使用系统安装apt-get install supervisor 可使用python安装：pip install supervisor  配置文件 更多配置说明请参考  1234567891011121314151617181920212223[inet_http_server]  ;web管理界面设置port=0.0.0.0:9001">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-14T13:10:25+08:00">
+                2020-08-14
               </time>
             
           </span>
@@ -394,7 +394,7 @@
 <h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><blockquote>
 <p>更多配置说明请<a href="http://supervisord.org/configuration.html" target="_blank" rel="noopener">参考</a></p>
 </blockquote>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[inet_http_server]</span>  <span class="comment">;web管理界面设置</span></span><br><span class="line"><span class="attr">port</span>=<span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">9001</span>  </span><br><span class="line"><span class="attr">username</span>=user      </span><br><span class="line"><span class="attr">password</span>=<span class="number">123456</span>    </span><br><span class="line"><span class="section">[program:logstash]</span> <span class="comment">;管理单个进程的配置</span></span><br><span class="line"><span class="comment">;设置需要守护的进程，此进程必须是前台执行</span></span><br><span class="line"><span class="attr">command</span>=/home/zj-ops/logstash-<span class="number">5.1</span>.<span class="number">1</span>/bin/logstash -f /home/zj-ops/logstash-<span class="number">5.1</span>.<span class="number">1</span>/config/logstash-test.conf</span><br><span class="line"><span class="comment">;主要用于启动时间过长的进程</span></span><br><span class="line"><span class="attr">startsec</span>=<span class="number">10</span></span><br><span class="line"><span class="comment">;是否随supervisor一起启动</span></span><br><span class="line"><span class="attr">autostart</span>=<span class="literal">true</span></span><br><span class="line"><span class="comment">;异常退出后是否自动重启</span></span><br><span class="line"><span class="attr">autorestart</span>=<span class="literal">true</span></span><br><span class="line"><span class="comment">;运行进程的用户</span></span><br><span class="line"><span class="attr">user</span>=zj-ops</span><br><span class="line"><span class="comment">;设置环境变量</span></span><br><span class="line"><span class="attr">environment</span>=JAVA_HOME=/usr/local/jdk1.<span class="number">8.0</span>_121</span><br><span class="line"><span class="comment">;日志配置，配合supervisor日志用于调试进程是否运行</span></span><br><span class="line"><span class="attr">redirect_stderr</span>=<span class="literal">True</span></span><br><span class="line"><span class="attr">stdout_logfile</span>=/tmp/mgt_operation.log</span><br><span class="line"><span class="attr">stderr_logfile</span>=/tmp/mgt_operation.log</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[inet_http_server]</span>  <span class="comment">;web管理界面设置</span></span><br><span class="line"><span class="attr">port</span>=<span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">9001</span>  </span><br><span class="line"><span class="attr">username</span>=user      </span><br><span class="line"><span class="attr">password</span>=<span class="number">123456</span>    </span><br><span class="line"><span class="section">[program:logstash]</span> <span class="comment">;管理单个进程的配置</span></span><br><span class="line"><span class="comment">;设置需要守护的进程，此进程必须是前台执行</span></span><br><span class="line"><span class="attr">command</span>=/home/zj-ops/logstash-<span class="number">5.1</span>.<span class="number">1</span>/bin/logstash -f /home/zj-ops/logstash-<span class="number">5.1</span>.<span class="number">1</span>/config/logstash-test.conf</span><br><span class="line"><span class="comment">;主要用于启动时间过长的进程</span></span><br><span class="line"><span class="attr">startsec</span>=<span class="number">10</span></span><br><span class="line"><span class="comment">;是否随supervisor一起启动</span></span><br><span class="line"><span class="attr">priority</span>=<span class="number">10</span></span><br><span class="line"><span class="comment">;不同服务的启动优先级，默认999</span></span><br><span class="line"><span class="attr">autostart</span>=<span class="literal">true</span></span><br><span class="line"><span class="comment">;异常退出后是否自动重启</span></span><br><span class="line"><span class="attr">autorestart</span>=<span class="literal">true</span></span><br><span class="line"><span class="comment">;运行进程的用户</span></span><br><span class="line"><span class="attr">user</span>=zj-ops</span><br><span class="line"><span class="comment">;设置环境变量</span></span><br><span class="line"><span class="attr">environment</span>=JAVA_HOME=/usr/local/jdk1.<span class="number">8.0</span>_121</span><br><span class="line"><span class="comment">;日志配置，配合supervisor日志用于调试进程是否运行</span></span><br><span class="line"><span class="attr">redirect_stderr</span>=<span class="literal">True</span></span><br><span class="line"><span class="attr">stdout_logfile</span>=/tmp/mgt_operation.log</span><br><span class="line"><span class="attr">stderr_logfile</span>=/tmp/mgt_operation.log</span><br></pre></td></tr></table></figure>
 <h1 id="配置范例"><a href="#配置范例" class="headerlink" title="配置范例"></a>配置范例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[program:mgt_user]</span><br><span class="line">command=/home/&#123;&#123; ansible_ssh_user &#125;&#125;/tomcat8/bin/catalina.sh run</span><br><span class="line">environment=JAVA_HOME=&quot;/usr/local/jdk1.8.0_121&quot;</span><br><span class="line">startsec=100</span><br><span class="line">directory=/home/&#123;&#123; ansible_ssh_user &#125;&#125;</span><br><span class="line">autostart=true</span><br><span class="line">autorestart=true</span><br><span class="line">user=&#123;&#123; ansible_ssh_user &#125;&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="命令行管理"><a href="#命令行管理" class="headerlink" title="命令行管理"></a>命令行管理</h1><blockquote>
 <p>start、restart、stop都不会载入最新的配置文件。</p>
@@ -528,7 +528,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">129</span>
+                  <span class="site-state-item-count">130</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -539,7 +539,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -550,7 +550,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">248</span>
+                  <span class="site-state-item-count">255</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

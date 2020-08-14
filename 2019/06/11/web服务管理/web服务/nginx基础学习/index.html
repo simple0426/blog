@@ -88,7 +88,7 @@
 <meta property="og:description" content="介绍淘宝nginx文档 特点 占用资源少 支持高并发 可以做代理服务器【类似squid、haproxy】 可以做缓存服务器【类似varnish】  安装下载http://nginx.org/en/download.html 依赖安装 ubuntu： apt-get install zlib1g-dev libpcre3 libpcre3-dev openssl libssl-dev -y  cen">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/nginx-conf.png">
-<meta property="og:updated_time" content="2020-07-28T15:58:45.412Z">
+<meta property="og:updated_time" content="2020-08-13T17:20:13.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx基础学习">
 <meta name="twitter:description" content="介绍淘宝nginx文档 特点 占用资源少 支持高并发 可以做代理服务器【类似squid、haproxy】 可以做缓存服务器【类似varnish】  安装下载http://nginx.org/en/download.html 依赖安装 ubuntu： apt-get install zlib1g-dev libpcre3 libpcre3-dev openssl libssl-dev -y  cen">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-28T23:58:45+08:00">
-                2020-07-28
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-14T01:20:13+08:00">
+                2020-08-14
               </time>
             
           </span>
@@ -453,7 +453,7 @@
 </li>
 </ul>
 <h2 id="auth与status"><a href="#auth与status" class="headerlink" title="auth与status"></a>auth与status</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 编译参数：--with-http_stub_status_module</span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  0.0.0.0;</span><br><span class="line">    location /status &#123;</span><br><span class="line">        stub_status on;              #开启模块功能</span><br><span class="line">        access_log off;               #关闭访问日志</span><br><span class="line">        allow 127.0.0.1;        #只允许127 访问</span><br><span class="line">        deny all;</span><br><span class="line">        auth_basic &quot;status for nginx&quot;;                #验证登陆时的标题</span><br><span class="line">        auth_basic_user_file htpasswd;   #使用授权文件htpasswd</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">auth_basic是Nginx的一种认证机制。auth_basic_user_file用来指定认证的密码文件，</span><br><span class="line">由于Nginx的auth_basic认证采用的是与Apache兼容的密码文件，</span><br><span class="line">因此需要用Apache的htpasswd命令来生成密码文件，例如要添加一个webadmin用户，可以使用下面方式生成密码文件：</span><br><span class="line">htpasswd -c htpasswd webadmin</span><br><span class="line">此命令会在当前目录生产一个文件htpasswd，其中用户名webadmin</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">auth_basic是Nginx的一种认证机制。auth_basic_user_file用来指定认证的密码文件，</span><br><span class="line">由于Nginx的auth_basic认证采用的是与Apache兼容的密码文件，</span><br><span class="line">因此需要用Apache的htpasswd命令来生成密码文件，例如要添加一个webadmin用户，可以使用下面方式生成密码文件：</span><br><span class="line">yum install httpd-tools -y</span><br><span class="line">htpasswd -c htpasswd webadmin</span><br><span class="line">此命令会在当前目录生产一个文件htpasswd，其中用户名webadmin</span><br></pre></td></tr></table></figure>
 <h2 id="websocket支持"><a href="#websocket支持" class="headerlink" title="websocket支持"></a><a href="http://nginx.org/en/docs/http/websocket.html" target="_blank" rel="noopener">websocket支持</a></h2><blockquote>
 <p>nginx1.3.13之后，nginx内置支持websocket代理</p>
 </blockquote>
@@ -645,7 +645,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">129</span>
+                  <span class="site-state-item-count">130</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -656,7 +656,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -667,7 +667,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">248</span>
+                  <span class="site-state-item-count">255</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
