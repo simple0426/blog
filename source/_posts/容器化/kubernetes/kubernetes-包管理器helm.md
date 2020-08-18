@@ -160,17 +160,17 @@ annotations:
 * 官方：https://hub.helm.sh/
   * 代码地址(开发者)：https://github.com/helm/charts
   * charts仓库：
-    * stable：https://kubernetes-charts.storage.googleapis.com
-    * incubator：https://kubernetes-charts-incubator.storage.googleapis.com
+    * stable：`https://kubernetes-charts.storage.googleapis.com`
+    * incubator：`https://kubernetes-charts-incubator.storage.googleapis.com`
   * 微软镜像charts仓库【适合国内】
-    * stable：http://mirror.azure.cn/kubernetes/charts/
-    * incubator：http://mirror.azure.cn/kubernetes/charts-incubator/
+    * stable：`http://mirror.azure.cn/kubernetes/charts/`
+    * incubator：`http://mirror.azure.cn/kubernetes/charts-incubator/`
 * kubeapps：https://hub.kubeapps.com/
   * 代码地址(开发者)：https://github.com/kubeapps/kubeapps
-  * charts仓库：https://charts.bitnami.com/bitnami
+  * charts仓库：`https://charts.bitnami.com/bitnami`
 * 阿里云：https://developer.aliyun.com/hub/
   * 代码地址(开发者)：https://github.com/cloudnativeapp/charts
-  * charts仓库：https://apphub.aliyuncs.com【适合国内】
+  * charts仓库：`https://apphub.aliyuncs.com`【适合国内】
 
 ## 命令使用
 
@@ -183,7 +183,7 @@ annotations:
   * --endpoint 指定要搜索的hub地址（默认官方）
   * 可以搜索由[Monocular](https://github.com/helm/monocular)渲染的charts hub
 
-## 搭建私有charts仓库
+## charts仓库-原生实现
 
 * 创建索引文件：helm repo index my-repo --url http://49.232.17.71:8900
 
@@ -208,7 +208,76 @@ annotations:
   charset utf-8;
   ```
 
-* 
+
+## 开源chart仓库-[ChartMuseum](https://github.com/helm/chartmuseum)
+
+> 此处使用在harbor中集成的chartmuseum仓库
+
+### harbor集成chartmuseum功能
+
+```fallback
+sudo ./install.sh --with-chartmuseum
+```
+
+### [helm添加chartmuseum仓库](https://goharbor.io/docs/2.0.0/working-with-projects/working-with-images/managing-helm-charts/#working-with-chartmuseum-via-the-helm-cli)
+
+* 不指定项目名称：将charts推送到library项目
+
+  ```
+  helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo
+  ```
+
+  * --ca-file：指定自签名ca证书
+  * --username/--password：指定harbor认证信息
+  * chartrepo为harbor的chartmuseum接口
+
+* 指定项目名称：将charts推送到指定项目
+
+  ```
+  helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo/myproject
+  ```
+
+### 安装[helm-push插件](https://github.com/chartmuseum/helm-push)
+
+* 在线方式：helm plugin命令
+
+  ```
+  helm plugin install https://github.com/chartmuseum/helm-push
+  ```
+
+* 离线方式：下载二进制文件并放在合适的位置
+
+  * helm env：查看插件默认位置，如：HELM_PLUGINS="/root/.local/share/helm/plugins"
+  * 创建默认位置目录：mkdir -p /root/.local/share/helm/plugins/helm-push
+  * [下载二进制文件](https://github.com/chartmuseum/helm-push/releases)并解压，最终目录结构如下
+
+  ```
+  plugins/
+  └── helm-push
+      ├── bin
+      │   └── helmpush
+      ├── LICENSE
+      └── plugin.yaml
+  ```
+
+### push推送charts到chartmuseum
+
+* push .tgz压缩包：helm push mychart-0.1.0.tgz myrepo
+* push chart目录：helm push mychart myrepo
+* _push参数_：
+  * --username/--password：认证信息
+  * --ca-file=ca.crt：指定自签ca证书
+  * --force/-f：强制推送【覆盖】
+  * --version：自定义版本
+    * latest：helm push --version="latest" mychart myrepo 
+    * git版本：`helm push mychart/ --version="$(git log -1 --pretty=format:%h)" chartmuseum`
+
+### 从chartmuseum安装charts
+
+* 本地更新chart仓库：helm repo update
+* 搜索charts：helm search repo mychart
+* 安装charts：helm install web myrepo/library/mychart
+  * --version：自定义版本
 
 # [chart模板语法与开发](https://helm.sh/docs/chart_template_guide/)
 
@@ -216,6 +285,7 @@ annotations:
 * 检查chart语法：helm lint mychart
 * 渲染模板并输出：helm template sample mychart
 * 打包chart为压缩包：helm package mychart
+* 推送chart到chartmuseum【安装push插件】：helm push mychart myrepo
 
 ## 内置变量
 
@@ -225,12 +295,16 @@ annotations:
 
   ```
   {{ .Release.Name }}
+  {{ .Release.Namespace }}
   ```
 
-* `.Values.*`：引用values.yaml文件中的内容【也包括安装升级-f、--set设置的值】
+* `.Values.*`：引用values.yaml文件中的内容【也包括安装/升级时-f、--set设置的值】
 
   ```
   {{ .Values.image.repository }}
+  ```
+
+  ```
   --set image.repository="tomcat"
   ```
 
@@ -252,7 +326,7 @@ annotations:
   {{ .Template.Name }} #当前模板文件路径
   ```
 
-## [模板函数和管道](https://helm.sh/docs/chart_template_guide/function_list/)
+## [函数和管道](https://helm.sh/docs/chart_template_guide/function_list/)
 
 * quote：将变量值加双引号
 
@@ -284,7 +358,7 @@ annotations:
 
 ## 流程控制
 
-* if-else：本例中同时使用短横线来消除左边的空白
+* if-else：本例中同时在左括号旁边使用短横线来消除语句左边的空白
 
   ```
     {{- if .Template.Name1 }}
@@ -294,7 +368,7 @@ annotations:
     {{- end }}
   ```
 
-* with：限制使用范围【本例中限定在Chart文件中，可以直接使用Name(等效.Chart.Name)】
+* with：限制使用范围【本例中限定在Chart文件中，可以直接使用Name(等效于全局使用.Chart.Name)】
 
   ```
     {{- with .Chart }}
@@ -315,7 +389,10 @@ annotations:
 
   ```
   values文件定义
-  test1: {"a1": "cest", "b1": "dfsdfs"}
+  # test1: {"a1": "cest", "b1": "dfsdfs"}
+  test1:
+    a1: cest
+    b1: dfsdfs
   
   引用：
     test_dict:
@@ -326,13 +403,13 @@ annotations:
 
 * with中引用其他变量的值
 
-```
-  {{- $relname := .Release.Name -}} #定义变量$relname
-  {{- with .Chart }}
-  name: {{  .Name }}
-  relname: {{ $relname }} #引用变量
-  {{- end }}
-```
+    ```
+      {{- $relname := .Release.Name -}} #定义变量$relname
+      {{- with .Chart }}
+      name: {{  .Name }}
+      relname: {{ $relname }} #引用变量
+      {{- end }}
+    ```
 
 * 循环列表产生索引和变量值
 
@@ -351,7 +428,7 @@ annotations:
     {{- end}}
   ```
 
-## 模板定义和引用
+## 命名模板
 
 * define：
 
@@ -376,7 +453,7 @@ annotations:
     {{- end }}
     ```
 
-* template：引用子模板内容【使用点定义子模板可以继承当前模板内容】
+* template：引用子模板内容【使用点定义子模板可以继承当前模板内容，默认子模板没有作用域】
 
   ```
   metadata:
@@ -391,3 +468,4 @@ annotations:
     labels:
   {{- include "mychart.app" .|indent 4 }}
   ```
+

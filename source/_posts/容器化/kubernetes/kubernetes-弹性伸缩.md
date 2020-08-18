@@ -4,6 +4,8 @@ date: 2020-08-12 18:28:41
 tags:
   - 弹性伸缩
   - HPA
+  - drain
+  - cordon
 categories: ['kubernetes']
 ---
 
@@ -73,6 +75,30 @@ categories: ['kubernetes']
 * 标记节点不可调度：kubectl cordon k8s-node3
 * 驱逐节点上的pod：kubectl drain k8s-node3 --ignore-daemonsets
 * 从集群删除节点：kubectl delete node k8s-node3
+
+## [node禁用和启用](https://blog.csdn.net/chuxiong5717/article/details/100827916)
+
+### delete
+
+1. 驱逐节点上的pod，由其他节点重建(针对replicaset)
+2. 从master节点删除该node，master与node相互不可见，并失去对node的控制
+
+恢复节点调度操作（基于node的自注册功能）：进入node节点，重启kubelet：systemctl restart kubelet
+
+### drain
+
+1. 驱逐节点上的pod，由其他节点重建(针对replicaset)
+2. 将节点标记为__SchedulingDisabled__【不可调度】
+
+恢复节点调度操作：kubectl uncordon node_name
+
+### cordon
+
+* 将节点标记为__SchedulingDisabled__【不可调度】
+
+新创建的pod不会调度到该节点；该节点原有的pod不受影响，仍然可以对外提供服务
+
+恢复节点调度操作：kubectl uncordon node_name
 
 # pod伸缩-HPA
 

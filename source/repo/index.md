@@ -5,9 +5,9 @@ date: 2019-06-24 21:54:01
 # charts仓库
 
 * 微软镜像charts仓库【适合国内】
-  * stable：http://mirror.azure.cn/kubernetes/charts/
-  * incubator：http://mirror.azure.cn/kubernetes/charts-incubator/
-* 阿里云：https://apphub.aliyuncs.com
+  * stable：`http://mirror.azure.cn/kubernetes/charts/`
+  * incubator：`http://mirror.azure.cn/kubernetes/charts-incubator/`
+* 阿里云：`https://apphub.aliyuncs.com`
 
 # docker常用镜像
 

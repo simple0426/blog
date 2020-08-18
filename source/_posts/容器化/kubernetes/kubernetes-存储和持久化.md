@@ -247,6 +247,12 @@ volumes:
 
 * 可以使用[nfs-client](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client)中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类
 
+* [集群设置默认存储类](https://kubernetes.io/zh/docs/tasks/administer-cluster/change-default-storage-class/)
+
+  ```
+  kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  ```
+
 * 存储类创建范例-阿里云nas
 
   ```
