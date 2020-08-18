@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
+<meta name="description" content="k8s监控指标 节点对象：系统指标、CPU内存及网络流量 k8s资源对象：k8s事件 容器pod对象：容器本身的系统指标，同样有CPU内存等指标 应用性能统计：QPS统计、jvm数据收集 应用业务统计  监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、prometheus 数据存储：inflexDB">
 <meta name="keywords" content="prometheus,日志,监控,metrics-server">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-监控和日志">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/03/11/容器化/kubernetes/kubernetes-监控和日志/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
+<meta property="og:description" content="k8s监控指标 节点对象：系统指标、CPU内存及网络流量 k8s资源对象：k8s事件 容器pod对象：容器本身的系统指标，同样有CPU内存等指标 应用性能统计：QPS统计、jvm数据收集 应用业务统计  监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、prometheus 数据存储：inflexDB">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png">
-<meta property="og:updated_time" content="2020-08-12T13:48:57.431Z">
+<meta property="og:updated_time" content="2020-08-14T16:32:07.447Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-监控和日志">
-<meta name="twitter:description" content="k8s监控指标 node节点资源(cpu、内存、磁盘、带宽)状态、数量 资源对象(serivce/deployment/pod)状态(事件)、数量 容器资源利用率 应用程序 程序性能数据，例如java项目jvm exporter 业务数据    监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、pro">
+<meta name="twitter:description" content="k8s监控指标 节点对象：系统指标、CPU内存及网络流量 k8s资源对象：k8s事件 容器pod对象：容器本身的系统指标，同样有CPU内存等指标 应用性能统计：QPS统计、jvm数据收集 应用业务统计  监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、prometheus 数据存储：inflexDB">
 <meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png">
 
 
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-12T21:48:57+08:00">
-                2020-08-12
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-15T00:32:07+08:00">
+                2020-08-15
               </time>
             
           </span>
@@ -390,14 +390,11 @@
 
       
         <h1 id="k8s监控指标"><a href="#k8s监控指标" class="headerlink" title="k8s监控指标"></a>k8s监控指标</h1><ul>
-<li>node节点资源(cpu、内存、磁盘、带宽)状态、数量</li>
-<li>资源对象(serivce/deployment/pod)状态(事件)、数量</li>
-<li>容器资源利用率</li>
-<li>应用程序<ul>
-<li>程序性能数据，例如java项目jvm exporter</li>
-<li>业务数据</li>
-</ul>
-</li>
+<li>节点对象：系统指标、CPU内存及网络流量</li>
+<li>k8s资源对象：k8s事件</li>
+<li>容器pod对象：容器本身的系统指标，同样有CPU内存等指标</li>
+<li>应用性能统计：QPS统计、jvm数据收集</li>
+<li>应用业务统计</li>
 </ul>
 <h1 id="监控方案"><a href="#监控方案" class="headerlink" title="监控方案"></a>监控方案</h1><h2 id="早期方案-heapster"><a href="#早期方案-heapster" class="headerlink" title="早期方案-heapster"></a>早期方案-heapster</h2><ul>
 <li><p>架构</p>
@@ -720,7 +717,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">255</span>
+                  <span class="site-state-item-count">257</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

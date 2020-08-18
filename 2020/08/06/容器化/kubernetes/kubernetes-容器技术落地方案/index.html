@@ -88,7 +88,7 @@
 <meta property="og:description" content="容器平台分层架构  基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库 容器引擎层：docker、harbor(镜像仓库) 容器编排层：kubernetes 访问和工具层-PaaS：web控制台、CICD、监控、日志  技术栈选择服务器 服务器类型：物理机、虚拟机 节点管理【ssd、GPU】 定义节点标签；pod使用亲和性调度 定义节点污点；pod使用容忍度调度">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg">
-<meta property="og:updated_time" content="2020-08-06T07:38:16.561Z">
+<meta property="og:updated_time" content="2020-08-14T16:24:27.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-容器技术落地方案">
 <meta name="twitter:description" content="容器平台分层架构  基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库 容器引擎层：docker、harbor(镜像仓库) 容器编排层：kubernetes 访问和工具层-PaaS：web控制台、CICD、监控、日志  技术栈选择服务器 服务器类型：物理机、虚拟机 节点管理【ssd、GPU】 定义节点标签；pod使用亲和性调度 定义节点污点；pod使用容忍度调度">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-06T15:38:16+08:00">
-                2020-08-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-15T00:24:27+08:00">
+                2020-08-15
               </time>
             
           </span>
@@ -440,7 +440,7 @@
 </li>
 </ul>
 <h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><p>主流方案：prometheus+grafana</p>
-<h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><p>elk</p>
+<h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><p>filebeat + kafka + logstash + elasticsearch + kibana</p>
 <h2 id="CICD流程"><a href="#CICD流程" class="headerlink" title="CICD流程"></a>CICD流程</h2><ul>
 <li>主流：jenkins</li>
 <li>其他方案：gitlab ci</li>
@@ -450,7 +450,7 @@
 <li>权限控制：RBAC、网络策略</li>
 <li>降低使用难度：操作简化、web界面管理等</li>
 </ul>
-<h1 id="资源要求和限制"><a href="#资源要求和限制" class="headerlink" title="资源要求和限制"></a>资源要求和限制</h1><h2 id="硬件要求"><a href="#硬件要求" class="headerlink" title="硬件要求"></a>硬件要求</h2><table>
+<h1 id="资源规划"><a href="#资源规划" class="headerlink" title="资源规划"></a>资源规划</h1><h2 id="硬件选择-通用"><a href="#硬件选择-通用" class="headerlink" title="硬件选择-通用"></a>硬件选择-通用</h2><table>
 <thead>
 <tr>
 <th>环境</th>
@@ -486,8 +486,21 @@
 </tr>
 </tbody>
 </table>
-<h2 id="使用限额"><a href="#使用限额" class="headerlink" title="使用限额"></a>使用限额</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：</span><br><span class="line">节点数不超过 5000</span><br><span class="line">Pod 总数不超过 150000</span><br><span class="line">容器总数不超过 300000</span><br><span class="line">每个节点的 pod 数量不超过 100</span><br></pre></td></tr></table></figure>
-<h1 id="k8s集群部署"><a href="#k8s集群部署" class="headerlink" title="k8s集群部署"></a>k8s集群部署</h1><ul>
+<h2 id="容量规划"><a href="#容量规划" class="headerlink" title="容量规划"></a>容量规划</h2><ul>
+<li><p>应用占用资源(cpu/内存)：应用数量*每个应用的副本数*每个应用占用的cpu/内存资源+20%预留冗余(业务+故障飘逸)</p>
+</li>
+<li><p>系统保留资源(cpu/内存、kubelet设置)：操作系统保留资源+k8s组件保留</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-system-reserved=cpu=200m,memory=250Mi --kube-reserved=cpu=200m,memory=250Mi \</span><br><span class="line">--eviction-hard=memory.available&lt;1Gi,nodefs.available&lt;1Gi,imagefs.available&lt;1Gi \</span><br><span class="line">--eviction-minimum-reclaim=memory.available=500Mi,nodefs.available=500Mi,imagefs.available=1Gi \</span><br><span class="line">--node-status-update-frequency=10s \</span><br><span class="line">--eviction-pressure-transition-period=180s</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>本地硬盘</p>
+<ul>
+<li>worker节点容量：临时存储(emptyDir/hostpath)+镜像文件+系统组件日志</li>
+<li>master节点：由于保留系统元数据(etcd)，需要使用ssd提高系统性能</li>
+</ul>
+</li>
+</ul>
+<h2 id="k8s最大限额"><a href="#k8s最大限额" class="headerlink" title="k8s最大限额"></a>k8s最大限额</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在 v1.18 版本中， Kubernetes 支持的最大节点数为 5000。更具体地说，我们支持满足以下所有条件的配置：</span><br><span class="line">节点数不超过 5000</span><br><span class="line">Pod 总数不超过 150000</span><br><span class="line">容器总数不超过 300000</span><br><span class="line">每个节点的 pod 数量不超过 100</span><br></pre></td></tr></table></figure>
+<h1 id="集群部署方式"><a href="#集群部署方式" class="headerlink" title="集群部署方式"></a>集群部署方式</h1><ul>
 <li><a href="[https://simple0426.gitee.io/2020/07/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/](https://simple0426.gitee.io/2020/07/12/容器化/kubernetes/kubernetes-二进制方式部署/">手动二进制</a>) ：手动分组件一步一步搭建集群；可用于学习ks8集群运行细节、也可用于生产环境</li>
 <li><a href="https://www.rancher.cn/" target="_blank" rel="noopener">rancher</a>：企业级开源kubernetes管理平台</li>
 <li>使用自动化工具搭建k8s集群<ul>
@@ -504,13 +517,13 @@
 </ul>
 </li>
 </ul>
-<h1 id="kubernetes高可用"><a href="#kubernetes高可用" class="headerlink" title="kubernetes高可用"></a>kubernetes高可用</h1><ul>
+<h1 id="集群高可用"><a href="#集群高可用" class="headerlink" title="集群高可用"></a>集群高可用</h1><ul>
 <li>etcd高可用：推荐3、5个节点部署</li>
 <li>apiserver(无状态http服务)：部署多个实例后，使用lvs/haproxy/nginx + keepalived做前端代理</li>
 <li>scheduler、controller-manager：使用自身–leader-elect参数实现高可用【同一时间只有一个组件在使用】</li>
-<li>CoreDNS：部署多个pod后，使用service代理</li>
+<li>CoreDNS：扩展pod副本数</li>
 </ul>
-<h1 id="etcd备份"><a href="#etcd备份" class="headerlink" title="etcd备份"></a>etcd备份</h1><h2 id="kubeadm部署集群"><a href="#kubeadm部署集群" class="headerlink" title="kubeadm部署集群"></a>kubeadm部署集群</h2><ul>
+<h1 id="数据备份-etcd"><a href="#数据备份-etcd" class="headerlink" title="数据备份-etcd"></a>数据备份-etcd</h1><h2 id="kubeadm部署集群"><a href="#kubeadm部署集群" class="headerlink" title="kubeadm部署集群"></a>kubeadm部署集群</h2><ul>
 <li><p>定期备份etcd数据</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ETCDCTL_API=3 etcdctl \</span><br><span class="line">snapshot save snap.db \</span><br><span class="line">--endpoints=https://127.0.0.1:2379 \</span><br><span class="line">--cacert=/etc/kubernetes/pki/etcd/ca.crt \</span><br><span class="line">--cert=/etc/kubernetes/pki/etcd/peer.crt \</span><br><span class="line">--key=/etc/kubernetes/pki/etcd/peer.key</span><br></pre></td></tr></table></figure>
 </li>
@@ -572,6 +585,20 @@
 <li>应用是否正常(logs)</li>
 </ul>
 </li>
+</ul>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><h2 id="DNS名称解析"><a href="#DNS名称解析" class="headerlink" title="DNS名称解析"></a>DNS名称解析</h2><ul>
+<li>可以配置cluster-proportional-autoscaler，根据node数量和vCore自动扩展副本数</li>
+<li>容器内打开nscd(镜像缓存服务)，可大幅提高解析性能</li>
+<li>禁止生产使用alpine作为基础镜像【可能出现dns解析异常】</li>
+</ul>
+<h2 id="弹性伸缩"><a href="#弹性伸缩" class="headerlink" title="弹性伸缩"></a>弹性伸缩</h2><ul>
+<li>HPA：pod副本数伸缩</li>
+<li>CA：集群node节点数伸缩</li>
+</ul>
+<h2 id="ingress-controller"><a href="#ingress-controller" class="headerlink" title="ingress controller"></a>ingress controller</h2><p>ingress controller单独worker部署(污点)增加转发能力</p>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><ul>
+<li>apiserver访问限制、操作审计</li>
+<li>k8s事件信息归档、报警</li>
 </ul>
 
       
@@ -716,7 +743,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">255</span>
+                  <span class="site-state-item-count">257</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -765,7 +792,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器平台分层架构"><span class="nav-number">1.</span> <span class="nav-text">容器平台分层架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术栈选择"><span class="nav-number">2.</span> <span class="nav-text">技术栈选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器"><span class="nav-number">2.1.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">2.2.</span> <span class="nav-text">存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">2.3.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像仓库"><span class="nav-number">2.4.</span> <span class="nav-text">镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">2.5.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志"><span class="nav-number">2.6.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CICD流程"><span class="nav-number">2.7.</span> <span class="nav-text">CICD流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他注意事项"><span class="nav-number">2.8.</span> <span class="nav-text">其他注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源要求和限制"><span class="nav-number">3.</span> <span class="nav-text">资源要求和限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件要求"><span class="nav-number">3.1.</span> <span class="nav-text">硬件要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用限额"><span class="nav-number">3.2.</span> <span class="nav-text">使用限额</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s集群部署"><span class="nav-number">4.</span> <span class="nav-text">k8s集群部署</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubernetes高可用"><span class="nav-number">5.</span> <span class="nav-text">kubernetes高可用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#etcd备份"><span class="nav-number">6.</span> <span class="nav-text">etcd备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm部署集群"><span class="nav-number">6.1.</span> <span class="nav-text">kubeadm部署集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制部署集群"><span class="nav-number">6.2.</span> <span class="nav-text">二进制部署集群</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题与调试"><span class="nav-number">7.</span> <span class="nav-text">常见问题与调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">7.1.</span> <span class="nav-text">常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod启动异常"><span class="nav-number">7.2.</span> <span class="nav-text">pod启动异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法通过service访问应用"><span class="nav-number">7.3.</span> <span class="nav-text">无法通过service访问应用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器平台分层架构"><span class="nav-number">1.</span> <span class="nav-text">容器平台分层架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术栈选择"><span class="nav-number">2.</span> <span class="nav-text">技术栈选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器"><span class="nav-number">2.1.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">2.2.</span> <span class="nav-text">存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">2.3.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像仓库"><span class="nav-number">2.4.</span> <span class="nav-text">镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">2.5.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志"><span class="nav-number">2.6.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CICD流程"><span class="nav-number">2.7.</span> <span class="nav-text">CICD流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他注意事项"><span class="nav-number">2.8.</span> <span class="nav-text">其他注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源规划"><span class="nav-number">3.</span> <span class="nav-text">资源规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件选择-通用"><span class="nav-number">3.1.</span> <span class="nav-text">硬件选择-通用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容量规划"><span class="nav-number">3.2.</span> <span class="nav-text">容量规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s最大限额"><span class="nav-number">3.3.</span> <span class="nav-text">k8s最大限额</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群部署方式"><span class="nav-number">4.</span> <span class="nav-text">集群部署方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群高可用"><span class="nav-number">5.</span> <span class="nav-text">集群高可用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据备份-etcd"><span class="nav-number">6.</span> <span class="nav-text">数据备份-etcd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm部署集群"><span class="nav-number">6.1.</span> <span class="nav-text">kubeadm部署集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制部署集群"><span class="nav-number">6.2.</span> <span class="nav-text">二进制部署集群</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题与调试"><span class="nav-number">7.</span> <span class="nav-text">常见问题与调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">7.1.</span> <span class="nav-text">常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod启动异常"><span class="nav-number">7.2.</span> <span class="nav-text">pod启动异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法通过service访问应用"><span class="nav-number">7.3.</span> <span class="nav-text">无法通过service访问应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">8.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS名称解析"><span class="nav-number">8.1.</span> <span class="nav-text">DNS名称解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性伸缩"><span class="nav-number">8.2.</span> <span class="nav-text">弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-controller"><span class="nav-number">8.3.</span> <span class="nav-text">ingress controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全"><span class="nav-number">8.4.</span> <span class="nav-text">安全</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="安装配置java8运行环境jenkins安装 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkins -">
+<meta name="description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
 <meta name="keywords" content="jenkins">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jenkins安装与配置">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/02/10/持续集成与部署/jenkins/jenkins安装与配置/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="安装配置java8运行环境jenkins安装 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkins -">
+<meta property="og:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-06T10:00:26.156Z">
+<meta property="og:updated_time" content="2020-08-18T09:21:03.568Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins安装与配置">
-<meta name="twitter:description" content="安装配置java8运行环境jenkins安装 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkins -">
+<meta name="twitter:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-06T18:00:26+08:00">
-                2020-07-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-18T17:21:03+08:00">
+                2020-08-18
               </time>
             
           </span>
@@ -386,7 +386,10 @@
       
 
       
-        <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="配置java8运行环境"><a href="#配置java8运行环境" class="headerlink" title="配置java8运行环境"></a>配置java8运行环境</h2><h2 id="jenkins安装"><a href="#jenkins安装" class="headerlink" title="jenkins安装"></a>jenkins安装</h2><ul>
+        <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><blockquote>
+<p>需要提前配置java8运行环境</p>
+</blockquote>
+<h2 id="虚拟机方式"><a href="#虚拟机方式" class="headerlink" title="虚拟机方式"></a>虚拟机方式</h2><ul>
 <li><p>centos安装</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo</span><br><span class="line">rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key</span><br><span class="line">yum install jenkins -y</span><br></pre></td></tr></table></figure>
 </li>
@@ -410,7 +413,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="docker部署"><a href="#docker部署" class="headerlink" title="docker部署"></a>docker部署</h3><ul>
+<h2 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a>docker方式</h2><ul>
 <li><p>启动参数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run --name jenkins \</span><br><span class="line">  -u root -d \</span><br><span class="line">  -p 80:8080 -p 50000:50000 \</span><br><span class="line">  -v /data/jenkins/:/var/jenkins_home \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /usr/bin/docker:/usr/bin/docker \</span><br><span class="line">  -v /usr/local/maven:/usr/local/maven \</span><br><span class="line">  -v /usr/local/jdk:/usr/local/jdk \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  -e JAVA_OPTS=&quot;-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true&quot; \</span><br><span class="line">  --restart=always \</span><br><span class="line">  jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
 </li>
@@ -435,22 +438,28 @@
 </ul>
 </li>
 </ul>
-<h1 id="web设置"><a href="#web设置" class="headerlink" title="web设置"></a>web设置</h1><ul>
+<h1 id="访问和认证"><a href="#访问和认证" class="headerlink" title="访问和认证"></a>访问和认证</h1><ul>
 <li>访问地址：<a href="http://JENKINS_URL:8080" target="_blank" rel="noopener">http://JENKINS_URL:8080</a><ul>
 <li>初始化密码：/var/jenkins_home/secrets/initialAdminPassword</li>
 </ul>
 </li>
-<li><p>使用国内镜像的步骤</p>
-<ul>
-<li>修改插件更新中心URL：<code>https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</code></li>
+</ul>
+<h1 id="使用国内镜像"><a href="#使用国内镜像" class="headerlink" title="使用国内镜像"></a>使用国内镜像</h1><ul>
+<li><p>修改插件更新中心URL：<code>https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</code></p>
+</li>
 <li><p>修改json配置【/var/jenkins_home/updates/default.json】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i &apos;s/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g&apos; default.json &amp;&amp; \</span><br><span class="line">sed -i &apos;s/http:\/\/www.google.com/https:\/\/www.baidu.com/g&apos; default.json</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>每次插件信息(default.json)更新都会覆盖为官方地址，所以每次default.json更新都需要做如下修改</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i &apos;s/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g&apos; default.json &amp;&amp; \</span><br><span class="line">sed -i &apos;s/http:\/\/www.google.com/https:\/\/www.baidu.com/g&apos; default.json</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>重启jenkins：<code>docker restart jenkins</code></p>
 </li>
 </ul>
-</li>
-<li>邮件设置(Mailer插件)<ul>
+<h1 id="邮件设置"><a href="#邮件设置" class="headerlink" title="邮件设置"></a>邮件设置</h1><blockquote>
+<p>Mailer插件</p>
+</blockquote>
+<ul>
 <li>系统管理员帐户</li>
 <li>SMTP服务器户</li>
 <li>SMTP认证</li>
@@ -459,26 +468,62 @@
 <li>发送测试【如果设置的邮件为163，则收件人和发件人一样；否则会显示为垃圾邮件不能发送】</li>
 <li>测试用户邮箱地址</li>
 </ul>
-</li>
-<li>节点管理【添加slave节点(SSH Slaves插件)】<ul>
+<h1 id="节点管理"><a href="#节点管理" class="headerlink" title="节点管理"></a>节点管理</h1><blockquote>
+<p>一般使用ssh连接并控制slave节点，需要<a href="https://plugins.jenkins.io/ssh-slaves" target="_blank" rel="noopener">SSH Build Agents</a>插件</p>
+</blockquote>
+<ul>
 <li>远程工作目录</li>
 <li>设置启动方式（ssh）</li>
-<li>设置环境变量：JAVA_HOME</li>
+<li>节点属性<ul>
+<li>环境变量：如JAVA_HOME、MAVEN_HOME</li>
+<li>tools位置：参见工具<a href="#使用注意">使用注意</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="工具集成"><a href="#工具集成" class="headerlink" title="工具集成"></a>工具集成</h1><h2 id="集成maven"><a href="#集成maven" class="headerlink" title="集成maven"></a>集成maven</h2><ul>
-<li>安装apache maven，并配置环境变量</li>
-<li>插件：Maven Integration plugin</li>
-<li>全局工具配置<ul>
-<li>maven配置–》settings文件</li>
-<li>Maven–》Maven name、MAVEN_HOME设置</li>
+<h1 id="全局工具"><a href="#全局工具" class="headerlink" title="全局工具"></a>全局工具</h1><h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><blockquote>
+<p>Maven Configuration处本意为设置全局的maven settings.xml文件，经过多次试验均无效；所以Maven Configuration保持默认设置；</p>
+</blockquote>
+<p>maven有多种安装方式</p>
+<ul>
+<li>在宿主机安装maven后，在Maven installations处指定MAVEN_HOME</li>
+<li>指定install automatically，从Apache官方自动安装maven</li>
+<li>指定install automatically，从指定的url处下载*.zip/*.tar.gz文件；<strong>注意</strong>：必须指定解压子目录，且子目录名称为解压的原始目录，如<ul>
+<li>URL:<a href="https://mirrors.tuna.tsinghua.edu.cn/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz</a></li>
+<li>子目录：apache-maven-3.6.3</li>
 </ul>
 </li>
-<li>jenkinsfile中使用（此处使用tools配置加载maven）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">pipeline&#123;</span><br><span class="line">    agent any</span><br><span class="line"></span><br><span class="line">    tools&#123;</span><br><span class="line">        maven &apos;maven3.6.3&apos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    stages&#123;</span><br><span class="line">        stage(&apos;Build&apos;)&#123;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo Build stage...&apos;</span><br><span class="line">                sh &apos;java -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;Test&apos;)&#123;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo Test stage...&apos;</span><br><span class="line">                sh &apos;mvn --version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</ul>
+<h2 id="jdk"><a href="#jdk" class="headerlink" title="jdk"></a>jdk</h2><blockquote>
+<p>与maven安装类似</p>
+</blockquote>
+<p>jdk也有多种安装方式</p>
+<ul>
+<li>在宿主机安装jdk后，在JDK installations处指定JAVA_HOME</li>
+<li>指定install automatically，从java.sun.com安装【需要oracle账号】</li>
+<li>指定install automatically，从指定的url处下载*.zip/*.tar.gz文件；<strong>注意</strong>：必须指定解压子目录，且子目录名称为解压的原始目录，如<ul>
+<li>URL：<a href="https://jre.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz" target="_blank" rel="noopener">https://jre.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz</a></li>
+<li>子目录：jdk1.8.0_251</li>
+</ul>
 </li>
 </ul>
-<h2 id="集成docker"><a href="#集成docker" class="headerlink" title="集成docker"></a>集成docker</h2><ul>
+<h2 id="使用注意"><a href="#使用注意" class="headerlink" title="使用注意"></a>使用注意</h2><ul>
+<li><p>node节点tools使用：</p>
+<blockquote>
+<p>全局工具设置只在master节点有效，node节点需要相关工具时需要在node节点单独安装；node节点工具使用设置如下：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">节点管理==》节点属性==》工具位置：</span><br><span class="line">* 名称：master和node都可以使用的工具名称</span><br><span class="line">* Home：maven、jdk等工具的根目录，和JAVA_HOME、MAVEN_HOME类似</span><br><span class="line">  - jdk设置：如/usr/local/jdk【JAVA_HOME】</span><br><span class="line">  - maven设置：如/usr/local/maven【MAVEN_HOME】</span><br><span class="line"></span><br><span class="line">由于tools设置的工具，尤其是自动化安装操作只在master上有效，所以为了统一管理，建议master和node上统一</span><br><span class="line">使用本地安装方式，并保持目录位置一致</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>maven仓库设置：直接修改安装目录下的conf/settings.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">  &lt;id&gt;nexus-aliyun&lt;/id&gt;</span><br><span class="line">  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">  &lt;name&gt;Nexus aliyun&lt;/name&gt;</span><br><span class="line">  &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>容器方式挂载的jdk、maven</p>
+<ul>
+<li>可以在tools中设置JAVA_HOME/MAVEN_HOME，然后以tools方式使用maven、jdk</li>
+<li>也可以在pipeline中以shell方式设置JAVA_HOME/MAVEN_HOME，然后直接使用maven、jdk</li>
+</ul>
+</li>
+</ul>
+<h1 id="集成docker"><a href="#集成docker" class="headerlink" title="集成docker"></a>集成docker</h1><ul>
 <li>插件<ul>
 <li>Docker Commons Plugin：给各种docker插件提供基础的API</li>
 <li>docker-build-step：在job中执行docker命令</li>
@@ -643,7 +688,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">255</span>
+                  <span class="site-state-item-count">257</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -692,7 +737,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置java8运行环境"><span class="nav-number">1.1.</span> <span class="nav-text">配置java8运行环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jenkins安装"><span class="nav-number">1.2.</span> <span class="nav-text">jenkins安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker部署"><span class="nav-number">1.2.1.</span> <span class="nav-text">docker部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web设置"><span class="nav-number">2.</span> <span class="nav-text">web设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工具集成"><span class="nav-number">3.</span> <span class="nav-text">工具集成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集成maven"><span class="nav-number">3.1.</span> <span class="nav-text">集成maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成docker"><span class="nav-number">3.2.</span> <span class="nav-text">集成docker</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机方式"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker方式"><span class="nav-number">1.2.</span> <span class="nav-text">docker方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问和认证"><span class="nav-number">2.</span> <span class="nav-text">访问和认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用国内镜像"><span class="nav-number">3.</span> <span class="nav-text">使用国内镜像</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#邮件设置"><span class="nav-number">4.</span> <span class="nav-text">邮件设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#节点管理"><span class="nav-number">5.</span> <span class="nav-text">节点管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全局工具"><span class="nav-number">6.</span> <span class="nav-text">全局工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#maven"><span class="nav-number">6.1.</span> <span class="nav-text">maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jdk"><span class="nav-number">6.2.</span> <span class="nav-text">jdk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注意"><span class="nav-number">6.3.</span> <span class="nav-text">使用注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集成docker"><span class="nav-number">7.</span> <span class="nav-text">集成docker</span></a></li></ol></div>
             
 
           </div>

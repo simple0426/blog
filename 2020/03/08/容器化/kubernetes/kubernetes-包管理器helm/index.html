@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="helm简介 优点  能够管理复杂的程序结构，将各种配置文件(service/deployment/configmap)作为整体管理 使用模板后，资源文件可以复用、分享 可以支持应用级别的版本管理：更新、回滚   核心概念  helm：helm二进制管理工具，主要用于k8s应用的创建、打包、发布、管理；类似linux上的apt/yum工具 Chart：描述一个应用的所有k8s资源文件集合；相当于l">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-23T16:42:31.697Z">
+<meta property="og:updated_time" content="2020-08-18T09:26:14.661Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-包管理器helm">
 <meta name="twitter:description" content="helm简介 优点  能够管理复杂的程序结构，将各种配置文件(service/deployment/configmap)作为整体管理 使用模板后，资源文件可以复用、分享 可以支持应用级别的版本管理：更新、回滚   核心概念  helm：helm二进制管理工具，主要用于k8s应用的创建、打包、发布、管理；类似linux上的apt/yum工具 Chart：描述一个应用的所有k8s资源文件集合；相当于l">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-24T00:42:31+08:00">
-                2020-07-24
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-18T17:26:14+08:00">
+                2020-08-18
               </time>
             
           </span>
@@ -545,25 +545,25 @@
 <li>官方：<a href="https://hub.helm.sh/" target="_blank" rel="noopener">https://hub.helm.sh/</a><ul>
 <li>代码地址(开发者)：<a href="https://github.com/helm/charts" target="_blank" rel="noopener">https://github.com/helm/charts</a></li>
 <li>charts仓库：<ul>
-<li>stable：<a href="https://kubernetes-charts.storage.googleapis.com" target="_blank" rel="noopener">https://kubernetes-charts.storage.googleapis.com</a></li>
-<li>incubator：<a href="https://kubernetes-charts-incubator.storage.googleapis.com" target="_blank" rel="noopener">https://kubernetes-charts-incubator.storage.googleapis.com</a></li>
+<li>stable：<code>https://kubernetes-charts.storage.googleapis.com</code></li>
+<li>incubator：<code>https://kubernetes-charts-incubator.storage.googleapis.com</code></li>
 </ul>
 </li>
 <li>微软镜像charts仓库【适合国内】<ul>
-<li>stable：<a href="http://mirror.azure.cn/kubernetes/charts/" target="_blank" rel="noopener">http://mirror.azure.cn/kubernetes/charts/</a></li>
-<li>incubator：<a href="http://mirror.azure.cn/kubernetes/charts-incubator/" target="_blank" rel="noopener">http://mirror.azure.cn/kubernetes/charts-incubator/</a></li>
+<li>stable：<code>http://mirror.azure.cn/kubernetes/charts/</code></li>
+<li>incubator：<code>http://mirror.azure.cn/kubernetes/charts-incubator/</code></li>
 </ul>
 </li>
 </ul>
 </li>
 <li>kubeapps：<a href="https://hub.kubeapps.com/" target="_blank" rel="noopener">https://hub.kubeapps.com/</a><ul>
 <li>代码地址(开发者)：<a href="https://github.com/kubeapps/kubeapps" target="_blank" rel="noopener">https://github.com/kubeapps/kubeapps</a></li>
-<li>charts仓库：<a href="https://charts.bitnami.com/bitnami" target="_blank" rel="noopener">https://charts.bitnami.com/bitnami</a></li>
+<li>charts仓库：<code>https://charts.bitnami.com/bitnami</code></li>
 </ul>
 </li>
 <li>阿里云：<a href="https://developer.aliyun.com/hub/" target="_blank" rel="noopener">https://developer.aliyun.com/hub/</a><ul>
 <li>代码地址(开发者)：<a href="https://github.com/cloudnativeapp/charts" target="_blank" rel="noopener">https://github.com/cloudnativeapp/charts</a></li>
-<li>charts仓库：<a href="https://apphub.aliyuncs.com【适合国内】" target="_blank" rel="noopener">https://apphub.aliyuncs.com【适合国内】</a></li>
+<li>charts仓库：<code>https://apphub.aliyuncs.com</code>【适合国内】</li>
 </ul>
 </li>
 </ul>
@@ -579,7 +579,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="搭建私有charts仓库"><a href="#搭建私有charts仓库" class="headerlink" title="搭建私有charts仓库"></a>搭建私有charts仓库</h2><ul>
+<h2 id="charts仓库-原生实现"><a href="#charts仓库-原生实现" class="headerlink" title="charts仓库-原生实现"></a>charts仓库-原生实现</h2><ul>
 <li><p>创建索引文件：helm repo index my-repo –url <a href="http://49.232.17.71:8900" target="_blank" rel="noopener">http://49.232.17.71:8900</a></p>
 <ul>
 <li>my-repo为多个chart压缩包所在目录</li>
@@ -591,23 +591,77 @@
 <p>可以在nginx配置文件中开启文件目录索引，这样使用者就可以在web界面查看charts仓库包含的chart</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">autoindex on;</span><br><span class="line">autoindex_exact_size off;</span><br><span class="line">autoindex_localtime on;</span><br><span class="line">charset utf-8;</span><br></pre></td></tr></table></figure>
 </li>
-<li></li>
+</ul>
+<h2 id="开源chart仓库-ChartMuseum"><a href="#开源chart仓库-ChartMuseum" class="headerlink" title="开源chart仓库-ChartMuseum"></a>开源chart仓库-<a href="https://github.com/helm/chartmuseum" target="_blank" rel="noopener">ChartMuseum</a></h2><blockquote>
+<p>此处使用在harbor中集成的chartmuseum仓库</p>
+</blockquote>
+<h3 id="harbor集成chartmuseum功能"><a href="#harbor集成chartmuseum功能" class="headerlink" title="harbor集成chartmuseum功能"></a>harbor集成chartmuseum功能</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./install.sh --with-chartmuseum</span><br></pre></td></tr></table></figure>
+<h3 id="helm添加chartmuseum仓库"><a href="#helm添加chartmuseum仓库" class="headerlink" title="helm添加chartmuseum仓库"></a><a href="https://goharbor.io/docs/2.0.0/working-with-projects/working-with-images/managing-helm-charts/#working-with-chartmuseum-via-the-helm-cli" target="_blank" rel="noopener">helm添加chartmuseum仓库</a></h3><ul>
+<li><p>不指定项目名称：将charts推送到library项目</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo</span><br></pre></td></tr></table></figure>
+<ul>
+<li>–ca-file：指定自签名ca证书</li>
+<li>–username/–password：指定harbor认证信息</li>
+<li>chartrepo为harbor的chartmuseum接口</li>
+</ul>
+</li>
+<li><p>指定项目名称：将charts推送到指定项目</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo/myproject</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="安装helm-push插件"><a href="#安装helm-push插件" class="headerlink" title="安装helm-push插件"></a>安装<a href="https://github.com/chartmuseum/helm-push" target="_blank" rel="noopener">helm-push插件</a></h3><ul>
+<li><p>在线方式：helm plugin命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm plugin install https://github.com/chartmuseum/helm-push</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>离线方式：下载二进制文件并放在合适的位置</p>
+<ul>
+<li>helm env：查看插件默认位置，如：HELM_PLUGINS=”/root/.local/share/helm/plugins”</li>
+<li>创建默认位置目录：mkdir -p /root/.local/share/helm/plugins/helm-push</li>
+<li><a href="https://github.com/chartmuseum/helm-push/releases" target="_blank" rel="noopener">下载二进制文件</a>并解压，最终目录结构如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plugins/</span><br><span class="line">└── helm-push</span><br><span class="line">    ├── bin</span><br><span class="line">    │   └── helmpush</span><br><span class="line">    ├── LICENSE</span><br><span class="line">    └── plugin.yaml</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="push推送charts到chartmuseum"><a href="#push推送charts到chartmuseum" class="headerlink" title="push推送charts到chartmuseum"></a>push推送charts到chartmuseum</h3><ul>
+<li>push .tgz压缩包：helm push mychart-0.1.0.tgz myrepo</li>
+<li>push chart目录：helm push mychart myrepo</li>
+<li><em>push参数</em>：<ul>
+<li>–username/–password：认证信息</li>
+<li>–ca-file=ca.crt：指定自签ca证书</li>
+<li>–force/-f：强制推送【覆盖】</li>
+<li>–version：自定义版本<ul>
+<li>latest：helm push –version=”latest” mychart myrepo </li>
+<li>git版本：<code>helm push mychart/ --version=&quot;$(git log -1 --pretty=format:%h)&quot; chartmuseum</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="从chartmuseum安装charts"><a href="#从chartmuseum安装charts" class="headerlink" title="从chartmuseum安装charts"></a>从chartmuseum安装charts</h3><ul>
+<li>本地更新chart仓库：helm repo update</li>
+<li>搜索charts：helm search repo mychart</li>
+<li>安装charts：helm install web myrepo/library/mychart<ul>
+<li>–version：自定义版本</li>
+</ul>
+</li>
 </ul>
 <h1 id="chart模板语法与开发"><a href="#chart模板语法与开发" class="headerlink" title="chart模板语法与开发"></a><a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener">chart模板语法与开发</a></h1><ul>
 <li>创建一个chart：helm create mychart </li>
 <li>检查chart语法：helm lint mychart</li>
 <li>渲染模板并输出：helm template sample mychart</li>
 <li>打包chart为压缩包：helm package mychart</li>
+<li>推送chart到chartmuseum【安装push插件】：helm push mychart myrepo</li>
 </ul>
 <h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><blockquote>
 <p>内置值始终以大写字母开头</p>
 </blockquote>
 <ul>
 <li><p><code>.Release.*</code>：引用Release中的内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Release.Name &#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Release.Name &#125;&#125;</span><br><span class="line">&#123;&#123; .Release.Namespace &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><code>.Values.*</code>：引用values.yaml文件中的内容【也包括安装升级-f、–set设置的值】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Values.image.repository &#125;&#125;</span><br><span class="line">--set image.repository=&quot;tomcat&quot;</span><br></pre></td></tr></table></figure>
+<li><p><code>.Values.*</code>：引用values.yaml文件中的内容【也包括安装/升级时-f、–set设置的值】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Values.image.repository &#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--set image.repository=&quot;tomcat&quot;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><code>.Chart.*</code>：引用Chart.yaml文件中的内容</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Chart.Name &#125;&#125;-&#123;&#123; .Chart.Version &#125;&#125; #chart名称和版本</span><br></pre></td></tr></table></figure>
@@ -619,7 +673,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; .Template.Name &#125;&#125; #当前模板文件路径</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="模板函数和管道"><a href="#模板函数和管道" class="headerlink" title="模板函数和管道"></a><a href="https://helm.sh/docs/chart_template_guide/function_list/" target="_blank" rel="noopener">模板函数和管道</a></h2><ul>
+<h2 id="函数和管道"><a href="#函数和管道" class="headerlink" title="函数和管道"></a><a href="https://helm.sh/docs/chart_template_guide/function_list/" target="_blank" rel="noopener">函数和管道</a></h2><ul>
 <li><p>quote：将变量值加双引号</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; quote .Values.image.repository &#125;&#125;</span><br><span class="line">&#123;&#123; .Values.image.repository|quote &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
@@ -634,24 +688,23 @@
 </li>
 </ul>
 <h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><ul>
-<li><p>if-else：本例中同时使用短横线来消除左边的空白</p>
+<li><p>if-else：本例中同时在左括号旁边使用短横线来消除语句左边的空白</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;- if .Template.Name1 &#125;&#125;</span><br><span class="line">mug: true</span><br><span class="line">&#123;&#123;- else &#125;&#125;</span><br><span class="line">mug: false</span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>with：限制使用范围【本例中限定在Chart文件中，可以直接使用Name(等效.Chart.Name)】</p>
+<li><p>with：限制使用范围【本例中限定在Chart文件中，可以直接使用Name(等效于全局使用.Chart.Name)】</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;- with .Chart &#125;&#125;</span><br><span class="line">name: &#123;&#123;  .Name &#125;&#125;</span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>range：循环【循环values文件中pizzaToppings】</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">toppings: |</span><br><span class="line">  &#123;&#123;- range .Values.pizzaToppings &#125;&#125;</span><br><span class="line">  - &#123;&#123; .|title|quote &#125;&#125;</span><br><span class="line">  &#123;&#123;- end&#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>toYaml：将当前变量值(字典)转换为yaml格式【toYaml . | nindent 8】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">values文件定义</span><br><span class="line">test1: &#123;&quot;a1&quot;: &quot;cest&quot;, &quot;b1&quot;: &quot;dfsdfs&quot;&#125;</span><br><span class="line"></span><br><span class="line">引用：</span><br><span class="line">  test_dict:</span><br><span class="line">    &#123;&#123;- toYaml .Values.test1|nindent 4 &#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">values文件定义</span><br><span class="line"># test1: &#123;&quot;a1&quot;: &quot;cest&quot;, &quot;b1&quot;: &quot;dfsdfs&quot;&#125;</span><br><span class="line">test1:</span><br><span class="line">  a1: cest</span><br><span class="line">  b1: dfsdfs</span><br><span class="line"></span><br><span class="line">引用：</span><br><span class="line">  test_dict:</span><br><span class="line">    &#123;&#123;- toYaml .Values.test1|nindent 4 &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
-<li>with中引用其他变量的值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;- $relname := .Release.Name -&#125;&#125; #定义变量$relname</span><br><span class="line">&#123;&#123;- with .Chart &#125;&#125;</span><br><span class="line">name: &#123;&#123;  .Name &#125;&#125;</span><br><span class="line">relname: &#123;&#123; $relname &#125;&#125; #引用变量</span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul>
+<li><p>with中引用其他变量的值</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;- $relname := .Release.Name -&#125;&#125; #定义变量$relname</span><br><span class="line">&#123;&#123;- with .Chart &#125;&#125;</span><br><span class="line">name: &#123;&#123;  .Name &#125;&#125;</span><br><span class="line">relname: &#123;&#123; $relname &#125;&#125; #引用变量</span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>循环列表产生索引和变量值</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">toppings: |</span><br><span class="line">&#123;&#123;- range $index,$value := .Values.pizzaToppings &#125;&#125;</span><br><span class="line">  &#123;&#123; $index &#125;&#125;: &#123;&#123; $value &#125;&#125;</span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
@@ -659,7 +712,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;- range $key,$val := .Values.service &#125;&#125;</span><br><span class="line">&#123;&#123; $key &#125;&#125;: &#123;&#123; $val|quote &#125;&#125;</span><br><span class="line">&#123;&#123;- end&#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="模板定义和引用"><a href="#模板定义和引用" class="headerlink" title="模板定义和引用"></a>模板定义和引用</h2><ul>
+<h2 id="命名模板"><a href="#命名模板" class="headerlink" title="命名模板"></a>命名模板</h2><ul>
 <li><p>define：</p>
 <ul>
 <li><p>在_helpers.tpl中定义命名模板【下划线开始的文件都不是k8s资源清单，可以定义模板】</p>
@@ -671,11 +724,12 @@
 </li>
 </ul>
 </li>
-<li><p>template：引用子模板内容【使用点定义子模板可以继承当前模板内容】</p>
+<li><p>template：引用子模板内容【使用点定义子模板可以继承当前模板内容，默认子模板没有作用域】</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">metadata:</span><br><span class="line">  name: &#123;&#123; .Release.Name &#125;&#125;-configmap</span><br><span class="line">  &#123;&#123;- template &quot;mychart.labels&quot; . &#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>include：引用子模板并调用其他函数进行格式化处理【相比template更推荐使用】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">&#123;&#123;- include &quot;mychart.app&quot; .|indent 4 &#125;&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">&#123;&#123;- include &quot;mychart.app&quot; .|indent 4 &#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 
       
@@ -820,7 +874,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">255</span>
+                  <span class="site-state-item-count">257</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -869,7 +923,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#helm简介"><span class="nav-number">1.</span> <span class="nav-text">helm简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#v2版本服务端安装"><span class="nav-number">1.1.</span> <span class="nav-text">v2版本服务端安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#helm命令"><span class="nav-number">1.2.</span> <span class="nav-text">helm命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用管理"><span class="nav-number">2.</span> <span class="nav-text">应用管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chart目录结构"><span class="nav-number">2.1.</span> <span class="nav-text">chart目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chart-yaml"><span class="nav-number">2.1.1.</span> <span class="nav-text">Chart.yaml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chart管理"><span class="nav-number">2.2.</span> <span class="nav-text">chart管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#release管理"><span class="nav-number">2.3.</span> <span class="nav-text">release管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和升级参数"><span class="nav-number">2.4.</span> <span class="nav-text">安装和升级参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chart仓库"><span class="nav-number">3.</span> <span class="nav-text">chart仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#公有hub"><span class="nav-number">3.1.</span> <span class="nav-text">公有hub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令使用"><span class="nav-number">3.2.</span> <span class="nav-text">命令使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建私有charts仓库"><span class="nav-number">3.3.</span> <span class="nav-text">搭建私有charts仓库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chart模板语法与开发"><span class="nav-number">4.</span> <span class="nav-text">chart模板语法与开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置变量"><span class="nav-number">4.1.</span> <span class="nav-text">内置变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板函数和管道"><span class="nav-number">4.2.</span> <span class="nav-text">模板函数和管道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程控制"><span class="nav-number">4.3.</span> <span class="nav-text">流程控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">4.4.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板定义和引用"><span class="nav-number">4.5.</span> <span class="nav-text">模板定义和引用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#helm简介"><span class="nav-number">1.</span> <span class="nav-text">helm简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#v2版本服务端安装"><span class="nav-number">1.1.</span> <span class="nav-text">v2版本服务端安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#helm命令"><span class="nav-number">1.2.</span> <span class="nav-text">helm命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用管理"><span class="nav-number">2.</span> <span class="nav-text">应用管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chart目录结构"><span class="nav-number">2.1.</span> <span class="nav-text">chart目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chart-yaml"><span class="nav-number">2.1.1.</span> <span class="nav-text">Chart.yaml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chart管理"><span class="nav-number">2.2.</span> <span class="nav-text">chart管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#release管理"><span class="nav-number">2.3.</span> <span class="nav-text">release管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和升级参数"><span class="nav-number">2.4.</span> <span class="nav-text">安装和升级参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chart仓库"><span class="nav-number">3.</span> <span class="nav-text">chart仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#公有hub"><span class="nav-number">3.1.</span> <span class="nav-text">公有hub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令使用"><span class="nav-number">3.2.</span> <span class="nav-text">命令使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#charts仓库-原生实现"><span class="nav-number">3.3.</span> <span class="nav-text">charts仓库-原生实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开源chart仓库-ChartMuseum"><span class="nav-number">3.4.</span> <span class="nav-text">开源chart仓库-ChartMuseum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#harbor集成chartmuseum功能"><span class="nav-number">3.4.1.</span> <span class="nav-text">harbor集成chartmuseum功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm添加chartmuseum仓库"><span class="nav-number">3.4.2.</span> <span class="nav-text">helm添加chartmuseum仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装helm-push插件"><span class="nav-number">3.4.3.</span> <span class="nav-text">安装helm-push插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push推送charts到chartmuseum"><span class="nav-number">3.4.4.</span> <span class="nav-text">push推送charts到chartmuseum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从chartmuseum安装charts"><span class="nav-number">3.4.5.</span> <span class="nav-text">从chartmuseum安装charts</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chart模板语法与开发"><span class="nav-number">4.</span> <span class="nav-text">chart模板语法与开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置变量"><span class="nav-number">4.1.</span> <span class="nav-text">内置变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数和管道"><span class="nav-number">4.2.</span> <span class="nav-text">函数和管道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程控制"><span class="nav-number">4.3.</span> <span class="nav-text">流程控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">4.4.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名模板"><span class="nav-number">4.5.</span> <span class="nav-text">命名模板</span></a></li></ol></li></ol></div>
             
 
           </div>

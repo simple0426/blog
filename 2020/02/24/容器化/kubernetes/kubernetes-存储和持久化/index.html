@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="持久化设置 pod级别设置卷类型(volumes类型)：spec.volumes 容器级别使用卷：spec.containers.volumeMounts  volumes类型内置存储类 可以直接在pod的volumes中引用   本地存储：emptyDir、hostpath、local 网络存储：nfs、rbd、cephfs、glusterfs 云存储：awsElasticBlockStorag">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-20T16:17:23.948Z">
+<meta property="og:updated_time" content="2020-08-16T03:56:15.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-存储和持久化">
 <meta name="twitter:description" content="持久化设置 pod级别设置卷类型(volumes类型)：spec.volumes 容器级别使用卷：spec.containers.volumeMounts  volumes类型内置存储类 可以直接在pod的volumes中引用   本地存储：emptyDir、hostpath、local 网络存储：nfs、rbd、cephfs、glusterfs 云存储：awsElasticBlockStorag">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-21T00:17:23+08:00">
-                2020-07-21
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-16T11:56:15+08:00">
+                2020-08-16
               </time>
             
           </span>
@@ -490,6 +490,9 @@
 </ul>
 <h3 id="storageclass创建"><a href="#storageclass创建" class="headerlink" title="storageclass创建"></a>storageclass创建</h3><ul>
 <li><p>可以使用<a href="https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client" target="_blank" rel="noopener">nfs-client</a>中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类</p>
+</li>
+<li><p><a href="https://kubernetes.io/zh/docs/tasks/administer-cluster/change-default-storage-class/" target="_blank" rel="noopener">集群设置默认存储类</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl patch storageclass &lt;your-class-name&gt; -p &apos;&#123;&quot;metadata&quot;: &#123;&quot;annotations&quot;:&#123;&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;&#125;&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>存储类创建范例-阿里云nas</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: alicloud-nas-subpath</span><br><span class="line">mountOptions:</span><br><span class="line">- nolock,tcp,noresvport</span><br><span class="line">- vers=3</span><br><span class="line">parameters:</span><br><span class="line">  volumeAs: subpath</span><br><span class="line">  server: &quot;xxxxxxx.cn-hangzhou.nas.aliyuncs.com:/k8s/&quot;</span><br><span class="line">provisioner: nasplugin.csi.alibabacloud.com</span><br><span class="line">reclaimPolicy: Retain</span><br></pre></td></tr></table></figure>
@@ -681,7 +684,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">255</span>
+                  <span class="site-state-item-count">257</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
