@@ -130,6 +130,84 @@ categories: ['kubernetes']
 
   * 外部指标由指标数据采集器的适配器提供，如[Prometheus Adapter](https://github.com/directxman12/k8s-prometheus-adapter)
 
+## 范例-autoscaling/v1
+
+```
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web
+spec:
+  maxReplicas: 5
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web
+  targetCPUUtilizationPercentage: 60
+```
+
+* minReplicas、maxReplicas：伸缩最小、最大副本数
+* scaleTargetRef：伸缩的对象；和scale命令伸缩对象一致，包括：Deployment, ReplicaSet, Replication Controller, or StatefulSet
+* targetCPUUtilizationPercentage：cpu使用率百分比；示例中农，cpu使用率超过60%即开始扩容
+
+## 范例-autoscaling/v2beta2
+
+```
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-apache
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-apache
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Pods
+    pods:
+      metric:
+        name: packets-per-second
+      target:
+        type: AverageValue
+        averageValue: 1k
+  - type: Object
+    object:
+      metric:
+        name: requests-per-second
+      describedObject:
+        apiVersion: networking.k8s.io/v1beta1
+        kind: Ingress
+        name: main-route
+      target:
+        type: Value
+        value: 10k
+  - type: External
+    external:
+      metric:
+        name: queue_messages_ready
+        selector: "queue=worker_tasks"
+      target:
+        type: AverageValue
+        averageValue: 30
+```
+
+metrics：用于副本数计算的指标，包含类型如下：
+
+* Resource：当前伸缩对象下每个pod的cpu和memory指标，只支持Utilization和AverageValue类型的目标值
+* Pods：当前伸缩对象下每个pod的相关指标，数据由第三方adapter提供，只允许AverageValue类型的目标值
+* Object：k8s资源对象的指标，数据由第三方adapter提供，只支持Value和AverageValue类型的目标值
+* External：k8s集群外部的指标，数据由第三方的adapter提供，只支持Value和AverageValue类型的目标值
+
 # HPA范例-基于CPU指标
 
 ## 部署metrics-server
@@ -138,7 +216,7 @@ metrics server提供基于资源指标伸缩的API(metrics.k8s.io)
 
 metrics server项目地址：https://github.com/kubernetes-incubator/metrics-server
 
-## autoscaling/v1-CPU指标实践
+## 基于CPU指标实践
 
 ### 部署pod
 
@@ -195,17 +273,16 @@ spec:
   targetCPUUtilizationPercentage: 60
 ```
 
-* scaleTargetRef：伸缩的对象
-* targetCPUUtilizationPercentage：cpu使用率超过60%即开始扩容
-
 ### 压测与查看
 
 * 开始压测
 
   ```
   yum install httpd-tools
-  ab -c 1000 -n 100000  http://10.1.206.176 #10.0.0.147为ClusterIP
+  ab -c 1000 -n 100000  http://10.1.206.176/ #10.0.0.147为ClusterIP
   ```
+
+  > -c 并发数 -n 请求总数
 
 * 观察扩容缩容情况【压测完成后，过5分钟(缩容冷却周期)后开始缩容】
 
@@ -214,61 +291,6 @@ spec:
   kubectl top pods
   kubectl get pods
   ```
-
-## autoscaling/v2beta2-多指标
-
-```
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: php-apache
-  namespace: default
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: php-apache
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
-  - type: Pods
-    pods:
-      metric:
-        name: packets-per-second
-      target:
-        type: AverageValue
-        averageValue: 1k
-  - type: Object
-    object:
-      metric:
-        name: requests-per-second
-      describedObject:
-        apiVersion: networking.k8s.io/v1beta1
-        kind: Ingress
-        name: main-route
-      target:
-        type: Value
-        value: 10k
-  - type: External
-    external:
-      metric:
-        name: queue_messages_ready
-        selector: "queue=worker_tasks"
-      target:
-        type: AverageValue
-        averageValue: 30
-```
-
-* Resource：当前伸缩对象下的pod的cpu和memory指标，只支持Utilization和AverageValue类型的目标值
-* Object：k8s内部对象的指标，数据由第三方adapter提供，只支持Value和AverageValue类型的目标值
-* Pods：当前伸缩对象pods的相关指标，数据由第三方adapter提供，只允许AverageValue类型的目标值
-* External：k8s外部的指标，数据由第三方的adapter提供，只支持Value和AverageValue类型的目标值
 
 # HPA范例-基于prometheus自定义指标
 
@@ -311,8 +333,8 @@ kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
 > QPS获取方式
 >
 > * 从日志中获取
-> * 从代理或负载均衡器处获取，如nginx+lua、haproxy
-> * 程序自身统计，以下实践案例即为程序自身提供指标数据
+> * 从代理或负载均衡器处获取【external指标】，如nginx+lua、haproxy
+> * 程序自身统计【pod指标】，以下实践案例即为程序自身提供指标数据
 
 ### 部署应用
 
@@ -427,7 +449,7 @@ data:
 * seriesQuery：获取原始的指标数据(promQL语法)；此处为：从prometheus中获取所有namespace、pod下的http_requests_total指标
 * resources：将prometheus中的标签名称格式统一，以反映为对应的k8s资源(kubectl api-resources)；此处为：kubernetes_namespace转换为namespace，kubernetes_pod_name转换为pod
 * name：设置可用于hpa的度量指标名称；此处重命名获取的度量指标名称：http_requests_total重命名为http_requests_per_second
-* metricsQuery：度量指标计算(promQL语法)；此处等同于【sum(rate(http_requests_total{kubernetes_namespace!="",kubernetes_pod_name!=""}[2m])) by (kubernetes_namespace,kubernetes_pod_name)】
+* metricsQuery：度量指标计算(promQL语法)；此处等同于【`sum(rate(http_requests_total{kubernetes_namespace!="",kubernetes_pod_name!=""}[2m])) by (kubernetes_namespace,kubernetes_pod_name)`】
 
 从api中查询prometheus-adapter获取的数据：
 
