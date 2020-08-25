@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-11T11:15:41.495Z">
+<meta property="og:updated_time" content="2020-08-25T08:42:59.604Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-二进制方式部署">
 <meta name="twitter:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-11T19:15:41+08:00">
-                2020-08-11
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-25T16:42:59+08:00">
+                2020-08-25
               </time>
             
           </span>
@@ -594,7 +594,7 @@
 <li>–leader-elect：启动多个controller时自动举行选举形成高可用</li>
 <li>–master：通过本地非安全端口连接apiserver</li>
 <li>–bind-address：绑定地址</li>
-<li>–allocate-node-cidrs：允许云厂商设置pod地址</li>
+<li>–allocate-node-cidrs：允许每个node在pod地址段中划分一个子网</li>
 <li>–cluster-cidr：pod地址段</li>
 <li>–service-cluster-ip-range：service地址段</li>
 <li>–cluster-signing-*：可以为集群范围组件签发证书的ca证书【如kubelet】</li>
@@ -933,7 +933,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">130</span>
+                  <span class="site-state-item-count">131</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
