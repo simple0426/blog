@@ -562,7 +562,7 @@ ETCDCTL_API=3
   * --leader-elect：启动多个controller时自动举行选举形成高可用
   * --master：通过本地非安全端口连接apiserver
   * --bind-address：绑定地址
-  * --allocate-node-cidrs：允许云厂商设置pod地址
+  * --allocate-node-cidrs：允许每个node在pod地址段中划分一个子网
   * --cluster-cidr：pod地址段
   * --service-cluster-ip-range：service地址段
   * --cluster-signing-*：可以为集群范围组件签发证书的ca证书【如kubelet】

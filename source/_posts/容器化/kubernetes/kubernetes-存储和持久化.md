@@ -280,6 +280,11 @@ volumes:
 
 和pv静态供给使用的pvc基本一致，增加参数：storageClassName
 
+## pv删除
+
+* 删除pv的步骤：删除pod==》删除pvc==》删除pv
+* 无法删除pv的处理：`kubectl patch pv xxx -p '{"metadata":{"finalizers":null}}'`
+
 # 存储插件-oss使用
 
 ## 使用方式
@@ -338,8 +343,6 @@ volumes:
   persistentVolumeClaim:
     claimName: pvc-oss   
 ```
-
----
 
 # 命令行使用oss的方式-ossfs
 

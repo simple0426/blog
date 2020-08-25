@@ -12,44 +12,87 @@ date: 2020-03-03 23:54:17
 ---
 
 # kubernetes网络模型
-* 要求所有容器都处于同一个ip网络中
-* 集群中的ip地址分配是以pod为单位的，同一个pod内的所有容器共享同一个网络命名空间
-* pod和service对象分别使用各自专有的网络；pod网络由网络插件提供，serivce网络由kubernetes集群指定；pod ip是实际存在于某个网卡(可以是虚拟设备)上，而service地址却是一个虚拟IP地址。
+kubernetes要求所有的网络插件必须满足以下要求
 
-## 实现目标
-* pod内容器间通信：一个pod内的所有容器共享同一个网络名称空间，它由构建pod对象的infra containers提供；
-* pod之间通信：通过桥接方式连通多个网络名称空间(pod),也是各网络插件(flannel/calico)解决的问题，包含叠加网络模型(overlay)和路由网络模型(underlay)
-* pod与service间通信：k8s将service的cluster-ip到pod-ip的映射转换为相应节点的iptables、ipvs规则，从而实现service到pod的通信
-* service与集群外部通信：k8s根据service的代理类型转换为相应节点的iptables或ipvs规则，从而实现外部流量到pod的通信
+* 一个pod一个ip
+* 所有pod可以和任意其他pod通信，无需使用NAT映射
+* 所有节点可以与所有pod直接通信，无需使用NAT映射
+* pod内部获取到的IP地址与其他pod或节点通信时使用的IP地址相同
 
-## CNI插件
-* CNI插件连接容器管理系统和网络插件
-* CNI插件分类
-    - main：实现特定的网络功能，如：bridge、loopback
-    - meta：调用其他插件，如：flannel、calico
-    - ipam：分配ip地址，如：dhcp
+## k8s网络应用场景
 
-## CNI插件安装
-* 安装cni插件集成包：kubernetes-cni，cni插件在/opt/cni/bin目录下
-* 部署calico、flannel时会在/etc/cni/net.d/下生成插件的配置文件
-* kubelet启动后(--network-plugin=cni)会加载cni插件及其配置文件
-* 如果kubelet开启cni后，缺少部分插件【failed to find plugin "portmap" in path [/opt/cni/bin]]】，则可以通过安装包补全插件
-```
-cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
-EOF
- 
-yum clean all
-yum install kubernetes-cni -y
-```
+* pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的infra containers提供；__由linux的网络命名空间这一特性实现__
+* pod之间通信：
+  * 同主机：多个veth设备对包含在一个网桥中，通过桥接方式连接多个pod；__使用docker网络模型__
+  * 跨主机：通过路由(underlay)或隧道(overlay)方式连接不同主机pod；__由网络插件(CNI)提供的功能实现__
+* pod与service通信：k8s将service的cluster-ip到pod-ip的映射转换为相应节点的iptables、ipvs规则，从而实现service到pod的通信；__由k8s的kube-proxy组件实现__
+* 互联网访问service，__由k8s的kube-proxy组件实现__，根据访问类型不一样实现机制不同
+* pod访问互联网，__使用docker的网络模型__
+  * 每个容器通过veth(虚拟以太网链接对)和宿主机连通
+  * 多个veth包含在一个bridge(桥接网络)中，因此多个容器可以互通
+  * 桥接网卡(一般为docker0)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网
 
-## 常见CNI插件对应的项目
+## 跨主机数据传递
+
+* 路由模式：原始数据包通过路由达到目的地
+  * 静态路由
+  * 动态路由：bgp、ospf
+* 隧道模式(overlay网络)：将数据包封装在另一个数据包中进行传递
+  * vxlan
+  * ip-ip
+
+CNI（Container Network Interface，容器网络接口)：是一个容器网络规范；kubernetes网络就是采用这个CNI规范，CNI实现依赖两种插件：
+
+* 一种是基础功能插件：负责容器连接到主机
+* 一种是IPAM类插件：负责配置容器网络命名空间的网络
+
+项目地址：https://github.com/containernetworking/cni
+
+pod网络创建流程
+
+* kubelet与docker通信（/var/run/docker.sock）
+* 调用dockershim创建一个infra容器
+* 然后调用CNI插件为infra容器配置网络
+
+## 启用CNI功能
+
+* 安装基础功能插件：用于容器连接主机
+
+  * 二进制方式：https://github.com/containernetworking/plugins/releases
+
+  * yum方式：kubernetes-cni
+
+    ```
+    cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+    enabled=1
+    gpgcheck=1
+    repo_gpgcheck=1
+    gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+    EOF
+     
+    yum clean all
+    yum install kubernetes-cni -y
+    ```
+
+* 插件默认目录位置
+  * 二进制文件目录：/opt/cni/bin
+  * 配置文件目录：/etc/cni/net.d【ipam类插件(calico、flannel)启动后会在目录下生成插件的配置文件】
+
+* kubelet启用cni设置
+
+  ```
+   --network-plugin=cni \
+   --cni-conf-dir=/etc/cni/net.d \
+   --cni-bin-dir=/opt/cni/bin
+  ```
+
+## 常见CNI插件
+
+> IPAM类插件：负责配置容器网络命名空间的网络
+
 * flannel：一个为kubernetes提供overlay(叠加网络)的插件，它基于linux tun/tap，使用udp封装ip报文来创建叠加网络，并借助etcd维护网络分配情况；不支持网络策略
 * calico：一个基于BGP的三层网络插件，并且支持网络策略(network policy)实现访问控制；它在每台机器上运行一个vRouter，利用Linux内核来转发网络数据包，并借助iptables实现防火墙功能
 * canal：包含flannel和calico功能的插件，支持网络策略
@@ -57,19 +100,78 @@ yum install kubernetes-cni -y
 * kube-router：kubernetes提供的网络解决方案，采用BGP提供网络直连，集成基于LVS的负载均衡能力；支持网络策略
 
 # flannel
-## 网络模型/后端
-- vxlan：使用内核vxlan模块封装报文
-- host-gw：直接在节点创建到目标容器的路由，要求各节点处于同一个二层网络
+
+Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯一的IP，Flannel使用ETCD来存储Pod子网与Node IP之间的关系。flanneld守护进程在每台主机上运行，并负责维护ETCD信息和路由数据包。
+
+项目地址：https://github.com/coreos/flannel
+
+## 工作模式
+
 - udp：性能较低，仅适用于前两者不可用的情况【已废弃】
-- 云厂商类型：Alivpc、AWSvpc、Alloc、GCE
+- vxlan：overlay网络(隧道)方案；使用内核vxlan模块封装报文
+- host-gw：underlay(路由)网络方案；Node节点把自己的网络接口当做pod的网关使用；flannel通过在各个节点的agent，将容器网络信息刷新到主机路由表上，这样一来所有的主机都有整个容器网络的路由数据了。但是，要求所有节点处于同一个二层网络
+- Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan后端和host-gw后端的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力；配置：`"Backend":{"Type":"VxLAN", "Directrouting": true}`
 
-## vxlan后端
-* vxlan(virtual extentsible local area network)：是vlan扩展方案草案，采用的是MAC in UDP封装方式，是NVo3(network virtualization over layer3)中的一种网络虚拟化技术
-* vxlan实现：将虚拟网络的数据帧添加到vxlan首部后，封装在物理网络的udp报文中，然后以传统的通信方式传送该udp报文，待其到达目的主机后，去掉物理网络报文的头部信息以及vxlan首部，然后将报文交付给目的终端
-* Directrouting：vxlan的直接路由模式，兼具vxlan后端和host-gw后端的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力
-    - 配置样例："Backend":{"Type":"VxLAN", "Directrouting": true}
+公有云VPC：Alivpc、AWSvpc、Alloc、GCE
 
-## 部署-手动etcd方式
+### VXLAN模式通信流程
+
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png)
+
+* vxlan模式特点：
+  * 支持宿主机3层网络通信（不同子网），只需宿主机网络互通，不需要单独配置到容器网络的路由
+  * 传输过程中需要封包、解包，有性能开销
+* 跨主机pod互联：
+
+1. 容器到宿主机网桥cni0【同主机不同pod通过cni0网桥通信】
+2. 网桥cni0到隧道接口flannel.1
+3. 本地flannel.1到目标flannel.1，通信实现如下：
+   1. 获取目标flannel.1 ip地址：ip route
+   2. 根据flannel.1ip地址获取flannel.1 mac地址：ip neigh show dev flannel.1
+   3. 根据flannel.1 mac地址获取flannel.1 所在宿主机ip：bridge fdb show dev flannel.1
+   4. 根据flannel.1宿主机ip地址获取flannel.1所在宿主机mac地址：arp -a
+
+### Host-GW模式通信流程
+
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png)
+
+* host-gw模式：
+  * 要求宿主机2层通信（相同子网，宿主机可以直接通过mac地址通信），否则需要在路由器配置到容器网络的静态路由
+  * 不存在封包、解包过程，传输更高效
+
+* 跨主机pod互联：host-gw模式相比vxlan简单了许多， 直接添加路由，将目的主机当做网关，直接路由原始封包。
+
+## 部署
+
+### k8s资源清单方式
+
+* 下载资源清单：https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+* 配置调整
+
+  - 网络设置(net-conf.json)
+
+    - 配置pod地址段，与controller-manager中的--cluster-cidr配置一致
+    - 配置工作模式
+
+    ```
+    net-conf.json: |
+        {
+          "Network": "10.244.0.0/16",
+          "Backend": {
+            "Type": "vxlan"
+          }
+        }
+    ```
+
+  - 多个宿主机间的通信接口设置(kube-flannel-->DaemonSet)：`--iface=eth1`
+
+  - 镜像地址修改
+
+* 应用资源文件
+
+### 手动etcd方式
+
 * 安装并配置etcd
 * etcd中创建flannel网络配置
     1. etcdctl mkdir /kube-centos/network
@@ -87,11 +189,18 @@ FLANNEL_OPTIONS="-iface=eth1"
 ```
 * 启动flannel
 
-## 部署-k8s资源清单方式
-* [资源清单](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
-* 配置调整
-    - 网络设置(net-conf.json)
-    - 主机间的内部通信端口设置(kube-flannel-->DaemonSet)：`--iface=eth1`
+# calico
+
+calico是一个纯三层的数据中心网络方案，calico支持广泛的平台，包含kubernetes、OpenStack
+
+calico在每一个计算节点利用linux kernel实现了一个高效的虚拟路由器(vRouter)来负责数据转发，而每个vRouter通过BGP协议负责把自己运行的workload的路由信息向整个calico网络内传播
+
+calico项目还实现了kubernetes网络策略，提供了ACL功能
+
+calico也支持不同的[overlay封装协议](https://docs.projectcalico.org/networking/vxlan-ipip)：
+
+* ip-ip
+* vxlan
 
 # 基于calico的网络策略部署
 ## 概要
@@ -357,3 +466,4 @@ spec:
   egress: 
     - {} #出口流量不限制
 ```
+

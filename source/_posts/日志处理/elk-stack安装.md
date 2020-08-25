@@ -197,20 +197,20 @@ export JAVA_HOME PATH" > /etc/profile.d/java.sh
   discovery.zen.ping.unicast.hosts: 向集群的其他节点发送单播【集群中的其他节点ip】
   discovery.zen.fd.ping_interval: 启动节点发现的时间间隔
   discovery.zen.fd.ping_retries: 节点发现重试次数
-  http.cors.enabled: 是否允许跨域访问，可以使用head访问es
+  http.cors.enabled: 是否允许跨域访问，开启后可以使用elasticsearch-head访问es
   http.cors.allow-origin: 允许的源域
   ```
 
 * jvm设置【/usr/local/elasticsearch-6.5.4/config/jvm.options】
 
   ```
-  -Xms1g #最小内存
-  -Xmx1g #最大内存
+  -Xms1g #程序启动时占用的最小内存
+  -Xmx1g #程序运行时占用的最大内存
   ```
 
   * 堆内存最大和最小值相等，防止程序运行过程中改变堆内存大小
   * 如果系统内存足够大，将最大和最小值设置为31G，因为jvm有32G性能瓶颈
-  * 堆内存大小不要超过内存的50%
+  * 堆内存大小设置为系统内存1/2，最大不超过2/3
 
 ## 启动-supervisor
 
