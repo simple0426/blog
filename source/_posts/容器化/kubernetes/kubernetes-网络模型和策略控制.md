@@ -26,20 +26,13 @@ kubernetes要求所有的网络插件必须满足以下要求
   * 同主机：多个veth设备对包含在一个网桥中，通过桥接方式连接多个pod；__使用docker网络模型__
   * 跨主机：通过路由(underlay)或隧道(overlay)方式连接不同主机pod；__由网络插件(CNI)提供的功能实现__
 * pod与service通信：k8s将service的cluster-ip到pod-ip的映射转换为相应节点的iptables、ipvs规则，从而实现service到pod的通信；__由k8s的kube-proxy组件实现__
-* 互联网访问service，__由k8s的kube-proxy组件实现__，根据访问类型不一样实现机制不同
-* pod访问互联网，__使用docker的网络模型__
+* 互联网访问service：__由k8s的kube-proxy组件实现__，根据访问类型不一样实现机制不同
+* pod访问互联网：__使用docker的网络模型__
   * 每个容器通过veth(虚拟以太网链接对)和宿主机连通
   * 多个veth包含在一个bridge(桥接网络)中，因此多个容器可以互通
   * 桥接网卡(一般为docker0)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网
 
-## 跨主机数据传递
-
-* 路由模式：原始数据包通过路由达到目的地
-  * 静态路由
-  * 动态路由：bgp、ospf
-* 隧道模式(overlay网络)：将数据包封装在另一个数据包中进行传递
-  * vxlan
-  * ip-ip
+## CNI
 
 CNI（Container Network Interface，容器网络接口)：是一个容器网络规范；kubernetes网络就是采用这个CNI规范，CNI实现依赖两种插件：
 
@@ -52,7 +45,7 @@ pod网络创建流程
 
 * kubelet与docker通信（/var/run/docker.sock）
 * 调用dockershim创建一个infra容器
-* 然后调用CNI插件为infra容器配置网络
+* 调用CNI插件为infra容器配置网络
 
 ## 启用CNI功能
 
@@ -107,10 +100,10 @@ Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯
 
 ## 工作模式
 
-- udp：性能较低，仅适用于前两者不可用的情况【已废弃】
+- udp：性能较低，是flannel的早期实现方式，仅适用于vxlan和host-gw不可用的情况【已废弃】
 - vxlan：overlay网络(隧道)方案；使用内核vxlan模块封装报文
 - host-gw：underlay(路由)网络方案；Node节点把自己的网络接口当做pod的网关使用；flannel通过在各个节点的agent，将容器网络信息刷新到主机路由表上，这样一来所有的主机都有整个容器网络的路由数据了。但是，要求所有节点处于同一个二层网络
-- Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan后端和host-gw后端的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力；配置：`"Backend":{"Type":"VxLAN", "Directrouting": true}`
+- Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan和host-gw的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力；配置：`"Backend":{"Type":"VxLAN", "Directrouting": true}`
 
 公有云VPC：Alivpc、AWSvpc、Alloc、GCE
 
@@ -139,7 +132,7 @@ Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯
   * 要求宿主机2层通信（相同子网，宿主机可以直接通过mac地址通信），否则需要在路由器配置到容器网络的静态路由
   * 不存在封包、解包过程，传输更高效
 
-* 跨主机pod互联：host-gw模式相比vxlan简单了许多， 直接添加路由，将目的主机当做网关，直接路由原始封包。
+* 跨主机pod互联：host-gw模式相比vxlan简单了许多， 直接在主机添加路由，将目的主机当做网关，直接路由原始封包。
 
 ## 部署
 
@@ -151,7 +144,7 @@ Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯
 
   - 网络设置(net-conf.json)
 
-    - 配置pod地址段，与controller-manager中的--cluster-cidr配置一致
+    - 配置pod地址段，与controller-manager中的cluster-cidr配置一致
     - 配置工作模式
 
     ```
@@ -164,7 +157,7 @@ Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯
         }
     ```
 
-  - 多个宿主机间的通信接口设置(kube-flannel-->DaemonSet)：`--iface=eth1`
+  - 宿主机间的通信接口设置(kube-flannel-->DaemonSet)：`--iface=eth1`
 
   - 镜像地址修改
 
@@ -181,7 +174,7 @@ Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯
         - SubnetLen：节点使用的子网的掩码
         - Backend：flannel要使用的后端类型
 * 安装flannel
-* flannel服务配置(centos示例-/etc/sysconfig/flanneld)
+* flannel服务配置
 ```
 FLANNEL_ETCD_ENDPOINTS="http://172.17.8.101:2379"
 FLANNEL_ETCD_PREFIX="/kube-centos/network"
@@ -197,12 +190,211 @@ calico在每一个计算节点利用linux kernel实现了一个高效的虚拟�
 
 calico项目还实现了kubernetes网络策略，提供了ACL功能
 
-calico也支持不同的[overlay封装协议](https://docs.projectcalico.org/networking/vxlan-ipip)：
+calico也通过两种方式进行数据包转发
 
-* ip-ip
-* vxlan
+* 路由模式：BGP，动态路由协议，适合大规模网络
+* 隧道模式：ip-ip
+
+在不支持ip-ip封装的网络环境，也支持vxlan封装：https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options#switching-from-ip-in-ip-to-vxlan
+
+## [calico架构组件](https://docs.projectcalico.org/reference/architecture/overview)
+
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico.png)
+
+
+
+* Felix：在每个节点运行，负责维护宿主机上路由规则和ACL规则
+* Etcd：分布式键值存储，保存Calico的策略和网络配置状态。
+* BIRD：BGP客户端，负责分发路由信息到整个calico网络
+* BGP Route Reflector (BIRD)：可选的BGP路由反射器，为了实现更高的规模【集中管理路由信息】
+
+## calico部署
+
+### [部署](https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises)
+
+* 资源下载：
+
+  * k8s-api存储网络信息：`curl https://docs.projectcalico.org/manifests/calico.yaml -O`
+
+  * etcd存储网络信息：`curl https://docs.projectcalico.org/manifests/calico-etcd.yaml -O`
+
+* [自定义配置](https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options)：
+
+  * [使用指定的网卡用于宿主机间通信](https://docs.projectcalico.org/networking/ip-autodetection#change-the-autodetection-method)
+
+    ```
+    DaemonSet/calico-node==>containers/env
+    - name: IP_AUTODETECTION_METHOD
+      value: "interface=eth1"
+    ```
+
+  * 配置pod地址段：CALICO_IPV4POOL_CIDR【kubeadm安装的集群可以自动检测】
+
+  * 工作模式：CALICO_IPV4POOL_IPIP
+
+    * IPIP：Always【默认】
+    * BGP：Never 
+    * IPIP兼容BGP：CrossSubnet【同一子网使用BGP，跨子网使用IPIP】
+
+  * 配置etcd信息（secret、ConfigMap）
+
+### 切换flannel到calico
+
+* 删除flannel信息
+
+  * 删除路由信息
+
+    ```
+    ip route
+    ip route del 10.244.1.0/24 via 10.244.1.0 dev flannel.1 onlink
+    ip route del 10.244.2.0/24 via 10.244.2.0 dev flannel.1 onlink
+    ip route del 10.244.0.0/24 dev cni0 proto kernel scope link src 10.244.0.1
+    ip route del 172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+    ```
+
+  * 删除网桥
+
+    ```
+    ip link delete cni0 
+    ip link delete flannel.1
+    ip link delete docker0
+    ```
+
+* 部署calico
+
+* 重建应用pod【过滤使用宿主机网络的pod】
+
+  ```
+  kubectl get pod -A -o wide|grep -v "192.168.31"|awk 'system("kubectl delete pod "$2" -n "$1"")' 
+  ```
+
+## [calico管理工具](https://docs.projectcalico.org/getting-started/clis/calicoctl/)
+
+* 二进制下载地址：https://github.com/projectcalico/calicoctl/releases
+
+* [配置文件](https://docs.projectcalico.org/getting-started/clis/calicoctl/configure/)：/etc/calico/calicoctl.cfg
+
+  * 使用独立etcd存储
+
+    ```
+    apiVersion: projectcalico.org/v3
+    kind: CalicoAPIConfig
+    metadata:
+    spec:
+      datastoreType: etcdv3
+      etcdEndpoints: https://etcd1:2379,https://etcd2:2379,https://etcd3:2379
+      etcdKeyFile: /etc/calico/key.pem
+      etcdCertFile: /etc/calico/cert.pem
+      etcdCACertFile: /etc/calico/ca.pem
+    ```
+
+  * 使用k8s-api存储
+
+    ```
+    apiVersion: projectcalico.org/v3
+    kind: CalicoAPIConfig
+    metadata:
+    spec:
+      datastoreType: "kubernetes"
+      kubeconfig: "/root/.kube/config"
+    ```
+
+* 管理命令
+  
+  * 查看calico节点状态：calicoctl node status
+
+## BGP原理
+
+![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-bgp.png)
+
+pod1访问pod2流程：
+
+1. 数据包从容器1的eth0到达veth pair另一端cali34
+
+   ```
+   设置宿主机的接口cali34开启proxy_arp功能，此后这一接口会响应所有arp请求
+   从而将容器发送到默认网关169.254.1.1的流量送达宿主机的cali34接口【告诉容器，我有169.254.1.1这个ip】
+   ```
+
+2. 宿主机根据路由规则，将数据包转发给下一条
+
+   ```
+   10.244.186.192/26 via 192.168.31.203 dev eth1 proto bird            # 到达其他pod网段的数据包(每个宿主机一个pod子网段)：下一跳为其他宿主机ip、本地出口为eth1
+   blackhole 10.244.196.128/26 proto bird        # 到达本机pod网段的数据包，如果没有更高优先级路由，数据包直接丢弃
+   10.244.196.129 dev calie8e9a5cf531 scope link   # 目的为本机pod网段特定ip的数据包，交给指定的cali网卡
+   ```
+
+3. 数据包到达node2，根据路由规则将数据包转发给cali设备
+
+## BGP-Route Reflector模式
+
+https://docs.projectcalico.org/master/networking/bgp 
+
+Calico 维护的网络在默认是（Node-to-Node Mesh）全互联模式，Calico集群中的节点之间都会相互建立连接，用于路由交换。但是随着集群规模的扩大，mesh模式将形成一个巨大服务网格，连接数成倍增加。
+
+这时就需要使用 Route Reflector（路由器反射）模式解决这个问题。
+
+确定一个或多个Calico节点充当路由反射器，让其他节点从这个RR节点获取路由信息。
+
+* 关闭BGP node-to-node模式
+
+  ```
+   cat << EOF | calicoctl create -f -
+   apiVersion: projectcalico.org/v3
+   kind: BGPConfiguration
+   metadata:
+     name: default
+   spec:
+     logSeverityScreen: Info
+     nodeToNodeMeshEnabled: false  
+     asNumber: 64512
+  EOF
+  ```
+
+  asNumber可以通过获取：calicoctl get node -o wide
+
+* 配置指定节点为充当路由反射器
+
+  * 节点添加标签：
+
+    ```
+    kubectl label node node02 route-reflector=true
+    ```
+
+  * 配置路由器反射器节点routeReflectorClusterID【一般为未使用过的ip地址】
+
+    > calicoctl get node node02 -o yaml > rr.yaml
+
+    ```
+    spec:
+      bgp:
+        routeReflectorClusterID: 244.0.0.1
+    ```
+
+  * 使用标签选择器将路由反射器节点与其他非路由反射器节点配置为对等
+
+    ```
+    cat << EOF | calicoctl create -f -
+    kind: BGPPeer
+    apiVersion: projectcalico.org/v3
+    metadata:
+      name: peer-with-route-reflectors
+    spec:
+      nodeSelector: all()
+      peerSelector: route-reflector == 'true'
+    EOF
+    ```
+
+* 查看bgp连接状态【只能检查本地代理与反射器的连接关系】
+
+  ```
+  calicoctl node status
+  ```
+
+
 
 # 基于calico的网络策略部署
+
 ## 概要
 主要通过使用flannel(pod间通信)和calico(pod间访问控制)两个软件实现  
 为了充分利用flannel的易用性和calico的丰富功能，可以通过以下方式部署实现(不含calico单独部署)  
