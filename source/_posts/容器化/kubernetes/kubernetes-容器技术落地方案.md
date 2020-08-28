@@ -232,6 +232,14 @@ Pod 总数不超过 150000
 * describe查看pod调度情况
 * logs查看pod运行日志
 
+### k8s-event
+
+* 全部事件查看：kubectl get event
+
+* 学习参考：http://www.voidcn.com/article/p-qxvgcuct-bvb.html
+* 保留时间(kube-apiserver)： --event-ttl  【默认保留一小时】
+* k8s事件报警插件kube-eventer：https://github.com/AliyunContainerService/kube-eventer
+
 ## 无法通过service访问应用
 
 * service无法关联pod(get endpoint无信息)：service标签设置是否正确
