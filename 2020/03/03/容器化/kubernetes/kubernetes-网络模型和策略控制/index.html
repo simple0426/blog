@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="cni,flannel,canal,calico,ingress,">
+  <meta name="keywords" content="cni,flannel,calico,网络策略,">
 
 
 
@@ -79,20 +79,25 @@
 
 
 
-<meta name="description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的inf">
-<meta name="keywords" content="cni,flannel,canal,calico,ingress">
+<meta name="description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址和与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的in">
+<meta name="keywords" content="cni,flannel,calico,网络策略">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-网络模型和策略控制">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的inf">
+<meta property="og:description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址和与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的in">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png">
-<meta property="og:updated_time" content="2020-08-25T13:57:43.551Z">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-bgp.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-ipip.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/office-to-k8s.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-to-switch.png">
+<meta property="og:updated_time" content="2020-08-28T11:13:04.378Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-网络模型和策略控制">
-<meta name="twitter:description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的inf">
+<meta name="twitter:description" content="kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求  一个pod一个ip 所有pod可以和任意其他pod通信，无需使用NAT映射 所有节点可以与所有pod直接通信，无需使用NAT映射 pod内部获取到的IP地址和与其他pod或节点通信时使用的IP地址相同  k8s网络应用场景 pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的in">
 <meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png">
 
 
@@ -333,8 +338,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-25T21:57:43+08:00">
-                2020-08-25
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-28T19:13:04+08:00">
+                2020-08-28
               </time>
             
           </span>
@@ -394,37 +399,28 @@
 <li>一个pod一个ip</li>
 <li>所有pod可以和任意其他pod通信，无需使用NAT映射</li>
 <li>所有节点可以与所有pod直接通信，无需使用NAT映射</li>
-<li>pod内部获取到的IP地址与其他pod或节点通信时使用的IP地址相同</li>
+<li>pod内部获取到的IP地址和与其他pod或节点通信时使用的IP地址相同</li>
 </ul>
 <h2 id="k8s网络应用场景"><a href="#k8s网络应用场景" class="headerlink" title="k8s网络应用场景"></a>k8s网络应用场景</h2><ul>
 <li>pod内不同容器间：同一个pod内的所有容器共享同一个网络命名空间，由构建pod对象的infra containers提供；<strong>由linux的网络命名空间这一特性实现</strong></li>
 <li>pod之间通信：<ul>
-<li>同主机：多个veth设备对包含在一个网桥中，通过桥接方式连接多个pod；<strong>使用docker网络模型</strong></li>
+<li>同主机：<ul>
+<li>【flannel】多个veth设备对包含在一个网桥中，通过桥接方式连接多个pod；<strong>使用docker网络模型</strong></li>
+<li>【calico】将访问本机特定pod ip的数据包转发给设备对cali*，访问本机pod网段的其他数据包丢弃(blackhole)</li>
+</ul>
+</li>
 <li>跨主机：通过路由(underlay)或隧道(overlay)方式连接不同主机pod；<strong>由网络插件(CNI)提供的功能实现</strong></li>
 </ul>
 </li>
 <li>pod与service通信：k8s将service的cluster-ip到pod-ip的映射转换为相应节点的iptables、ipvs规则，从而实现service到pod的通信；<strong>由k8s的kube-proxy组件实现</strong></li>
-<li>互联网访问service，<strong>由k8s的kube-proxy组件实现</strong>，根据访问类型不一样实现机制不同</li>
-<li>pod访问互联网，<strong>使用docker的网络模型</strong><ul>
-<li>每个容器通过veth(虚拟以太网链接对)和宿主机连通</li>
-<li>多个veth包含在一个bridge(桥接网络)中，因此多个容器可以互通</li>
-<li>桥接网卡(一般为docker0)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网</li>
+<li>互联网访问service：<strong>由k8s的kube-proxy组件实现</strong>，根据访问类型不一样实现机制不同</li>
+<li>pod访问互联网：<strong>使用docker的网络模型</strong><ul>
+<li>每个容器通过veth设备对和宿主机连通</li>
+<li>桥接网卡(flannel)或veth设备对cali(calico)和宿主机出口(例如eth0)通过iptables的nat转换，从而可以让容器连接互联网</li>
 </ul>
 </li>
 </ul>
-<h2 id="跨主机数据传递"><a href="#跨主机数据传递" class="headerlink" title="跨主机数据传递"></a>跨主机数据传递</h2><ul>
-<li>路由模式：原始数据包通过路由达到目的地<ul>
-<li>静态路由</li>
-<li>动态路由：bgp、ospf</li>
-</ul>
-</li>
-<li>隧道模式(overlay网络)：将数据包封装在另一个数据包中进行传递<ul>
-<li>vxlan</li>
-<li>ip-ip</li>
-</ul>
-</li>
-</ul>
-<p>CNI（Container Network Interface，容器网络接口)：是一个容器网络规范；kubernetes网络就是采用这个CNI规范，CNI实现依赖两种插件：</p>
+<h2 id="CNI"><a href="#CNI" class="headerlink" title="CNI"></a>CNI</h2><p>CNI（Container Network Interface，容器网络接口)：是一个容器网络规范；kubernetes网络就是采用这个CNI规范，CNI实现依赖两种插件：</p>
 <ul>
 <li>一种是基础功能插件：负责容器连接到主机</li>
 <li>一种是IPAM类插件：负责配置容器网络命名空间的网络</li>
@@ -434,7 +430,7 @@
 <ul>
 <li>kubelet与docker通信（/var/run/docker.sock）</li>
 <li>调用dockershim创建一个infra容器</li>
-<li>然后调用CNI插件为infra容器配置网络</li>
+<li>调用CNI插件为infra容器配置网络</li>
 </ul>
 <h2 id="启用CNI功能"><a href="#启用CNI功能" class="headerlink" title="启用CNI功能"></a>启用CNI功能</h2><ul>
 <li><p>安装基础功能插件：用于容器连接主机</p>
@@ -469,25 +465,29 @@
 <h1 id="flannel"><a href="#flannel" class="headerlink" title="flannel"></a>flannel</h1><p>Flannel是CoreOS维护的一个网络组件，Flannel为每个Pod提供全局唯一的IP，Flannel使用ETCD来存储Pod子网与Node IP之间的关系。flanneld守护进程在每台主机上运行，并负责维护ETCD信息和路由数据包。</p>
 <p>项目地址：<a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">https://github.com/coreos/flannel</a></p>
 <h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><ul>
-<li>udp：性能较低，仅适用于前两者不可用的情况【已废弃】</li>
+<li>udp：性能较低，是flannel的早期实现方式，仅适用于vxlan和host-gw不可用的情况【已废弃】</li>
 <li>vxlan：overlay网络(隧道)方案；使用内核vxlan模块封装报文</li>
 <li>host-gw：underlay(路由)网络方案；Node节点把自己的网络接口当做pod的网关使用；flannel通过在各个节点的agent，将容器网络信息刷新到主机路由表上，这样一来所有的主机都有整个容器网络的路由数据了。但是，要求所有节点处于同一个二层网络</li>
-<li>Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan后端和host-gw后端的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力；配置：<code>&quot;Backend&quot;:{&quot;Type&quot;:&quot;VxLAN&quot;, &quot;Directrouting&quot;: true}</code></li>
+<li>Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan和host-gw的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力</li>
 </ul>
 <p>公有云VPC：Alivpc、AWSvpc、Alloc、GCE</p>
-<h3 id="VXLAN模式通信流程"><a href="#VXLAN模式通信流程" class="headerlink" title="VXLAN模式通信流程"></a>VXLAN模式通信流程</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png" alt=""></p>
+<h3 id="VXLAN模式"><a href="#VXLAN模式" class="headerlink" title="VXLAN模式"></a>VXLAN模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png" alt=""></p>
 <ul>
 <li>vxlan模式特点：<ul>
-<li>支持宿主机3层网络通信（不同子网），只需宿主机网络互通，不需要单独配置到容器网络的路由</li>
+<li>支持宿主机3层通信（不同子网）；只需宿主机网络互通，不需要单独配置到容器网络的路由</li>
 <li>传输过程中需要封包、解包，有性能开销</li>
 </ul>
 </li>
-<li>跨主机pod互联：</li>
+<li>跨主机pod通信实现：</li>
 </ul>
 <ol>
-<li>容器到宿主机网桥cni0【同主机不同pod通过cni0网桥通信】</li>
-<li>网桥cni0到隧道接口flannel.1</li>
-<li>本地flannel.1到目标flannel.1，通信实现如下：<ol>
+<li><p>容器到宿主机网桥cni0【同主机不同pod通过cni0网桥通信】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">容器的网关就是宿主机上的网桥cni0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>网桥cni0到隧道接口flannel.1</p>
+</li>
+<li><p>本地flannel.1到目标flannel.1，通信实现如下：</p>
+<ol>
 <li>获取目标flannel.1 ip地址：ip route</li>
 <li>根据flannel.1ip地址获取flannel.1 mac地址：ip neigh show dev flannel.1</li>
 <li>根据flannel.1 mac地址获取flannel.1 所在宿主机ip：bridge fdb show dev flannel.1</li>
@@ -495,7 +495,7 @@
 </ol>
 </li>
 </ol>
-<h3 id="Host-GW模式通信流程"><a href="#Host-GW模式通信流程" class="headerlink" title="Host-GW模式通信流程"></a>Host-GW模式通信流程</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png" alt=""></p>
+<h3 id="Host-GW模式"><a href="#Host-GW模式" class="headerlink" title="Host-GW模式"></a>Host-GW模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png" alt=""></p>
 <ul>
 <li><p>host-gw模式：</p>
 <ul>
@@ -503,7 +503,7 @@
 <li>不存在封包、解包过程，传输更高效</li>
 </ul>
 </li>
-<li><p>跨主机pod互联：host-gw模式相比vxlan简单了许多， 直接添加路由，将目的主机当做网关，直接路由原始封包。</p>
+<li><p>跨主机pod通信：host-gw模式相比vxlan简单了许多， 直接在主机添加路由，将目的主机当做网关，直接路由原始封包。</p>
 </li>
 </ul>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="k8s资源清单方式"><a href="#k8s资源清单方式" class="headerlink" title="k8s资源清单方式"></a>k8s资源清单方式</h3><ul>
@@ -513,12 +513,12 @@
 <ul>
 <li><p>网络设置(net-conf.json)</p>
 <ul>
-<li>配置pod地址段，与controller-manager中的–cluster-cidr配置一致</li>
-<li>配置工作模式</li>
+<li>配置pod地址段，与controller-manager中的cluster-cidr配置一致</li>
+<li>配置工作模式：<code>&quot;Backend&quot;:{&quot;Type&quot;:&quot;VxLAN&quot;, &quot;Directrouting&quot;: true}</code></li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net-conf.json: |</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;Network&quot;: &quot;10.244.0.0/16&quot;,</span><br><span class="line">      &quot;Backend&quot;: &#123;</span><br><span class="line">        &quot;Type&quot;: &quot;vxlan&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>多个宿主机间的通信接口设置(kube-flannel–&gt;DaemonSet)：<code>--iface=eth1</code></p>
+<li><p>宿主机间的通信接口设置(kube-flannel–&gt;DaemonSet)：<code>--iface=eth1</code></p>
 </li>
 <li><p>镜像地址修改</p>
 </li>
@@ -541,7 +541,7 @@
 </ol>
 </li>
 <li>安装flannel</li>
-<li><p>flannel服务配置(centos示例-/etc/sysconfig/flanneld)</p>
+<li><p>flannel服务配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FLANNEL_ETCD_ENDPOINTS=&quot;http://172.17.8.101:2379&quot;</span><br><span class="line">FLANNEL_ETCD_PREFIX=&quot;/kube-centos/network&quot;</span><br><span class="line">FLANNEL_OPTIONS=&quot;-iface=eth1&quot;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>启动flannel</p>
@@ -550,12 +550,204 @@
 <h1 id="calico"><a href="#calico" class="headerlink" title="calico"></a>calico</h1><p>calico是一个纯三层的数据中心网络方案，calico支持广泛的平台，包含kubernetes、OpenStack</p>
 <p>calico在每一个计算节点利用linux kernel实现了一个高效的虚拟路由器(vRouter)来负责数据转发，而每个vRouter通过BGP协议负责把自己运行的workload的路由信息向整个calico网络内传播</p>
 <p>calico项目还实现了kubernetes网络策略，提供了ACL功能</p>
-<p>calico也支持不同的<a href="https://docs.projectcalico.org/networking/vxlan-ipip" target="_blank" rel="noopener">overlay封装协议</a>：</p>
+<p>calico通过两种方式进行数据包转发</p>
 <ul>
-<li>ip-ip</li>
-<li>vxlan</li>
+<li>路由模式：BGP，动态路由协议，适合大规模网络</li>
+<li>隧道模式：IP-IP</li>
 </ul>
-<h1 id="基于calico的网络策略部署"><a href="#基于calico的网络策略部署" class="headerlink" title="基于calico的网络策略部署"></a>基于calico的网络策略部署</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>主要通过使用flannel(pod间通信)和calico(pod间访问控制)两个软件实现<br>为了充分利用flannel的易用性和calico的丰富功能，可以通过以下方式部署实现(不含calico单独部署)  </p>
+<h2 id="calico架构组件"><a href="#calico架构组件" class="headerlink" title="calico架构组件"></a><a href="https://docs.projectcalico.org/reference/architecture/overview" target="_blank" rel="noopener">calico架构组件</a></h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico.png" alt=""></p>
+<ul>
+<li>Felix：在每个节点运行，负责维护宿主机上路由规则和ACL规则</li>
+<li>Etcd：分布式键值存储，保存Calico的策略和网络配置状态。</li>
+<li>BGP Client(BIRD)：BGP客户端，负责分发路由信息到整个calico网络</li>
+<li>BGP Route Reflector (BIRD)：可选的BGP路由反射器，为了实现更高的规模，集中管理路由信息</li>
+</ul>
+<h2 id="calico部署"><a href="#calico部署" class="headerlink" title="calico部署"></a><a href="https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises" target="_blank" rel="noopener">calico部署</a></h2><ul>
+<li><p>资源下载：</p>
+<ul>
+<li><p>k8s-api存储方式：<code>curl https://docs.projectcalico.org/manifests/calico.yaml -O</code></p>
+</li>
+<li><p>etcd存储方式：<code>curl https://docs.projectcalico.org/manifests/calico-etcd.yaml -O</code></p>
+</li>
+</ul>
+</li>
+<li><p><a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options" target="_blank" rel="noopener">自定义配置</a>：</p>
+<ul>
+<li><p><a href="https://docs.projectcalico.org/networking/ip-autodetection#change-the-autodetection-method" target="_blank" rel="noopener">使用指定的网卡用于宿主机间通信</a>【DaemonSet/calico-node==&gt;containers/env】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- name: IP_AUTODETECTION_METHOD</span><br><span class="line">  value: &quot;interface=eth1&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>配置pod地址段：CALICO_IPV4POOL_CIDR【kubeadm安装的集群可以自动检测】</p>
+</li>
+<li><p>工作模式：CALICO_IPV4POOL_IPIP</p>
+<ul>
+<li>IPIP：Always【默认】<ul>
+<li>BGP：Never </li>
+<li>IPIP兼容BGP：CrossSubnet【同一子网使用BGP，跨子网使用IPIP】</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>配置etcd信息（secret、ConfigMap）</p>
+</li>
+</ul>
+<h2 id="calico管理工具"><a href="#calico管理工具" class="headerlink" title="calico管理工具"></a><a href="https://docs.projectcalico.org/getting-started/clis/calicoctl/" target="_blank" rel="noopener">calico管理工具</a></h2><ul>
+<li><p>二进制下载地址：<a href="https://github.com/projectcalico/calicoctl/releases" target="_blank" rel="noopener">https://github.com/projectcalico/calicoctl/releases</a></p>
+</li>
+<li><p><a href="https://docs.projectcalico.org/getting-started/clis/calicoctl/configure/" target="_blank" rel="noopener">配置文件</a>：/etc/calico/calicoctl.cfg</p>
+<ul>
+<li><p>使用独立etcd存储的calico集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: projectcalico.org/v3</span><br><span class="line">kind: CalicoAPIConfig</span><br><span class="line">metadata:</span><br><span class="line">spec:</span><br><span class="line">  datastoreType: etcdv3</span><br><span class="line">  etcdEndpoints: https://etcd1:2379,https://etcd2:2379,https://etcd3:2379</span><br><span class="line">  etcdKeyFile: /etc/calico/key.pem</span><br><span class="line">  etcdCertFile: /etc/calico/cert.pem</span><br><span class="line">  etcdCACertFile: /etc/calico/ca.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用k8s-api存储的calico集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: projectcalico.org/v3</span><br><span class="line">kind: CalicoAPIConfig</span><br><span class="line">metadata:</span><br><span class="line">spec:</span><br><span class="line">  datastoreType: &quot;kubernetes&quot;</span><br><span class="line">  kubeconfig: &quot;/root/.kube/config&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>管理命令</p>
+<ul>
+<li>查看calico节点状态：calicoctl node status</li>
+</ul>
+</li>
+</ul>
+<h2 id="BGP模式"><a href="#BGP模式" class="headerlink" title="BGP模式"></a>BGP模式</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-bgp.png" alt=""></p>
+<p>pod1访问pod2流程：</p>
+<ol>
+<li><p>数据包从容器1的eth0到达veth pair另一端cali34</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">设置宿主机的接口cali34开启proxy_arp功能，此后这一接口会响应所有arp请求</span><br><span class="line">从而将容器发送到默认网关169.254.1.1的流量送达宿主机的cali34接口【告诉容器，我有169.254.1.1这个ip】</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>宿主机根据路由规则，将数据包转发给下一条</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.244.186.192/26 via 192.168.31.203 dev eth1 proto bird            # 到达其他pod网段的数据包(每个宿主机一个pod子网段)：下一跳为其他宿主机ip、本地出口为eth1</span><br><span class="line">blackhole 10.244.196.128/26 proto bird        # 到达本机pod网段的数据包，如果没有更高优先级路由，数据包直接丢弃</span><br><span class="line">10.244.196.129 dev calie8e9a5cf531 scope link   # 目的为本机pod网段特定ip的数据包，交给指定的cali网卡</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据包到达node2，根据路由规则将数据包转发给cali设备</p>
+</li>
+</ol>
+<h2 id="BGP-RR模式"><a href="#BGP-RR模式" class="headerlink" title="BGP-RR模式"></a>BGP-RR模式</h2><p><a href="https://docs.projectcalico.org/master/networking/bgp" target="_blank" rel="noopener">https://docs.projectcalico.org/master/networking/bgp</a> </p>
+<p>Calico 维护的网络在默认是（Node-to-Node Mesh）全互联模式，Calico集群中的节点之间都会相互建立连接，用于路由交换。但是随着集群规模的扩大，mesh模式将形成一个巨大服务网格，连接数成倍增加。</p>
+<p>这时就需要使用 Route Reflector（路由器反射）模式解决这个问题。</p>
+<p>确定一个或多个Calico节点充当路由反射器，让其他节点从这个RR节点获取路由信息。</p>
+<ul>
+<li><p>关闭BGP node-to-node模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> cat &lt;&lt; EOF | calicoctl create -f -</span><br><span class="line"> apiVersion: projectcalico.org/v3</span><br><span class="line"> kind: BGPConfiguration</span><br><span class="line"> metadata:</span><br><span class="line">   name: default</span><br><span class="line"> spec:</span><br><span class="line">   logSeverityScreen: Info</span><br><span class="line">   nodeToNodeMeshEnabled: false  </span><br><span class="line">   asNumber: 64512</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<p>asNumber可以通过获取：calicoctl get node -o wide</p>
+</li>
+<li><p>配置指定节点为充当路由反射器</p>
+<ul>
+<li><p>节点添加标签：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label node node02 route-reflector=true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置路由器反射器节点routeReflectorClusterID【一般为未使用过的ip地址】</p>
+<blockquote>
+<p>calicoctl get node node02 -o yaml &gt; rr.yaml</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  bgp:</span><br><span class="line">    routeReflectorClusterID: 244.0.0.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用标签选择器将路由反射器节点与其他非路由反射器节点配置为对等</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF | calicoctl create -f -</span><br><span class="line">kind: BGPPeer</span><br><span class="line">apiVersion: projectcalico.org/v3</span><br><span class="line">metadata:</span><br><span class="line">  name: peer-with-route-reflectors</span><br><span class="line">spec:</span><br><span class="line">  nodeSelector: all()</span><br><span class="line">  peerSelector: route-reflector == &apos;true&apos;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>查看bgp连接状态【只能检查本地代理与反射器的连接关系】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">calicoctl node status</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="IP-IP模式"><a href="#IP-IP模式" class="headerlink" title="IP-IP模式"></a>IP-IP模式</h2><p>和flannel的host-gw一样，bgp模式也要求宿主机二层互联。为了解除这个限制，calico和flannel一样也引入隧道模式(overlay),使用ipip封装数据包。</p>
+<p>在不支持ip-ip封装的网络环境，也支持<a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options#switching-from-ip-in-ip-to-vxlan" target="_blank" rel="noopener">vxlan封装</a></p>
+<h3 id="ipip部署"><a href="#ipip部署" class="headerlink" title="ipip部署"></a>ipip部署</h3><p>将bgp模式修改为ipip模式：</p>
+<blockquote>
+<p>由于calico 3.15.2 有<a href="https://github.com/projectcalico/libcalico-go/pull/1277" target="_blank" rel="noopener">bug</a>，如果使用calicoctl方式会有下列错误：</p>
+<p>Partial success: applied the first 1 out of 1 ‘IPPool’ resources:<br>Hit error: FelixConfiguration.crd.projectcalico.org “default” is invalid: spec.bpfLogLevel: Required value</p>
+<p>所以依然使用kubectl delete/apply方式修改calico.yaml</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># calicoctl get ipPool default-ipv4-ippool -o yaml &gt; ipip.yaml</span><br><span class="line"># vi ipip.yaml</span><br><span class="line">apiVersion: projectcalico.org/v3</span><br><span class="line">kind: IPPool</span><br><span class="line">metadata:</span><br><span class="line">  name: default-ipv4-ippool</span><br><span class="line">spec:</span><br><span class="line">  blockSize: 26</span><br><span class="line">  cidr: 10.244.0.0/16</span><br><span class="line">  ipipMode: Always</span><br><span class="line">  natOutgoing: true</span><br><span class="line">  nodeSelector: all()</span><br><span class="line">  vxlanMode: Never</span><br><span class="line"></span><br><span class="line"># calicoctl apply -f ipip.yaml</span><br><span class="line"># calicoctl get ippool -o wide</span><br></pre></td></tr></table></figure>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理示意图如下：</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-ipip.png" alt=""></p>
+<p>pod1访问pod2流程</p>
+<ol>
+<li><p>数据包从容器1的eth0到达veth pair另一端cali34</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">设置宿主机的接口cali34开启proxy_arp功能，此后这一接口会响应所有arp请求</span><br><span class="line">从而将容器发送到默认网关169.254.1.1的流量送达宿主机的cali34接口【告诉容器，我有169.254.1.1这个ip】</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据包根据本地路由规则发送给下一跳</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.244.140.64/26 via 192.168.31.202 dev tunl0 proto bird onlink  # 到达其他pod子网段的流量：目的为对端宿主机ip、本地出口为隧道接口tunl0</span><br><span class="line">blackhole 10.244.196.128/26 proto bird # 到达本机pod网段的数据包，如果没有更高优先级路由，数据包直接丢弃</span><br><span class="line">10.244.196.130 dev calie8e9a5cf531 scope link # 目的为本机pod网段特定ip的数据包，交给指定的cali网卡</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>通过隧道方式传输的数据包，借助物理网卡到达目的主机node2【只要宿主机网络可达，不需要是同一子网】</li>
+</ol>
+<h1 id="CNI插件选择"><a href="#CNI插件选择" class="headerlink" title="CNI插件选择"></a>CNI插件选择</h1><p>考虑因素如下：</p>
+<ul>
+<li>网络性能：路由模式只支持二层网络，隧道模式有性能损耗</li>
+<li>服务器规模：小于50台，选用flannel；数百台使用calico</li>
+<li>策略控制：是否需要pod ACL，只有calico实现了网络策略控制</li>
+<li>网络环境限制：是否支持bgp、vxlan、ipip等协议</li>
+<li>维护能力：使用bgp、calico等需要深厚的网络知识</li>
+</ul>
+<h2 id="切换flannel到calico"><a href="#切换flannel到calico" class="headerlink" title="切换flannel到calico"></a>切换flannel到calico</h2><ul>
+<li><p>删除flannel资源配置：kubectl delete -f kube-flannel.yml</p>
+</li>
+<li><p>删除配置生成的文件</p>
+<ul>
+<li>/var/run/flannel、/run/flannel</li>
+</ul>
+</li>
+<li><p>/etc/cni/net.d/10-flannel.conflist</p>
+</li>
+<li><p>删除在宿主机生成的路由、网卡信息</p>
+<ul>
+<li><p>删除路由信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ip route</span><br><span class="line">ip route del 10.244.1.0/24 via 10.244.1.0 dev flannel.1 onlink</span><br><span class="line">ip route del 10.244.2.0/24 via 10.244.2.0 dev flannel.1 onlink</span><br><span class="line">ip route del 10.244.0.0/24 dev cni0 proto kernel scope link src 10.244.0.1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>删除网卡</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip link delete cni0 </span><br><span class="line">ip link delete flannel.1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>部署calico资源文件：kubectl apply -f calico.yml</p>
+</li>
+<li><p>重建应用pod【过滤使用宿主机网络的pod】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -A -o wide|grep -v &quot;192.168.31&quot;|awk &apos;system(&quot;kubectl delete pod &quot;$2&quot; -n &quot;$1&quot;&quot;)&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="切换calico到flannel"><a href="#切换calico到flannel" class="headerlink" title="切换calico到flannel"></a>切换calico到flannel</h2><ul>
+<li><p>删除calico资源配置：kubectl delete -f calico.yml</p>
+</li>
+<li><p>删除配置生成的文件:</p>
+<ul>
+<li>/etc/cni/net.d/10-calico.conflist</li>
+<li>rm -rf /var/run/calico</li>
+</ul>
+</li>
+<li><p>删除在宿主机生成的路由、网卡信息:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip link delete tunl0</span><br><span class="line">ifconfig tunl0 down</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署flannel资源文件：kubectl delete -f kube-flannel.yml</p>
+</li>
+<li><p>重建应用pod【过滤使用宿主机网络的pod】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -A -o wide|grep -v &quot;192.168.31&quot;|awk &apos;system(&quot;kubectl delete pod &quot;$2&quot; -n &quot;$1&quot;&quot;)&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="k8s集群和外部连通"><a href="#k8s集群和外部连通" class="headerlink" title="k8s集群和外部连通"></a>k8s集群和外部连通</h1><p>业务需求：</p>
+<ul>
+<li>原有虚拟机上的业务与k8s集群中的pod/service通信</li>
+<li>办公网的开发、运维等人员和远程k8s集群中的pod/service通信</li>
+</ul>
+<p>业务实现：</p>
+<ul>
+<li><p>方案一：选取k8s集群中的一个节点专门用于流量转发(设置污点禁止其他pod调度)，在路由器配置静态路由，将访问pod/service的流量转发到此节点</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/office-to-k8s.png" alt=""></p>
+</li>
+<li><p>方案二：通过k8s集群的路由反射器(calico/BGP-RR)和办公网的路由器进行BGP路由交互，从而使办公网感知pod/service网络的存在</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-to-switch.png" alt=""></p>
+</li>
+</ul>
+<h1 id="网络策略-组件部署"><a href="#网络策略-组件部署" class="headerlink" title="网络策略-组件部署"></a>网络策略-组件部署</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>由于calico实现了网络策略功能，在综合calico(pod间访问控制)和flannel(pod间通信)的优点后，可以采用如下部署方式实现网络策略控制 (不含calico单独部署)  </p>
 <ul>
 <li><a href="#canal部署">只部署canal</a>【canal是一个整合了flannel和calico的综合项目，其中calico用于策略控制、flannel用于网络通信】</li>
 <li><a href="#flannel和calico协同部署">协同部署</a>flannel实现网络功能、部署calico实现访问控制功能</li>
@@ -579,7 +771,7 @@
 </li>
 </ul>
 <h2 id="flannel和calico协同部署"><a href="#flannel和calico协同部署" class="headerlink" title="flannel和calico协同部署"></a>flannel和calico协同部署</h2><h3 id="flannel部署"><a href="#flannel部署" class="headerlink" title="flannel部署"></a><a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel部署</a></h3><ul>
-<li>下载清单文件:部署：curl <a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml" target="_blank" rel="noopener">https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</a> -o</li>
+<li>下载清单文件：curl <a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml" target="_blank" rel="noopener">https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</a> -o</li>
 <li>配置调整<ul>
 <li>网络设置(net-conf.json)</li>
 <li>主机间的内部通信端口设置(kube-flannel–&gt;DaemonSet)：–iface=eth1</li>
@@ -587,7 +779,7 @@
 </li>
 <li>执行清单创建资源：kubectl apply -f kube-flannel.yml</li>
 </ul>
-<h3 id="calico部署"><a href="#calico部署" class="headerlink" title="calico部署"></a><a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/other" target="_blank" rel="noopener">calico部署</a></h3><ul>
+<h3 id="calico部署-1"><a href="#calico部署-1" class="headerlink" title="calico部署"></a><a href="https://docs.projectcalico.org/getting-started/kubernetes/installation/other" target="_blank" rel="noopener">calico部署</a></h3><ul>
 <li>下载清单文件：curl <a href="https://docs.projectcalico.org/manifests/calico-policy-only.yaml" target="_blank" rel="noopener">https://docs.projectcalico.org/manifests/calico-policy-only.yaml</a> -O</li>
 <li><p>更改配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POD_CIDR=&quot;&lt;your-pod-cidr&gt;&quot;</span><br><span class="line">sed -i -e &quot;s?192.168.0.0/16?$POD_CIDR?g&quot; calico.yaml</span><br></pre></td></tr></table></figure>
@@ -595,13 +787,18 @@
 <li><p>执行清单创建资源：kubectl apply -f calico.yaml</p>
 </li>
 </ul>
-<h1 id="网络策略控制"><a href="#网络策略控制" class="headerlink" title="网络策略控制"></a>网络策略控制</h1><p>控制pod到pod、node、外接网络的访问限制，包含流入(Ingress)和流出(Egress)两个方向的控制规则</p>
+<h1 id="网络策略-语法"><a href="#网络策略-语法" class="headerlink" title="网络策略-语法"></a>网络策略-语法</h1><p>控制pod到pod、node、外接网络的访问限制，包含流入(Ingress)和流出(Egress)两个方向的控制规则，场景需求如下：</p>
+<ul>
+<li>应用程序间的访问控制，例如允许微服务A访问微服务B，微服务C不能访问微服务A</li>
+<li>不同环境间的隔离，例如开发、测试环境不能相互访问</li>
+<li>pod暴露在外部时，设置pod访问白名单</li>
+</ul>
 <h2 id="默认规则"><a href="#默认规则" class="headerlink" title="默认规则"></a>默认规则</h2><ul>
 <li>默认情况下，所有pod处于非隔离状态，所有方向的流量都可以自由流动</li>
-<li>一旦有策略应用于pod，那么所有未明确声明允许的流量都将被拒绝</li>
+<li>一旦有策略应用于pod，那么相关方向所有未明确声明允许的流量都将被拒绝</li>
 <li>如果在policyTypes中定义了生效规则(Ingress/Egress)：<ul>
 <li>spec定义了空值【<code>{}</code>】表示不限制相关方向的访问</li>
-<li>spec中没有定义相应的Ingress或Egress规则，则表示拒绝相关方向上的一切流量。范例如下【定义默认规则】<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: deny-all-traffic</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125; #所有pod</span><br><span class="line">  policyTypes: # 进口、出口流量都管控；没有定义出站(Egress)详细规则，则拒绝所有出站流量</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  Ingress: #定义了入站规则，但是为空，表示允许所有入站流量</span><br><span class="line">    - &#123;&#125;</span><br></pre></td></tr></table></figure>
+<li>spec中没有定义相应的Ingress或Egress规则，则表示拒绝相关方向上的一切流量。范例如下【定义默认规则】<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: deny-all-traffic</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125;       # 所有pod</span><br><span class="line">  policyTypes:          # 进口、出口流量都管控；没有定义出站(Egress)详细规则，则拒绝所有出站流量</span><br><span class="line">  - Ingress</span><br><span class="line">  - Egress</span><br><span class="line">  Ingress:              # 定义了入站规则，但是为空，表示允许所有入站流量</span><br><span class="line">  - &#123;&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
@@ -628,12 +825,12 @@
 </li>
 <li>to/from：目标对象或源对象<ul>
 <li>ipBlock：IP地址块</li>
-<li>namespaceSelector：名称空间选择器</li>
-<li>podSelctor：pod选择器</li>
+<li>namespaceSelector：名称空间选择器，如果不设置表示当前名称空间</li>
+<li>podSelector：pod选择器</li>
 </ul>
 </li>
 </ul>
-<h2 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-myapp-ingress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector: #选择策略生效目标</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  policyTypes: [&apos;Ingress&apos;] #策略管控的流量方向，此处为入站流量(Ingress)</span><br><span class="line">  ingress:</span><br><span class="line">    - from: #入站来源</span><br><span class="line">      - ipBlock: #ip选择</span><br><span class="line">          cidr: 10.244.0.0/16</span><br><span class="line">          except: #排除部分选项</span><br><span class="line">            - 10.244.3.0/24</span><br><span class="line">      - podSelector: # 标签选择</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: myapp</span><br><span class="line">      ports: #目标端口</span><br><span class="line">      - protocol: TCP</span><br><span class="line">        port: 80</span><br></pre></td></tr></table></figure>
+<h2 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-myapp-ingress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector:              # 选择策略生效目标</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  policyTypes: [&apos;Ingress&apos;]  # 策略管控的流量方向，此处为入站流量(Ingress)</span><br><span class="line">  ingress:</span><br><span class="line">  - from:                 # 入站来源</span><br><span class="line">    - ipBlock:            # ip选择</span><br><span class="line">        cidr: 10.244.0.0/16</span><br><span class="line">        except:           # 排除部分选项</span><br><span class="line">        - 10.244.3.0/24</span><br><span class="line">    - podSelector:        # 标签选择</span><br><span class="line">        matchLabels:</span><br><span class="line">          app: myapp</span><br><span class="line">    ports:                # 目标端口</span><br><span class="line">    - protocol: TCP</span><br><span class="line">      port: 80</span><br></pre></td></tr></table></figure>
 <ul>
 <li>from:入站流量来源<ul>
 <li>多个项目之间为“逻辑或”关系</li>
@@ -645,10 +842,10 @@
 <li>from和ports之间为“逻辑与”关系；仅定义from隐含本地pod资源的所有端口；仅定义ports隐含所有来源；两者都定义则精确匹配来源及目标端口</li>
 </ul>
 <h2 id="Egress"><a href="#Egress" class="headerlink" title="Egress"></a>Egress</h2><p>对于具有app=tomcat标签的对象，它到【app=nginx】对象80端口的流量被放行<br>到【app=mysql】对象3306端口的流量也被放行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-tomcat-egress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: tomcat</span><br><span class="line">  policyTypes: [&quot;Egress&quot;]</span><br><span class="line">  egress:</span><br><span class="line">    - to:</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">      ports:</span><br><span class="line">        - protocol: TCP</span><br><span class="line">          port: 80</span><br><span class="line">    - to:</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: mysql</span><br><span class="line">      ports:</span><br><span class="line">        - protocol: TCP</span><br><span class="line">          port: 3306</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: allow-tomcat-egress</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: tomcat</span><br><span class="line">  policyTypes: [&quot;Egress&quot;]</span><br><span class="line">  egress:</span><br><span class="line">  - to:</span><br><span class="line">    - podSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          app: nginx</span><br><span class="line">    ports:</span><br><span class="line">    - protocol: TCP</span><br><span class="line">      port: 80</span><br><span class="line">  - to:</span><br><span class="line">    - podSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          app: mysql</span><br><span class="line">    ports:</span><br><span class="line">    - protocol: TCP</span><br><span class="line">      port: 3306</span><br></pre></td></tr></table></figure>
 <h2 id="名称空间隔离"><a href="#名称空间隔离" class="headerlink" title="名称空间隔离"></a>名称空间隔离</h2><p>允许当前名称空间内部各pod之间，以及当前名称空间与kube-system名称空间内各pod的通信</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-deny-all</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-allow</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  ingress:</span><br><span class="line">    - from:</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: name</span><br><span class="line">              operator: In</span><br><span class="line">              values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br><span class="line">  Egress:</span><br><span class="line">    - to:</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: name</span><br><span class="line">              operator: In</span><br><span class="line">              values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br></pre></td></tr></table></figure>
-<h1 id="网络策略应用案例"><a href="#网络策略应用案例" class="headerlink" title="网络策略应用案例"></a>网络策略应用案例</h1><h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-deny-all</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: namespace-allow</span><br><span class="line">  name: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes: [&quot;Ingress&quot;, &quot;Egress&quot;]</span><br><span class="line">  podSelector: &#123;&#125;</span><br><span class="line">  ingress:</span><br><span class="line">  - from:</span><br><span class="line">    - namespaceSelector:</span><br><span class="line">        matchExpressions:</span><br><span class="line">        - key: name</span><br><span class="line">          operator: In</span><br><span class="line">          values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br><span class="line">  Egress:</span><br><span class="line">  - to:</span><br><span class="line">    - namespaceSelector:</span><br><span class="line">        matchExpressions:</span><br><span class="line">        - key: name</span><br><span class="line">          operator: In</span><br><span class="line">          values: [&quot;testing&quot;, &quot;kube-system&quot;]</span><br></pre></td></tr></table></figure>
+<h1 id="网络策略-应用范例"><a href="#网络策略-应用范例" class="headerlink" title="网络策略-应用范例"></a>网络策略-应用范例</h1><h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
 <li>testing名称空间下运行app=nginx和app=myapp两个应用</li>
 <li>myapp仅允许来自nginx访问其TCP/80端口，但可以向nginx的所有端口发出出站流量</li>
 <li>nginx允许所有源站点访问其TCP/80端口，并能向任意端点发出出站流量</li>
@@ -657,10 +854,10 @@
 <h2 id="运行应用"><a href="#运行应用" class="headerlink" title="运行应用"></a>运行应用</h2><ul>
 <li>myapp：<code>kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=1 --namespace=testing --port 80 --expose --labels app=myapp</code></li>
 <li>nginx：<code>kubectl run nginx --image=nginx:alpine --replicas=1 --namespace=testing --port 80 --expose --labels app=nginx</code></li>
-<li>调试客户端：<code>kubectl run debug --namespace=default --rm -it --image=nicolaka/netshoot -- sh</code></li>
 <li>为kube-system添加标签：<code>kubectl label namespace kube-system ns=kube-system</code></li>
+<li>调试客户端：<code>kubectl run debug --namespace=default --rm -it --image=nicolaka/netshoot -- sh</code></li>
 </ul>
-<h2 id="配置清单"><a href="#配置清单" class="headerlink" title="配置清单"></a>配置清单</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: testing-default # testing默认策略，拒绝所有进出流量</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector: &#123;&#125; </span><br><span class="line">  policyTypes: </span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-policy # myapp策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes:</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  ingress:</span><br><span class="line">    - from: #允许来自nginx访问其80端口</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">      ports:</span><br><span class="line">        - port: 80</span><br><span class="line">    - from: #允许来自kube-system的pod访问</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">  egress:</span><br><span class="line">    - to: #允许访问nginx的所有端口</span><br><span class="line">      - podSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            app: nginx</span><br><span class="line">    - to: # 允许访问kube-system的pod</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-policy #nginx策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: nginx</span><br><span class="line">  policyTypes:</span><br><span class="line">    - Ingress</span><br><span class="line">    - Egress</span><br><span class="line">  ingress:</span><br><span class="line">    - ports: #允许所有源站点访问80端口</span><br><span class="line">      - port: 80</span><br><span class="line">    - from: # 允许来自kube-system访问</span><br><span class="line">      - namespaceSelector:</span><br><span class="line">          matchLabels:</span><br><span class="line">            ns: kube-system</span><br><span class="line">  egress: </span><br><span class="line">    - &#123;&#125; #出口流量不限制</span><br></pre></td></tr></table></figure>
+<h2 id="配置清单"><a href="#配置清单" class="headerlink" title="配置清单"></a>配置清单</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: myapp-policy             # myapp策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  policyTypes:</span><br><span class="line">  - Ingress</span><br><span class="line">  - Egress</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: myapp</span><br><span class="line">  ingress:</span><br><span class="line">  - from:                     # 允许来自nginx访问其80端口</span><br><span class="line">    - podSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          app: nginx</span><br><span class="line">    ports:</span><br><span class="line">    - port: 80</span><br><span class="line">  - from:                    # 允许来自kube-system的pod访问</span><br><span class="line">    - namespaceSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          ns: kube-system</span><br><span class="line">  egress:</span><br><span class="line">  - to:                      # 允许访问nginx的所有端口</span><br><span class="line">    - podSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          app: nginx</span><br><span class="line">  - to:                      # 允许访问kube-system的pod</span><br><span class="line">    - namespaceSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          ns: kube-system</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: NetworkPolicy</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-policy             # nginx策略</span><br><span class="line">  namespace: testing</span><br><span class="line">spec:</span><br><span class="line">  podSelector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: nginx</span><br><span class="line">  policyTypes:</span><br><span class="line">  - Ingress</span><br><span class="line">  - Egress</span><br><span class="line">  ingress:</span><br><span class="line">  - ports:                       # 允许所有源站点访问80端口</span><br><span class="line">    - port: 80</span><br><span class="line">  - from:                        # 允许来自kube-system访问</span><br><span class="line">    - namespaceSelector:</span><br><span class="line">        matchLabels:</span><br><span class="line">          ns: kube-system</span><br><span class="line">  egress: </span><br><span class="line">  - &#123;&#125;                           # 出口流量不限制</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -682,11 +879,9 @@
           
             <a href="/tags/flannel/" rel="tag"># flannel</a>
           
-            <a href="/tags/canal/" rel="tag"># canal</a>
-          
             <a href="/tags/calico/" rel="tag"># calico</a>
           
-            <a href="/tags/ingress/" rel="tag"># ingress</a>
+            <a href="/tags/网络策略/" rel="tag"># 网络策略</a>
           
         </div>
       
@@ -810,7 +1005,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">258</span>
+                  <span class="site-state-item-count">259</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -859,7 +1054,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubernetes网络模型"><span class="nav-number">1.</span> <span class="nav-text">kubernetes网络模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s网络应用场景"><span class="nav-number">1.1.</span> <span class="nav-text">k8s网络应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨主机数据传递"><span class="nav-number">1.2.</span> <span class="nav-text">跨主机数据传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用CNI功能"><span class="nav-number">1.3.</span> <span class="nav-text">启用CNI功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见CNI插件"><span class="nav-number">1.4.</span> <span class="nav-text">常见CNI插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flannel"><span class="nav-number">2.</span> <span class="nav-text">flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#工作模式"><span class="nav-number">2.1.</span> <span class="nav-text">工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VXLAN模式通信流程"><span class="nav-number">2.1.1.</span> <span class="nav-text">VXLAN模式通信流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Host-GW模式通信流程"><span class="nav-number">2.1.2.</span> <span class="nav-text">Host-GW模式通信流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">2.2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s资源清单方式"><span class="nav-number">2.2.1.</span> <span class="nav-text">k8s资源清单方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动etcd方式"><span class="nav-number">2.2.2.</span> <span class="nav-text">手动etcd方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#calico"><span class="nav-number">3.</span> <span class="nav-text">calico</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于calico的网络策略部署"><span class="nav-number">4.</span> <span class="nav-text">基于calico的网络策略部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">4.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署要求"><span class="nav-number">4.2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#canal部署"><span class="nav-number">4.3.</span> <span class="nav-text">canal部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flannel和calico协同部署"><span class="nav-number">4.4.</span> <span class="nav-text">flannel和calico协同部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel部署"><span class="nav-number">4.4.1.</span> <span class="nav-text">flannel部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#calico部署"><span class="nav-number">4.4.2.</span> <span class="nav-text">calico部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略控制"><span class="nav-number">5.</span> <span class="nav-text">网络策略控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认规则"><span class="nav-number">5.1.</span> <span class="nav-text">默认规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法定义"><span class="nav-number">5.2.</span> <span class="nav-text">语法定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ingress"><span class="nav-number">5.3.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egress"><span class="nav-number">5.4.</span> <span class="nav-text">Egress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名称空间隔离"><span class="nav-number">5.5.</span> <span class="nav-text">名称空间隔离</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略应用案例"><span class="nav-number">6.</span> <span class="nav-text">网络策略应用案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">6.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行应用"><span class="nav-number">6.2.</span> <span class="nav-text">运行应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单"><span class="nav-number">6.3.</span> <span class="nav-text">配置清单</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubernetes网络模型"><span class="nav-number">1.</span> <span class="nav-text">kubernetes网络模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s网络应用场景"><span class="nav-number">1.1.</span> <span class="nav-text">k8s网络应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CNI"><span class="nav-number">1.2.</span> <span class="nav-text">CNI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用CNI功能"><span class="nav-number">1.3.</span> <span class="nav-text">启用CNI功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见CNI插件"><span class="nav-number">1.4.</span> <span class="nav-text">常见CNI插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flannel"><span class="nav-number">2.</span> <span class="nav-text">flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#工作模式"><span class="nav-number">2.1.</span> <span class="nav-text">工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VXLAN模式"><span class="nav-number">2.1.1.</span> <span class="nav-text">VXLAN模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Host-GW模式"><span class="nav-number">2.1.2.</span> <span class="nav-text">Host-GW模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">2.2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s资源清单方式"><span class="nav-number">2.2.1.</span> <span class="nav-text">k8s资源清单方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动etcd方式"><span class="nav-number">2.2.2.</span> <span class="nav-text">手动etcd方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#calico"><span class="nav-number">3.</span> <span class="nav-text">calico</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#calico架构组件"><span class="nav-number">3.1.</span> <span class="nav-text">calico架构组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#calico部署"><span class="nav-number">3.2.</span> <span class="nav-text">calico部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#calico管理工具"><span class="nav-number">3.3.</span> <span class="nav-text">calico管理工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP模式"><span class="nav-number">3.4.</span> <span class="nav-text">BGP模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-RR模式"><span class="nav-number">3.5.</span> <span class="nav-text">BGP-RR模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-IP模式"><span class="nav-number">3.6.</span> <span class="nav-text">IP-IP模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ipip部署"><span class="nav-number">3.6.1.</span> <span class="nav-text">ipip部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">3.6.2.</span> <span class="nav-text">原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNI插件选择"><span class="nav-number">4.</span> <span class="nav-text">CNI插件选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#切换flannel到calico"><span class="nav-number">4.1.</span> <span class="nav-text">切换flannel到calico</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#切换calico到flannel"><span class="nav-number">4.2.</span> <span class="nav-text">切换calico到flannel</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s集群和外部连通"><span class="nav-number">5.</span> <span class="nav-text">k8s集群和外部连通</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略-组件部署"><span class="nav-number">6.</span> <span class="nav-text">网络策略-组件部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">6.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署要求"><span class="nav-number">6.2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#canal部署"><span class="nav-number">6.3.</span> <span class="nav-text">canal部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flannel和calico协同部署"><span class="nav-number">6.4.</span> <span class="nav-text">flannel和calico协同部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel部署"><span class="nav-number">6.4.1.</span> <span class="nav-text">flannel部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#calico部署-1"><span class="nav-number">6.4.2.</span> <span class="nav-text">calico部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略-语法"><span class="nav-number">7.</span> <span class="nav-text">网络策略-语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认规则"><span class="nav-number">7.1.</span> <span class="nav-text">默认规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法定义"><span class="nav-number">7.2.</span> <span class="nav-text">语法定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ingress"><span class="nav-number">7.3.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egress"><span class="nav-number">7.4.</span> <span class="nav-text">Egress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名称空间隔离"><span class="nav-number">7.5.</span> <span class="nav-text">名称空间隔离</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络策略-应用范例"><span class="nav-number">8.</span> <span class="nav-text">网络策略-应用范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">8.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行应用"><span class="nav-number">8.2.</span> <span class="nav-text">运行应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单"><span class="nav-number">8.3.</span> <span class="nav-text">配置清单</span></a></li></ol></li></ol></div>
             
 
           </div>
