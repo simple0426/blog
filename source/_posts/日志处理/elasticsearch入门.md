@@ -54,7 +54,7 @@ date: 2020-08-25 11:09:25
 * _id：文档id
 * _version：文档版本
 
-# 索引管理
+# 索引
 
 * 创建索引：settings中设置分片数、副本数
 
@@ -72,6 +72,69 @@ PUT  /索引
   
 * 删除索引：DELETE  索引
 
+# 映射
+
+elasticsearch可以自动判断字段及其数据类型，但是有时候自动判断的类型和实际需求不符合(比如，搜索的字段内容是否需要分词)，这个时候就需要在创建索引的时候指定字段的数据类型(映射)
+
+## es自动判断数据类型
+
+| json type              | field type |
+| ---------------------- | ---------- |
+| Boolean: true or false | boolean    |
+| number: 123            | long       |
+| float: 123.45          | double     |
+| date: "2014-09-15"     | date       |
+| string: "foo bar"      | string     |
+
+## es数据类型
+
+| 主类型  | 子类型                    |
+| ------- | ------------------------- |
+| string  | text、keyword             |
+| number  | byte、shot、integer、long |
+| float   | float、double             |
+| boolean | boolean                   |
+| date    | date                      |
+
+* text：该字段要被全文搜索，可以被分词
+
+* keyword：不能被分词，比如email地址、主机名、状态码和标签；字段可以用于过滤、排序、聚合等操作；keyword字段只能通过精确值搜索到
+
+## mappings操作
+
+* 创建包含mappings的索引
+
+  ```
+  PUT /索引
+  {
+      "settings": {
+          "index": {
+              "number_of_shards": "2",
+              "number_of_replicas": "0"
+          }
+      },
+      "mappings": {
+          "person": {
+              "properties": {
+                  "name": {
+                      "type": "text"
+                  },
+                  "age": {
+                      "type": "integer"
+                  },
+                  "mail": {
+                      "type": "keyword"
+                  },
+                  "hobby": {
+                      "type": "text"
+                  }
+              }
+          }
+      }
+  }
+  ```
+
+*  查询索引mappings：/索引/_mappings
 
 # 数据操作
 
@@ -151,25 +214,17 @@ GET 索引/类型/id
   * 操作类型：create、update、delete、index
   * index操作时，不需要添加id；没有文档时为create操作；有文档时为update操作。
 
-# 搜索
+# 搜索方式
 
-基于_search接口的查询，根据请求方式(GET/POST)的不同可以分为：
+基于_search接口的查询，根据参数位置的不同可以分为：
 
-* 基于URI的请求方式(GET)：_search?q=字符串查询语法
+* 基于URI的请求方式(GET)：/_search?q=字符串查询语法
 * 基于请求体的请求方式(POST)
 
 _search接口直接返回最多10条数据
 
 ```
 http://49.232.17.71:8200/haoke/user/_search
-```
-
-## 功能
-
-* 分页：size：返回指定条目数，from：跳过前n个结果
-
-```
-http://49.232.17.71:8200/haoke/user/_search?size=2&from=1
 ```
 
 ## URI搜索方式
@@ -220,56 +275,138 @@ http://49.232.17.71:8200/haoke/user/_search?size=2&from=1
 
 ## 请求体搜索方式
 
-* 全文搜索-match
+### 结构化查询
+
+* term用于精确匹配：数字、日期、布尔值、以及not_analyzed的字符串(未经分析的text类型)
 
   ```
-  POST /_search
   {
       "query": {
-          "match": {
-              "age": 22
+          "term": {
+              "age": 23
           }
       }
   }
   ```
 
-* 多条件组合查询
+* terms精确匹配一个数组中的多个值
 
   ```
-  POST /_search
   {
       "query": {
-          "bool": {
-              "must": {
-                  "match": {
-                      "sex": "男"
-                  }
-              },
-              "filter": {
-                  "range": {
-                      "age": {
-                          "gt": 24
-                      }
-                  }
+          "terms": {
+              "age": [23, 20, 28]
+          }
+      }
+  }
+  ```
+
+* range：范围查询【操作符：lt/小于、lte/小于等于、gt/大于、gte/大于等于】
+
+  ```
+  {
+      "query": {
+          "range": {
+              "age": {
+                  "gte": 23,
+                  "lt": 30 
               }
           }
       }
   }
   ```
-  
-  bool：混合多个查询条件
-  * must：查询结果必须包含的内容
-  * filter：查询结果必须包含的内容，影响结果排序
-  
-* range：范围查询
 
-* exists：字段是否存在
+* exists：是否包含某字段
+
+  ```
+  {
+      "query": {
+          "exists": {
+              "field": "age"
+          }
+      }
+  }
+  ```
+
+* match：既可以进行单字段精确查询(term)，也可以全文搜索(text分词为term)
+
+  ```
+  {
+      "query": {
+          "match": {
+              "name": "张三"
+          }
+      }
+  }
+  ```
 
 * prefix：前缀模糊匹配
-
 * wildcard：通配符匹配
-
 * regexp：正则匹配
+
+### 多条件查询
+
+组合多个查询条件，可用的布尔子类型如下：
+
+* must：查询结果必须要包含内容，相当于and；结果会根据相关性排序
+* filter：查询结果必须要包含内容；但不影响结果排序
+* must_not：查询结果不能包含内容，相当于not；不影响结果排序
+* should
+  * 单独使用时，多个查询条件至少有一个匹配，相当于or；结果会根据相关性排序
+  *  和filter、must共同使用时，不影响查询结果，但影响结果相关性排序
+
+```
+{
+    "query": {
+        "bool": {
+            "must": {
+                "match": {
+                    "hobby": "足球"
+                }
+            },
+            "must_not": {
+                "match": {
+                    "name": "张三"
+                }
+            }
+        }
+    }
+}
+```
+
+### 过滤(filter)和查询(query)
+
+```
+{
+    "query": {
+        "bool": {
+            "filter": {
+                "term": {
+                    "age": 23
+                }
+            }
+        }
+    }
+}
+{
+    "query": {
+        "match": {
+            "hobby": "足球"
+        }
+    }
+}
+```
+
+* filter只过滤结果，结果不会排序，但会缓存【利用缓存特性，可以用于精确匹配的搜索，如term查询】
+* query查询结果会根据相关性排序(更耗时)，但不会缓存
+
+## 结果处理-分页
+
+* 分页：size：返回指定条目数，from：跳过前n个结果
+
+```
+http://49.232.17.71:8200/haoke/user/_search?size=2&from=1
+```
 
 ## 聚合查询
 
@@ -290,69 +427,3 @@ http://49.232.17.71:8200/haoke/user/_search?size=2&from=1
 * aggs：指定聚合查询
 * age_avg：聚合名称
 * avg：聚合类型
-
-# 映射
-
-elasticsearch可以自动判断字段及其数据类型，但是有时候自动判断的类型和实际需求不符合(比如，搜索的字段内容是否需要分词)，这个时候就需要在创建索引的时候指定字段的数据类型(映射)
-
-## es自动判断数据类型
-
-| json type              | field type |
-| ---------------------- | ---------- |
-| Boolean: true or false | boolean    |
-| number: 123            | long       |
-| float: 123.45          | double     |
-| date: "2014-09-15"     | date       |
-| string: "foo bar"      | string     |
-
-## es数据类型
-
-| 主类型  | 子类型                    |
-| ------- | ------------------------- |
-| string  | text、keyword             |
-| number  | byte、shot、integer、long |
-| float   | float、double             |
-| boolean | boolean                   |
-| date    | date                      |
-
-* text：该字段要被全文搜索，可以被分词
-
-* keyword：不能被分词，比如email地址、主机名、状态码和标签；字段可以用于过滤、排序、聚合等操作；keyword字段只能通过精确值搜索到
-
-## mappings操作
-
-* 创建包含mappings的索引
-
-  ```
-  PUT /索引
-  {
-      "settings": {
-          "index": {
-              "number_of_shards": "2",
-              "number_of_replicas": "0"
-          }
-      },
-      "mappings": {
-          "person": {
-              "properties": {
-                  "name": {
-                      "type": "text"
-                  },
-                  "age": {
-                      "type": "integer"
-                  },
-                  "mail": {
-                      "type": "keyword"
-                  },
-                  "hobby": {
-                      "type": "text"
-                  }
-              }
-          }
-      }
-  }
-  ```
-
-*  查询索引mappings：/索引/_mappings
-
-
