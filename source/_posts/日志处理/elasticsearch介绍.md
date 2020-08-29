@@ -1,11 +1,12 @@
 ---
-title: elasticsearch入门
+title: elasticsearch介绍
 tags:
   - elasticsearch
   - search
 categories:
   - elk
 date: 2020-08-25 11:09:25
+
 ---
 
 
@@ -43,7 +44,7 @@ date: 2020-08-25 11:09:25
 
 倒排索引是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射
 
-## 文档
+## 文档格式
 
 以json格式存储，由元数据(metadata)和数据(_source)组成
 
@@ -59,7 +60,7 @@ date: 2020-08-25 11:09:25
 * 创建索引：settings中设置分片数、副本数
 
   ```
-PUT  /索引
+  PUT  /索引
   {
       "settings": {
           "index": {
@@ -69,7 +70,7 @@ PUT  /索引
       }
   }
   ```
-  
+
 * 删除索引：DELETE  索引
 
 # 映射
@@ -134,11 +135,84 @@ elasticsearch可以自动判断字段及其数据类型，但是有时候自动�
   }
   ```
 
-*  查询索引mappings：/索引/_mappings
+* 查询索引mappings：/索引/_mappings
+
+# 分词
+
+分词：将文本转化为一系列单词的过程，也叫文本分析，在elasticsearch中称作Analysis
+
+例如：我是中国人=》我、是、中国人
+
+分词api：/_analyze【仅用于文本分析测试；text文本会自动分词，但可以在创建映射时自定义分词器(如中文分词器IK)】
+
+```
+{
+    "analyzer": "standard",
+    "text": "hello world"
+}
+{
+    "analyzer": "ik_max_word",
+    "text": "我是中国人"
+}
+```
+
+## 中文分词器IK
+
+项目地址：https://github.com/medcl/elasticsearch-analysis-ik
+
+安装：
+
+方式1：下载预编译安装包https://github.com/medcl/elasticsearch-analysis-ik/releases
+
+* 创建插件目录：cd your-es-root/plugins/ && mkdir ik
+* 解压插件到目录your-es-root/plugins/ik
+
+方式2：使用es插件命令
+
+```
+./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.3.0/elasticsearch-analysis-ik-6.3.0.zip
+```
+
+## 自定义分词器
+
+创建映射的text字段类型时，自定义分词器
+
+```
+{
+    "settings": {
+        "index": {
+            "number_of_shards": "2",
+            "number_of_replicas": "0"
+        }
+    },
+    "mappings": {
+        "person": {
+            "properties": {
+                "name": {
+                    "type": "text"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "mail": {
+                    "type": "keyword"
+                },
+                "hobby": {
+                    "type": "text",
+                    "analyzer": "ik_max_word"
+                }
+            }
+        }
+    }
+}
+```
+
+
 
 # 数据操作
 
 ## 增加
+
 ```
 POST  索引/类型
 {
@@ -147,7 +221,9 @@ POST  索引/类型
     "sex": "男"
 }
 ```
+
 ## 更新
+
 * 全量更新
 
   ```
@@ -158,11 +234,11 @@ POST  索引/类型
       "sex": "男"
   }
   ```
-  
+
 * 局部更新：请求体是doc封装的key/value信息
 
   ```
-POST  索引/类型/id/_update
+  POST  索引/类型/id/_update
   {
       "doc": {
           "name": "李四"
@@ -171,9 +247,11 @@ POST  索引/类型/id/_update
   ```
 
 ## 删除
+
 DELETE  索引/类型/id
 
 ## 查询
+
 GET 索引/类型/id
 
 ## 自定义查询
@@ -231,33 +309,33 @@ http://49.232.17.71:8200/haoke/user/_search
 
 * 全字段搜索：直接写搜索的单词
 
-    ```
-    /_search?q=alex
-    ```
+  ```
+  /_search?q=alex
+  ```
 
 * 单字段检索：在搜索单词之前加上字段名和冒号，比如如果知道单词first 肯定出现在 mesg 字段，可以写作  mesg:first
 
-    ```
-    /_search?q=age:25
-    ```
+  ```
+  /_search?q=age:25
+  ```
 
 * 多个条件组合：可以使用  NOT  ,  AND  和  OR  来组合检索，注意必须是大写
 
-    ```
-    /_search?q=(name:alex)%20AND%20(age:28)
-    ```
+  ```
+  /_search?q=(name:alex)%20AND%20(age:28)
+  ```
 
 * 字段是否存在：`_exists_:user`  表示要求 user 字段存在， `_missing_:user`  表示要求 user 字段不存在
 
-    ```
-    /_search?q=_exists_:name
-    ```
+  ```
+  /_search?q=_exists_:name
+  ```
 
 * 通配符：用  ?  表示单字符， *  表示0或多个字符
 
-    ```
-    /_search?q=alex?
-    ```
+  ```
+  /_search?q=alex?
+  ```
 
 - 模糊搜索：用  ~  表示搜索单词可能有一两个字母写的不对，比如  frist~
 
@@ -275,7 +353,7 @@ http://49.232.17.71:8200/haoke/user/_search
 
 ## 请求体搜索方式
 
-### 结构化查询
+> 结构化查询
 
 * term用于精确匹配：数字、日期、布尔值、以及not_analyzed的字符串(未经分析的text类型)
 
@@ -341,40 +419,287 @@ http://49.232.17.71:8200/haoke/user/_search
   ```
 
 * prefix：前缀模糊匹配
+
 * wildcard：通配符匹配
+
 * regexp：正则匹配
 
-### 多条件查询
+# 全文搜索
 
-组合多个查询条件，可用的布尔子类型如下：
+全文搜索两个重要方面：
 
-* must：查询结果必须要包含内容，相当于and；结果会根据相关性排序
-* filter：查询结果必须要包含内容；但不影响结果排序
-* must_not：查询结果不能包含内容，相当于not；不影响结果排序
-* should
-  * 单独使用时，多个查询条件至少有一个匹配，相当于or；结果会根据相关性排序
-  *  和filter、must共同使用时，不影响查询结果，但影响结果相关性排序
+* 相关性(Relvance)：评价查询和其结果间相关性程度，并根据这种相关性排序；这种计算方式可以是TF/IDF方法、地理位置临近、模糊相似等算法
+* 分词(Analysis)：将文本转换为有区别的、规范化的token的过程
+
+## 单词搜索
 
 ```
 {
     "query": {
-        "bool": {
-            "must": {
-                "match": {
-                    "hobby": "足球"
+        "match": {
+            "hobby": "音乐"
+        }
+    },
+    "highlight": {
+        "fields": {
+            "hobby": {}
+        }
+    }
+}
+```
+
+执行的过程如下：
+
+* 检查字段类型：hobby是一个text类型（指定IK分词器），这意味着查询字符串本身也应该被分词
+* 分析查询字符串：将查询字符串“音乐”传入IK分词器中，输出单个项(term)：音乐，因为只有一个单词项，所以match查询执行的是单个term查询
+* 查询匹配文档：用term查询在倒排索引中查找包含“音乐”的一组文档
+* 为每个文档评分并排序：用term查询计算每个文档的相关度评分_score，这个将词频(term frequency)【即“音乐”在相关文档hobby字段中出现的频率】、反向文档频率(inverse document frequency)【即“音乐”在所有文档的hobby字段出现的频率】、字段长度【即字段越短相关度越高】相结合的计算方式
+
+ 查询结果如下：
+
+```
+{
+    "took": 20,
+    "timed_out": false,
+    "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 1,
+        "max_score": 0.7438652,
+        "hits": [
+            {
+                "_index": "itcast",
+                "_type": "person",
+                "_id": "F-NNOHQBDlTN8HRyeJoY",
+                "_score": 0.7438652,
+                "_source": {
+                    "name": "赵六",
+                    "age": 23,
+                    "mail": "444@qq.com",
+                    "hobby": "听音乐、看电影"
+                },
+                "highlight": {
+                    "hobby": [
+                        "听<em>音乐</em>、看电影"
+                    ]
                 }
-            },
-            "must_not": {
-                "match": {
-                    "name": "张三"
+            }
+        ]
+    }
+}
+```
+
+## 多词搜索
+
+* 默认：空格分隔的多个词为“逻辑或”
+
+  ```
+  {
+      "query": {
+          "match": {
+              "hobby": "羽毛球 篮球"
+          }
+      },
+      "highlight": {
+          "fields": {
+              "hobby": {}
+          }
+      }
+  }
+  ```
+
+* 设置多个词为“逻辑与“关系
+
+  ```
+  {
+      "query": {
+          "match": {
+              "hobby": {
+                  "query": "羽毛球 篮球",
+                  "operator": "and"
+              }
+          }
+      },
+      "highlight": {
+          "fields": {
+              "hobby": {}
+          }
+      }
+  }
+  ```
+
+* 避免多个词使用极端的and或or方式搜索，可以设置相似度百分比minimum_should_match
+
+  ```
+  {
+      "query": {
+          "match": {
+              "hobby": {
+                  "minimum_should_match": "70%",
+                  "query": "足球 篮球"
+              }
+          }
+      },
+      "highlight": {
+          "fields": {
+              "hobby": {}
+          }
+      }
+  }
+  ```
+
+  minimum_should_match：相似度越高，包含的文档越少
+
+  > 相似度设置，需要不断测试，以达到预期结果
+
+  * 100%相当于and
+  * 50%相当于or
+
+# 多条件查询
+
+组合多个查询条件，可用的布尔子类型如下：
+
+* must：查询结果必须要包含内容，相当于and；结果会根据**相关性排序**
+
+* filter：查询结果必须要包含内容；但不影响结果排序
+
+* must_not：查询结果不能包含内容，相当于not；不影响结果排序
+
+* should
+
+  * 单独使用时，多个查询条件至少有一个匹配【参数minimum_should_match调节，设置相关性】；结果会根据**相关性排序**【minimum_should_match为2表示，should中的多个词至少要满足2个】
+
+    ```
+    {
+        "query": {
+            "bool": {
+                "should": [
+                    {
+                        "match": {
+                            "hobby": "乒乓球"
+                        }
+                    },
+                    {
+                        "match": {
+                            "hobby": "篮球"
+                        }
+                    }
+                ],
+                "minimum_should_match": 2
+            }
+        },
+        "highlight": {
+            "fields": {
+                "hobby": {}
+            }
+        }
+    }
+    ```
+
+  * 和filter、must共同使用时，不影响查询结果，但影响结果**相关性排序**【包含should条件的排序更高】
+
+    minimum_should_match调节排序
+
+    ```
+    {
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {
+                        "sex": "男"
+                    }
+                },
+                "should": {
+                    "match": {
+                        "name": {
+                            "query": "小",
+                            "minimum_should_match": "50%"
+                        }
+                    }
                 }
+            }
+        },
+        "highlight": {
+            "fields": {
+                "sex": {}
+            }
+        }
+    }
+    ```
+
+    权重调节排序
+
+    ```
+    {
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {
+                        "hobby": "足球"
+                    }
+                },
+                "should": [
+                    { "match": {
+                        "hobby": {
+                            "query": "乒乓球",
+                            "boost": 10
+                        }
+                    }},
+                    { "match": {
+                        "hobby": {
+                            "query": "篮球",
+                            "boost": 2
+                        }
+                    }}
+                ]
+            }
+        }
+    }
+    ```
+
+# 聚合查询
+
+> 类似sql查询中的group by
+
+```
+{
+    "aggs": {
+        "age_avg": {
+            "avg": {
+                "field": "age"
             }
         }
     }
 }
 ```
 
-### 过滤(filter)和查询(query)
+* aggs：指定聚合查询
+* age_avg：聚合名称
+* avg：聚合类型
+
+# 结果处理
+
+* 分页-URI方式：size：返回指定条目数，from：跳过前n个结果
+
+  ```
+  /_search?size=2&from=1
+  ```
+
+* 高亮显示-请求体方式
+
+  ```
+  "highlight": {
+      "fields": {
+          "hobby": {}
+      }
+  }
+  ```
+
+# 过滤(filter)和查询(query)
 
 ```
 {
@@ -399,31 +724,3 @@ http://49.232.17.71:8200/haoke/user/_search
 
 * filter只过滤结果，结果不会排序，但会缓存【利用缓存特性，可以用于精确匹配的搜索，如term查询】
 * query查询结果会根据相关性排序(更耗时)，但不会缓存
-
-## 结果处理-分页
-
-* 分页：size：返回指定条目数，from：跳过前n个结果
-
-```
-http://49.232.17.71:8200/haoke/user/_search?size=2&from=1
-```
-
-## 聚合查询
-
-> 类似sql查询中的group by
-
-```
-{
-    "aggs": {
-        "age_avg": {
-            "avg": {
-                "field": "age"
-            }
-        }
-    }
-}
-```
-
-* aggs：指定聚合查询
-* age_avg：聚合名称
-* avg：聚合类型
