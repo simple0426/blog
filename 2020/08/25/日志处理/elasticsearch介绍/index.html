@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="elasticsearch,search,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="基本概念 集群：多个协同工作的节点构成的集合 节点：运行es软件的java进程 索引(index)：由分片构成的逻辑集合，也是文档存储在物理上的区分，相当于mysql的库 分片(shard)：将索引的数据分解为大小合适的片段(分片)分散在不同节点进行存储，这样可以提升数据读写速度、扩充集群存储容量 副本：主分片的完全复制品，它和主分片内容完全一样，保证了分片的高可用 文档(doc)：一条记录，是e">
+<meta name="keywords" content="elasticsearch,search">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch介绍">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/08/25/日志处理/elasticsearch介绍/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="基本概念 集群：多个协同工作的节点构成的集合 节点：运行es软件的java进程 索引(index)：由分片构成的逻辑集合，也是文档存储在物理上的区分，相当于mysql的库 分片(shard)：将索引的数据分解为大小合适的片段(分片)分散在不同节点进行存储，这样可以提升数据读写速度、扩充集群存储容量 副本：主分片的完全复制品，它和主分片内容完全一样，保证了分片的高可用 文档(doc)：一条记录，是e">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-08-29T11:03:42.432Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="elasticsearch介绍">
+<meta name="twitter:description" content="基本概念 集群：多个协同工作的节点构成的集合 节点：运行es软件的java进程 索引(index)：由分片构成的逻辑集合，也是文档存储在物理上的区分，相当于mysql的库 分片(shard)：将索引的数据分解为大小合适的片段(分片)分散在不同节点进行存储，这样可以提升数据读写速度、扩充集群存储容量 副本：主分片的完全复制品，它和主分片内容完全一样，保证了分片的高可用 文档(doc)：一条记录，是e">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/08/25/日志处理/elasticsearch介绍/">
+
+
+
+
+
+  <title>elasticsearch介绍 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/25/日志处理/elasticsearch介绍/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">elasticsearch介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-25T11:09:25+08:00">
+                2020-08-25
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-29T19:03:42+08:00">
+                2020-08-29
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ul>
+<li>集群：多个协同工作的节点构成的集合</li>
+<li>节点：运行es软件的java进程</li>
+<li>索引(index)：由分片构成的逻辑集合，也是文档存储在物理上的区分，相当于mysql的库</li>
+<li>分片(shard)：将索引的数据分解为大小合适的片段(分片)分散在不同节点进行存储，这样可以提升数据读写速度、扩充集群存储容量</li>
+<li>副本：主分片的完全复制品，它和主分片内容完全一样，保证了分片的高可用</li>
+<li>文档(doc)：一条记录，是es中数据存储和检索的基本单位；相当于mysql的一行记录</li>
+<li>映射(mapping)：将文档转变为索引的过程<ul>
+<li>将文档中的关键字(term)提取出来，即文档分析(analysis)</li>
+<li>将关键字与文档的对应关系保存起来</li>
+<li>对关键字本身做索引排序</li>
+</ul>
+</li>
+<li>字段(field：一个文档由若干个字段组成，每个字段可以有不同的数据类型<ul>
+<li>基本类型：比如字符串、数值、日期、布尔、字节、范围</li>
+<li>扩展类型：数组、字典(对象)</li>
+<li>多数据类型：让一个字段同时具备多种数据类型特征</li>
+</ul>
+</li>
+<li>分词/项(term)：索引的最小单位；<ul>
+<li>某个field对应的内容如果是全文检索类型，会将内容进行分词为若干term</li>
+<li>如果是不分词的字段，那么该字段的内容就是一个term</li>
+</ul>
+</li>
+</ul>
+<h2 id="segment-分段"><a href="#segment-分段" class="headerlink" title="segment(分段)"></a>segment(分段)</h2><ul>
+<li>elasticsearch中的每个分片包含多个segment，每一个segment都是一个倒排索引；在查询的时，会把所有的segment查询结果汇总归并后最为最终的分片查询结果返回;    </li>
+<li>在创建索引的时候，elasticsearch会把文档信息写到内存中（为了安全，也一起写到translog），定时（可配置）把数据写到segment缓存小文件中，然后刷新查询，使刚写入的segment可查.</li>
+<li>虽然写入的segment可查询，但是还没有持久化到磁盘上。因此，还是会存在丢失的可能性的. 所以，elasticsearch会执行flush操作，把segment持久化到磁盘上并清除translog的数据</li>
+<li>当索引数据不断增长时，对应的segment也会不断的增多，查询性能可能就会下降。因此，Elasticsearch会触发segment合并的线程，把很多小的segment合并成更大的segment，然后删除小的segment。   </li>
+<li>segment是不可变的，当我们更新一个文档时，会把老的数据打上已删除的标记，然后写一条新的文档。在执行flush操作的时候，才会把已删除的记录物理删除掉。</li>
+</ul>
+<h2 id="倒排索引-inverted-index"><a href="#倒排索引-inverted-index" class="headerlink" title="倒排索引(inverted index)"></a>倒排索引(inverted index)</h2><blockquote>
+<p> 对于关系型数据库，一般是针对主键建立索引，然后索引指向数据内容</p>
+</blockquote>
+<p>倒排索引是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射</p>
+<h2 id="文档格式"><a href="#文档格式" class="headerlink" title="文档格式"></a>文档格式</h2><p>以json格式存储，由元数据(metadata)和数据(_source)组成</p>
+<p>元数据包含：</p>
+<ul>
+<li>_index：文档所在索引</li>
+<li>_type：文档类型，每个类型都有自己的映射(mapping)</li>
+<li>_id：文档id</li>
+<li>_version：文档版本</li>
+</ul>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
+<li><p>创建索引：settings中设置分片数、副本数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT  /索引</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除索引：DELETE  索引</p>
+</li>
+</ul>
+<h1 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h1><p>elasticsearch可以自动判断字段及其数据类型，但是有时候自动判断的类型和实际需求不符合(比如，搜索的字段内容是否需要分词)，这个时候就需要在创建索引的时候指定字段的数据类型(映射)</p>
+<h2 id="es自动判断数据类型"><a href="#es自动判断数据类型" class="headerlink" title="es自动判断数据类型"></a>es自动判断数据类型</h2><table>
+<thead>
+<tr>
+<th>json type</th>
+<th>field type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boolean: true or false</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>number: 123</td>
+<td>long</td>
+</tr>
+<tr>
+<td>float: 123.45</td>
+<td>double</td>
+</tr>
+<tr>
+<td>date: “2014-09-15”</td>
+<td>date</td>
+</tr>
+<tr>
+<td>string: “foo bar”</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<h2 id="es数据类型"><a href="#es数据类型" class="headerlink" title="es数据类型"></a>es数据类型</h2><table>
+<thead>
+<tr>
+<th>主类型</th>
+<th>子类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>string</td>
+<td>text、keyword</td>
+</tr>
+<tr>
+<td>number</td>
+<td>byte、shot、integer、long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>float、double</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>date</td>
+<td>date</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>text：该字段要被全文搜索，可以被分词</p>
+</li>
+<li><p>keyword：不能被分词，比如email地址、主机名、状态码和标签；字段可以用于过滤、排序、聚合等操作；keyword字段只能通过精确值搜索到</p>
+</li>
+</ul>
+<h2 id="mappings操作"><a href="#mappings操作" class="headerlink" title="mappings操作"></a>mappings操作</h2><ul>
+<li><p>创建包含mappings的索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;person&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;age&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;mail&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;hobby&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询索引mappings：/索引/_mappings</p>
+</li>
+</ul>
+<h1 id="分词"><a href="#分词" class="headerlink" title="分词"></a>分词</h1><p>分词：将文本转化为一系列单词的过程，也叫文本分析，在elasticsearch中称作Analysis</p>
+<p>例如：我是中国人=》我、是、中国人</p>
+<p>分词api：/_analyze【仅用于文本分析测试；text文本会自动分词，但可以在创建映射时自定义分词器(如中文分词器IK)】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;analyzer&quot;: &quot;standard&quot;,</span><br><span class="line">    &quot;text&quot;: &quot;hello world&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">    &quot;text&quot;: &quot;我是中国人&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="中文分词器IK"><a href="#中文分词器IK" class="headerlink" title="中文分词器IK"></a>中文分词器IK</h2><p>项目地址：<a href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener">https://github.com/medcl/elasticsearch-analysis-ik</a></p>
+<p>安装：</p>
+<p>方式1：下载预编译安装包<a href="https://github.com/medcl/elasticsearch-analysis-ik/releases" target="_blank" rel="noopener">https://github.com/medcl/elasticsearch-analysis-ik/releases</a></p>
+<ul>
+<li>创建插件目录：cd your-es-root/plugins/ &amp;&amp; mkdir ik</li>
+<li>解压插件到目录your-es-root/plugins/ik</li>
+</ul>
+<p>方式2：使用es插件命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.3.0/elasticsearch-analysis-ik-6.3.0.zip</span><br></pre></td></tr></table></figure>
+<h2 id="自定义分词器"><a href="#自定义分词器" class="headerlink" title="自定义分词器"></a>自定义分词器</h2><p>创建映射的text字段类型时，自定义分词器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;person&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;age&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;mail&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;hobby&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">                    &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h1><h2 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 20,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li><p>全量更新</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型/id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 25,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>局部更新：请求体是doc封装的key/value信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型/id/_update</span><br><span class="line">&#123;</span><br><span class="line">    &quot;doc&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;李四&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>DELETE  索引/类型/id</p>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>GET 索引/类型/id</p>
+<h2 id="自定义查询"><a href="#自定义查询" class="headerlink" title="自定义查询"></a>自定义查询</h2><ul>
+<li>数据格式化：GET  索引/类型/id?pretty</li>
+<li>返回指定字段：GET  索引/类型/id?_source=字段1,字段2。。。</li>
+<li><p>返回源数据：GET  索引/类型/id/_source</p>
+</li>
+<li><p>判断文档是否存在：HEAD 索引/类型/id【根据http返回码200/404判断文档是否存在】</p>
+</li>
+</ul>
+<h2 id="批量操作"><a href="#批量操作" class="headerlink" title="批量操作"></a>批量操作</h2><ul>
+<li><p>批量查询</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET  索引/类型/_mget</span><br><span class="line">&#123;</span><br><span class="line">    &quot;ids&quot;: [&quot;y6zSIHQB2fO-rT1snG4Q&quot;, &quot;yqw2G3QB2fO-rT1sk26f&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>批量插入、修改、删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型/_bulk接口</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;itcast&quot;,&quot;_type&quot;:&quot;person&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:23,&quot;mail&quot;:&quot;111@qq.com&quot;,&quot;hobby&quot;:&quot;羽毛球、篮球、足球&quot;&#125;</span><br><span class="line">&#123;&quot;create&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;小一&quot;,&quot;age&quot;:23,&quot;sex&quot;:&quot;男&quot;&#125;</span><br><span class="line">&#123;&quot;update&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;doc&quot;:&#123;&quot;name&quot;:&quot;小五&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;delete&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>每两行为一组，第一行定义要操作的文档，第二行定义文档数据【delete时没有第二行】</li>
+<li>每行末尾都需要换行符\n【包含最后一行】</li>
+<li>操作类型：create、update、delete、index</li>
+<li>index操作时，不需要添加id；没有文档时为create操作；有文档时为update操作。</li>
+</ul>
+</li>
+</ul>
+<h1 id="搜索方式"><a href="#搜索方式" class="headerlink" title="搜索方式"></a>搜索方式</h1><p>基于_search接口的查询，根据参数位置的不同可以分为：</p>
+<ul>
+<li>基于URI的请求方式(GET)：/_search?q=字符串查询语法</li>
+<li>基于请求体的请求方式(POST)</li>
+</ul>
+<p>_search接口直接返回最多10条数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://49.232.17.71:8200/haoke/user/_search</span><br></pre></td></tr></table></figure>
+<h2 id="URI搜索方式"><a href="#URI搜索方式" class="headerlink" title="URI搜索方式"></a>URI搜索方式</h2><ul>
+<li><p>全字段搜索：直接写搜索的单词</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>单字段检索：在搜索单词之前加上字段名和冒号，比如如果知道单词first 肯定出现在 mesg 字段，可以写作  mesg:first</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=age:25</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>多个条件组合：可以使用  NOT  ,  AND  和  OR  来组合检索，注意必须是大写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=(name:alex)%20AND%20(age:28)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字段是否存在：<code>_exists_:user</code>  表示要求 user 字段存在， <code>_missing_:user</code>  表示要求 user 字段不存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=_exists_:name</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通配符：用  ?  表示单字符， *  表示0或多个字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex?</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>模糊搜索：用  ~  表示搜索单词可能有一两个字母写的不对，比如  frist~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex~</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/query-dsl-query-string-query.html#_ranges" target="_blank" rel="noopener">范围搜索</a>：对日期、数字、字符串都可以使用范围搜索。【[]包含边界 {}不包含边界】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=age:%20[22%20TO%2025]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax" target="_blank" rel="noopener">正则表达式</a></p>
+</li>
+</ul>
+<h2 id="请求体搜索方式"><a href="#请求体搜索方式" class="headerlink" title="请求体搜索方式"></a>请求体搜索方式</h2><blockquote>
+<p>结构化查询</p>
+</blockquote>
+<ul>
+<li><p>term用于精确匹配：数字、日期、布尔值、以及not_analyzed的字符串(未经分析的text类型)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;term&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: 23</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>terms精确匹配一个数组中的多个值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;terms&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: [23, 20, 28]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>range：范围查询【操作符：lt/小于、lte/小于等于、gt/大于、gte/大于等于】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;range&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: &#123;</span><br><span class="line">                &quot;gte&quot;: 23,</span><br><span class="line">                &quot;lt&quot;: 30 </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>exists：是否包含某字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;exists&quot;: &#123;</span><br><span class="line">            &quot;field&quot;: &quot;age&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>match：既可以进行单字段精确查询(term)，也可以全文搜索(text分词为term)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;name&quot;: &quot;张三&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>prefix：前缀模糊匹配</p>
+</li>
+<li><p>wildcard：通配符匹配</p>
+</li>
+<li><p>regexp：正则匹配</p>
+</li>
+</ul>
+<h1 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h1><p>全文搜索两个重要方面：</p>
+<ul>
+<li>相关性(Relvance)：评价查询和其结果间相关性程度，并根据这种相关性排序；这种计算方式可以是TF/IDF方法、地理位置临近、模糊相似等算法</li>
+<li>分词(Analysis)：将文本转换为有区别的、规范化的token的过程</li>
+</ul>
+<h2 id="单词搜索"><a href="#单词搜索" class="headerlink" title="单词搜索"></a>单词搜索</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;音乐&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行的过程如下：</p>
+<ul>
+<li>检查字段类型：hobby是一个text类型（指定IK分词器），这意味着查询字符串本身也应该被分词</li>
+<li>分析查询字符串：将查询字符串“音乐”传入IK分词器中，输出单个项(term)：音乐，因为只有一个单词项，所以match查询执行的是单个term查询</li>
+<li>查询匹配文档：用term查询在倒排索引中查找包含“音乐”的一组文档</li>
+<li><p>为每个文档评分并排序：用term查询计算每个文档的相关度评分_score，这个将词频(term frequency)【即“音乐”在相关文档hobby字段中出现的频率】、反向文档频率(inverse document frequency)【即“音乐”在所有文档的hobby字段出现的频率】、字段长度【即字段越短相关度越高】相结合的计算方式</p>
+<p>查询结果如下：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;took&quot;: 20,</span><br><span class="line">    &quot;timed_out&quot;: false,</span><br><span class="line">    &quot;_shards&quot;: &#123;</span><br><span class="line">        &quot;total&quot;: 2,</span><br><span class="line">        &quot;successful&quot;: 2,</span><br><span class="line">        &quot;skipped&quot;: 0,</span><br><span class="line">        &quot;failed&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;hits&quot;: &#123;</span><br><span class="line">        &quot;total&quot;: 1,</span><br><span class="line">        &quot;max_score&quot;: 0.7438652,</span><br><span class="line">        &quot;hits&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;_index&quot;: &quot;itcast&quot;,</span><br><span class="line">                &quot;_type&quot;: &quot;person&quot;,</span><br><span class="line">                &quot;_id&quot;: &quot;F-NNOHQBDlTN8HRyeJoY&quot;,</span><br><span class="line">                &quot;_score&quot;: 0.7438652,</span><br><span class="line">                &quot;_source&quot;: &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;赵六&quot;,</span><br><span class="line">                    &quot;age&quot;: 23,</span><br><span class="line">                    &quot;mail&quot;: &quot;444@qq.com&quot;,</span><br><span class="line">                    &quot;hobby&quot;: &quot;听音乐、看电影&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;highlight&quot;: &#123;</span><br><span class="line">                    &quot;hobby&quot;: [</span><br><span class="line">                        &quot;听&lt;em&gt;音乐&lt;/em&gt;、看电影&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="多词搜索"><a href="#多词搜索" class="headerlink" title="多词搜索"></a>多词搜索</h2><ul>
+<li><p>默认：空格分隔的多个词为“逻辑或”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;羽毛球 篮球&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置多个词为“逻辑与“关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;</span><br><span class="line">                &quot;query&quot;: &quot;羽毛球 篮球&quot;,</span><br><span class="line">                &quot;operator&quot;: &quot;and&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>避免多个词使用极端的and或or方式搜索，可以设置相似度百分比minimum_should_match</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;</span><br><span class="line">                &quot;minimum_should_match&quot;: &quot;70%&quot;,</span><br><span class="line">                &quot;query&quot;: &quot;足球 篮球&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>minimum_should_match：相似度越高，包含的文档越少</p>
+<blockquote>
+<p>相似度设置，需要不断测试，以达到预期结果</p>
+</blockquote>
+<ul>
+<li>100%相当于and</li>
+<li>50%相当于or</li>
+</ul>
+</li>
+</ul>
+<h1 id="多条件查询"><a href="#多条件查询" class="headerlink" title="多条件查询"></a>多条件查询</h1><p>组合多个查询条件，可用的布尔子类型如下：</p>
+<ul>
+<li><p>must：查询结果必须要包含内容，相当于and；结果会根据<strong>相关性排序</strong></p>
+</li>
+<li><p>filter：查询结果必须要包含内容；但不影响结果排序</p>
+</li>
+<li><p>must_not：查询结果不能包含内容，相当于not；不影响结果排序</p>
+</li>
+<li><p>should</p>
+<ul>
+<li><p>单独使用时，多个查询条件至少有一个匹配【参数minimum_should_match调节，设置相关性】；结果会根据<strong>相关性排序</strong>【minimum_should_match为2表示，should中的多个词至少要满足2个】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;should&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;match&quot;: &#123;</span><br><span class="line">                        &quot;hobby&quot;: &quot;乒乓球&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;match&quot;: &#123;</span><br><span class="line">                        &quot;hobby&quot;: &quot;篮球&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            &quot;minimum_should_match&quot;: 2</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>和filter、must共同使用时，不影响查询结果，但影响结果<strong>相关性排序</strong>【包含should条件的排序更高】</p>
+<p>minimum_should_match调节排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;must&quot;: &#123;</span><br><span class="line">                &quot;match&quot;: &#123;</span><br><span class="line">                    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;should&quot;: &#123;</span><br><span class="line">                &quot;match&quot;: &#123;</span><br><span class="line">                    &quot;name&quot;: &#123;</span><br><span class="line">                        &quot;query&quot;: &quot;小&quot;,</span><br><span class="line">                        &quot;minimum_should_match&quot;: &quot;50%&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;sex&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>权重调节排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;must&quot;: &#123;</span><br><span class="line">                &quot;match&quot;: &#123;</span><br><span class="line">                    &quot;hobby&quot;: &quot;足球&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;should&quot;: [</span><br><span class="line">                &#123; &quot;match&quot;: &#123;</span><br><span class="line">                    &quot;hobby&quot;: &#123;</span><br><span class="line">                        &quot;query&quot;: &quot;乒乓球&quot;,</span><br><span class="line">                        &quot;boost&quot;: 10</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;&#125;,</span><br><span class="line">                &#123; &quot;match&quot;: &#123;</span><br><span class="line">                    &quot;hobby&quot;: &#123;</span><br><span class="line">                        &quot;query&quot;: &quot;篮球&quot;,</span><br><span class="line">                        &quot;boost&quot;: 2</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;&#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h1><blockquote>
+<p>类似sql查询中的group by</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;aggs&quot;: &#123;</span><br><span class="line">        &quot;age_avg&quot;: &#123;</span><br><span class="line">            &quot;avg&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;age&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>aggs：指定聚合查询</li>
+<li>age_avg：聚合名称</li>
+<li>avg：聚合类型</li>
+</ul>
+<h1 id="结果处理"><a href="#结果处理" class="headerlink" title="结果处理"></a>结果处理</h1><ul>
+<li><p>分页-URI方式：size：返回指定条目数，from：跳过前n个结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?size=2&amp;from=1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>高亮显示-请求体方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">        &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="过滤-filter-和查询-query"><a href="#过滤-filter-和查询-query" class="headerlink" title="过滤(filter)和查询(query)"></a>过滤(filter)和查询(query)</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;filter&quot;: &#123;</span><br><span class="line">                &quot;term&quot;: &#123;</span><br><span class="line">                    &quot;age&quot;: 23</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;足球&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>filter只过滤结果，结果不会排序，但会缓存【利用缓存特性，可以用于精确匹配的搜索，如term查询】</li>
+<li>query查询结果会根据相关性排序(更耗时)，但不会缓存</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/elasticsearch/" rel="tag"># elasticsearch</a>
+          
+            <a href="/tags/search/" rel="tag"># search</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/14/日志处理/elk-stack安装/" rel="next" title="elk-stack安装">
+                <i class="fa fa-chevron-left"></i> elk-stack安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">131</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#segment-分段"><span class="nav-number">1.1.</span> <span class="nav-text">segment(分段)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#倒排索引-inverted-index"><span class="nav-number">1.2.</span> <span class="nav-text">倒排索引(inverted index)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档格式"><span class="nav-number">1.3.</span> <span class="nav-text">文档格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引"><span class="nav-number">2.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#映射"><span class="nav-number">3.</span> <span class="nav-text">映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#es自动判断数据类型"><span class="nav-number">3.1.</span> <span class="nav-text">es自动判断数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es数据类型"><span class="nav-number">3.2.</span> <span class="nav-text">es数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mappings操作"><span class="nav-number">3.3.</span> <span class="nav-text">mappings操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分词"><span class="nav-number">4.</span> <span class="nav-text">分词</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#中文分词器IK"><span class="nav-number">4.1.</span> <span class="nav-text">中文分词器IK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义分词器"><span class="nav-number">4.2.</span> <span class="nav-text">自定义分词器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据操作"><span class="nav-number">5.</span> <span class="nav-text">数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#增加"><span class="nav-number">5.1.</span> <span class="nav-text">增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">5.2.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除"><span class="nav-number">5.3.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">5.4.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义查询"><span class="nav-number">5.5.</span> <span class="nav-text">自定义查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量操作"><span class="nav-number">5.6.</span> <span class="nav-text">批量操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搜索方式"><span class="nav-number">6.</span> <span class="nav-text">搜索方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URI搜索方式"><span class="nav-number">6.1.</span> <span class="nav-text">URI搜索方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求体搜索方式"><span class="nav-number">6.2.</span> <span class="nav-text">请求体搜索方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全文搜索"><span class="nav-number">7.</span> <span class="nav-text">全文搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单词搜索"><span class="nav-number">7.1.</span> <span class="nav-text">单词搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多词搜索"><span class="nav-number">7.2.</span> <span class="nav-text">多词搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多条件查询"><span class="nav-number">8.</span> <span class="nav-text">多条件查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#聚合查询"><span class="nav-number">9.</span> <span class="nav-text">聚合查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果处理"><span class="nav-number">10.</span> <span class="nav-text">结果处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过滤-filter-和查询-query"><span class="nav-number">11.</span> <span class="nav-text">过滤(filter)和查询(query)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
