@@ -362,6 +362,7 @@ export JAVA_HOME PATH" > /etc/profile.d/java.sh
   server.host: "192.168.31.222"
   elasticsearch.url: "http://192.168.31.221:9200"
   kibana.index: ".kibana"
+  i18n.locale: "zh-CN" #6.7版本以上支持直接汉化
   ```
 
 * supervisor启动

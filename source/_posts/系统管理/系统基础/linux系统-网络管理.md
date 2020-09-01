@@ -66,8 +66,9 @@ date: 2019-07-17 17:18:07
 
 # curl
 ## 响应
-* -o 下载文件并另存为
-* -O 下载文件
+* -o filename：下载文件并另存为
+* -O 下载文件并保持文件名
+* -L, --location 跟踪重定向
 * -c --cookie-jar FILE将服务器发送的cookie保存到文件中
     - curl -c cookie.txt -s https://www.linuxidc.com
 * -I 只显示header信息
@@ -77,7 +78,7 @@ date: 2019-07-17 17:18:07
     - curl -o /dev/null -s -w "%{http_code}" www.baidu.com
 
 ## 请求
-* -X 指定请求方法【默认get】
+* -X, --request 指定请求方法【默认get】
 * -d/--data 指定post请求数据
     - curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python
 * -H/--header 指定要发送的header信息
@@ -88,7 +89,7 @@ date: 2019-07-17 17:18:07
     - curl -b 'a=1;b=2' https://www.linuxidc.com
 * -e, --referer指定上次访问的页面【可用于盗链】
     - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
-* -x 使用代理服务器
+* -x, --proxy [protocol://]host[:port] 使用代理服务器：--proxy http://127.0.0.1:10809
 
 # nc
 netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具
