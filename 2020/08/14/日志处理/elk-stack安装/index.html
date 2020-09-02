@@ -88,7 +88,7 @@
 <meta property="og:description" content="组件介绍 elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储 logstash：日志收集、过滤、转换 kibana：数据可视化 kafka：数据缓冲队列；提高系统扩展性，可以使关键组件顶住峰值访问压力 filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于beats系列，其他beats客户端 metricbeat：可以采集指标数据，如系统、文件、进程、服">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/elk-kafka.png">
-<meta property="og:updated_time" content="2020-08-25T03:32:01.669Z">
+<meta property="og:updated_time" content="2020-09-01T14:34:14.046Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elk-stack安装">
 <meta name="twitter:description" content="组件介绍 elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储 logstash：日志收集、过滤、转换 kibana：数据可视化 kafka：数据缓冲队列；提高系统扩展性，可以使关键组件顶住峰值访问压力 filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于beats系列，其他beats客户端 metricbeat：可以采集指标数据，如系统、文件、进程、服">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-25T11:32:01+08:00">
-                2020-08-25
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-01T22:34:14+08:00">
+                2020-09-01
               </time>
             
           </span>
@@ -569,7 +569,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xzf kibana-6.5.4-linux-x86_64.tar.gz -C /usr/local/</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>配置【config/kibana.yml】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server.port: 5601</span><br><span class="line">server.host: &quot;192.168.31.222&quot;</span><br><span class="line">elasticsearch.url: &quot;http://192.168.31.221:9200&quot;</span><br><span class="line">kibana.index: &quot;.kibana&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">server.port: 5601</span><br><span class="line">server.host: &quot;192.168.31.222&quot;</span><br><span class="line">elasticsearch.url: &quot;http://192.168.31.221:9200&quot;</span><br><span class="line">kibana.index: &quot;.kibana&quot;</span><br><span class="line">i18n.locale: &quot;zh-CN&quot; #6.7版本以上支持直接汉化</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>supervisor启动</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[program:kibana]</span><br><span class="line">command=/usr/local/kibana-6.5.4-linux-x86_64/bin/kibana</span><br><span class="line">startsec=30</span><br><span class="line">priority=20</span><br><span class="line">directory=/usr/local/kibana-6.5.4-linux-x86_64</span><br><span class="line">autostart=true</span><br><span class="line">autorestart=true</span><br><span class="line">user=root</span><br></pre></td></tr></table></figure>

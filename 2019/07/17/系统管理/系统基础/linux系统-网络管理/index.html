@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-filter-nat.gif">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.442Z">
+<meta property="og:updated_time" content="2020-08-31T15:39:47.413Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux系统-网络管理">
 <meta name="twitter:description" content="命令列表 tcpdump -i eth0：指定监听的网络接口 tcp port 3306：监听本机tcp协议3306端口 icmp：监听icmp协议 ip host 192.168.100.2：监听指定来源的主机 -t：不显示时间戳 -n：补办ip解析成域名 -nn：不把端口转换成对应的协议 -c：只抓取多少行数据 dst：指定数据流向【到本机还是离开本机】 范例：tcpdump -i eth1">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-31T23:39:47+08:00">
+                2020-08-31
               </time>
             
           </span>
@@ -460,8 +460,9 @@
 <li>删除默认路由：route del –net 10.0.0.0 netmask 255.0.0.0 dev eth0</li>
 </ul>
 <h1 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h1><h2 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h2><ul>
-<li>-o 下载文件并另存为</li>
-<li>-O 下载文件</li>
+<li>-o filename：下载文件并另存为</li>
+<li>-O 下载文件并保持文件名</li>
+<li>-L, –location 跟踪重定向</li>
 <li>-c –cookie-jar FILE将服务器发送的cookie保存到文件中<ul>
 <li>curl -c cookie.txt -s <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
 </ul>
@@ -477,7 +478,7 @@
 </li>
 </ul>
 <h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><ul>
-<li>-X 指定请求方法【默认get】</li>
+<li>-X, –request 指定请求方法【默认get】</li>
 <li>-d/–data 指定post请求数据<ul>
 <li>curl -X POST –data ‘{“message”: “01”, “pageIndex”: “1”}’ <a href="http://127.0.0.1:5000/python" target="_blank" rel="noopener">http://127.0.0.1:5000/python</a></li>
 </ul>
@@ -498,7 +499,7 @@
 <li>curl -o test.jpg -e <a href="http://oldboy.blog.51cto.com/2561410/1009292" target="_blank" rel="noopener">http://oldboy.blog.51cto.com/2561410/1009292</a> <a href="http://img1.51cto.com/attachment/201209/155625967.jpg" target="_blank" rel="noopener">http://img1.51cto.com/attachment/201209/155625967.jpg</a></li>
 </ul>
 </li>
-<li>-x 使用代理服务器</li>
+<li>-x, –proxy [protocol://]host[:port] 使用代理服务器：–proxy <a href="http://127.0.0.1:10809" target="_blank" rel="noopener">http://127.0.0.1:10809</a></li>
 </ul>
 <h1 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h1><p>netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具</p>
 <h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
