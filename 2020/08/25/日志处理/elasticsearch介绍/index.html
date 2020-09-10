@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="引言数据分类和搜索 结构化数据：数据由固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对主键建立索引，然后索引指向数据内容  倒排索引：是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射">
+<meta name="description" content="引言数据分类和搜索 结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录  倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了te">
 <meta name="keywords" content="elasticsearch,search">
 <meta property="og:type" content="article">
 <meta property="og:title" content="elasticsearch介绍">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/08/25/日志处理/elasticsearch介绍/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="引言数据分类和搜索 结构化数据：数据由固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对主键建立索引，然后索引指向数据内容  倒排索引：是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射">
+<meta property="og:description" content="引言数据分类和搜索 结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录  倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了te">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-03T16:06:49.828Z">
+<meta property="og:updated_time" content="2020-09-04T06:08:59.796Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticsearch介绍">
-<meta name="twitter:description" content="引言数据分类和搜索 结构化数据：数据由固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对主键建立索引，然后索引指向数据内容  倒排索引：是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射">
+<meta name="twitter:description" content="引言数据分类和搜索 结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录  倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了te">
 
 
 
@@ -330,7 +330,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-04T00:06:49+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-04T14:08:59+08:00">
                 2020-09-04
               </time>
             
@@ -387,26 +387,23 @@
 
       
         <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><h2 id="数据分类和搜索"><a href="#数据分类和搜索" class="headerlink" title="数据分类和搜索"></a>数据分类和搜索</h2><ul>
-<li>结构化数据：数据由固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索</li>
-<li>非结构化数据：没有预定义的结构化特征(文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】</li>
+<li>结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索</li>
+<li>非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】</li>
 </ul>
 <h2 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h2><ul>
-<li><p>索引：对于关系型数据库，一般是针对主键建立索引，然后索引指向数据内容</p>
+<li><p>索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录</p>
 </li>
-<li><p>倒排索引：是针对文档内容建立索引，然后索引指向文档，实现了term到doc list的映射</p>
+<li><p>倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了term到doc list的映射</p>
 </li>
 </ul>
 <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ul>
-<li>索引(index)：由分片构成的逻辑集合，也是文档存储在物理上的区分，相当于mysql的库<ul>
-<li>此处索引就是倒排索引，准确的说是一组倒排索引，即多个【term与doc list】的映射</li>
-</ul>
-</li>
+<li>索引(index)：由分片构成的逻辑集合，也是文档在物理上的容器，相当于mysql的库；此处索引就是倒排索引，准确的说是一组倒排索引，即多个【term与doc list】的映射</li>
 <li>映射(mapping)和类型(type)：<ul>
-<li>映射：是将文档转变为索引的过程，类似于mysql的定义表结构</li>
+<li>映射：是将文档转变为索引的过程，类似于定义mysql的表结构，也是文档进行结构化存储的过程</li>
 <li>类型：是不同的映射分类(相当于mysql中的不同表)，是文档的逻辑分类；<ul>
-<li>6.0之前：一个索引可以有多个类型</li>
-<li>6.0-7.0：一个索引只能有一个类型</li>
-<li>7.0之后：删除类型定义，直接创建映射【默认为_doc类型，文档操作在_doc类型/接口下完成】</li>
+<li>v6.0之前：一个索引可以有多个类型</li>
+<li>v6.0-v7.0：一个索引只能有一个类型</li>
+<li>v7.0之后：删除类型定义，直接映射中定义数据类型【默认创建为_doc类型，文档操作也是在_doc类型/接口下完成】</li>
 </ul>
 </li>
 </ul>
@@ -420,7 +417,7 @@
 <li>_version：文档版本</li>
 </ul>
 </li>
-<li>字段(field)：一个文档由若干个字段组成，每个字段可以有不同的数据类型<ul>
+<li>字段(field)：一个文档的数据(_source)由若干个字段组成，每个字段可以有不同的数据类型<ul>
 <li>基本类型：比如字符串、数值、日期、布尔、字节、范围</li>
 <li>扩展类型：数组(列表)、对象(字典)</li>
 <li>多数据类型：让一个字段同时具备多种数据类型特征</li>
@@ -428,7 +425,7 @@
 </li>
 <li>项(term)：索引的最小单位<ul>
 <li>某个field对应的内容如果是text类型，会将内容进行分词为若干term</li>
-<li>如果是不分词的字段(如keyword)，那么该字段的内容就是一个term</li>
+<li>如果是不分词的字段(如keyword类型)，那么该字段的内容就是一个term</li>
 </ul>
 </li>
 </ul>
@@ -436,7 +433,7 @@
 <li>master节点：控制集群状态；node.master设置为true，节点具有成为master的资格【默认true】</li>
 <li>data节点：执行数据CRUD、搜索、聚合操作的节点；设置参数：node.data【默认true】</li>
 <li>ingest节点：在数据创建索引前对数据进行处理，代替部分logstash功能；设置参数：node.ingest【默认true】</li>
-<li>协调节点：在执行搜索、批量索引过程中，每个数据节点将本地执行的结果汇总到协调节点(接受客户端请求的节点)，协调节点将数据执行汇总、聚合等操作后返回给客户端<ul>
+<li>协调节点：接收客户端搜索、批量索引等请求，将请求转发到相应的数据节点执行；最后，将来自数据节点的执行结果合并后返回给客户端<ul>
 <li>每个节点都是一个隐含的协调节点，都可以接受客户端请求</li>
 <li>node.master、node.data、node.ingest都设置为false时，节点是一个专用协调节点</li>
 </ul>
@@ -454,13 +451,13 @@
 <ul>
 <li>保证了分片的高可用</li>
 <li>也可以响应读请求，多个分片以轮询的方式响应请求</li>
-<li>索引建立后，副本可以调整</li>
+<li>索引建立后，副本数可以调整【应用程序刚接入集群时，可以先关闭副本功能，减轻集群负载压力】</li>
 </ul>
 <h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>读写操作时，确定文档所在主分片的位置</p>
 <p>shard=hash(routing) % number_of_primary_shards</p>
 <ul>
-<li>routing是一个随机字符串，默认为_id，可以自定义</li>
-<li>这个routing字符串通过hash函数生成一个数字，然后除以主分片数得到一个余数，余数的范围永远是0到number_of_primary_shards - 1,这个数字就是特定文档所在的分片【这也决定了主分片一旦建立就不能修改：增加主分片会造成无法定位之前的文档位置】</li>
+<li>routing是一个随机字符串，默认为文档_id，可以自定义</li>
+<li>这个routing字符串通过hash函数生成一个数字，然后除以主分片数得到一个余数，余数的范围永远是0到number_of_primary_shards - 1,这个数字就是特定文档所在的分片【这也决定了主分片数一旦确定就不能修改：增加主分片会造成无法定位之前的文档位置】</li>
 </ul>
 <h1 id="存储原理"><a href="#存储原理" class="headerlink" title="存储原理"></a><a href="https://www.cnblogs.com/huangying2124/p/12230177.html" target="_blank" rel="noopener">存储原理</a></h1><h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p>es存储文档也就是建立倒排索引，流程如下：</p>
 <ul>
@@ -477,7 +474,7 @@
 <li>某个doc的长度</li>
 <li>某个关键词在所有doc的平均长度</li>
 </ul>
-<p>记录这些信息，就是为了方便搜索和效率和_score分值计算</p>
+<p>记录这些信息，就是为了方便搜索和_score分值计算</p>
 <h3 id="不可变性"><a href="#不可变性" class="headerlink" title="不可变性"></a>不可变性</h3><p>倒排索引写入磁盘后就是不可变的，这样由几个好处：</p>
 <ul>
 <li>索引不需要更新，可以不需要锁，可以支持高并发</li>
@@ -488,11 +485,11 @@
 <h2 id="文档底层原理"><a href="#文档底层原理" class="headerlink" title="文档底层原理"></a>文档底层原理</h2><h3 id="文档写入"><a href="#文档写入" class="headerlink" title="文档写入"></a>文档写入</h3><ul>
 <li><p>新文档先写入索引的内存buffer中；为了安全，也一起写到translog</p>
 </li>
-<li><p>内存buffer的数据每隔一段时间(默认1s)写入index segment中(编入索引)，并写入os cache中【此时文档就可以搜索】</p>
+<li><p>内存buffer的数据每隔一段时间(默认1s)写入index segment中(即编入索引)，并写入os cache中【此时文档就可以搜索】</p>
 <ul>
 <li><p>index segment数据写入os cache中，并打开搜索的过程叫refresh，默认1s一次</p>
 </li>
-<li><p>如果希望该文档能立刻被搜索，需要手动调用refresh操作</p>
+<li><p>如果希望该文档能立刻被搜索，可以手动调用refresh操作</p>
 </li>
 <li><p>日志量较大，但实时性要求不高的系统，可以增大refresh参数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;refresh_interval&quot;: &quot;30s&quot; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -504,16 +501,18 @@
 <li><p>数据刷新到磁盘后，buffer数据被清空，同时打开一个新的index segment</p>
 </li>
 </ul>
-<h3 id="文档修改和删除"><a href="#文档修改和删除" class="headerlink" title="文档修改和删除"></a>文档修改和删除</h3><p>被修改和删除的文档，会被标记为deleted，信息记录在.del文件中，修改时创建新文档【segment是不可变内容】。</p>
-<p>被标记为deleted的文档也会被搜索到，但是在最终结果处理时会被过滤掉</p>
+<h3 id="文档修改和删除"><a href="#文档修改和删除" class="headerlink" title="文档修改和删除"></a>文档修改和删除</h3><p>被修改和删除的文档，会被标记为deleted，信息记录在.del文件中</p>
+<p>修改文档时会创建新文档【segment是不可变内容】</p>
+<p>被标记为deleted的文档不会被物理删除，也会被搜索到，但是在最终结果处理时会被过滤掉</p>
 <p>执行segment合并时，被标记为deleted的文档会被物理删除掉</p>
-<h3 id="translog"><a href="#translog" class="headerlink" title="translog"></a>translog</h3><ul>
-<li><p>translog写磁盘方式(index.translog.durability)：定义了在每次index、delete、update、bulk操作后是否提交并刷新translog到磁盘；包含：同步(request)、异步(async)</p>
+<h3 id="translog"><a href="#translog" class="headerlink" title="translog"></a>translog</h3><p>translog是一种日志预写机制，在对数据操作的同时，也将对数据的增删改操作记录在日志文件中，防止数据在持久化之前丢失；translog的相关设置如下：</p>
+<ul>
+<li><p>translog写磁盘方式(参数：index.translog.durability)：定义了在每次index、delete、update、bulk操作后是否提交并刷新translog到磁盘；包含：同步(request)、异步(async)</p>
 <ul>
 <li><p>request(默认)：每次请求，都提交并刷新translog到磁盘；主分片和副本分片都会触发，保障了数据安全性，但是有性能损失；设置方式如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">     &quot;index.translog.durability&quot;: &quot;request&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>async：仅在index.translog.sync_interval(不管写操作如何，多长时间将translog刷新到磁盘一次，默认5s，不能小于100ms)时间间隔后，才提交并刷新translog到磁盘；设置方式如下：</p>
+<li><p>async：不管写操作如何，仅在_index.translog.sync_interval_时间间隔后将translog刷新到磁盘【默认5s，不能小于100ms】；设置方式如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">     &quot;index.translog.durability&quot;: &quot;async&quot;,</span><br><span class="line">     &quot;index.translog.sync_interval&quot;: &quot;5s&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
@@ -522,23 +521,21 @@
 <ul>
 <li><p>参数定义：index.translog.flush_threshold_size：translog大小达到多少时，执行flush操作</p>
 </li>
-<li><p>手动执行刷新的API</p>
+<li><p>手动执行flush操作</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST twitter/_flush</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
 <li><p>translog文件设置</p>
 <ul>
-<li>index.translog.retention.size：translog文件总大小，默认512mb；保留更多的translog，可以使用本地translog进行故障恢复，而非基于文件同步进行</li>
+<li>index.translog.retention.size：保留的translog文件总大小，默认512mb；保留更多的translog，可以使用本地translog进行故障恢复，而非基于文件同步进行</li>
 <li>index.translog.retention.age：translog最长保留时间，默认12h</li>
 </ul>
 </li>
 </ul>
-<h3 id="segment合并"><a href="#segment合并" class="headerlink" title="segment合并"></a>segment合并</h3><ul>
-<li>当索引数据不断增长时，对应的segment也会不断的增多，查询性能可能就会下降。因此，Elasticsearch会触发segment合并的线程，把很多小的segment合并成更大的segment，然后删除小的segment。   </li>
-<li>标记为deleted的文档在合并时会被丢弃（delete请求只是将文档标记为deleted状态，真正的物理删除是在段合并的过程中）</li>
-</ul>
-<p>手动执行segment合并：max_num_segments最终合并为几个segment</p>
+<h3 id="segment合并"><a href="#segment合并" class="headerlink" title="segment合并"></a>segment合并</h3><p>当索引数据不断增长时，对应的segment也会不断的增多(默认，每秒执行一次refresh，产生一个新的segment文件)，查询性能也会下降。因此，Elasticsearch会触发segment合并的线程，把很多小的segment合并成更大的segment，然后删除小的segment。   </p>
+<p>标记为deleted的文档在合并时会被丢弃（delete请求只是将文档标记为deleted状态，真正的物理删除是在段合并的过程中）</p>
+<p>手动执行segment合并：【参数：max_num_segments：最终合并为几个segment】</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST /twitter/_forcemerge</span><br><span class="line">&#123;</span><br><span class="line">  &quot;max_num_segments&quot;: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="分布式原理"><a href="#分布式原理" class="headerlink" title="分布式原理"></a>分布式原理</h1><h2 id="文档写操作"><a href="#文档写操作" class="headerlink" title="文档写操作"></a>文档写操作</h2><blockquote>
 <p>新建、索引、删除文档</p>
@@ -552,25 +549,25 @@
 <p>搜索(单个文档)、查询文档</p>
 </blockquote>
 <p>读操作和写操作流程类似，但是为了负载均衡读请求，协调节点会将读请求以循环的方式发送给所有的副本分片(包含主分片)</p>
-<p>可能的情况是，文档已存在主分片上，但还未同步到副本分片上，(假如请求转发到此分片上)此时副本分片会向协调节点报告文档未找到，由主分片返回文档信息。</p>
+<p>可能的情况是，文档已存在主分片上，但还未同步到副本分片上，(假如请求转发到此分片上)副本分片会向协调节点报告文档未找到，由主分片返回文档信息。</p>
 <h2 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h2><ul>
 <li>分散(scatter阶段)<ul>
 <li>客户端发送搜索请求到协调节点，协调节点创建一个from+size的空队列</li>
-<li>协调节点将搜索请求转发到所有的分片(主分片、副本分片)，每个分片在本地执行查询并将结果放到from+size的本地队列中</li>
-<li>每个分片返回文档id和队列中文档的排序值给协调节点，协调节点将这些值合并产生全局排序结果</li>
+<li>协调节点将搜索请求转发到所有的分片(主分片、副本分片)</li>
+<li>每个分片在本地执行查询并将结果放到from+size的本地队列中</li>
+<li>每个分片返回文档id和文档在队列中的排序值给协调节点，协调节点将这些值合并产生全局排序结果</li>
 </ul>
 </li>
 <li>收集(gather阶段)<ul>
-<li>协调节点根据排序结果中的文档id向相关分片发出get请求</li>
-<li>分片向协调节点返回文档</li>
+<li>协调节点根据排序结果中的文档id向相关分片发出get请求取回相关文档</li>
 <li>当协调节点取回所有文档后向客户端返回结果</li>
 </ul>
 </li>
 </ul>
 <h1 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h1><h2 id="需求来源"><a href="#需求来源" class="headerlink" title="需求来源"></a>需求来源</h2><ul>
 <li>elasticsearch支持全文搜索，但全文数据在存储前会做分析并提取词项，但文档中的数据并不是都需要如此：比如文档创建时间、文章标题、作者等，这些本来就是结构化数据，不需要进行分析</li>
-<li>通过预定义好字段可以增加数据搜索的维度，提升搜索质量</li>
-<li>通过预定义好数据类型也可以优化存储结构</li>
+<li>通过预定义字段可以增加数据搜索的维度，提升搜索质量</li>
+<li>通过预定义字段的数据类型也可以优化存储结构</li>
 </ul>
 <h2 id="es自动判断数据类型"><a href="#es自动判断数据类型" class="headerlink" title="es自动判断数据类型"></a>es自动判断数据类型</h2><table>
 <thead>
@@ -642,7 +639,7 @@
 <li><p>创建包含mappings的索引</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;person&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;age&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;mail&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;hobby&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>查询索引mappings：/索引/_mappings</p>
+<li><p>查询索引mappings信息：/索引/_mappings</p>
 </li>
 </ul>
 <h1 id="分词"><a href="#分词" class="headerlink" title="分词"></a>分词</h1><p>分词：将文本转化为一系列单词的过程，也叫文本分析，在elasticsearch中称作Analysis</p>
@@ -658,23 +655,24 @@
 </ul>
 <p>方式2：使用es插件命令</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.5.4/elasticsearch-analysis-ik-6.5.4.zip</span><br></pre></td></tr></table></figure>
-<h2 id="自定义分词器"><a href="#自定义分词器" class="headerlink" title="自定义分词器"></a>自定义分词器</h2><p>创建映射的text字段类型时，自定义分词器</p>
+<h2 id="自定义分词器"><a href="#自定义分词器" class="headerlink" title="自定义分词器"></a>自定义分词器</h2><p>例如：创建映射的text类型字段时，自定义分词器</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;person&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;age&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;mail&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;hobby&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">                    &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h1><ul>
 <li><p>创建索引：settings中设置分片数、副本数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT  /索引</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>删除索引：DELETE  索引</p>
+<li><p>删除索引：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE  /索引</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="pipeline操作"><a href="#pipeline操作" class="headerlink" title="pipeline操作"></a><a href="https://hacpai.com/article/1512990272091" target="_blank" rel="noopener">pipeline操作</a></h1><p>预处理：对原始数据进行加工后再存入es集群中，比如使用logstash的grok进行数据梳理</p>
+<h1 id="pipeline操作"><a href="#pipeline操作" class="headerlink" title="pipeline操作"></a><a href="https://hacpai.com/article/1512990272091" target="_blank" rel="noopener">pipeline操作</a></h1><p>预处理：对原始数据进行加工后再存入es集群中，比如使用logstash的grok进行数据处理</p>
 <p>ingest node：可以对数据进行预处理的节点，默认所有节点都是ingest node</p>
-<p>pipeline：在ingest中定义的专用数据处理管道，对经过此管道的数据进行预处理</p>
-<p>Processors：对数据加工操作的抽象包装，例如：转换数据类型的处理器-convert</p>
-<h2 id="创建pipeline"><a href="#创建pipeline" class="headerlink" title="创建pipeline"></a>创建pipeline</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request PUT &apos;http://49.232.17.71:8200/_ingest/pipeline/my-pipeline-id&apos; \</span><br><span class="line">--header &apos;Content-Type: application/json&apos; \</span><br><span class="line">--data-raw &apos;&#123;</span><br><span class="line">    &quot;description&quot;:&quot;describe pipeline&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;convert&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;age&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;&apos;</span><br></pre></td></tr></table></figure>
-<h2 id="查看pipeline结构"><a href="#查看pipeline结构" class="headerlink" title="查看pipeline结构"></a>查看pipeline结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request GET &apos;http://49.232.17.71:8200/_ingest/pipeline/my-pipeline-id&apos;</span><br></pre></td></tr></table></figure>
-<h2 id="使用pipeline发送数据"><a href="#使用pipeline发送数据" class="headerlink" title="使用pipeline发送数据"></a>使用pipeline发送数据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request POST &apos;http://49.232.17.71:8200/haoke/user?pipeline=my-pipeline-id&apos; \</span><br><span class="line">--header &apos;Content-Type: application/json&apos; \</span><br><span class="line">--data-raw &apos;&#123;</span><br><span class="line">    &quot;name&quot;: &quot;何静奇&quot;,</span><br><span class="line">    &quot;age&quot;: 32,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;&apos;</span><br></pre></td></tr></table></figure>
-<h2 id="搜索插入结果"><a href="#搜索插入结果" class="headerlink" title="搜索插入结果"></a>搜索插入结果</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request GET &apos;http://49.232.17.71:8200/haoke/user/_search?q=%E4%BD%95%E9%9D%99%E5%A5%87&apos;</span><br></pre></td></tr></table></figure>
+<p>pipeline：在ingest node中定义的数据处理管道，对经过此管道的数据进行预处理</p>
+<p>Processors：对数据加工操作的抽象包装，例如：转换数据类型的Processors：convert</p>
+<h2 id="创建pipeline"><a href="#创建pipeline" class="headerlink" title="创建pipeline"></a>创建pipeline</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">PUT /_ingest/pipeline/my-pipeline-id </span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;describe pipeline&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;convert&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;age&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="查看pipeline结构"><a href="#查看pipeline结构" class="headerlink" title="查看pipeline结构"></a>查看pipeline结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /_ingest/pipeline/my-pipeline-id</span><br></pre></td></tr></table></figure>
+<h2 id="使用pipeline处理数据"><a href="#使用pipeline处理数据" class="headerlink" title="使用pipeline处理数据"></a>使用pipeline处理数据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST /haoke/user?pipeline=my-pipeline-id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;hejingqi&quot;,</span><br><span class="line">    &quot;age&quot;: 32,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="搜索插入结果"><a href="#搜索插入结果" class="headerlink" title="搜索插入结果"></a>搜索插入结果</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /haoke/user/_search?q=hejingqi</span><br></pre></td></tr></table></figure>
 <h1 id="文档操作"><a href="#文档操作" class="headerlink" title="文档操作"></a>文档操作</h1><h2 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 20,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li><p>全量更新</p>
@@ -696,58 +694,62 @@
 <li><p>批量查询</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET  索引/类型/_mget</span><br><span class="line">&#123;</span><br><span class="line">    &quot;ids&quot;: [&quot;y6zSIHQB2fO-rT1snG4Q&quot;, &quot;yqw2G3QB2fO-rT1sk26f&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>批量插入、修改、删除</p>
+<li><p>批量索引、插入、修改、删除</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">POST  索引/类型/_bulk接口</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;itcast&quot;,&quot;_type&quot;:&quot;person&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:23,&quot;mail&quot;:&quot;111@qq.com&quot;,&quot;hobby&quot;:&quot;羽毛球、篮球、足球&quot;&#125;</span><br><span class="line">&#123;&quot;create&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;小一&quot;,&quot;age&quot;:23,&quot;sex&quot;:&quot;男&quot;&#125;</span><br><span class="line">&#123;&quot;update&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;doc&quot;:&#123;&quot;name&quot;:&quot;小五&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;delete&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br></pre></td></tr></table></figure>
 <ul>
+<li>_bulk接口支持的操作：create、update、delete、index</li>
 <li>每两行为一组，第一行定义要操作的文档，第二行定义文档数据【delete时没有第二行】</li>
-<li>每行末尾都需要换行符\n【包含最后一行】</li>
-<li>操作类型：create、update、delete、index</li>
-<li>index操作时，不需要添加id；没有文档时为create操作；有文档时为update操作。</li>
+<li>每行末尾都需要有换行符\n【包含最后一行】</li>
+<li>index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。</li>
 </ul>
 </li>
 </ul>
 <h1 id="搜索方式"><a href="#搜索方式" class="headerlink" title="搜索方式"></a>搜索方式</h1><p>基于_search接口的查询，根据参数位置的不同可以分为：</p>
 <ul>
-<li>基于URI的请求方式(GET)：/_search?q=字符串查询语法</li>
-<li>基于请求体的请求方式(POST)</li>
+<li>基于URI的搜索(GET)：/_search?q=字符串查询语法</li>
+<li>基于请求体的搜索(POST)</li>
 </ul>
 <p>_search接口直接返回最多10条数据</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://49.232.17.71:8200/haoke/user/_search</span><br></pre></td></tr></table></figure>
 <h2 id="基于URI"><a href="#基于URI" class="headerlink" title="基于URI"></a>基于URI</h2><ul>
-<li><p>全字段搜索：直接写搜索的单词</p>
+<li><p>全文(全字段)搜索：直接写搜索的单词</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>单字段检索：在搜索单词之前加上字段名和冒号，比如如果知道单词first 肯定出现在 mesg 字段，可以写作  mesg:first</p>
+<li><p>字段搜索：在搜索单词之前加上字段名和冒号，比如如果知道单词first 肯定出现在 mesg 字段，可以写作  mesg:first</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=age:25</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>多个条件组合：可以使用  NOT  ,  AND  和  OR  来组合检索，注意必须是大写</p>
+<li><p>字段–多条件组合：可以使用  NOT  ,  AND  和  OR  来组合检索，注意必须是大写</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=(name:alex)%20AND%20(age:28)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>字段是否存在：<code>_exists_:user</code>  表示要求 user 字段存在， <code>_missing_:user</code>  表示要求 user 字段不存在</p>
+<li><p>字段–是否存在：<code>_exists_:user</code>  表示要求 user 字段存在， <code>_missing_:user</code>  表示要求 user 字段不存在</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=_exists_:name</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>通配符：用  ?  表示单字符， *  表示0或多个字符</p>
+</ul>
+<ul>
+<li><p>字段-<a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/query-dsl-query-string-query.html#_ranges" target="_blank" rel="noopener">范围搜索</a>：对日期、数字、字符串都可以使用范围搜索。【[]包含边界 {}不包含边界】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=age:%20[22%20TO%2025]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>全文-通配符：用  ?  表示单字符， *  表示0或多个字符</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex?</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <ul>
-<li><p>模糊搜索：用  ~  表示搜索单词可能有一两个字母写的不对，比如  frist~</p>
+<li><p>全文-模糊搜索：用  ~  表示搜索单词可能有一两个字母写的不对，比如  frist~</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=alex~</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/query-dsl-query-string-query.html#_ranges" target="_blank" rel="noopener">范围搜索</a>：对日期、数字、字符串都可以使用范围搜索。【[]包含边界 {}不包含边界】</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/_search?q=age:%20[22%20TO%2025]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax" target="_blank" rel="noopener">正则表达式</a></p>
+<li><p>全文-<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax" target="_blank" rel="noopener">正则表达式</a></p>
 </li>
 </ul>
 <h2 id="基于请求体"><a href="#基于请求体" class="headerlink" title="基于请求体"></a>基于请求体</h2><blockquote>
-<p>结构化查询</p>
+<p>此处为基于词项的查询，只对一个字段设置查询条件</p>
 </blockquote>
 <ul>
-<li><p>term用于精确匹配：数字、日期、布尔值、以及not_analyzed的字符串(未经分析的text类型)</p>
+<li><p>term：单个值匹配：数字、日期、布尔值、以及not_analyzed的字符串(未经分析的text类型)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;term&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: 23</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>terms精确匹配一个数组中的多个值</p>
+<li><p>terms：多个值匹配(数组)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;terms&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: [23, 20, 28]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>range：范围查询【操作符：lt/小于、lte/小于等于、gt/大于、gte/大于等于】</p>
@@ -756,22 +758,24 @@
 <li><p>exists：是否包含某字段</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;exists&quot;: &#123;</span><br><span class="line">            &quot;field&quot;: &quot;age&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>match：既可以进行单字段精确查询(term)，也可以全文搜索(text分词为term)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;name&quot;: &quot;张三&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>基于id查询</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;ids&quot;: &#123;</span><br><span class="line">            &quot;values&quot;: [&quot;FONNOHQBDlTN8HRyeJoX&quot;, &quot;F-NNOHQBDlTN8HRyeJoY&quot;]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>prefix：前缀模糊匹配</p>
-</li>
-<li><p>wildcard：通配符匹配</p>
-</li>
-<li><p>regexp：正则匹配</p>
+<li><p>模式匹配</p>
+<ul>
+<li>prefix：前缀模糊匹配</li>
+<li>wildcard：通配符匹配</li>
+<li>regexp：正则匹配</li>
+</ul>
 </li>
 </ul>
-<h1 id="全文搜索-1"><a href="#全文搜索-1" class="headerlink" title="全文搜索"></a>全文搜索</h1><p>全文搜索两个重要方面：</p>
+<h1 id="全文搜索-1"><a href="#全文搜索-1" class="headerlink" title="全文搜索"></a>全文搜索</h1><p>全文搜索vs词项搜索：全文搜索会对查询条件做分析；使用的分析器可以在创建索引时设置analyzer参数或search_analyzer参数，也可以在搜索时，在搜索接口_search设置analyzer参数</p>
+<p>全文搜索两个重要方面：</p>
 <ul>
 <li>相关性(Relvance)：评价查询和其结果间相关性程度，并根据这种相关性排序；这种计算方式可以是TF/IDF方法、地理位置临近、模糊相似等算法</li>
 <li>分词(Analysis)：将文本转换为有区别的、规范化的token的过程</li>
 </ul>
-<h2 id="单词搜索"><a href="#单词搜索" class="headerlink" title="单词搜索"></a>单词搜索</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;音乐&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="词项匹配-match单值"><a href="#词项匹配-match单值" class="headerlink" title="词项匹配-match单值"></a>词项匹配-match单值</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;音乐&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>执行的过程如下：</p>
 <ul>
 <li>检查字段类型：hobby是一个text类型（指定IK分词器），这意味着查询字符串本身也应该被分词</li>
@@ -782,14 +786,14 @@
 </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;took&quot;: 20,</span><br><span class="line">    &quot;timed_out&quot;: false,</span><br><span class="line">    &quot;_shards&quot;: &#123;</span><br><span class="line">        &quot;total&quot;: 2,</span><br><span class="line">        &quot;successful&quot;: 2,</span><br><span class="line">        &quot;skipped&quot;: 0,</span><br><span class="line">        &quot;failed&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;hits&quot;: &#123;</span><br><span class="line">        &quot;total&quot;: 1,</span><br><span class="line">        &quot;max_score&quot;: 0.7438652,</span><br><span class="line">        &quot;hits&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;_index&quot;: &quot;itcast&quot;,</span><br><span class="line">                &quot;_type&quot;: &quot;person&quot;,</span><br><span class="line">                &quot;_id&quot;: &quot;F-NNOHQBDlTN8HRyeJoY&quot;,</span><br><span class="line">                &quot;_score&quot;: 0.7438652,</span><br><span class="line">                &quot;_source&quot;: &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;赵六&quot;,</span><br><span class="line">                    &quot;age&quot;: 23,</span><br><span class="line">                    &quot;mail&quot;: &quot;444@qq.com&quot;,</span><br><span class="line">                    &quot;hobby&quot;: &quot;听音乐、看电影&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;highlight&quot;: &#123;</span><br><span class="line">                    &quot;hobby&quot;: [</span><br><span class="line">                        &quot;听&lt;em&gt;音乐&lt;/em&gt;、看电影&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="多词搜索"><a href="#多词搜索" class="headerlink" title="多词搜索"></a>多词搜索</h2><ul>
+<h2 id="词项匹配-match多值"><a href="#词项匹配-match多值" class="headerlink" title="词项匹配-match多值"></a>词项匹配-match多值</h2><ul>
 <li><p>默认：空格分隔的多个词为“逻辑或”</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;羽毛球 篮球&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>设置多个词为“逻辑与“关系</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;</span><br><span class="line">                &quot;query&quot;: &quot;羽毛球 篮球&quot;,</span><br><span class="line">                &quot;operator&quot;: &quot;and&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>避免多个词使用极端的and或or方式搜索，可以设置相似度百分比minimum_should_match</p>
+<li><p>设置相似度百分比minimum_should_match，避免多个词使用极端的and或or方式搜索</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;</span><br><span class="line">                &quot;minimum_should_match&quot;: &quot;70%&quot;,</span><br><span class="line">                &quot;query&quot;: &quot;足球 篮球&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;highlight&quot;: &#123;</span><br><span class="line">        &quot;fields&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>minimum_should_match：相似度越高，包含的文档越少</p>
 <blockquote>
@@ -801,7 +805,17 @@
 </ul>
 </li>
 </ul>
-<h1 id="多条件搜索"><a href="#多条件搜索" class="headerlink" title="多条件搜索"></a>多条件搜索</h1><p>组合多个查询条件，可用的布尔子类型如下：</p>
+<h2 id="多字段-全文搜索"><a href="#多字段-全文搜索" class="headerlink" title="多字段/全文搜索"></a>多字段/全文搜索</h2><ul>
+<li><p>multi_match：同时匹配多个字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;multi_match&quot;: &#123;</span><br><span class="line">            &quot;query&quot;: &quot;音乐&quot;,</span><br><span class="line">            &quot;fields&quot;: [&quot;name&quot;, &quot;hobby&quot;] </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>query_string：和URI中/_search?q=语法类似，定义字段时在默认字段搜索，不定义字段时进行全文搜索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;query_string&quot;: &#123;</span><br><span class="line">            &quot;query&quot;: &quot;音乐&quot;,</span><br><span class="line">            &quot;default_field&quot;:  &quot;hobby&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>simple_query_string：对query_string的查询进行简化，包括：忽略查询时的异常、引入更便捷的简化操作符</p>
+</li>
+</ul>
+<h2 id="多条件搜索-bool-match"><a href="#多条件搜索-bool-match" class="headerlink" title="多条件搜索-bool/match"></a>多条件搜索-bool/match</h2><p>组合多个查询条件，可用的布尔子类型如下：</p>
 <ul>
 <li><p>must：查询结果必须要包含内容，相当于and；结果会根据<strong>相关性排序</strong></p>
 </li>
@@ -834,8 +848,10 @@
 </ul>
 <h1 id="结果处理"><a href="#结果处理" class="headerlink" title="结果处理"></a>结果处理</h1><ul>
 <li><p>分页：from：跳过前m个结果，size：返回n条数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;from&quot;: m,</span><br><span class="line">    &quot;size&quot;: n,</span><br><span class="line">    &quot;query&quot;: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;from&quot;: m,</span><br><span class="line">    &quot;size&quot;: n</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
+</ul>
+<ul>
 <li><p>高亮显示</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">        &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
@@ -853,7 +869,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Elasticsearch 7.x</span><br><span class="line">elasticsearch&gt;=7.0.0,&lt;8.0.0</span><br><span class="line"></span><br><span class="line"># Elasticsearch 6.x</span><br><span class="line">elasticsearch&gt;=6.0.0,&lt;7.0.0</span><br><span class="line"></span><br><span class="line"># Elasticsearch 5.x</span><br><span class="line">elasticsearch&gt;=5.0.0,&lt;6.0.0</span><br><span class="line"></span><br><span class="line"># Elasticsearch 2.x</span><br><span class="line">elasticsearch&gt;=2.0.0,&lt;3.0.0</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>使用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">from elasticsearch import Elasticsearch</span><br><span class="line"></span><br><span class="line">node_list = [</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.221&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.222&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.223&quot;, &quot;port&quot;: 9200&#125;</span><br><span class="line">]</span><br><span class="line">es = Elasticsearch(hosts=node_list)</span><br><span class="line">doc = &#123;</span><br><span class="line">    &quot;name&quot;: &quot;赵七&quot;,</span><br><span class="line">    &quot;age&quot;: 33,</span><br><span class="line">    &quot;mail&quot;: &quot;424@qq.com&quot;,</span><br><span class="line">    &quot;hobby&quot;: &quot;听音乐、看电影、跑步&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 索引文档</span><br><span class="line"># res = es.index(&apos;haoke&apos;,doc_type=&apos;person&apos;, body=doc)</span><br><span class="line"># print(res[&apos;result&apos;])</span><br><span class="line"></span><br><span class="line"># 根据id查询单个文档</span><br><span class="line"># res = es.get(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, id=&apos;0mblTHQBBnpVRgexf4YB&apos;)</span><br><span class="line"># print(res[&apos;_source&apos;])</span><br><span class="line"></span><br><span class="line"># es.indices.refresh(index=&apos;haoke&apos;)</span><br><span class="line"></span><br><span class="line"># 搜索文档</span><br><span class="line">query_json = &#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;term&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: 23</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">res = es.search(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, body=query_json)</span><br><span class="line">for hit in res[&apos;hits&apos;][&apos;hits&apos;]:</span><br><span class="line">    print(&quot;%(name)s %(age)s %(hobby)s&quot; % hit[&apos;_source&apos;])</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">from elasticsearch import Elasticsearch</span><br><span class="line"></span><br><span class="line">node_list = [</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.221&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.222&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.223&quot;, &quot;port&quot;: 9200&#125;</span><br><span class="line">]</span><br><span class="line">es = Elasticsearch(hosts=node_list)</span><br><span class="line">doc = &#123;</span><br><span class="line">    &quot;name&quot;: &quot;赵七&quot;,</span><br><span class="line">    &quot;age&quot;: 33,</span><br><span class="line">    &quot;mail&quot;: &quot;424@qq.com&quot;,</span><br><span class="line">    &quot;hobby&quot;: &quot;听音乐、看电影、跑步&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 索引文档</span><br><span class="line"># res = es.index(&apos;haoke&apos;,doc_type=&apos;person&apos;, body=doc)</span><br><span class="line"># print(res[&apos;result&apos;])</span><br><span class="line"></span><br><span class="line"># 根据id查询单个文档</span><br><span class="line"># res = es.get(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, id=&apos;0mblTHQBBnpVRgexf4YB&apos;)</span><br><span class="line"># print(res[&apos;_source&apos;])</span><br><span class="line"></span><br><span class="line"># 刷新索引，使刚变更的文档可查</span><br><span class="line"># es.indices.refresh(index=&apos;haoke&apos;)</span><br><span class="line"></span><br><span class="line"># 搜索文档</span><br><span class="line">query_json = &#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;term&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: 23</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">res = es.search(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, body=query_json)</span><br><span class="line">for hit in res[&apos;hits&apos;][&apos;hits&apos;]:</span><br><span class="line">    print(&quot;%(name)s %(age)s %(hobby)s&quot; % hit[&apos;_source&apos;])</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h1 id="集群管理"><a href="#集群管理" class="headerlink" title="集群管理"></a>集群管理</h1><h2 id="集群状态"><a href="#集群状态" class="headerlink" title="集群状态"></a>集群状态</h2><ul>
@@ -883,10 +899,9 @@
 </ul>
 <p>原始数据 = 每日原始数据 * 保留天数 * 膨胀系数 </p>
 <p>磁盘总存储 = 原始数据  *  (1 + 副本数) *（1 + 索引开销）* /（1 - Linux预留空间）/（1 - Elasticsearch开销）/（1 - 安全阈值）</p>
-<pre><code>= 原始数据 \*（1 + 副本数）\* 1.7
-
-=  原始数据 \* 3.4
-</code></pre><h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><ul>
+<p>​                    = 原始数据 *（1 + 副本数）* 1.7</p>
+<p>​                    =  原始数据 * 3.4         </p>
+<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><ul>
 <li>数据量和索引数<ul>
 <li>创建多少索引(定期轮转、删除、合并)</li>
 <li>每个索引的数据量</li>
@@ -896,7 +911,7 @@
 <li>分片大小：<ul>
 <li>单个分片大小保持在10GB - 50GB之间(30GB最优);日志分析或者超大索引场景，建议单个shard大小不要超过100GB。</li>
 <li>分片过大：可能使 ES 的故障恢复速度变慢</li>
-<li>分片过小：可能导致非常多的分片，但因为每个分片使用一些数量的 CPU 和内存，从而导致读写性能、内存不足等问题。</li>
+<li>分片过小：可能导致非常多的分片，因为每个分片使用一些数量的 CPU 和内存，从而导致读写性能、内存不足等问题。</li>
 </ul>
 </li>
 <li>分片数量：<ul>
@@ -960,6 +975,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/11/容器化/分布式存储-ceph/" rel="prev" title="分布式存储-ceph">
+                分布式存储-ceph <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -1036,7 +1055,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">131</span>
+                  <span class="site-state-item-count">132</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1107,7 +1126,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据分类和搜索"><span class="nav-number">1.1.</span> <span class="nav-text">数据分类和搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引分类"><span class="nav-number">1.2.</span> <span class="nav-text">索引分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#节点"><span class="nav-number">2.1.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分片-shard"><span class="nav-number">2.2.</span> <span class="nav-text">分片(shard)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#副本-replicas"><span class="nav-number">2.3.</span> <span class="nav-text">副本(replicas)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由"><span class="nav-number">2.4.</span> <span class="nav-text">路由</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储原理"><span class="nav-number">3.</span> <span class="nav-text">存储原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#倒排索引"><span class="nav-number">3.1.</span> <span class="nav-text">倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本结构"><span class="nav-number">3.1.1.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不可变性"><span class="nav-number">3.1.2.</span> <span class="nav-text">不可变性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档底层原理"><span class="nav-number">3.2.</span> <span class="nav-text">文档底层原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档写入"><span class="nav-number">3.2.1.</span> <span class="nav-text">文档写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档修改和删除"><span class="nav-number">3.2.2.</span> <span class="nav-text">文档修改和删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#translog"><span class="nav-number">3.2.3.</span> <span class="nav-text">translog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#segment合并"><span class="nav-number">3.2.4.</span> <span class="nav-text">segment合并</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式原理"><span class="nav-number">4.</span> <span class="nav-text">分布式原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档写操作"><span class="nav-number">4.1.</span> <span class="nav-text">文档写操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档读操作"><span class="nav-number">4.2.</span> <span class="nav-text">文档读操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全文搜索"><span class="nav-number">4.3.</span> <span class="nav-text">全文搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#映射"><span class="nav-number">5.</span> <span class="nav-text">映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求来源"><span class="nav-number">5.1.</span> <span class="nav-text">需求来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es自动判断数据类型"><span class="nav-number">5.2.</span> <span class="nav-text">es自动判断数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es数据类型"><span class="nav-number">5.3.</span> <span class="nav-text">es数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mappings操作"><span class="nav-number">5.4.</span> <span class="nav-text">mappings操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分词"><span class="nav-number">6.</span> <span class="nav-text">分词</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#中文分词器IK"><span class="nav-number">6.1.</span> <span class="nav-text">中文分词器IK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义分词器"><span class="nav-number">6.2.</span> <span class="nav-text">自定义分词器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引操作"><span class="nav-number">7.</span> <span class="nav-text">索引操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pipeline操作"><span class="nav-number">8.</span> <span class="nav-text">pipeline操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建pipeline"><span class="nav-number">8.1.</span> <span class="nav-text">创建pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看pipeline结构"><span class="nav-number">8.2.</span> <span class="nav-text">查看pipeline结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用pipeline发送数据"><span class="nav-number">8.3.</span> <span class="nav-text">使用pipeline发送数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索插入结果"><span class="nav-number">8.4.</span> <span class="nav-text">搜索插入结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文档操作"><span class="nav-number">9.</span> <span class="nav-text">文档操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#增加"><span class="nav-number">9.1.</span> <span class="nav-text">增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">9.2.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除"><span class="nav-number">9.3.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">9.4.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在性判断"><span class="nav-number">9.5.</span> <span class="nav-text">存在性判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量操作"><span class="nav-number">9.6.</span> <span class="nav-text">批量操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搜索方式"><span class="nav-number">10.</span> <span class="nav-text">搜索方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于URI"><span class="nav-number">10.1.</span> <span class="nav-text">基于URI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于请求体"><span class="nav-number">10.2.</span> <span class="nav-text">基于请求体</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全文搜索-1"><span class="nav-number">11.</span> <span class="nav-text">全文搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单词搜索"><span class="nav-number">11.1.</span> <span class="nav-text">单词搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多词搜索"><span class="nav-number">11.2.</span> <span class="nav-text">多词搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多条件搜索"><span class="nav-number">12.</span> <span class="nav-text">多条件搜索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#聚合查询"><span class="nav-number">13.</span> <span class="nav-text">聚合查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果处理"><span class="nav-number">14.</span> <span class="nav-text">结果处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过滤-filter-和查询-query"><span class="nav-number">15.</span> <span class="nav-text">过滤(filter)和查询(query)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端-python"><span class="nav-number">16.</span> <span class="nav-text">客户端-python</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群管理"><span class="nav-number">17.</span> <span class="nav-text">集群管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群状态"><span class="nav-number">17.1.</span> <span class="nav-text">集群状态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容量评估"><span class="nav-number">18.</span> <span class="nav-text">容量评估</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘总容量"><span class="nav-number">18.1.</span> <span class="nav-text">磁盘总容量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分片"><span class="nav-number">18.2.</span> <span class="nav-text">分片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点规格"><span class="nav-number">18.3.</span> <span class="nav-text">节点规格</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据分类和搜索"><span class="nav-number">1.1.</span> <span class="nav-text">数据分类和搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引分类"><span class="nav-number">1.2.</span> <span class="nav-text">索引分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#节点"><span class="nav-number">2.1.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分片-shard"><span class="nav-number">2.2.</span> <span class="nav-text">分片(shard)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#副本-replicas"><span class="nav-number">2.3.</span> <span class="nav-text">副本(replicas)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由"><span class="nav-number">2.4.</span> <span class="nav-text">路由</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储原理"><span class="nav-number">3.</span> <span class="nav-text">存储原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#倒排索引"><span class="nav-number">3.1.</span> <span class="nav-text">倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本结构"><span class="nav-number">3.1.1.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不可变性"><span class="nav-number">3.1.2.</span> <span class="nav-text">不可变性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档底层原理"><span class="nav-number">3.2.</span> <span class="nav-text">文档底层原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档写入"><span class="nav-number">3.2.1.</span> <span class="nav-text">文档写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档修改和删除"><span class="nav-number">3.2.2.</span> <span class="nav-text">文档修改和删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#translog"><span class="nav-number">3.2.3.</span> <span class="nav-text">translog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#segment合并"><span class="nav-number">3.2.4.</span> <span class="nav-text">segment合并</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式原理"><span class="nav-number">4.</span> <span class="nav-text">分布式原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档写操作"><span class="nav-number">4.1.</span> <span class="nav-text">文档写操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档读操作"><span class="nav-number">4.2.</span> <span class="nav-text">文档读操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全文搜索"><span class="nav-number">4.3.</span> <span class="nav-text">全文搜索</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#映射"><span class="nav-number">5.</span> <span class="nav-text">映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求来源"><span class="nav-number">5.1.</span> <span class="nav-text">需求来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es自动判断数据类型"><span class="nav-number">5.2.</span> <span class="nav-text">es自动判断数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es数据类型"><span class="nav-number">5.3.</span> <span class="nav-text">es数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mappings操作"><span class="nav-number">5.4.</span> <span class="nav-text">mappings操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分词"><span class="nav-number">6.</span> <span class="nav-text">分词</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#中文分词器IK"><span class="nav-number">6.1.</span> <span class="nav-text">中文分词器IK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义分词器"><span class="nav-number">6.2.</span> <span class="nav-text">自定义分词器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引操作"><span class="nav-number">7.</span> <span class="nav-text">索引操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pipeline操作"><span class="nav-number">8.</span> <span class="nav-text">pipeline操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建pipeline"><span class="nav-number">8.1.</span> <span class="nav-text">创建pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看pipeline结构"><span class="nav-number">8.2.</span> <span class="nav-text">查看pipeline结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用pipeline处理数据"><span class="nav-number">8.3.</span> <span class="nav-text">使用pipeline处理数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索插入结果"><span class="nav-number">8.4.</span> <span class="nav-text">搜索插入结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文档操作"><span class="nav-number">9.</span> <span class="nav-text">文档操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#增加"><span class="nav-number">9.1.</span> <span class="nav-text">增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">9.2.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除"><span class="nav-number">9.3.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">9.4.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在性判断"><span class="nav-number">9.5.</span> <span class="nav-text">存在性判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量操作"><span class="nav-number">9.6.</span> <span class="nav-text">批量操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搜索方式"><span class="nav-number">10.</span> <span class="nav-text">搜索方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于URI"><span class="nav-number">10.1.</span> <span class="nav-text">基于URI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于请求体"><span class="nav-number">10.2.</span> <span class="nav-text">基于请求体</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全文搜索-1"><span class="nav-number">11.</span> <span class="nav-text">全文搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#词项匹配-match单值"><span class="nav-number">11.1.</span> <span class="nav-text">词项匹配-match单值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#词项匹配-match多值"><span class="nav-number">11.2.</span> <span class="nav-text">词项匹配-match多值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多字段-全文搜索"><span class="nav-number">11.3.</span> <span class="nav-text">多字段/全文搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多条件搜索-bool-match"><span class="nav-number">11.4.</span> <span class="nav-text">多条件搜索-bool/match</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#聚合查询"><span class="nav-number">12.</span> <span class="nav-text">聚合查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果处理"><span class="nav-number">13.</span> <span class="nav-text">结果处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过滤-filter-和查询-query"><span class="nav-number">14.</span> <span class="nav-text">过滤(filter)和查询(query)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端-python"><span class="nav-number">15.</span> <span class="nav-text">客户端-python</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群管理"><span class="nav-number">16.</span> <span class="nav-text">集群管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群状态"><span class="nav-number">16.1.</span> <span class="nav-text">集群状态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容量评估"><span class="nav-number">17.</span> <span class="nav-text">容量评估</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘总容量"><span class="nav-number">17.1.</span> <span class="nav-text">磁盘总容量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分片"><span class="nav-number">17.2.</span> <span class="nav-text">分片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点规格"><span class="nav-number">17.3.</span> <span class="nav-text">节点规格</span></a></li></ol></li></ol></div>
             
 
           </div>

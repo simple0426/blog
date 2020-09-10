@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ceph,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统 特点高性能  摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。 考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。 能够支持上千个存储节点的规模，支持TB到PB级的数据。  高可用性  副本数可以灵活控制。 支持故障域分隔，数据强一致性。 多种">
+<meta name="keywords" content="ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式存储-ceph">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统 特点高性能  摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。 考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。 能够支持上千个存储节点的规模，支持TB到PB级的数据。  高可用性  副本数可以灵活控制。 支持故障域分隔，数据强一致性。 多种">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic1.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-high.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-ext.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-arch.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/pg-pool-osd.png">
+<meta property="og:updated_time" content="2020-09-10T17:08:25.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式存储-ceph">
+<meta name="twitter:description" content="Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统 特点高性能  摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。 考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。 能够支持上千个存储节点的规模，支持TB到PB级的数据。  高可用性  副本数可以灵活控制。 支持故障域分隔，数据强一致性。 多种">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
+
+
+
+
+
+  <title>分布式存储-ceph | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式存储-ceph</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-11T01:08:25+08:00">
+                2020-09-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-11T01:08:25+08:00">
+                2020-09-11
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Ceph介绍"><a href="#Ceph介绍" class="headerlink" title="Ceph介绍"></a>Ceph介绍</h1><p>ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p><strong>高性能</strong></p>
+<ul>
+<li>摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。</li>
+<li>考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。</li>
+<li>能够支持上千个存储节点的规模，支持TB到PB级的数据。</li>
+</ul>
+<p><strong>高可用性</strong></p>
+<ul>
+<li>副本数可以灵活控制。</li>
+<li>支持故障域分隔，数据强一致性。</li>
+<li>多种故障场景自动进行修复自愈。</li>
+<li>没有单点故障，自动管理。</li>
+</ul>
+<p><strong>高可扩展性</strong></p>
+<ul>
+<li>去中心化。</li>
+<li>扩展灵活。</li>
+<li>随着节点增加而线性增长。</li>
+</ul>
+<p><strong>特性丰富</strong></p>
+<ul>
+<li>支持三种存储接口：块存储、文件存储、对象存储。</li>
+<li>支持自定义接口，支持多种语言驱动。</li>
+</ul>
+<h2 id="与其他存储系统对比"><a href="#与其他存储系统对比" class="headerlink" title="与其他存储系统对比"></a>与其他存储系统对比</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic.png" style="zoom: 80%;"></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic1.png" style="zoom: 80%;"></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-high.png" style="zoom: 80%;"></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-ext.png" style="zoom: 80%;"></p>
+<h2 id="架构与组件"><a href="#架构与组件" class="headerlink" title="架构与组件"></a>架构与组件</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-arch.png" alt=""></p>
+<ul>
+<li>管理组件：<ul>
+<li>MGR(ceph-mgr，Luminous之后)：<ul>
+<li>收集集群状态的相关度量信息（例如，ceph df）</li>
+<li>包括基于REST的API管理。注：API仍然是实验性质的，目前有一些限制，但未来会成为API管理的基础。</li>
+<li>可以对接外部度量监控系统，例如cephmetrics、zabbix、calamari、promethus</li>
+</ul>
+</li>
+<li>Admin【命令行工具】：Ceph常用管理接口通常都是命令行工具，如rados、ceph、rbd等命令，另外Ceph还有可以有一个专用的管理节点，在此节点上面部署专用的管理工具来实现近乎集群的一些管理工作，如集群部署，集群组件管理等。</li>
+</ul>
+</li>
+<li>客户端组件：<ul>
+<li>RGW：对象存储网关【可以使用LB(nginx)代理多个RGW服务实现负载均衡和高可用】</li>
+<li>RBD：块存储接口</li>
+<li>CephFS：文件存储接口</li>
+</ul>
+</li>
+<li>核心组件：<ul>
+<li>RADOS(Reliable Autonomic Distributed Object Store)：可靠的、自动化的、分布式对象存储系统。RADOS是Ceph集群的核心，它是一个抽象的存储系统</li>
+<li>LIBRADOS：可以访问RADOS的库，上层的RBD、RGW和CephFS都是通过librados访问的；目前提供PHP、Ruby、Java、Python、C和C++支持。</li>
+</ul>
+</li>
+<li>底层组件：<ul>
+<li>OSD：负责物理存储的进程，一般配置成和硬盘一一对应，一个硬盘启动一个OSD进程；功能包括：存储数据、复制数据、平衡数据、恢复数据，以及与其它OSD间进行心跳检查，负责响应客户端请求返回具体数据的进程等</li>
+<li>MON：保存OSD的元数据，维护集群的状态，管理集群客户端认证与授权</li>
+<li>MDS(Ceph Metadata Server)：cephFS服务依赖的元数据服务，负责保存文件系统的元数据、目录结构等；<em>对象存储和块设备存储不需要此服务</em></li>
+</ul>
+</li>
+<li>底层存储：<ul>
+<li>bluestore(Luminous之后)：BlueStore通过直接管理物理HDD或SSD而不使用诸如XFS的中间文件系统来管理每个OSD存储的数据，这提供了更大的性能和功能；BlueStore内嵌支持使用zlib，snappy或LZ4进行压缩；BlueStore支持Ceph存储的所有的完整的数据和元数据校验。</li>
+<li>filestore：相对于bluestore，使用xfs文件系统管理osd数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="存储原理-Pool-PG"><a href="#存储原理-Pool-PG" class="headerlink" title="存储原理-Pool/PG"></a>存储原理-Pool/PG</h2><ul>
+<li>CRUSH算法：一种为分布式存储的元数据提供一致性的算法，可以使ceph具有强大的扩展性</li>
+<li>object：object是ceph最底层的存储单元，包含元数据和原始数据。</li>
+<li>pool：存储对象的逻辑分区，它规定了数据的冗余类型(副本、纠错码)和对应副本的分布策略</li>
+<li>PG(placement groups)：它是对象的集合；相同PG内的对象都会放到相同的硬盘上(OSD)；服务端数据均衡和恢复的最小粒度就是PG；</li>
+</ul>
+<p>PG与Pool关系：</p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/pg-pool-osd.png" alt=""></p>
+<ul>
+<li>一个Pool里有很多PG</li>
+<li>一个PG里有很多对象</li>
+<li>PG有主从之分，一个PG分布在不同的OSD上(三副本类型)</li>
+</ul>
+<p>PG数量阈值：</p>
+<p>默认每个osd最多250个pg【mon_max_pg_per_osd】，假如有6个osd，一共可以有(250*6)1500个pg</p>
+<p>以每个pg有2个副本计算，集群中pool可以创建的pg总数为500【1500/3，剩余的1000个pg由集群根据副本机制自动创建】</p>
+<h2 id="ceph的三种存储类型"><a href="#ceph的三种存储类型" class="headerlink" title="ceph的三种存储类型"></a>ceph的三种存储类型</h2><p>1、 块存储（RBD）  </p>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>通过Raid与LVM等手段，对数据提供了保护；</li>
+<li>多块廉价的硬盘组合起来，提高容量；</li>
+<li>多块磁盘组合出来的逻辑盘，提升读写效率；  </li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>采用SAN架构组网时，光纤交换机，造价成本高；</li>
+<li>主机之间无法共享数据；</li>
+</ul>
+</li>
+<li>使用场景<ul>
+<li>docker容器、虚拟机磁盘存储分配；</li>
+<li>日志存储；</li>
+<li>文件存储；</li>
+</ul>
+</li>
+</ul>
+<p>2、文件存储（CephFS）</p>
+<ul>
+<li><p>优点：方便文件共享；</p>
+</li>
+<li><p>缺点：读写速率低、传输速率慢；</p>
+</li>
+<li>使用场景<ul>
+<li>日志存储；</li>
+<li>FTP、NFS；</li>
+<li>其它有目录结构的文件存储  </li>
+</ul>
+</li>
+</ul>
+<p>3、对象存储（Object）(适合更新变动较少的数据)</p>
+<ul>
+<li>优点：<ul>
+<li>具备块存储的读写高速；</li>
+<li>具备文件存储的共享等特性；</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>使用场景<ul>
+<li>图片存储；</li>
+<li>视频存储；</li>
+</ul>
+</li>
+</ul>
+<h1 id="Ceph安装"><a href="#Ceph安装" class="headerlink" title="Ceph安装"></a>Ceph安装</h1><p>可用安装方式如下，本文主要使用ceph-deploy安装</p>
+<ul>
+<li>ceph-deploy：<a href="https://docs.ceph.com/ceph-deploy/docs/contents.html" target="_blank" rel="noopener">https://docs.ceph.com/ceph-deploy/docs/contents.html</a></li>
+<li>ceph-ansible：<a href="https://docs.ceph.com/ceph-ansible/master/" target="_blank" rel="noopener">https://docs.ceph.com/ceph-ansible/master/</a></li>
+<li><a href="https://rook.io/" target="_blank" rel="noopener">rook</a>：在k8s内部署ceph集群</li>
+<li>手动安装集群：<a href="https://ceph.readthedocs.io/en/latest/install/index_manual/#" target="_blank" rel="noopener">https://ceph.readthedocs.io/en/latest/install/index_manual/#</a></li>
+</ul>
+<h2 id="环境规划"><a href="#环境规划" class="headerlink" title="环境规划"></a>环境规划</h2><ul>
+<li><p>主机：3台centos7主机，每台配置2C4G，每台机器额外挂载最少2块硬盘(每块不少于5G)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.31.201 node01</span><br><span class="line">192.168.31.202 node02</span><br><span class="line">192.168.31.203 node03</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ceph版本：nautilus</p>
+</li>
+</ul>
+<h2 id="系统初始化设置"><a href="#系统初始化设置" class="headerlink" title="系统初始化设置"></a>系统初始化设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">1）关闭防火墙：</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">（2）关闭selinux：</span><br><span class="line">sed -i &apos;s/enforcing/disabled/&apos; /etc/selinux/config</span><br><span class="line">setenforce 0</span><br><span class="line">（3）关闭NetworkManager</span><br><span class="line">systemctl disable NetworkManager &amp;&amp; systemctl stop NetworkManager</span><br><span class="line">（4）添加主机名与IP对应关系：</span><br><span class="line">vim /etc/hosts</span><br><span class="line">192.168.31.201 node01</span><br><span class="line">192.168.31.202 node02</span><br><span class="line">192.168.31.203 node03</span><br><span class="line">（5）设置主机名：</span><br><span class="line">hostnamectl set-hostname node01</span><br><span class="line">hostnamectl set-hostname node02</span><br><span class="line">hostnamectl set-hostname node03</span><br><span class="line">（6）同步网络时间和修改时区</span><br><span class="line">systemctl restart chronyd.service &amp;&amp; systemctl enable chronyd.service</span><br><span class="line">cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br><span class="line">（7）设置文件描述符</span><br><span class="line">echo &quot;ulimit -SHn 102400&quot; &gt;&gt; /etc/rc.local</span><br><span class="line">cat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF</span><br><span class="line">* soft nofile 65535</span><br><span class="line">* hard nofile 65535</span><br><span class="line">EOF</span><br><span class="line">（8）内核参数优化</span><br><span class="line">cat &gt;&gt; /etc/sysctl.conf &lt;&lt; EOF</span><br><span class="line">kernel.pid_max = 4194303</span><br><span class="line">vm.swappiness = 0 </span><br><span class="line">EOF</span><br><span class="line">sysctl -p</span><br><span class="line">（9）在node01上配置root免密登录到node02、node03</span><br><span class="line"># 允许root登录</span><br><span class="line">sed -i &apos;/PermitRootLogin/s/^#/#&amp;/p&apos; /etc/ssh/sshd_config</span><br><span class="line">echo &quot;PermitRootLogin yes&quot; &gt;&gt; /etc/ssh/sshd_config</span><br><span class="line">echo 123456|passwd root --stdin</span><br><span class="line"># 免秘钥</span><br><span class="line">ssh-copy-id root@node02</span><br><span class="line">ssh-copy-id root@node03</span><br><span class="line">(10) 调整磁盘文件预读参数，提高顺序读性能</span><br><span class="line">echo &quot;8192&quot; &gt; /sys/block/sda/queue/read_ahead_kb</span><br><span class="line">(11) 优化磁盘IO调度方式【SSD要用noop，SATA/SAS使用deadline】</span><br><span class="line">echo &quot;deadline&quot; &gt;/sys/block/sd[x]/queue/scheduler</span><br><span class="line">echo &quot;noop&quot; &gt;/sys/block/sd[x]/queue/scheduler</span><br></pre></td></tr></table></figure>
+<h2 id="安装集群"><a href="#安装集群" class="headerlink" title="安装集群"></a>安装集群</h2><ul>
+<li><p>设置yum源：ceph、epel</p>
+<p>ceph</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages for $basearch</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/$basearch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/noarch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph source packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/SRPMS</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<p>epel</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装ceph-deploy【node01】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ceph-deploy</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>问题：</p>
+<p>[root@node01 my-cluster]# ceph-deploy -version<br>Traceback (most recent call last):<br>File “/bin/ceph-deploy”, line 18, in <module><br>from ceph_deploy.cli import main<br>File “/usr/lib/python2.7/site-packages/ceph_deploy/cli.py”, line 1, in <module><br>import pkg_resources<br>ImportError: No module named pkg_resources</module></module></p>
+<p>解决： yum install python-pip -y</p>
+</blockquote>
+</li>
+<li><p>创建工作目录【node01】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir my-cluster</span><br><span class="line">cd my-cluster/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ceph节点初始化【node01】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy new node01 node02 node03</span><br></pre></td></tr></table></figure>
+<p><strong>主要功能</strong>：确认可以免秘钥登录所有node、生成部署时需要的配置/root/.cephdeploy.conf、生成ceph集群配置文件ceph.conf和mon秘钥文件ceph.mon.keyring</p>
+</li>
+<li><p>安装ceph软件【每个节点】</p>
+<blockquote>
+<p>ceph-deploy install命令会使用ceph官方源和epel官方源，速度较慢</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ceph</span><br></pre></td></tr></table></figure>
+<p><strong>主要功能</strong>：包含ceph-crash.service、ceph-mds.target、ceph-mgr.target、ceph-mon.target、ceph-osd.target服务【ceph.target为总的服务进程】</p>
+</li>
+<li><p>部署mon服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mon create-initial # 在所有初始化节点部署mon</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>推送admin配置到节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy admin node01 node02 node03</span><br></pre></td></tr></table></figure>
+<p>admin配置如下：</p>
+<p>ceph.client.admin.keyring：客户端认证秘钥</p>
+<p>ceph.conf：客户端连接集群时的配置文件</p>
+</li>
+<li><p>部署mgr</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr create node01 node02 node03</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署rgw</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ceph-radosgw 【每个节点】</span><br><span class="line">ceph-deploy rgw create node01 node02 node03</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署mds</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds create node01 node02 node03</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署osd</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create --data /dev/sdb node01</span><br><span class="line">ceph-deploy osd create --data /dev/sdb node02</span><br><span class="line">ceph-deploy osd create --data /dev/sdb node03</span><br></pre></td></tr></table></figure>
+<p>指定主机名【node01】和主机上的硬盘设备【/dev/sdb】</p>
+</li>
+</ul>
+<p>确认集群状态：ceph -s</p>
+<h2 id="ceph-conf"><a href="#ceph-conf" class="headerlink" title="ceph.conf"></a>ceph.conf</h2><p>1、该配置文件采用init文件语法，#和;为注释，ceph集群在启动的时候会按照顺序加载所有的conf配置文件。 配置文件分为以下几大块配置。</p>
+<pre><code>global：全局配置。
+osd：osd专用配置，可以使用osd.N，来表示某一个OSD专用配置，N为osd的编号，如0、2、1等。
+mon：mon专用配置，也可以使用mon.A来为某一个monitor节点做专用配置，其中A为该节点的名称，ceph-monitor-2、ceph-monitor-1等。使用命令 ceph mon dump可以获取节点的名称。
+client：客户端专用配置。
+</code></pre><p>2、配置文件可以从多个地方进行顺序加载，如果冲突将使用最新加载的配置，其加载顺序为。</p>
+<pre><code>$CEPH_CONF环境变量
+-c 指定的位置
+/etc/ceph/ceph.conf
+~/.ceph/ceph.conf
+./ceph.conf
+</code></pre><p>3、配置文件还可以使用一些元变量应用到配置文件，如。</p>
+<pre><code>$cluster：当前集群名。
+$type：当前服务类型。
+$id：进程的标识符。
+$host：守护进程所在的主机名。
+$name：值为$type.$id。
+</code></pre><p>4、ceph.conf详细参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">fsid = xxxxxxxxxxxxxxx                           #集群标识ID </span><br><span class="line">mon host = 10.0.1.1,10.0.1.2,10.0.1.3            #monitor IP 地址</span><br><span class="line">auth cluster required = cephx                    #集群认证</span><br><span class="line">auth service required = cephx                           #服务认证</span><br><span class="line">auth client required = cephx                            #客户端认证</span><br><span class="line">osd pool default size = 3                             #最小副本数 默认是3</span><br><span class="line">osd pool default min size = 1                           #PG 处于 degraded 状态不影响其 IO 能力,min_size是一个PG能接受IO的最小副本数</span><br><span class="line">public network = 10.0.1.0/24                            #公共网络(monitorIP段) </span><br><span class="line">cluster network = 10.0.2.0/24                           #集群网络</span><br><span class="line">max open files = 131072                                 #默认0#如果设置了该选项，Ceph会设置系统的max open fds</span><br><span class="line">mon initial members = node1, node2, node3               #初始monitor (由创建monitor命令而定)</span><br><span class="line">##############################################################</span><br><span class="line">[mon]</span><br><span class="line">mon data = /var/lib/ceph/mon/ceph-$id</span><br><span class="line">mon clock drift allowed = 1                             #默认值0.05 时间偏移量【超过多少时间认为节点不同步】</span><br><span class="line">mon osd min down reporters = 13                         #默认值1#向monitor报告down的最小OSD数</span><br><span class="line">mon osd down out interval = 600      #默认值300      #标记一个OSD状态为down和out之前ceph等待的秒数</span><br><span class="line">##############################################################</span><br><span class="line">[osd]</span><br><span class="line">osd data = /var/lib/ceph/osd/ceph-$id</span><br><span class="line">osd mkfs type = xfs                                     #格式化系统类型</span><br><span class="line">osd max write size = 512 #默认值90                   #OSD一次可写入的最大值(MB)</span><br><span class="line">osd client message size cap = 2147483648 #默认值100    #客户端允许在内存中的最大数据(bytes)</span><br><span class="line">osd deep scrub stride = 131072 #默认值524288         #在Deep Scrub时候允许读取的字节数(bytes)</span><br><span class="line">osd op threads = 16 #默认值2                         #并发文件系统操作数</span><br><span class="line">osd disk threads = 4 #默认值1                        #OSD密集型操作例如恢复和Scrubbing时的线程</span><br><span class="line">osd map cache size = 1024 #默认值500                 #保留OSD Map的缓存(MB)</span><br><span class="line">osd map cache bl size = 128 #默认值50                #OSD进程在内存中的OSD Map缓存(MB)</span><br><span class="line">osd mount options xfs = &quot;rw,noexec,nodev,noatime,nodiratime,nobarrier&quot; #默认值rw,noatime,inode64  #Ceph OSD xfs Mount选项</span><br><span class="line">osd recovery op priority = 2 #默认值10              #恢复操作优先级，取值1-63，值越高占用资源越高</span><br><span class="line">osd recovery max active = 10 #默认值15              #同一时间内活跃的恢复请求数 </span><br><span class="line">osd max backfills = 4  #默认值10                  #一个OSD允许的最大backfills数</span><br><span class="line">osd min pg log entries = 30000 #默认值3000           #修建PGLog是保留的最大PGLog数</span><br><span class="line">osd max pg log entries = 100000 #默认值10000         #修建PGLog是保留的最大PGLog数</span><br><span class="line">osd mon heartbeat interval = 40 #默认值30            #OSD ping一个monitor的时间间隔（默认30s）</span><br><span class="line">ms dispatch throttle bytes = 1048576000 #默认值 104857600 #等待派遣的最大消息数</span><br><span class="line">objecter inflight ops = 819200 #默认值1024           #客户端流控，允许的最大未发送io请求数，超过阀值会堵塞应用io，为0表示不受限</span><br><span class="line">osd op log threshold = 50 #默认值5                  #一次显示多少操作的log</span><br><span class="line">osd crush chooseleaf type = 0 #默认值为1              #CRUSH规则用到chooseleaf时的bucket的类型</span><br><span class="line">##############################################################</span><br><span class="line">[client]</span><br><span class="line">rbd cache = true #默认值 true      #RBD缓存</span><br><span class="line">rbd cache size = 335544320 #默认值33554432           #RBD缓存大小(bytes)</span><br><span class="line">rbd cache max dirty = 134217728 #默认值25165824      #缓存为write-back时允许的最大dirty字节数(bytes)，如果为0，使用write-through</span><br><span class="line">rbd cache max dirty age = 30 #默认值1                #在被刷新到存储盘前dirty数据存在缓存的时间(seconds)</span><br><span class="line">rbd cache writethrough until flush = false #默认值true  #该选项是为了兼容linux-2.6.32之前的virtio驱动，避免因为不发送flush请求，数据不回写</span><br><span class="line">              #设置该参数后，librbd会以writethrough的方式执行io，直到收到第一个flush请求，才切换为writeback方式。</span><br><span class="line">rbd cache max dirty object = 2 #默认值0              #最大的Object对象数，默认为0，表示通过rbd cache size计算得到，librbd默认以4MB为单位对磁盘Image进行逻辑切分</span><br><span class="line">      #每个chunk对象抽象为一个Object；librbd中以Object为单位来管理缓存，增大该值可以提升性能</span><br><span class="line">rbd cache target dirty = 235544320 #默认值16777216    #开始执行回写过程的脏数据大小，不能超过 rbd_cache_max_dirty</span><br></pre></td></tr></table></figure>
+<h1 id="RBD"><a href="#RBD" class="headerlink" title="RBD"></a>RBD</h1><h2 id="RBD介绍"><a href="#RBD介绍" class="headerlink" title="RBD介绍"></a>RBD介绍</h2><p>RBD即RADOS Block Device的简称，RBD块存储是最稳定且最常用的存储类型。RBD块设备类似磁盘，可以被挂载。 RBD块设备具有快照、多副本、克隆和一致性等特性，数据以条带化的方式存储在Ceph集群的多个OSD中。</p>
+<ul>
+<li>RBD 就是 Ceph 里的块设备，一个 4T 的块设备的功能和一个 4T 的 SATA 类似，挂载的 RBD 就可以当磁盘用；</li>
+<li>resizable：这个块可大可小；</li>
+<li>data striped：这个块在Ceph里面是被切割成若干小块来保存，不然 1PB 的块怎么存的下；</li>
+<li><p>thin-provisioned：精简配置；相当于存储空间的动态分配，就是块的大小和在 Ceph中实际占用大小是没有关系的，刚创建出来的块是不占空间，今后用多大空间，才会在 Ceph 中占用多大空间。</p>
+</li>
+<li><p>块存储本质就是将裸磁盘或类似裸磁盘(lvm)设备映射给主机使用，主机可以对其进行格式化并存储和读取数据，块设备读取速度快但是不支持共享。</p>
+</li>
+<li>ceph可以通过内核模块和librbd库提供块设备支持。客户端可以通过内核模块挂载rbd使用，客户端使用rbd块设备就像使用普通硬盘一样，可以对其就行格式化然后使用典型的是云平台的块存储服务。</li>
+</ul>
+<p>使用场景：</p>
+<ul>
+<li>云平台（OpenStack做为云的存储后端提供镜像存储）</li>
+<li>K8s容器</li>
+<li>map成块设备直接使用</li>
+<li>ISCIS，安装Ceph客户端</li>
+</ul>
+<h2 id="RBD-IO流程"><a href="#RBD-IO流程" class="headerlink" title="RBD IO流程"></a>RBD IO流程</h2><p>（1）客户端创建一个pool，需要为这个pool指定pg的数量；<br>（2）创建pool/image rbd设备进行挂载；<br>（3）用户写入的数据进行切块，每个块的大小默认为4M，并且每个块都有一个名字，名字就是object+序号<br>（4）将每个object通过pg进行副本位置的分配；<br>（5）pg根据cursh算法会寻找3个osd，把这个object分别保存在这三个osd上；    </p>
+<h2 id="RBD常见操作"><a href="#RBD常见操作" class="headerlink" title="RBD常见操作"></a>RBD常见操作</h2><ul>
+<li><p>创建rbd块设备使用的pool</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool create rbd01  32 32</span><br><span class="line">ceph osd lspools # 查看pool列表</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>rbd01：pool的名称</p>
+</li>
+<li><p>【1】32：<a href="https://blog.csdn.net/qq_32485197/article/details/88892620" target="_blank" rel="noopener">pool中pg的数量</a>：osd数量 <em> 100/副本数 = 最接近2的幂次方的数【例如3个osd、3个副本，3</em>100/3=100~128=2ⁿ】</p>
+</li>
+<li><p>【2】32：pool中pgs的数量，一般设置和pg一样</p>
+</li>
+</ul>
+</li>
+<li><p>设置pool提供什么类型服务（如：cephfs、rbd、rgw）</p>
+<p><strong>可选项</strong>(一般只对rbd类型设置标签、不设置会有warn提示)，相当于给pool打标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool application enable rbd01 rbd</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="RBD-增删使用"><a href="#RBD-增删使用" class="headerlink" title="RBD-增删使用"></a>RBD-增删使用</h3><ul>
+<li><p>在pool上创建一个rbd块设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd create --size 4096 image01 -p rbd01</span><br></pre></td></tr></table></figure>
+<p>–size         指定块设备大小，以MB为单位</p>
+<p>image01   块设备名称</p>
+<p>-p rbd01   指定使用的pool【如果存在默认的pool(<strong>rbd</strong>)，可以不指定此参数，则rbd命令的所有操作都在这个pool中进行】</p>
+</li>
+<li><p>查看块设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbd ls -p rbd01</span><br><span class="line">rbd info image01 -p rbd01</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将块设备映射到操作系统内核</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd map image01 -p rbd01</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>格式化块设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.xfs /dev/rbd0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>mount到本地</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/rbd0 /mnt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>取消操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">umount /mnt                  # 卸载磁盘挂载</span><br><span class="line">rbd unmap image01 -p rbd01   # 取消块设备映射</span><br><span class="line">rbd rm image01 -p rbd01      # 删除块设备</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="RBD-快照"><a href="#RBD-快照" class="headerlink" title="RBD-快照"></a>RBD-快照</h3><ul>
+<li><p>创建快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd snap create image01@image01_snap01 -p rbd01</span><br></pre></td></tr></table></figure>
+<p>image01：块设备名称</p>
+<p>image01_snap01：块设备的快照名称</p>
+</li>
+<li><p>查看快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbd snap list image01 -p rbd01            # 快照列表</span><br><span class="line">rbd info image01@image01_snap01 -p rbd01  # 查看快照详情</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>恢复快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">umount /mnt</span><br><span class="line">rbd unmap image01 -p rbd01</span><br><span class="line">rbd snap rollback image01@image01_snap01 -p rbd01 #恢复快照</span><br><span class="line">rbd map image01 -p rbd01 </span><br><span class="line">mount /dev/rbd0 /mnt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbd snap unprotect image01@image01_snap01 -p rbd01 #取消保护</span><br><span class="line">rbd snap remove image01@image01_snap01 -p rbd01    #删除快照</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="RBD-快照克隆"><a href="#RBD-快照克隆" class="headerlink" title="RBD-快照克隆"></a>RBD-快照克隆</h3><blockquote>
+<p>此处操作为基于快照的克隆，最后制作成可以独立使用的块设备</p>
+</blockquote>
+<ul>
+<li><p>设置快照为保护状态【快照必须处于被保护状态才能被克隆】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd snap protect image01@image01_snap01 -p rbd01</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>克隆快照：可以克隆到另一个命名空间或另一个pool中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd clone rbd01/image01@image01_snap01 rbd02/image01_clone1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看克隆结果：rbd ls -p rbd02</p>
+</blockquote>
+</li>
+<li><p>克隆快照的处理【制作成可以独立使用的块设备】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 此时image01_clone1还是image01的快照复制品(只读)，不能作为独立的块设备使用</span><br><span class="line">rbd children image01 -p rbd01</span><br><span class="line">2. 去掉克隆快照与块设备的父子关系【完成操作后，image01_clone1和image01一样，可以作为块设备直接使用】</span><br><span class="line">rbd flatten rbd02/image01_clone1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>在集群的另一主机挂载使用【同主机image01_clone1和image01具有相同uuid，mount会报错】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbd map image01_clone1 -p rbd02</span><br><span class="line">mount /dev/rbd0 /mnt/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="RBD-扩容缩容"><a href="#RBD-扩容缩容" class="headerlink" title="RBD-扩容缩容"></a>RBD-扩容缩容</h3><ul>
+<li><p>rbd在线扩容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbd resize --size 5100 image01 -p rbd01 # RBD扩容</span><br><span class="line">xfs_growfs /mnt #文件系统扩容</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>RBD缩容</p>
+<blockquote>
+<p>rbd支持缩容，但是xfs文件系统不支持缩容(无在线缩容命令)；挂载点(例如/mnt)离线后，superblock丢失，无法重新挂载</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd resize --size 2048 foo --allow-shrink #RBD缩容</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="远程挂载RBD"><a href="#远程挂载RBD" class="headerlink" title="远程挂载RBD"></a>远程挂载RBD</h3><ul>
+<li><p>配置yum源：ceph、epel</p>
+</li>
+<li><p>安装ceph客户端ceph-common</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ceph-common -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>客户端连接设置【/etc/ceph/】</p>
+<blockquote>
+<p>这2个文件都可以在ceph-deploy的工作目录my-cluster找到</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph.conf                  # 配置文件</span><br><span class="line">ceph.client.admin.keyring  # 认证文件</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rbd ls -p rbd02</span><br><span class="line">rbd map image01_clone1 -p rbd02</span><br><span class="line">mount /dev/rbd0 /mnt</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="RBD镜像导入导出"><a href="#RBD镜像导入导出" class="headerlink" title="RBD镜像导入导出"></a>RBD镜像导入导出</h3><ul>
+<li><p>导出RBD镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd export image01 /tmp/image01 -p rbd01</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导入RBD镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd import /tmp/image01 rbd02/image02</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2><p>快照使用：只对重要且数据量较小的rbd做快照</p>
+<h1 id="CephFS"><a href="#CephFS" class="headerlink" title="CephFS"></a>CephFS</h1><h2 id="CephFS介绍"><a href="#CephFS介绍" class="headerlink" title="CephFS介绍"></a>CephFS介绍</h2><p>Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问。CephFS 需要至少一个元数据服务器 (Metadata Server - MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。  </p>
+<p>CephFS依赖的底层组件:</p>
+<ul>
+<li>OSDs (ceph-osd): CephFS 的数据和元数据就存储在 OSDs 上</li>
+<li>MDS (ceph-mds): Metadata Servers, 管理着 CephFS 的元数据</li>
+<li>Mons (ceph-mon): Monitors 管理着集群 Map 的主副本</li>
+</ul>
+<p>Ceph 存储集群的协议层是 Ceph 原生的 librados 库, 与核心集群交互.</p>
+<p>CephFS库层包括 CephFS 库 libcephfs, 工作在 librados 的顶层, 代表着 Ceph 文件系统.</p>
+<p>最上层是能够访问 Ceph 文件系统的两类客户端：mount、fuse</p>
+<h2 id="部署CephFS"><a href="#部署CephFS" class="headerlink" title="部署CephFS"></a>部署CephFS</h2><ul>
+<li><p>部署mon、osd、mds服务</p>
+</li>
+<li><p>创建cephfs需要使用的pool：cephfs-data 和 cephfs-metadata, 分别存储文件数据和文件元数据</p>
+<blockquote>
+<p>一般 metadata pool 可以从相对较少的 PGs 启动, 之后可以根据需要增加 PGs. 因为 metadata pool 存储着 CephFS 文件的元数据, 为了保证安全, 最好有较多的副本数. 为了能有较低的延迟, 可以考虑将 metadata 存储在 SSDs 上.</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool create cephfs-data 16 16</span><br><span class="line">ceph osd pool create cephfs-metadata 16 16</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建cephfs,名称为cephfs【默认配置时只能创建一个cephfs】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph fs new cephfs cephfs-metadata cephfs-data</span><br><span class="line">ceph fs status cephfs # 查看cephfs状态【至少有一个 MDS 已经进入 Active 状态】</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建访问cephfs的用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph auth get-or-create client.cephfs mon &apos;allow r&apos; mds &apos;allow rw&apos; osd &apos;allow rw pool=cephfs-data, allow rw pool=cephfs-metadata&apos;</span><br><span class="line">ceph auth get client.cephfs # 查看key是否生效</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查cephfs和mds状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph fs status</span><br><span class="line">ceph mds stat</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="客户端挂载"><a href="#客户端挂载" class="headerlink" title="客户端挂载"></a>客户端挂载</h2><ul>
+<li><p>kernel client</p>
+<ul>
+<li><p>手动挂载：mount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t ceph 192.168.31.201:6789,192.168.31.202:6789,192.168.31.203:6789:/ /mnt -o name=cephfs,secret=AQBcH1ZfIsqIHBAAVTvqHwhUMbd6moEjjQBRUg==</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动挂载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;192.168.31.201:6789,192.168.31.202:6789,192.168.31.203:6789:/ /mnt ceph name=cephfs,secretfile=/etc/ceph/cephfs.key,_netdev,noatime 0 0&quot; | sudo tee -a /etc/fstab</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>fuse client：ceph-fuse</p>
+<ul>
+<li><p>安装ceph-fuse客户端：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ceph-common ceph-fuse</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将ceph配置文件ceph.conf和客户端认证文件ceph.client.cephfs.keyring复制到客户端</p>
+<blockquote>
+<p>ceph auth get client.cephfs获取ceph.client.cephfs.keyring文件内容</p>
+</blockquote>
+</li>
+<li><p>手动挂载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-fuse --name client.cephfs --keyring /etc/ceph/ceph.client.cephfs.keyring -m 192.168.31.201:6789,192.168.31.202:6789,192.168.31.203:6789 /mnt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动挂载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;id=cephfs,conf=/etc/ceph/ceph.conf /mnt fuse.ceph _netdev,defaults 0 0&quot;| sudo tee -a /etc/fstab</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>卸载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fusermount -u /mnt/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="MDS主备和主主"><a href="#MDS主备和主主" class="headerlink" title="MDS主备和主主"></a>MDS主备和主主</h2><p>当cephfs的性能出现在MDS上时，就应该配置多个活动的MDS。通常是多个客户机应用程序并行的执行大量元数据操作，并且它们分别有自己单独的工作目录。这种情况下很适合使用多主MDS模式。</p>
+<ul>
+<li><p>配置MDS多主模式</p>
+<p>每个cephfs文件系统都有一个max_mds设置，可以理解为它将控制创建多少个主MDS。注意只有当实际的MDS个数大于或等于max_mds设置的值时，mdx_mds设置才会生效。例如，如果只有一个MDS守护进程在运行，并且max_mds被设置为两个，则不会创建第二个主MDS。即使有多个活动的MDS，如果其中一个MDS出现故障，仍然需要备用守护进程来接管。因此，对于高可用性系统，实际配置max_mds时，最好比系统中MDS的总数少一个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph fs set cephfs max_mds 2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置备用MDS</p>
+<p>如果你确信你的MDS不会出现故障，可以通过以下设置来通知ceph不需要备用MDS，否则会出现insufficient standby daemons available告警信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph fs set &lt;fs&gt; standby_count_wanted 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还原为单主MDS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph fs set cephfs max_mds 1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="Ceph-Object"><a href="#Ceph-Object" class="headerlink" title="Ceph Object"></a>Ceph Object</h1><p>在部署完rgw服务(yum install -y ceph-radosgw)后，使用radosrgw-admin命令管理用户和角色(权限)，其他功能可以使用s3cmd完成</p>
+<ul>
+<li><p>RGW用户管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、创建rgw用户</span><br><span class="line">radosgw-admin user create --uid=user01 --display-name=user01</span><br><span class="line">2. 查看用户信息【包含access key和secret key】</span><br><span class="line">radosgw-admin user list</span><br><span class="line">radosgw-admin user info --uid=user01</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="管理工具-s3cmd"><a href="#管理工具-s3cmd" class="headerlink" title="管理工具-s3cmd"></a>管理工具-s3cmd</h2><ul>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install python-pip</span><br><span class="line">sudo pip install s3cmd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置【~/.s3cfg】</p>
+<blockquote>
+<p>也可以使用s3cmd –configure，host为rgw网关地址【端口7480】</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">access_key = PDGJX31AU3Z2KCYX5TGD</span><br><span class="line">secret_key = VDBm1FUluuAp3XNAAqM5ScL98klYphAT3nm5yFuO</span><br><span class="line">host_base = 192.168.31.201:7480</span><br><span class="line">host_bucket = 192.168.31.201:7480/%(bucket)</span><br><span class="line">use_https = False</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>bucket操作</p>
+<ul>
+<li><p>创建bucket：s3cmd mb s3://test1</p>
+<blockquote>
+<p>错误：ERROR: S3 error: 416 (InvalidRange)<br>解决：由于pg数不够，所以需要增加pg数或删除已存在的pool腾出pg容量</p>
+</blockquote>
+</li>
+<li><p>显示bucket列表：s3cmd ls</p>
+</li>
+</ul>
+</li>
+<li><p>删除空bucket：s3cmd rb s3://test1</p>
+<ul>
+<li>显示bucket内容：s3cmd ls s3://test1</li>
+</ul>
+</li>
+<li><p>object操作</p>
+<ul>
+<li>上传文件并重命名：s3cmd put README.md s3://test1/README.md</li>
+<li>批量上传：s3cmd put ./*.yml s3://test1</li>
+<li>下载文件并重命名：s3cmd get s3://test1/README.md 12.txt</li>
+<li>批量下载：s3cmd get s3://test1/* .</li>
+<li>显示object占用空间：s3cmd du s3://test1/README.md</li>
+<li>删除文件：s3cmd del s3://test1/README.md</li>
+</ul>
+</li>
+<li><p>权限设置</p>
+<ul>
+<li>上传时设置：s3cmd put –acl-public file.txt s3://my-bucket-name/file.txt</li>
+<li>单独设置：s3cmd setacl s3://myexamplebucket.calvium.com/ –acl-public –recursive</li>
+</ul>
+</li>
+</ul>
+<h1 id="Ceph-Dashboard"><a href="#Ceph-Dashboard" class="headerlink" title="Ceph Dashboard"></a><a href="https://docs.ceph.com/docs/nautilus/mgr/dashboard/" target="_blank" rel="noopener">Ceph Dashboard</a></h1><p>从Luminous开始，Ceph 提供了原生的Dashboard功能，通过Dashboard可以获取Ceph集群的各种状态信息、也可以执行一些CRUD操作</p>
+<h2 id="启用dashboard"><a href="#启用dashboard" class="headerlink" title="启用dashboard"></a>启用dashboard</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、在每个mgr节点安装dashboard</span><br><span class="line"># yum install ceph-mgr-dashboard -y</span><br><span class="line">2、mgr开启dashboard功能</span><br><span class="line"># ceph mgr module enable dashboard</span><br><span class="line">3、生成自签名的证书【默认使用https(8443)方式提供服务】</span><br><span class="line"># ceph dashboard create-self-signed-cert  </span><br><span class="line">4、创建一个dashboard登录用户名/密码</span><br><span class="line"># ceph dashboard ac-user-create admin 123456 administrator </span><br><span class="line">5、查看服务访问方式</span><br><span class="line"># ceph mgr services</span><br></pre></td></tr></table></figure>
+<h2 id="自定义配置"><a href="#自定义配置" class="headerlink" title="自定义配置"></a>自定义配置</h2><blockquote>
+<p>重启dashboard：ceph mgr module disable/enable dashboard</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 使用http方式访问集群(8080)【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/ssl false</span><br><span class="line"># 指定集群dashboard的访问IP【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/server_addr $IP </span><br><span class="line"># 指定集群dashboard的访问端口【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/server_port $PORT</span><br></pre></td></tr></table></figure>
+<h2 id="开启Object-Gateway功能"><a href="#开启Object-Gateway功能" class="headerlink" title="开启Object Gateway功能"></a>开启Object Gateway功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、创建rgw用户</span><br><span class="line"># radosgw-admin user create --uid=user01 --display-name=user01 --system</span><br><span class="line"># radosgw-admin user info --uid=user01</span><br><span class="line">2、向Dashboard提供访问rgw的access-key/secret-key</span><br><span class="line"># ceph dashboard set-rgw-api-access-key $access_key</span><br><span class="line"># ceph dashboard set-rgw-api-secret-key $secret_key</span><br><span class="line">3、配置rgw主机名和端口</span><br><span class="line"># ceph dashboard set-rgw-api-host 192.168.31.201</span><br><span class="line"># ceph dashboard set-rgw-api-port 7480</span><br><span class="line">4、刷新web页面</span><br></pre></td></tr></table></figure>
+<h1 id="prometheus-grafana监控"><a href="#prometheus-grafana监控" class="headerlink" title="prometheus+grafana监控"></a>prometheus+grafana监控</h1><h2 id="安装grafana"><a href="#安装grafana" class="headerlink" title="安装grafana"></a><a href="https://mirror.tuna.tsinghua.edu.cn/help/grafana/" target="_blank" rel="noopener">安装grafana</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1、配置yum源文件【/etc/yum.repos.d/grafana.repo】</span><br><span class="line">[grafana]</span><br><span class="line">name=grafana</span><br><span class="line">baseurl=https://mirrors.tuna.tsinghua.edu.cn/grafana/yum/rpm</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">2.通过yum命令安装grafana</span><br><span class="line"># sudo yum makecache</span><br><span class="line"># sudo yum install grafana</span><br><span class="line"></span><br><span class="line">3.启动grafana并设为开机自启</span><br><span class="line"># systemctl start grafana-server.service </span><br><span class="line"># systemctl enable grafana-server.service</span><br></pre></td></tr></table></figure>
+<h2 id="安装prometheus"><a href="#安装prometheus" class="headerlink" title="安装prometheus"></a>安装prometheus</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">1、下载安装包，下载地址</span><br><span class="line">https://prometheus.io/download/</span><br><span class="line"></span><br><span class="line">2、解压压缩包</span><br><span class="line"># tar fvxz prometheus-2.14.0.linux-amd64.tar.gz</span><br><span class="line"></span><br><span class="line">3、将解压后的目录改名</span><br><span class="line"># mv prometheus-2.14.0.linux-amd64 /opt/prometheus</span><br><span class="line"></span><br><span class="line">4、查看promethus版本</span><br><span class="line"># /opt/prometheus/prometheus --version</span><br><span class="line"></span><br><span class="line">5、配置系统服务启动</span><br><span class="line"># vim /etc/systemd/system/prometheus.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=Prometheus Monitoring System</span><br><span class="line">Documentation=Prometheus Monitoring System</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/opt/prometheus/prometheus \</span><br><span class="line">  --config.file /opt/prometheus/prometheus.yml \</span><br><span class="line">  --web.listen-address=:9090</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">6、加载系统服务</span><br><span class="line"># systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">7、启动服务和添加开机自启动</span><br><span class="line"># systemctl start prometheus</span><br><span class="line"># systemctl enable prometheus</span><br></pre></td></tr></table></figure>
+<h2 id="mgr开启prometheus功能"><a href="#mgr开启prometheus功能" class="headerlink" title="mgr开启prometheus功能"></a>mgr开启prometheus功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># ceph mgr module enable prometheus</span><br><span class="line"># netstat -nltp | grep mgr 检查端口</span><br><span class="line"># curl 127.0.0.1:9283/metrics  测试返回值</span><br></pre></td></tr></table></figure>
+<h2 id="配置prometheus"><a href="#配置prometheus" class="headerlink" title="配置prometheus"></a>配置prometheus</h2><ul>
+<li>在 scrape_configs:配置项下添加【/opt/prometheus/prometheus.yml】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- job_name: &apos;ceph_cluster&apos;</span><br><span class="line">    honor_labels: true</span><br><span class="line">    scrape_interval: 5s</span><br><span class="line">    static_configs:</span><br><span class="line">      - targets: [&apos;192.168.31.201:9283&apos;]</span><br><span class="line">        labels:</span><br><span class="line">          instance: ceph</span><br></pre></td></tr></table></figure>
+<ul>
+<li>重启promethus服务</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart prometheus</span><br></pre></td></tr></table></figure>
+<ul>
+<li>检查prometheus服务器中是否添加成功</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">浏览器-》 http://x.x.x.x:9090 -》status -》Targets</span><br></pre></td></tr></table></figure>
+<h2 id="配置grafana"><a href="#配置grafana" class="headerlink" title="配置grafana"></a>配置grafana</h2><p>1、浏览器登录 grafana 管理界面【<a href="http://x.x.x.x:3000】" target="_blank" rel="noopener">http://x.x.x.x:3000】</a><br>2、添加data sources，点击configuration–》data sources<br>3、添加dashboard，点击HOME–》find dashboard on grafana.com<br>4、搜索ceph的dashboard<br>5、点击HOME–》Import dashboard, 选择合适的dashboard，记录编号</p>
+<h1 id="k8s对接ceph存储"><a href="#k8s对接ceph存储" class="headerlink" title="k8s对接ceph存储"></a>k8s对接ceph存储</h1><h2 id="k8s内置支持ceph-rbd"><a href="#k8s内置支持ceph-rbd" class="headerlink" title="k8s内置支持ceph rbd"></a>k8s内置支持ceph rbd</h2><p><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#ceph-rbd" target="_blank" rel="noopener">k8s原生支持ceph rbd</a>【但是目前不可用】使用限制和问题如下：</p>
+<ul>
+<li>当前测试支持的功能有：创建rbd image(创建pv/pvc)、删除rbd image(删除pv/pvc)、查看rbd image状态(查看pv/pvc)</li>
+<li>ceph的管理操作：由controller-manager组件完成，controller-manager会调用rbd命令进行操作<ul>
+<li>如果controller-manager部署在宿主机，则k8s master节点应当安装ceph-common组件</li>
+<li>如果controller-manager使用kubeadm pod方式部署，默认镜像中不含rbd命令<ul>
+<li>直接使用会报错：<a href="https://github.com/kubernetes/kubernetes/issues/38923" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/38923</a></li>
+<li>可以构建包含rbd命令的controller-manager镜像：<a href="https://github.com/simple0426/kube-controller-manager.git" target="_blank" rel="noopener">https://github.com/simple0426/kube-controller-manager.git</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ceph的客户端操作：由worker节点的kubelet调用的rbd命令完成，所以worker节点也需要安装ceph-common组件</li>
+</ul>
+<h2 id="k8s社区支持"><a href="#k8s社区支持" class="headerlink" title="k8s社区支持"></a>k8s社区支持</h2><p>可以使用社区开发的<a href="https://github.com/kubernetes-retired/external-storage/tree/master/ceph" target="_blank" rel="noopener">组件</a>完成ceph rbd、cephfs以storageclass方式向k8s提供存储。【<strong>组件功能有限、社区已停止维护，仅供学习</strong>】</p>
+<h3 id="ceph-rbd"><a href="#ceph-rbd" class="headerlink" title="ceph rbd"></a>ceph rbd</h3><ul>
+<li><p>介绍：这个组件是基于k8s内置的rbd功能扩展而成，除了以下功能外，其他功能操作会试图调用k8s controller-manager中的<a href="https://github.com/kubernetes/kubernetes/tree/master/pkg/volume/rbd" target="_blank" rel="noopener">rbd组件</a>去完成</p>
+</li>
+<li><p>部署文档：<a href="https://github.com/kubernetes-retired/external-storage/tree/master/ceph/rbd#test-instruction" target="_blank" rel="noopener">https://github.com/kubernetes-retired/external-storage/tree/master/ceph/rbd#test-instruction</a></p>
+</li>
+<li><a href="https://github.com/kubernetes-retired/external-storage/blob/master/ceph/rbd/pkg/provision/rbd_util.go" target="_blank" rel="noopener">功能</a>：创建rbd image(创建pv/pvc)、删除rbd image(删除pv/pvc)、查看rbd image状态(查看pv/pvc)</li>
+<li>使用限制：除了支持的功能外，其他功能使用会报错；例如：动态调整pvc/pv的容量(storageclass中需设置allowVolumeExpansion=true)：<a href="https://github.com/kubernetes-retired/external-storage/issues/992" target="_blank" rel="noopener">https://github.com/kubernetes-retired/external-storage/issues/992</a></li>
+</ul>
+<h3 id="cephfs"><a href="#cephfs" class="headerlink" title="cephfs"></a>cephfs</h3><ul>
+<li><p>部署文档：<a href="https://github.com/kubernetes-retired/external-storage/tree/master/ceph/cephfs" target="_blank" rel="noopener">https://github.com/kubernetes-retired/external-storage/tree/master/ceph/cephfs</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># ceph中创建cephfs</span><br><span class="line">ceph osd pool create cephfs-data 16 16</span><br><span class="line">ceph osd pool create cephfs-metadata 16 16</span><br><span class="line">ceph fs new cephfs cephfs-metadata cephfs-data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用限制：默认<a href="https://github.com/kubernetes-retired/external-storage/tree/master/ceph/cephfs#known-limitations" target="_blank" rel="noopener">不支持配额和容量</a>；网络上解决存储配额的方案如下</p>
+<ul>
+<li>方式1：<a href="https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/" target="_blank" rel="noopener">https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/</a></li>
+<li>方式2：<a href="https://www.cnblogs.com/ltxdzh/p/9173706.html" target="_blank" rel="noopener">https://www.cnblogs.com/ltxdzh/p/9173706.html</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="ceph官方支持"><a href="#ceph官方支持" class="headerlink" title="ceph官方支持"></a>ceph官方支持</h2><p>ceph官方以csi方式向k8s提供存储</p>
+<ul>
+<li>ceph rbd for kubernetes文档：<a href="https://docs.ceph.com/docs/master/rbd/rbd-kubernetes/" target="_blank" rel="noopener">https://docs.ceph.com/docs/master/rbd/rbd-kubernetes/</a></li>
+<li>项目地址：<a href="https://github.com/ceph/ceph-csi" target="_blank" rel="noopener">https://github.com/ceph/ceph-csi</a></li>
+</ul>
+<h2 id="rook"><a href="#rook" class="headerlink" title="rook"></a><a href="https://rook.io/" target="_blank" rel="noopener">rook</a></h2><p>云原生存储，使用k8s平台部署存储服务，可用的存储后端包含：Ceph、NFS、Cassandra、EdgeFS、CockroachDB、Yugabyte DB等</p>
+<h1 id="运维管理"><a href="#运维管理" class="headerlink" title="运维管理"></a>运维管理</h1><h2 id="集群状态查看"><a href="#集群状态查看" class="headerlink" title="集群状态查看"></a>集群状态查看</h2><ul>
+<li><p>集群状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph -s            # 集群运行状态</span><br><span class="line">ceph -w            # 持续监控集群状态</span><br><span class="line">ceph health [detail] # 集群健康详情</span><br><span class="line">ceph df [detail]   # 集群空间使用量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>pg状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph pg stat      # pg状态</span><br><span class="line">ceph pg dump      # pg状态详情</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>pool状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool stats</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>osd状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph osd df         # 查看osd中的存储容量使用、pg个数、osd状态</span><br><span class="line">ceph osd tree       # 查看节点包含的osd</span><br><span class="line">ceph osd stat       # 查看osd状态【简单】</span><br><span class="line">ceph osd dump       # 查看更详细信息</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>mon状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph mon stat</span><br><span class="line">ceph mon dump</span><br><span class="line">ceph quorum_status  # 主选举情况</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="集群配置管理-实时"><a href="#集群配置管理-实时" class="headerlink" title="集群配置管理-实时"></a>集群配置管理-实时</h2><p>有时候需要更改服务的配置，但不想重启服务，或者是临时修改。这时候就可以使用tell和daemon子命令来完成此需求。 </p>
+<ul>
+<li><p>daemon子命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">命令格式：</span><br><span class="line"># ceph daemon &#123;daemon-type&#125;.&#123;id&#125; config show </span><br><span class="line"></span><br><span class="line">命令举例：</span><br><span class="line"># ceph daemon osd.0 config show </span><br><span class="line"># ceph daemon mon.ceph-monitor-1 config set mon_allow_pool_delete false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>tell子命令</p>
+<p>使用 tell 的方式适合对整个集群进行设置，使用 * 号进行匹配，就可以对整个集群的角色进行设置。而出现节点异常无法设置时候，只会在命令行当中进行报错，不太便于查找。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">命令格式：</span><br><span class="line"># ceph tell &#123;daemon-type&#125;.&#123;daemon id or *&#125; injectargs --&#123;name&#125;=&#123;value&#125; [--&#123;name&#125;=&#123;value&#125;]</span><br><span class="line">命令举例：</span><br><span class="line"># ceph tell osd.0 injectargs --debug-osd 20 --debug-ms 1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>daemon-type：为要操作的对象类型如osd、mon、mds等。</li>
+<li>daemon id：该对象的名称，osd通常为0、1等，mon为ceph -s显示的名称，这里可以输入*表示全部。</li>
+<li>injectargs：表示参数注入，后面必须跟一个参数，也可以跟多个</li>
+</ul>
+</li>
+</ul>
+<h2 id="集群进程管理"><a href="#集群进程管理" class="headerlink" title="集群进程管理"></a>集群进程管理</h2><p>命令包含start、restart、status</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1、启动所有守护进程</span><br><span class="line"># systemctl start ceph.target</span><br><span class="line">2、按类型启动守护进程</span><br><span class="line"># systemctl start ceph-mgr.target</span><br><span class="line"># systemctl start ceph-osd@id</span><br><span class="line"># systemctl start ceph-mon.target</span><br><span class="line"># systemctl start ceph-mds.target</span><br><span class="line"># systemctl start ceph-radosgw.target</span><br></pre></td></tr></table></figure>
+<h2 id="MON节点管理-添加和删除"><a href="#MON节点管理-添加和删除" class="headerlink" title="MON节点管理-添加和删除"></a>MON节点管理-添加和删除</h2><p>一个集群可以只有一个 monitor，推荐生产环境至少部署 3 个。 Ceph 使用 Paxos 算法的一个变种对各种 map 、以及其它对集群来说至关重要的信息达成共识。建议（但不是强制）部署奇数个 monitor 。Ceph 需要 mon 中的大多数在运行并能够互相通信，比如单个 mon，或 2 个中的 2 个，3 个中的 2 个，4 个中的 3 个等。初始部署时，建议部署 3 个 monitor。后续如果要增加，请一次增加 2 个。</p>
+<ul>
+<li>新增一个monitor</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ceph-deploy mon create $hostname</span><br><span class="line">注意：执行ceph-deploy之前要进入之前安装时候配置的目录。/my-cluster</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除Monitor</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ceph-deploy mon destroy $hostname</span><br><span class="line">注意： 确保你删除某个 Mon 后，其余 Mon 仍能达成一致。如果不可能，删除它之前可能需要先增加一个。</span><br></pre></td></tr></table></figure>
+<h2 id="OSD节点管理-添加和删除"><a href="#OSD节点管理-添加和删除" class="headerlink" title="OSD节点管理-添加和删除"></a>OSD节点管理-添加和删除</h2><ul>
+<li><p>添加osd</p>
+<p>进入到ceph-deploy执行目录/my-cluster，添加OSD</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create --data /dev/sd&lt;id&gt; $hostname</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ceph-volume lvm zap  /dev/sdb –destroy删除ceph-deploy在磁盘上创建的lvm信息，从而可以使硬盘重新加入集群</p>
+</blockquote>
+</li>
+<li><p>删除OSD</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1、调整osd的crush weight为 0</span><br><span class="line">ceph osd crush reweight osd.&lt;ID&gt; 0.0</span><br><span class="line">ceph osd df #确认osd中没有pgs</span><br><span class="line">ceph -s # 确认集群所有pgs处于active+clean状态</span><br><span class="line">2、将osd进程stop</span><br><span class="line">systemctl stop ceph-osd@&lt;ID&gt;</span><br><span class="line">3、将osd设置out</span><br><span class="line">ceph osd out &lt;ID&gt;</span><br><span class="line">4、立即执行删除OSD中数据</span><br><span class="line">ceph osd purge osd.&lt;ID&gt; --yes-i-really-mean-it</span><br><span class="line">5、卸载磁盘</span><br><span class="line">umount /var/lib/ceph/osd/ceph-？</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Pool管理"><a href="#Pool管理" class="headerlink" title="Pool管理"></a>Pool管理</h2><ul>
+<li><p>列出存储池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd lspools</span><br><span class="line">ceph osd pool ls</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建存储池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">命令格式：</span><br><span class="line"># ceph osd pool create &#123;pool-name&#125; &#123;pg-num&#125; [&#123;pgp-num&#125;]</span><br><span class="line">命令举例：</span><br><span class="line"># ceph osd pool create rbd  32 32</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置存储池配额</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">命令格式：</span><br><span class="line"># ceph osd pool set-quota &#123;pool-name&#125; [max_objects &#123;obj-count&#125;] [max_bytes &#123;bytes&#125;]</span><br><span class="line">命令举例：</span><br><span class="line"># ceph osd pool set-quota rbd max_objects 10000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重命名存储池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool rename &#123;current-pool-name&#125; &#123;new-pool-name&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除存储池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool delete &#123;pool-name&#125; &#123;pool-name&#125; --yes-i-really-really-mean-it</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看存储池统计信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados df</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建存储池快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool mksnap &#123;pool-name&#125; &#123;snap-name&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除存储池快照</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool rmsnap &#123;pool-name&#125; &#123;snap-name&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取存储池选项值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool get &#123;pool-name&#125; &#123;key&#125;</span><br></pre></td></tr></table></figure>
+<p>范例：查看pg设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool get rbd pg_num</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调整存储池选项值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set &#123;pool-name&#125; &#123;key&#125; &#123;value&#125;</span><br><span class="line">size：设置存储池中的对象副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">min_size：设置 I/O 需要的最小副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">pg_num：计算数据分布时的有效 PG 数。只能大于当前 PG 数。</span><br><span class="line">pgp_num：计算数据分布时使用的有效 PGP 数量。小于等于存储池的 PG 数。</span><br><span class="line">hashpspool：给指定存储池设置/取消 HASHPSPOOL 标志。</span><br><span class="line">target_max_bytes：达到 max_bytes 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">target_max_objects：达到 max_objects 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">scrub_min_interval：在负载低时，洗刷存储池的最小间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_min_interval 。</span><br><span class="line">scrub_max_interval：不管集群负载如何，都要洗刷存储池的最大间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_max_interval 。</span><br><span class="line">deep_scrub_interval：“深度”洗刷存储池的间隔秒数。如果是 0 ，就按照配置文件里的 osd_deep_scrub_interval 。</span><br></pre></td></tr></table></figure>
+<p>范例：调整pg设置(一般为扩容)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set &#123;pool-name&#125; pg_num 128</span><br><span class="line">ceph osd pool set &#123;pool-name&#125; pgp_num 128 </span><br><span class="line">1、扩容大小取跟它接近的2的N次方  </span><br><span class="line">2、在更改pool的PG数量时，需同时更改PGP的数量。PGP是为了管理placement而存在的专门的PG，它和PG的数量应该保持一致。如果你增加pool的pg_num，就需要同时增加pgp_num，保持它们大小一致，这样集群才能正常rebalancing。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取对象副本数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd dump | grep &apos;replicated size&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><p>Ceph 把数据以对象的形式存于各存储池中。Ceph 用户必须具有访问存储池的权限才能够读写数据。另外，Ceph 用户必须具有执行权限才能够使用 Ceph 的管理命令。<br>查看用户信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">查看所有用户信息</span><br><span class="line"># ceph auth list</span><br><span class="line">获取所有用户的key与权限相关信息</span><br><span class="line"># ceph auth get client.admin</span><br><span class="line">如果只需要某个用户的key信息，可以使用pring-key子命令</span><br><span class="line"># ceph auth print-key client.admin</span><br></pre></td></tr></table></figure>
+<p>添加用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># ceph auth add client.john mon &apos;allow r&apos; osd &apos;allow rw pool=liverpool&apos;</span><br><span class="line"># ceph auth get-or-create client.paul mon &apos;allow r&apos; osd &apos;allow rw pool=liverpool&apos;</span><br><span class="line"># ceph auth get-or-create client.george mon &apos;allow r&apos; osd &apos;allow rw pool=liverpool&apos; -o george.keyring</span><br><span class="line"># ceph auth get-or-create-key client.ringo mon &apos;allow r&apos; osd &apos;allow rw pool=liverpool&apos; -o ringo.key</span><br></pre></td></tr></table></figure>
+<p>修改用户权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># ceph auth caps client.john mon &apos;allow r&apos; osd &apos;allow rw pool=liverpool&apos;</span><br><span class="line"># ceph auth caps client.paul mon &apos;allow rw&apos; osd &apos;allow rwx pool=liverpool&apos;</span><br><span class="line"># ceph auth caps client.brian-manager mon &apos;allow *&apos; osd &apos;allow *&apos;</span><br><span class="line"># ceph auth caps client.ringo mon &apos; &apos; osd &apos; &apos;</span><br></pre></td></tr></table></figure>
+<p>删除用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ceph auth del &#123;TYPE&#125;.&#123;ID&#125;</span><br><span class="line">其中， &#123;TYPE&#125; 是 client，osd，mon 或 mds 的其中一种。&#123;ID&#125; 是用户的名字或守护进程的 ID 。</span><br></pre></td></tr></table></figure>
+<h1 id="问题汇总"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总</h1><h2 id="nearfull-osd-s-or-pool-s-nearfull"><a href="#nearfull-osd-s-or-pool-s-nearfull" class="headerlink" title="nearfull osd(s) or pool(s) nearfull"></a>nearfull osd(s) or pool(s) nearfull</h2><p>此时说明部分osd的存储已经超过阈值，mon会监控ceph集群中OSD空间使用情况。如果要消除WARN,可以修改这两个参数，提高阈值，但是通过实践发现并不能解决问题，可以通过观察osd的数据分布情况来分析原因。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;mon_osd_full_ratio&quot;: &quot;0.95&quot;,</span><br><span class="line">&quot;mon_osd_nearfull_ratio&quot;: &quot;0.85&quot;</span><br></pre></td></tr></table></figure>
+<p>（1）自动处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd reweight-by-utilization</span><br><span class="line">ceph osd reweight-by-pg 105 cephfs_data(pool_name)</span><br></pre></td></tr></table></figure>
+<p>（2）手动处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd reweight osd.2 0.8</span><br></pre></td></tr></table></figure>
+<p>（3）利用balancer插件自动处理【nautilus版本中功能总是开启】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph mgr module ls|grep -C5 balancer</span><br><span class="line">ceph balancer on</span><br><span class="line">ceph balancer mode crush-compat</span><br><span class="line">ceph config-key set &quot;mgr/balancer/max_misplaced&quot;: &quot;0.01&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h1><h2 id="PG状态"><a href="#PG状态" class="headerlink" title="PG状态"></a>PG状态</h2><p>PG状态概述<br>一个PG在它的生命周期的不同时刻可能会处于以下几种状态中:</p>
+<p>Creating(创建中)<br>在创建POOL时,需要指定PG的数量,此时PG的状态便处于creating,意思是Ceph正在创建PG。</p>
+<p>Peering(互联中)<br>peering的作用主要是在PG及其副本所在的OSD之间建立互联,并使得OSD之间就这些PG中的object及其元数据达成一致。</p>
+<p>Active(活跃的)<br>处于该状态意味着数据已经完好的保存到了主PG及副本PG中,并且Ceph已经完成了peering工作。</p>
+<p>Clean(整洁的)<br>当某个PG处于clean状态时,则说明对应的主OSD及副本OSD已经成功互联,并且没有偏离的PG。也意味着Ceph已经将该PG中的对象按照规定的副本数进行了复制操作。</p>
+<p>Degraded(降级的)<br>当某个PG的副本数未达到规定个数时,该PG便处于degraded状态,例如:</p>
+<p>在客户端向主OSD写入object的过程,object的副本是由主OSD负责向副本OSD写入的,直到副本OSD在创建object副本完成,并向主OSD发出完成信息前,该PG的状态都会一直处于degraded状态。又或者是某个OSD的状态变成了down,那么该OSD上的所有PG都会被标记为degraded。<br>当Ceph因为某些原因无法找到某个PG内的一个或多个object时,该PG也会被标记为degraded状态。此时客户端不能读写找不到的对象,但是仍然能访问位于该PG内的其他object。</p>
+<p>Recovering(恢复中)<br>当某个OSD因为某些原因down了,该OSD内PG的object会落后于它所对应的PG副本。而在该OSD重新up之后,该OSD中的内容必须更新到当前状态,处于此过程中的PG状态便是recovering。</p>
+<p>Backfilling(回填)<br>当有新的OSD加入集群时,CRUSH会把现有集群内的部分PG分配给它。这些被重新分配到新OSD的PG状态便处于backfilling。</p>
+<p>Remapped(重映射)<br>当负责维护某个PG的acting set变更时,PG需要从原来的acting set迁移至新的acting set。这个过程需要一段时间,所以在此期间,相关PG的状态便会标记为remapped。</p>
+<p>Stale(陈旧的)<br>默认情况下,OSD守护进程每半秒钟便会向Monitor报告其PG等相关状态,如果某个PG的主OSD所在acting set没能向Monitor发送报告,或者其他的Monitor已经报告该OSD为down时,该PG便会被标记为stale。</p>
+<h2 id="OSD状态"><a href="#OSD状态" class="headerlink" title="OSD状态"></a>OSD状态</h2><p>单个OSD有两组状态需要关注,其中一组使用in/out标记该OSD是否在集群内,另一组使用up/down标记该OSD是否处于运行中状态。两组状态之间并不互斥,换句话说,当一个OSD处于“in”状态时,它仍然可以处于up或down的状态。</p>
+<p>OSD状态为in且up<br>这是一个OSD正常的状态,说明该OSD处于集群内,并且运行正常。</p>
+<p>OSD状态为in且down<br>此时该OSD尚处于集群中,但是守护进程状态已经不正常,默认在300秒后会被踢出集群,状态进而变为out且down,之后处于该OSD上的PG会迁移至其它OSD。</p>
+<p>OSD状态为out且up<br>这种状态一般会出现在新增OSD时,意味着该OSD守护进程正常,但是尚未加入集群。</p>
+<p>OSD状态为out且down<br>在该状态下的OSD不在集群内,并且守护进程运行不正常,CRUSH不会再分配PG到该OSD上。集群规划</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ceph/" rel="tag"># ceph</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/25/日志处理/elasticsearch介绍/" rel="next" title="elasticsearch介绍">
+                <i class="fa fa-chevron-left"></i> elasticsearch介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph介绍"><span class="nav-number">1.</span> <span class="nav-text">Ceph介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与其他存储系统对比"><span class="nav-number">1.2.</span> <span class="nav-text">与其他存储系统对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构与组件"><span class="nav-number">1.3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储原理-Pool-PG"><span class="nav-number">1.4.</span> <span class="nav-text">存储原理-Pool/PG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph的三种存储类型"><span class="nav-number">1.5.</span> <span class="nav-text">ceph的三种存储类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph安装"><span class="nav-number">2.</span> <span class="nav-text">Ceph安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境规划"><span class="nav-number">2.1.</span> <span class="nav-text">环境规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统初始化设置"><span class="nav-number">2.2.</span> <span class="nav-text">系统初始化设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装集群"><span class="nav-number">2.3.</span> <span class="nav-text">安装集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph-conf"><span class="nav-number">2.4.</span> <span class="nav-text">ceph.conf</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RBD"><span class="nav-number">3.</span> <span class="nav-text">RBD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD介绍"><span class="nav-number">3.1.</span> <span class="nav-text">RBD介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD-IO流程"><span class="nav-number">3.2.</span> <span class="nav-text">RBD IO流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD常见操作"><span class="nav-number">3.3.</span> <span class="nav-text">RBD常见操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-增删使用"><span class="nav-number">3.3.1.</span> <span class="nav-text">RBD-增删使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照"><span class="nav-number">3.3.2.</span> <span class="nav-text">RBD-快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照克隆"><span class="nav-number">3.3.3.</span> <span class="nav-text">RBD-快照克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-扩容缩容"><span class="nav-number">3.3.4.</span> <span class="nav-text">RBD-扩容缩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程挂载RBD"><span class="nav-number">3.3.5.</span> <span class="nav-text">远程挂载RBD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD镜像导入导出"><span class="nav-number">3.3.6.</span> <span class="nav-text">RBD镜像导入导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建议"><span class="nav-number">3.4.</span> <span class="nav-text">使用建议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CephFS"><span class="nav-number">4.</span> <span class="nav-text">CephFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CephFS介绍"><span class="nav-number">4.1.</span> <span class="nav-text">CephFS介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署CephFS"><span class="nav-number">4.2.</span> <span class="nav-text">部署CephFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端挂载"><span class="nav-number">4.3.</span> <span class="nav-text">客户端挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MDS主备和主主"><span class="nav-number">4.4.</span> <span class="nav-text">MDS主备和主主</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Object"><span class="nav-number">5.</span> <span class="nav-text">Ceph Object</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#管理工具-s3cmd"><span class="nav-number">5.1.</span> <span class="nav-text">管理工具-s3cmd</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Dashboard"><span class="nav-number">6.</span> <span class="nav-text">Ceph Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用dashboard"><span class="nav-number">6.1.</span> <span class="nav-text">启用dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义配置"><span class="nav-number">6.2.</span> <span class="nav-text">自定义配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启Object-Gateway功能"><span class="nav-number">6.3.</span> <span class="nav-text">开启Object Gateway功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus-grafana监控"><span class="nav-number">7.</span> <span class="nav-text">prometheus+grafana监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装grafana"><span class="nav-number">7.1.</span> <span class="nav-text">安装grafana</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装prometheus"><span class="nav-number">7.2.</span> <span class="nav-text">安装prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mgr开启prometheus功能"><span class="nav-number">7.3.</span> <span class="nav-text">mgr开启prometheus功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置prometheus"><span class="nav-number">7.4.</span> <span class="nav-text">配置prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置grafana"><span class="nav-number">7.5.</span> <span class="nav-text">配置grafana</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s对接ceph存储"><span class="nav-number">8.</span> <span class="nav-text">k8s对接ceph存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s内置支持ceph-rbd"><span class="nav-number">8.1.</span> <span class="nav-text">k8s内置支持ceph rbd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s社区支持"><span class="nav-number">8.2.</span> <span class="nav-text">k8s社区支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ceph-rbd"><span class="nav-number">8.2.1.</span> <span class="nav-text">ceph rbd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cephfs"><span class="nav-number">8.2.2.</span> <span class="nav-text">cephfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph官方支持"><span class="nav-number">8.3.</span> <span class="nav-text">ceph官方支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rook"><span class="nav-number">8.4.</span> <span class="nav-text">rook</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">9.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群状态查看"><span class="nav-number">9.1.</span> <span class="nav-text">集群状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群配置管理-实时"><span class="nav-number">9.2.</span> <span class="nav-text">集群配置管理-实时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群进程管理"><span class="nav-number">9.3.</span> <span class="nav-text">集群进程管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MON节点管理-添加和删除"><span class="nav-number">9.4.</span> <span class="nav-text">MON节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD节点管理-添加和删除"><span class="nav-number">9.5.</span> <span class="nav-text">OSD节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pool管理"><span class="nav-number">9.6.</span> <span class="nav-text">Pool管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">9.7.</span> <span class="nav-text">用户管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题汇总"><span class="nav-number">10.</span> <span class="nav-text">问题汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nearfull-osd-s-or-pool-s-nearfull"><span class="nav-number">10.1.</span> <span class="nav-text">nearfull osd(s) or pool(s) nearfull</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展阅读"><span class="nav-number">11.</span> <span class="nav-text">扩展阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PG状态"><span class="nav-number">11.1.</span> <span class="nav-text">PG状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD状态"><span class="nav-number">11.2.</span> <span class="nav-text">OSD状态</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
