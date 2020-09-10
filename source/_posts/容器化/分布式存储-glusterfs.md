@@ -1,5 +1,5 @@
 ---
-title: 分布式存储glusterfs与heketi
+title: 分布式存储-glusterfs
 tags:
   - glusterfs
   - heketi
@@ -136,7 +136,7 @@ ssh-copy-id -i /etc/heketi/heketi_key.pub root@172.17.8.101
     - 创建存储卷：volume create --size=5
     - 删除存储卷：volume delete volume_id
 
-# kubernetes中使用glusterfs
+# k8s中使用glusterfs
 ## 创建storageclass
 ```
 apiVersion: storage.k8s.io/v1

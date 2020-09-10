@@ -58,7 +58,24 @@ categories: ['linux']
 * git config --global user.name "何静奇" 
 * git config --global user.email "hejingqi@quxiu8.com"
 
+## 设置代理
+
+```
+// 查看当前代理设置
+git config --global http.proxy
+
+// 设置当前代理为 http://127.0.0.1:1080 或 socket5://127.0.0.1:1080
+git config --global http.proxy 'http://127.0.0.1:1080'
+git config --global https.proxy 'http://127.0.0.1:1080'
+git config --global http.proxy 'socks5://127.0.0.1:1080'
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+
+// 删除代理
+删除 proxy git config --global --unset http.proxy
+```
+
 # push/pull
+
 * push：推送本地版本库对象到远程
     - tag：
         + 推送指定标签：git push origin 1.4
