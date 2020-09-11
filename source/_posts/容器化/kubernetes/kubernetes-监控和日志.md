@@ -83,14 +83,18 @@ metrics server从每个节点上的kubelet(cadvisor)公开的摘要API收集指�
 
 使用前提：API Server开启聚合层功能
 
-下载资源文件：https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+下载资源文件：
+
+```
+curl -Lo metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+```
 
 修改资源文件
 
 ```
   containers:
   - name: metrics-server
-    image: lizhenliang/metrics-server:v0.3.7 
+    image: registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.3.7
     imagePullPolicy: IfNotPresent
     args:  
       - --cert-dir=/tmp
@@ -99,7 +103,7 @@ metrics server从每个节点上的kubelet(cadvisor)公开的摘要API收集指�
       - --kubelet-preferred-address-types=InternalIP
 ```
 
-- 修改镜像地址(image)
+- 修改镜像地址(image)：registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.3.7
 - 设置容器启动参数(args)
   + `--kubelet-insecure-tls`：metrics server连接kubelet(作为服务端)时，不对kubelet证书的ca进行校验
   + `--kubelet-preferred-address-types=InternalIP`：metrics server通过内部ip（kubectl describe node|grep InternalIP）访问kubelet，获取指标数据

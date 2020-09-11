@@ -241,11 +241,22 @@ volumes:
 * 官方内置支持的存储类：https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner
 * 社区实现的存储类：https://github.com/kubernetes-incubator/external-storage
   * nfs：映射本地目录，建立nfs服务端，并提供nfs实现的存储类
-  * nfs-client：挂载已存在的nfs服务器提供存储类，
+  * nfs-client：挂载已存在的nfs服务器提供存储类
 
 ### storageclass创建
 
-* 可以使用[nfs-client](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client)中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类
+* 可以使用[nfs](https://github.com/kubernetes-retired/external-storage/tree/master/nfs/deploy/kubernetes)中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类
+
+  ```
+  curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/deployment.yaml
+  curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/rbac.yaml
+  curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/class.yaml
+  ```
+
+  修改deployment
+
+  * image：registry.cn-hangzhou.aliyuncs.com/simple00426/nfs-provisioner:latest
+  * hostPath：/tmp/nfs-provisioner
 
 * [集群设置默认存储类](https://kubernetes.io/zh/docs/tasks/administer-cluster/change-default-storage-class/)
 

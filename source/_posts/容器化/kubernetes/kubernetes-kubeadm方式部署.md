@@ -92,59 +92,63 @@ systemctl restart docker
 ```
 
 ## [安装kubelet、kubeadm、kubectl](https://developer.aliyun.com/mirror/kubernetes)
->master、node都操作
+* master node、workernode都操作
 
-* 注意事项：此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致，由于阿里镜像源滞后，所以不能安装最新版本k8s
-* 指定版本安装：`yum install kubelet-1.17.3 kubeadm-1.17.3 kubectl-1.17.3 -y`
+* 此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致；由于阿里镜像源滞后，所以需要测试镜像源是否包含指定版本
+
+  ```
+  docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.8
+  ```
+
+* 指定版本安装：`yum install kubelet-1.18.8 kubeadm-1.18.8 kubectl-1.18.8 -y`
+
 * kubelet开启启动：`systemctl enable kubelet`
 
 ## 集群初始化
 >master操作
 
 ```
-kubeadm init --kubernetes-version=v1.17.3 \
+kubeadm init --kubernetes-version=v1.18.8 \
 --pod-network-cidr=10.244.0.0/16 \
 --service-cidr=10.96.0.0/12 \
---apiserver-advertise-address=172.17.8.201 \
+--apiserver-advertise-address=192.168.31.201 \
 --image-repository=registry.aliyuncs.com/google_containers \
---ignore-preflight-errors=NumCPU --dry-run
+--ignore-preflight-errors=NumCPU
 ```
 
 ## 根据init结果提示操作
 * 配置kubectl【master】
-* [安装网络插件](#网络插件)【master】
-* 允许master部署负载【master/可选】:`kubectl taint nodes --all node-role.kubernetes.io/master-`
+
+* 安装网络插件【master】
+
+  - 下载资源文件
+
+    ```
+    curl -LO https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    ```
+
+  - kube-flannel.yml文件修改
+
+    + pod网络设置(net-conf.json)
+    + 镜像地址修改：quay.mirrors.ustc.edu.cn
+    + 主机间通信接口设置(假设eth1为主机间通信接口：`--iface=eth1`)
+
+  - 应用资源文件：kubectl apply -f kube-flannel.yml
+
+  - bug修复
+
+    ```
+    由kubeadm安装的1.17~1.18版本k8s集群使用flannel插件有bug，会造成访问service的地址长时间无响应，需要执行命令修复此问题：
+    ethtool --offload flannel.1 rx off tx off
+    ```
+
+* 允许master部署负载【master】
+
+  ```
+  kubectl taint nodes --all node-role.kubernetes.io/master-
+  ```
+
 * 使用kubeadm join命令将node加入集群【node】
-
-## 网络插件
-### 插件分类
-* flannel，包含模式如下
-  - vxlan：隧道模式
-  - host-gw：路由模式，性能最好
-* calico，包含模式如下
-  - ipip
-  - bgp
-
-### 插件选择
-* 网络规模大小
-  - 网络规模小，使用flannel的host-gw模式
-  - 网络规模小，但是有路由等网络限制，使用flannel的vxlan
-  - 网络规模大，使用calico
-* 多租户使用，且有ACL访问限制，使用calico
-* 维护成本，flannel小，calico大
-
-### flannel安装
-
-> __注意__：由kubeadm安装的1.17~1.18版本k8s集群使用flannel插件有bug，会造成访问service的地址长时间无响应，需要执行
->
-> 命令修复此问题：`ethtool --offload flannel.1 rx off tx off`
-
-- 下载[资源文件](https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml)
-- kube-flannel.yml文件修改
-  + pod网络设置(net-conf.json)
-  + 镜像地址修改
-  + 主机间通信接口设置(假设eth1为主机间通信接口：`--iface=eth1`)
-- 应用资源文件：kubectl apply -f kube-flannel.yml
 
 # kubeadm管理
 ## 移除节点
@@ -172,17 +176,37 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 
 # 附加组件部署
 ## dashboard
-- 下载[资源文件](https://github.com/kubernetes/dashboard/blob/master/aio/deploy/recommended.yaml)
+- 下载资源文件：
+
+    ```
+    curl -Lo kube-dashboard.yaml https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
+    ```
+
 - 资源文件修改
-    + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443
-    + dashboard部署在node02上：nodeSelector--》kubernetes.io/hostname: "node02"
+    + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443/8000
+    + dashboard部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
+    
 - [建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
-- 登录token获取：`kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')`
-- web访问：https://172.17.8.202:8443/
+
+- 登录token获取
+
+    ```
+    kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+    ```
+
+- web访问：https://192.168.31.202:8443/
 
 ## ingress-nginx
-- [下载资源文件](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/static/provider/baremetal/deploy.yaml)
+- 下载资源文件：
+
+    ```
+    curl -Lo ingress-nginx.yaml https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/deploy.yaml
+    ```
+
 - pod及service修改配置
-    + ingress部署在node02上：nodeSelector--》kubernetes.io/hostname: "node02"
-    + 修改nginx-ingress-controller镜像地址
-    + 将ingress的访问端口暴露在宿主机上：nodePort：30080/30443
+    + ingress部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
+    + 修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.35.0
+    + 将ingress的访问端口暴露在宿主机上：Service--》nodePort：30080/30443
+
+
+
