@@ -44,7 +44,7 @@ spring boot：微服务开发框架
 * dubbo：微服务治理框架
 * spring cloud：基于spring boot的完整微服务解决方案
 
-# 微服务在k8s中部署
+# K8S中部署微服务
 
 ## 架构图
 
@@ -84,7 +84,7 @@ spring boot：微服务开发框架
 
 ![](https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png)
 
-# K8S中部署Spring Cloud微服务
+# 微服务范例-Spring Cloud
 
 具体步骤：
 
@@ -133,8 +133,8 @@ spring boot：微服务开发框架
 * 项目地址：https://github.com/simple0426/simple-microservice.git
 
 * 代码分支说明：
-  * dev3 增加K8S资源编排
-  * dev4 增加微服务链路监控
+  * dev3 增加K8S资源编排【k8s/*.yaml】
+  * dev4 增加微服务链路监控【*/pinpoint-agent】
   * master 最终上线
 * 项目说明
 
@@ -239,7 +239,7 @@ docker push ${image_name}
 * 微服务升级：对要升级的微服务进行上述步骤打包镜像:版本，替代运行的镜像
 * 微服务扩容：对Pod扩容副本数
 
-# k8s部署经验
+# K8S部署实践
 
 ## JVM内存限制
 
@@ -292,4 +292,129 @@ lifecycle:
       - -c
       - "sleep 5"
 ```
+
+# 微服务链路监控-APM
+
+## 全链路监控是什么
+
+随着微服务架构的流行，服务按照不同的维度进行拆分，一次请求往往需要涉及到多个服务。这些服务可能用不同编程语言开发，不同团队开发，可能部署很多副本。因此，就需要一些可以帮助理解系统行为、用于分析性能问题的工具，以便发生故障的时候，能够快速定位和解决问题。全链路监控组件就在这样的问题背景下产生了。
+
+全链路性能监控 从整体维度到局部维度展示各项指标，将跨应用的所有调用链性能信息集中展现，可方便度量整体和局部性能，并且方便找到故障产生的源头，生产上可极大缩短故障排除时间。
+
+## 全链路监控解决的问题
+
+* 请求链路追踪：通过分析服务调用关系，绘制运行时拓扑信息，可视化展示
+* 调用情况衡量：各个调用环节的性能分析，例如吞吐量、响应时间、错误次数
+* 容量规划参考：扩容/缩容、服务降级、流量控制
+* 运行情况反馈：告警，通过调用链结合业务日志快速定位错误信息
+
+## 全链路监控组件选择
+
+全链路监控系统有很多，应从这几方面选择：
+
+* 探针的性能消耗
+  APM组件服务的影响应该做到足够小，数据分析要快，性能占用小。
+* 代码的侵入性
+  即也作为业务组件，应当尽可能少入侵或者无入侵其他业务系统，
+  对于使用方透明，减少开发人员的负担。
+* 监控维度
+  分析的维度尽可能多。
+* 可扩展性
+  一个优秀的调用跟踪系统必须支持分布式部署，具备良好的可扩展
+  性【服务端分布式部署】。能够支持的组件越多当然越好。
+
+常用APM组件：zipkin、skywalking、pinpoint
+
+## Pinpoint介绍
+
+Pinpoint是一个APM（应用程序性能管理）工具，适用于用Java/PHP编写的大型分布式系统。
+
+可以监控的信息如下：
+
+* 服务器地图（ServerMap）通过可视化分布式系统的模块和他们之间的相互联系来理解系统拓扑。点击某个节点会 展示这个模块的详情，比如它当前的状态和请求数量。
+* 实时活动线程图 （Realtime Active Thread Chart） ：实时监控应用内部的活动线程。
+* 请求/响应分布图（ Request/Response Scatter Chart ） ：长期可视化请求数量和应答模式来定位潜在问题。通过在图表上拉拽可以选择请求查看 更多的详细信息。
+* 调用栈（ CallStack ）：在分布式环境中为每个调用生成代码级别的可视图，在单个视图中定位瓶颈和失败点。
+* 检查器（ Inspector ） ：查看应用上的其他详细信息，比如CPU使用率，内存/垃圾回收，TPS，和JVM参数。
+
+## Pinpoint服务端部署
+
+* docker方式部署：https://github.com/naver/pinpoint-docker
+
+  >启动时会在本地构建镜像(docker-compose build)，构建过程中会从github拉取各组件的tar包，
+  >
+  >所以构建过程很慢
+
+  ```
+  git clone https://github.com/naver/pinpoint-docker.git
+  cd pinpoint-docker
+  docker-compose pull && docker-compose up -d
+  ```
+
+* 部署完成后包含的组件
+
+  ```
+  pinpoint-agent            # pinpoint agent组件（为应用程序范例提供agent程序） 
+  pinpoint-collector        # 收集agent的数据                   
+  pinpoint-docker_zoo1_1    
+  pinpoint-docker_zoo2_1    
+  pinpoint-docker_zoo3_1    
+  pinpoint-flink-jobmanager 
+  pinpoint-flink-taskmanager                          
+  pinpoint-hbase             # 保存指标数据                            
+  pinpoint-mysql             # 保存web页面数据
+  pinpoint-quickstart        # 应用程序范例，通过共享存储挂载agent组件
+  pinpoint-web               # 服务端web界面
+  ```
+
+* 访问
+
+  ```
+  * 应用程序范例：http://xxxx:8000
+  * pinpoint服务端web界面：http://xxxx:8079
+  ```
+
+## [Pinpoint Agent部署](naver.github.io/pinpoint/installation.html#5-pinpoint-agent)
+
+* pinpoint agent程序供给
+
+  * 程序获取：
+
+    * pinpoint web界面右侧【设置】--》installation--》Download Link
+    * 实际地址：`https://github.com/naver/pinpoint/releases/download/v2.1.0/pinpoint-agent-2.1.0.tar.gz`
+
+  * 程序设置【v2.1.0】
+
+    ```
+    * pinpoint-root.config
+    pinpoint.profiler.profiles.active=release # 设置加载的环境
+    # 其他为全局配置，环境级别的配置会覆盖同名条目信息
+    
+    * profiles/release/pinpoint.config        # release环境设置
+    profiler.transport.module=GRPC            # agent与server以grpc方式通信
+    profiler.transport.grpc.collector.ip=192.168.31.250      # server地址
+    ```
+
+  * agent程序位置
+
+    ```
+    1. 通过initContainer方式将pinpoint agent程序复制到共享目录供应用程序使用
+    2. 启动一个job或pod，将pinpoint agent程序挂载到集群存储中，其他pod挂载这个存储
+    3. 制作镜像Dockerfile时，将pinpoint agent程序复制到镜像中
+    ```
+
+* 应用程序启动时加载pinpoint agent
+
+```
+tomcat设置：
+#catalina.sh
+CATALINA_OPTS="$CATALINA_OPTS -javaagent:$AGENT_PATH/pinpoint-bootstrap-$VERSION.jar"
+CATALINA_OPTS="$CATALINA_OPTS -Dpinpoint.agentId=$AGENT_ID"
+CATALINA_OPTS="$CATALINA_OPTS -Dpinpoint.applicationName=$APPLICATION_NAME"
+
+jar设置：
+java -jar -javaagent:$AGENT_PATH/pinpoint-bootstrap-$VERSION.jar -Dpinpoint.agentId=$AGENT_ID
+-Dpinpoint.applicationName=$APPLICATION_NAME xxx.jar
+```
+
 

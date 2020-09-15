@@ -148,6 +148,8 @@ find . -maxdepth 0 -type d -name "*8056" -mtime +119|xargs rm -rf {}
   - 范例：sed -n '/west/s/Charles/jingqi/p' testfile 【过滤包含west的行后，将Charles替换为jingqi，最后显示该行内容】
 * `&`：引用替换命令【s/regexp/replacement/】中正则匹配到的部分
   - 范例：sed -n '/west/s/Charles/&jingqi/p' testfile 【将Charles替换为Charlesjingqi】
+  - 指定行注释：`sed -i 's/restart/#&/' docker-compose.yml`
+  - 不注释的行添加注释：`sed -i 's/^[^#]/#&/' 1.txt  `
 * a\ text 在文本行之后的新行添加内容
 * i\ text 在文本行之前的新行添加内容
 * c\ text：使用文本内容替换文本行

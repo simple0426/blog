@@ -13,25 +13,49 @@ date: 2019-11-11 22:14:02
 docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0.5 -p 10086:22 sshd
 ## 运行参数
 * -t：分配一个伪终端tty
+
 * -i：保持容器的标准输入一直打开，常与-t结合使用
+
 * -d：让容器以后台方式运行
+
 * -e key=value：在容器内设置环境变量
+
 * --name：给运行的容器绑定一个名称
+
 * -h：配置容器主机名
+
 * --rm：容器存在就删除【运行一次性容器，运行后立即删除】
+
 * -v ：映射宿主机目录或数据卷到容器
+
 * -m 100m：设置容器内存为100m
+
 * --memory-swap=100m：设置容器内存和swap总和是100m
+
 * --oom-kill-disable：关闭系统oom，避免系统内存不足时杀死容器
+
 * --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
+    
     - --cpu-shares int：设置多个容器使用cpu的相对权重
+    
 * -p 10086:22（可多次使用）：映射宿主机端口10086到容器端口22
     - publish：将容器端口映射到宿主机【命令行参数-p或-P】
     - expose：曝露端口用于容器间的访问【Dockerfile文件中的关键字EXPOSE】
+    
 * -P：将主机的49000~49900的端口随机映射到内部容器的开放端口
+
 * --link name:alias：链接容器【容器名称：别名】，这种链接关系可以在容器hosts文件看到
+
 * --network：容器链接到特定网桥
-* --restart：容器异常退出时的重启策略，默认no，可选【always|on-failure】
+
+* --restart：docker daemon重启后container的重启策略，默认no
+
+    ```
+    * no       不重启，默认策略
+    * on-failure[:max-retries]  异常退出时重启容器，包括开机启动
+    * unless-stopped 一直重启容器，正常停止的容器除外
+    * always   一直重启容器，包括开机启动
+    ```
 
 ## 最佳实践
 * 操作系统镜像，没有默认启动命令，需要设置-it及-d，保持容器运行
@@ -39,13 +63,19 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 
 # 容器管理
 * start、stop、restart：启动、停止、重启一个容器
+
 * create、rm：创建、删除容器
+
 * container prune：移除所有停止的容器
+
 * logs [-f]：日志查看，-f相当于tailf效果
+
 * cp：在宿主机和容器直接复制文件或目录
+
 * exec：在容器中执行命令
     - 进入bash环境：docker exec -it 5c8f798e206e /bin/bash
     - 查看ip地址：docker exec -it flask ip a
+    
 * ps：查看运行中的容器
     - 参数
         + -a：查看所有存在的容器
@@ -53,9 +83,19 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
         + -f：根据条件过滤容器
         + -l：最新创建的容器
     - 批量操作范例：docker rm $(docker ps -qf "status=exited")
+    
 * inspect：查看docker对象信息
+
+* container update：修改容器run参数
+
+    ```
+    docker container update --restart=on-failure jenkins
+    ```
+
 * stats：查看容器资源使用情况
+
 * top：查看容器进程列表
+
 * commit：将当前运行的容器制作为镜像【被称为黑箱镜像，由于不确定镜像的具体操作，不利于镜像的传播使用】
 
 # volume管理

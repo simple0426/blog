@@ -50,7 +50,7 @@ date: 2020-08-03 19:35:10
 
 * Kubernetes地址：k8s集群外部地址，例如：https://192.168.31.201:6443
 
-* Kubernetes 服务证书 key：kubernetes ca证书，例如：/etc/kubenetes/pki/ca.crt
+* Kubernetes 服务证书 key：kubernetes ca证书，例如：/etc/kubernetes/pki/ca.crt
 
 * Kubernetes 命名空间：代理pod的运行的命名空间
 
@@ -63,9 +63,12 @@ date: 2020-08-03 19:35:10
   * token获取（代理pod-RBAC设置）
 
     ```
-    kubectl create serviceaccount jenkins-slave -n ops #创建pod服务账号
-    kubectl create clusterrolebinding jenkins-slave --clusterrole cluster-admin --serviceaccount=ops:jenkins-slave #给pod服务账号绑定权限
-    kubectl describe secret -n ops jenkins-slave-token-4hb8b #获取pod服务账号的token
+    # 创建pod服务账号
+    kubectl create serviceaccount jenkins-slave -n ops 
+    # 给pod服务账号绑定权限
+    kubectl create clusterrolebinding jenkins-slave --clusterrole cluster-admin --serviceaccount=ops:jenkins-slave 
+    # 获取pod服务账号的token
+    kubectl describe secret -n ops $(kubectl get secret -n ops|awk '/jenkins-slave/{print $1}')|awk '/^token/{print $2}'
     ```
 
 * Jenkins 地址：jenkins的web接口地址，例如：http://192.168.31.250:7080/

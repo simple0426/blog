@@ -182,8 +182,8 @@ spec:
     - cmd方式：`docker inspect nginx:1.13 -f {\{\.Config.Cmd}\}`
     - entrypoint方式：`docker inspect nginx:1.13 -f {\{\.Config.Entrypoint}\}`
 * 设置选项：命令和参数
-    - command：会覆盖默认运行命令
-    - args：则会给command或默认的运行命令提供参数
+    - command：同时覆盖Dockerfile中的entrypoint和cmd
+    - args：给command或Dockerfile中的entrypoint提供参数
 
 ## 环境变量-env
 * 范例

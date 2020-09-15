@@ -79,8 +79,8 @@ docker run --name jenkins \
   > 每次插件信息(default.json)更新都会覆盖为官方地址，所以每次default.json更新都需要做如下修改
 
     ```
-    sed -i 's/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g' default.json && \
-    sed -i 's/http:\/\/www.google.com/https:\/\/www.baidu.com/g' default.json
+  sed -i 's/https:\/\/updates.jenkins.io\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g' default.json && \
+   sed -i 's/http:\/\/www.google.com/https:\/\/www.baidu.com/g' default.json
     ```
 - 重启jenkins：`docker restart jenkins`
 
