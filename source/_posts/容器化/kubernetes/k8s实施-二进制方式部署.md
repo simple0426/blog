@@ -1,5 +1,5 @@
 ---
-title: kubernetes-二进制方式部署
+title: k8s实施-二进制方式部署
 categories:
   - kubernetes
 date: 2020-07-12 02:50:22

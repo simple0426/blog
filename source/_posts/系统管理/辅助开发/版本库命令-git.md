@@ -148,18 +148,25 @@ git config –global core.quotepath false
 * 以下命令bfg就是【java -jar bfg.jar】的别名
 
 ## 操作步骤
-* 克隆仓库元数据：git clone --mirror git@github.com:my-account/my-repo.git
+* 克隆仓库元数据：
+
+    ```
+    git clone --mirror git@github.com:my-account/my-repo.git
+    ```
+
 * 移除文件【可以是下列任意一个操作】：
-    - 删除所有文件id_rsa或id_dsa：bfg --delete-files id_{dsa,rsa}  my-repo.git
-    - 删除目录.git：bfg --delete-folders .git --delete-files .git  --no-blob-protection  my-repo.git
-    - 删除大于1M的文件：bfg --strip-blobs-bigger-than 1M  my-repo.git
-    - 删除密码等文本：bfg --replace-text banned.txt  my-repo.git
+    - 删除所有文件id_rsa或id_dsa：`bfg --delete-files id_{dsa,rsa}  my-repo.git`
+    - 删除目录.git：`bfg --delete-folders .git --delete-files .git  --no-blob-protection  my-repo.git`
+    - 删除大于1M的文件：`bfg --strip-blobs-bigger-than 1M  my-repo.git`
+    - 删除密码等文本：`bfg --replace-text banned.txt  my-repo.git`
         + 在指定的文件【比如：banned.txt】中一行定义一个要删除的密码等隐私信息，执行删除后，密码信息会被【REMOVED】关键词替换
         + 比如在banned.txt中包含原来密码信息【426hx118】，则在执行操作时会将历史记录中=的【426hx118】替换为REMOVED
+    
 * 将本地修改推送到远程
-    1. cd my-repo.git
-    2. git reflog expire --expire=now --all && git gc --prune=now --aggressive
+    1. `cd my-repo.git`
+    2. `git reflog expire --expire=now --all && git gc --prune=now --aggressive`
     3. git push
+    
 * 将远程元数据信息同步到本地
-    1. cd my-repo
-    2. git pull
+    1. `cd my-repo`
+    2. `git pull`

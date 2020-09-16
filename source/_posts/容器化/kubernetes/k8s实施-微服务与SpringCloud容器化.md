@@ -1,8 +1,14 @@
 ---
-title: 微服务容器化-SpringCloud
+title: k8s实施-微服务与SpringCloud容器化
+date: 2020-09-16 21:36:33
 tags:
-categories:
+  - 微服务
+  - SpringCloud
+  - APM
+  - Pinpoint
+categories: ['kubernetes']
 ---
+
 
 # 运维角度看微服务
 

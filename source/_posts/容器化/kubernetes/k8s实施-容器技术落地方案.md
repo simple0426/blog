@@ -1,5 +1,5 @@
 ---
-title: kubernetes-容器技术落地方案
+title: k8s实施-容器技术落地方案
 tags:
   - 技术栈
   - 方案

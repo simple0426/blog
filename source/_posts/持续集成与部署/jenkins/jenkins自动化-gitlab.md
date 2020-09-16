@@ -1,5 +1,5 @@
 ---
-title: jenkins-gitlab部署实践
+title: jenkins自动化-gitlab
 tags:
   - jenkins
   - gitlab

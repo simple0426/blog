@@ -1,5 +1,5 @@
 ---
-title: kubernetes-项目部署流程.md
+title: k8s实施-项目部署流程.md
 tags:
   - wordpress
   - 运维

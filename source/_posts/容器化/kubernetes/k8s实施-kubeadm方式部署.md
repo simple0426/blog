@@ -1,5 +1,5 @@
 ---
-title: kubernetes-kubeadm方式部署
+title: k8s实施-kubeadm方式部署
 tags:
   - kubeadm
 categories:
