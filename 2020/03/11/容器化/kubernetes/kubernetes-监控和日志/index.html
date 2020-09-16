@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png">
-<meta property="og:updated_time" content="2020-08-14T16:32:07.447Z">
+<meta property="og:updated_time" content="2020-09-11T02:43:03.088Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-监控和日志">
 <meta name="twitter:description" content="k8s监控指标 节点对象：系统指标、CPU内存及网络流量 k8s资源对象：k8s事件 容器pod对象：容器本身的系统指标，同样有CPU内存等指标 应用性能统计：QPS统计、jvm数据收集 应用业务统计  监控方案早期方案-heapster 架构  数据采集：kubelet/cadvisor 数据接口：heapster、kubelet、summary、prometheus 数据存储：inflexDB">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-15T00:32:07+08:00">
-                2020-08-15
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-11T10:43:03+08:00">
+                2020-09-11
               </time>
             
           </span>
@@ -452,11 +452,12 @@
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png" alt=""></p>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>项目地址：<a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a> </p>
 <p>使用前提：API Server开启聚合层功能</p>
-<p>下载资源文件：<a href="https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml</a></p>
+<p>下载资源文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -Lo metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml</span><br></pre></td></tr></table></figure>
 <p>修改资源文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">containers:</span><br><span class="line">- name: metrics-server</span><br><span class="line">  image: lizhenliang/metrics-server:v0.3.7 </span><br><span class="line">  imagePullPolicy: IfNotPresent</span><br><span class="line">  args:  </span><br><span class="line">    - --cert-dir=/tmp</span><br><span class="line">    - --secure-port=4443</span><br><span class="line">    - --kubelet-insecure-tls</span><br><span class="line">    - --kubelet-preferred-address-types=InternalIP</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">containers:</span><br><span class="line">- name: metrics-server</span><br><span class="line">  image: registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.3.7</span><br><span class="line">  imagePullPolicy: IfNotPresent</span><br><span class="line">  args:  </span><br><span class="line">    - --cert-dir=/tmp</span><br><span class="line">    - --secure-port=4443</span><br><span class="line">    - --kubelet-insecure-tls</span><br><span class="line">    - --kubelet-preferred-address-types=InternalIP</span><br></pre></td></tr></table></figure>
 <ul>
-<li>修改镜像地址(image)</li>
+<li>修改镜像地址(image)：registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.3.7</li>
 <li>设置容器启动参数(args)<ul>
 <li><code>--kubelet-insecure-tls</code>：metrics server连接kubelet(作为服务端)时，不对kubelet证书的ca进行校验</li>
 <li><code>--kubelet-preferred-address-types=InternalIP</code>：metrics server通过内部ip（kubectl describe node|grep InternalIP）访问kubelet，获取指标数据</li>
@@ -616,8 +617,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/03/11/容器化/kubernetes/kubernetes-kubeadm方式部署/" rel="prev" title="kubernetes-kubeadm方式部署">
-                kubernetes-kubeadm方式部署 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/03/11/容器化/kubernetes/k8s实施-kubeadm方式部署/" rel="prev" title="k8s实施-kubeadm方式部署">
+                k8s实施-kubeadm方式部署 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -717,7 +718,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-count">263</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

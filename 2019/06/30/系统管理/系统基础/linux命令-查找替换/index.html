@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="命令列表 sed grep find wc：统计字节数、字符数、单词数、行数 sort  sort默认以空白(空格、制表符等)为分隔符，默认以第一个字段的第一个字符排序，其他参数如下  -u：删除重复的行 -f：忽略大小写 -b：忽略数据开始的空格部分 -r：反向排序【默认以字母从前往后排序】 -o：覆盖性输出【可直接覆盖源文档】 -n：按数字大小排序【默认从小到大】 -t：定义分隔符【只能使用单">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.437Z">
+<meta property="og:updated_time" content="2020-09-14T06:02:36.638Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux命令-查找替换">
 <meta name="twitter:description" content="命令列表 sed grep find wc：统计字节数、字符数、单词数、行数 sort  sort默认以空白(空格、制表符等)为分隔符，默认以第一个字段的第一个字符排序，其他参数如下  -u：删除重复的行 -f：忽略大小写 -b：忽略数据开始的空格部分 -r：反向排序【默认以字母从前往后排序】 -o：覆盖性输出【可直接覆盖源文档】 -n：按数字大小排序【默认从小到大】 -t：定义分隔符【只能使用单">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-14T14:02:36+08:00">
+                2020-09-14
               </time>
             
           </span>
@@ -550,6 +550,8 @@
 </li>
 <li><code>&amp;</code>：引用替换命令【s/regexp/replacement/】中正则匹配到的部分<ul>
 <li>范例：sed -n ‘/west/s/Charles/&amp;jingqi/p’ testfile 【将Charles替换为Charlesjingqi】</li>
+<li>指定行注释：<code>sed -i &#39;s/restart/#&amp;/&#39; docker-compose.yml</code></li>
+<li>不注释的行添加注释：<code>sed -i &#39;s/^[^#]/#&amp;/&#39; 1.txt</code></li>
 </ul>
 </li>
 <li>a\ text 在文本行之后的新行添加内容</li>
@@ -772,7 +774,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-count">263</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

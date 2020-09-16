@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="持久化设置 pod级别设置卷类型(volumes类型)：spec.volumes 容器级别使用卷：spec.containers.volumeMounts  volumes类型内置存储类 可以直接在pod的volumes中引用   本地存储：emptyDir、hostpath、local 网络存储：nfs、rbd、cephfs、glusterfs 云存储：awsElasticBlockStorag">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-25T04:08:25.067Z">
+<meta property="og:updated_time" content="2020-09-11T03:12:05.940Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-存储和持久化">
 <meta name="twitter:description" content="持久化设置 pod级别设置卷类型(volumes类型)：spec.volumes 容器级别使用卷：spec.containers.volumeMounts  volumes类型内置存储类 可以直接在pod的volumes中引用   本地存储：emptyDir、hostpath、local 网络存储：nfs、rbd、cephfs、glusterfs 云存储：awsElasticBlockStorag">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-25T12:08:25+08:00">
-                2020-08-25
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-11T11:12:05+08:00">
+                2020-09-11
               </time>
             
           </span>
@@ -484,12 +484,18 @@
 <li>官方内置支持的存储类：<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></li>
 <li>社区实现的存储类：<a href="https://github.com/kubernetes-incubator/external-storage" target="_blank" rel="noopener">https://github.com/kubernetes-incubator/external-storage</a><ul>
 <li>nfs：映射本地目录，建立nfs服务端，并提供nfs实现的存储类</li>
-<li>nfs-client：挂载已存在的nfs服务器提供存储类，</li>
+<li>nfs-client：挂载已存在的nfs服务器提供存储类</li>
 </ul>
 </li>
 </ul>
 <h3 id="storageclass创建"><a href="#storageclass创建" class="headerlink" title="storageclass创建"></a>storageclass创建</h3><ul>
-<li><p>可以使用<a href="https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client" target="_blank" rel="noopener">nfs-client</a>中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类</p>
+<li><p>可以使用<a href="https://github.com/kubernetes-retired/external-storage/tree/master/nfs/deploy/kubernetes" target="_blank" rel="noopener">nfs</a>中的【class.yaml、deployment.yaml、rbac.yaml】文件创建nfs存储类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/deployment.yaml</span><br><span class="line">curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/rbac.yaml</span><br><span class="line">curl -LO https://raw.githubusercontent.com/kubernetes-retired/external-storage/master/nfs/deploy/kubernetes/class.yaml</span><br></pre></td></tr></table></figure>
+<p>修改deployment</p>
+<ul>
+<li>image：registry.cn-hangzhou.aliyuncs.com/simple00426/nfs-provisioner:latest</li>
+<li>hostPath：/tmp/nfs-provisioner</li>
+</ul>
 </li>
 <li><p><a href="https://kubernetes.io/zh/docs/tasks/administer-cluster/change-default-storage-class/" target="_blank" rel="noopener">集群设置默认存储类</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl patch storageclass &lt;your-class-name&gt; -p &apos;&#123;&quot;metadata&quot;: &#123;&quot;annotations&quot;:&#123;&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;&#125;&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
@@ -687,7 +693,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-count">263</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

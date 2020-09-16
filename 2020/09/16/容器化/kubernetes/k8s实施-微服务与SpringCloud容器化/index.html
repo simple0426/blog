@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="微服务,SpringCloud,APM,Pinpoint,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta name="keywords" content="微服务,SpringCloud,APM,Pinpoint">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s实施-微服务与SpringCloud容器化">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-1.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png">
+<meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s-1.png">
+<meta property="og:updated_time" content="2020-09-16T13:52:29.915Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="k8s实施-微服务与SpringCloud容器化">
+<meta name="twitter:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/">
+
+
+
+
+
+  <title>k8s实施-微服务与SpringCloud容器化 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">k8s实施-微服务与SpringCloud容器化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-16T21:36:33+08:00">
+                2020-09-16
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:52:29+08:00">
+                2020-09-16
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="运维角度看微服务"><a href="#运维角度看微服务" class="headerlink" title="运维角度看微服务"></a>运维角度看微服务</h1><h2 id="单体应用vs微服务"><a href="#单体应用vs微服务" class="headerlink" title="单体应用vs微服务"></a>单体应用vs微服务</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png" alt=""></p>
+<p><strong>单体应用</strong>：将全部的功能在一个应用中实现，优缺点如下：</p>
+<ul>
+<li>优点：易于部署和测试</li>
+<li>缺点：<ul>
+<li>代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】</li>
+<li>构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】</li>
+<li>扩展困难</li>
+</ul>
+</li>
+</ul>
+<p><strong>微服务</strong>：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备组件包括：</p>
+<ul>
+<li>注册中心：微服务的服务发现、负载均衡实现</li>
+<li>API Gateway：微服务的访问入口</li>
+</ul>
+<h2 id="微服务特点"><a href="#微服务特点" class="headerlink" title="微服务特点"></a>微服务特点</h2><ul>
+<li>服务组件化：每个服务独立开发，减少应用间的依赖关系，有效避免了一个服务的修改造成其他服务不可用。</li>
+<li>技术栈灵活：约定通信方式后(RPC、RESTapi)，不同的功能可以使用不同的语言开发</li>
+<li>独立数据：每个微服务可以有独立的基本组件，例如数据库、缓存等。</li>
+<li>独立部署：每个微服务独立部署，加快构建和部署速度</li>
+<li>扩展性强：每个微服务可以部署多个实例，并且有负载均衡能力</li>
+</ul>
+<h2 id="微服务难点和不足"><a href="#微服务难点和不足" class="headerlink" title="微服务难点和不足"></a>微服务难点和不足</h2><ul>
+<li>架构复杂性和沟通成本：每个功能的完成，都需要多个组件的系统工作；组件之间的协同工作需要整体的架构设计、接口和文档的标准化等工作</li>
+<li>数据一致性：多个组件间事务性操作(订单、支付、库存等)需要确保数据的一致性</li>
+<li>运维成本：随着组件的增多，服务的部署、配置、监控、日志等微服务的治理工作量也随之增多，要求的自动化程度、专业技能也随之增强</li>
+</ul>
+<h2 id="java微服务框架"><a href="#java微服务框架" class="headerlink" title="java微服务框架"></a>java微服务框架</h2><p>spring boot：微服务开发框架</p>
+<ul>
+<li>dubbo：微服务治理框架</li>
+<li>spring cloud：基于spring boot的完整微服务解决方案</li>
+</ul>
+<h1 id="K8S中部署微服务"><a href="#K8S中部署微服务" class="headerlink" title="K8S中部署微服务"></a>K8S中部署微服务</h1><h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-1.png" alt=""></p>
+<h2 id="微服务架构理解"><a href="#微服务架构理解" class="headerlink" title="微服务架构理解"></a>微服务架构理解</h2><ul>
+<li>微服务间如何通信？REST API，RPC，MQ</li>
+<li>微服务如何发现彼此？注册中心</li>
+<li>组件之间怎么个调用关系？</li>
+<li>哪个服务作为整个网站入口？前后端分离</li>
+<li>哪些微服务需要对外访问？前端、微服务网关</li>
+<li><p>微服务怎么部署？更新？扩容？</p>
+<ul>
+<li>部署：kubectl apply、helm install【jenkins】</li>
+<li>更新：kubectl set image</li>
+<li>扩容：kubectl scale</li>
+</ul>
+</li>
+<li><p>区分有状态应用与无状态应用：有状态一般部署在虚拟机、无状态部署在k8s中</p>
+<ul>
+<li>应用服务：订单、商品、库存、支付</li>
+<li>数据库/存储：数据库、redis、MQ、分布式存储</li>
+</ul>
+</li>
+</ul>
+<h2 id="为什么要用注册中心"><a href="#为什么要用注册中心" class="headerlink" title="为什么要用注册中心"></a>为什么要用注册中心</h2><p>微服务太多面临的问题：</p>
+<ul>
+<li>怎么记录一个微服务多个副本接口地址？</li>
+<li>怎么实现一个微服务多个副本负载均衡？</li>
+<li>怎么判断一个微服务副本是否可用？</li>
+</ul>
+<p>主流注册中心：Eureka(spring cloud)，Nacos(alibaba)，Consul，zookeeper</p>
+<h2 id="容器交付流程"><a href="#容器交付流程" class="headerlink" title="容器交付流程"></a>容器交付流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png" alt=""></p>
+<h2 id="在K8s部署项目流程"><a href="#在K8s部署项目流程" class="headerlink" title="在K8s部署项目流程"></a>在K8s部署项目流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png" alt=""></p>
+<h1 id="微服务范例-Spring-Cloud"><a href="#微服务范例-Spring-Cloud" class="headerlink" title="微服务范例-Spring Cloud"></a>微服务范例-Spring Cloud</h1><p>具体步骤：</p>
+<p>前置条件：在K8s中部署MySQL数据库、编译主机安装maven环境、启动harbor服务<br>第一步：熟悉Spring Cloud微服务项目<br>第二步：源代码编译构建<br>第三步：构建项目镜像并推送到镜像仓库<br>第四步：K8s服务编排<br>第五步：在K8s中部署注册中心(Eureka集群)<br>第六步：部署微服务业务程序（product、stock、order）<br>第七步：部署微服务网关服务（gateway）<br>第八步：部署微服务前端（portal）<br>第九步：微服务对外发布<br>第十步：微服务升级与扩容</p>
+<p><strong>自动化构建说明</strong>：使用项目中的脚本docker_build.sh可以完成2~9部操作</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
+<li><p>helm安装mysql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">helm repo add microsoft http://mirror.azure.cn/kubernetes/charts/</span><br><span class="line">helm repo update</span><br><span class="line">helm install db --set persistence.storageClass=&quot;example-nfs&quot; microsoft/mysql</span><br><span class="line">helm status db</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>maven环境设置【编译项目的主机】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1. 安装maven</span><br><span class="line">yum install java-1.8.0-openjdk maven</span><br><span class="line"></span><br><span class="line">2. 设置maven源</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line"> &lt;id&gt;nexus-aliyun&lt;/id&gt;</span><br><span class="line"> &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line"> &lt;name&gt;Nexus aliyun&lt;/name&gt;</span><br><span class="line"> &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="熟悉Spring-Cloud微服务项目"><a href="#熟悉Spring-Cloud微服务项目" class="headerlink" title="熟悉Spring Cloud微服务项目"></a>熟悉Spring Cloud微服务项目</h2><ul>
+<li><p>项目地址：<a href="https://github.com/simple0426/simple-microservice.git" target="_blank" rel="noopener">https://github.com/simple0426/simple-microservice.git</a></p>
+</li>
+<li><p>代码分支说明：</p>
+<ul>
+<li>dev3 增加K8S资源编排【k8s/*.yaml】</li>
+<li>dev4 增加微服务链路监控【*/pinpoint-agent】</li>
+<li>master 最终上线</li>
+</ul>
+</li>
+<li>项目说明</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. k8s部署使用dev3分支</span><br><span class="line">2. 导入db目录下数据库文件到自己的MySQL服务器，操作如下</span><br><span class="line">3. 修改连接数据库配置（xxx-service/src/main/resources/application-fat.yml）</span><br><span class="line">4. 修改前端页面连接网关地址（portal-service/src/main/resources/static/js/productList.js和orderList.js）【默认：gateway.ctnrs.com】</span><br><span class="line">5. 修改k8s/docker_build.sh中的harbor信息</span><br></pre></td></tr></table></figure>
+<ul>
+<li>连接mysql并导入sql文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum install -y mysql</span><br><span class="line">MYSQL_HOST=$(kubectl get svc|awk &apos;/db-mysql/&#123;print $3&#125;&apos;)</span><br><span class="line">MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default db-mysql -o jsonpath=&quot;&#123;.data.mysql-root-password&#125;&quot; | base64 --decode; echo)</span><br><span class="line">mysql -h$MYSQL_HOST -P3306 -uroot -p$&#123;MYSQL_ROOT_PASSWORD&#125; &lt; order.sql </span><br><span class="line">mysql -h$MYSQL_HOST -P3306 -uroot -p$&#123;MYSQL_ROOT_PASSWORD&#125; &lt; product.sql </span><br><span class="line">mysql -h$MYSQL_HOST -P3306 -uroot -p$&#123;MYSQL_ROOT_PASSWORD&#125; &lt; order.sql</span><br></pre></td></tr></table></figure>
+<h2 id="源代码编译构建"><a href="#源代码编译构建" class="headerlink" title="源代码编译构建"></a>源代码编译构建</h2><p>编译【由于项目bug，不能针对单个微服务打包，所以需要在项目根目录下操作】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean package -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+<h2 id="构建项目镜像并推送到镜像仓库"><a href="#构建项目镜像并推送到镜像仓库" class="headerlink" title="构建项目镜像并推送到镜像仓库"></a>构建项目镜像并推送到镜像仓库</h2><ul>
+<li>Dockerfile</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM java:8-jdk-alpine</span><br><span class="line">LABEL maintainer lizhenliang/www.ctnrs.com</span><br><span class="line">RUN  ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br><span class="line">COPY ./target/eureka-service.jar ./</span><br><span class="line">EXPOSE 8888</span><br><span class="line">CMD java -jar -Deureka.instance.hostname=$&#123;MY_POD_NAME&#125;.eureka.ms /eureka-service.jar</span><br></pre></td></tr></table></figure>
+<ul>
+<li>build &amp;&amp; push</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker build -t $&#123;image_name&#125; .</span><br><span class="line">docker push $&#123;image_name&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="K8s服务编排"><a href="#K8s服务编排" class="headerlink" title="K8s服务编排"></a>K8s服务编排</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s-1.png" alt=""></p>
+<ul>
+<li>前端portal、微服务网关gateway需要使用ingress对外暴露，以方便用户访问</li>
+<li>业务服务(product、stock、order)只需使用deployment部署pod，通过注册中心(Eureka)进行服务发现和负载均衡</li>
+<li>注册中心使用statefulset进行部署</li>
+</ul>
+<h2 id="部署Erureka集群"><a href="#部署Erureka集群" class="headerlink" title="部署Erureka集群"></a>部署Erureka集群</h2><ul>
+<li><p>Erureka集群实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. pod设置变量【Deployment】</span><br><span class="line">env:</span><br><span class="line">  - name: MY_POD_NAME</span><br><span class="line">    valueFrom:</span><br><span class="line">      fieldRef:</span><br><span class="line">        fieldPath: metadata.name</span><br><span class="line"></span><br><span class="line">2. 程序启动时引用变量【Dockerfile】</span><br><span class="line">CMD java -jar -Deureka.instance.hostname=$&#123;MY_POD_NAME&#125;.eureka.ms /eureka-service.jar</span><br><span class="line"></span><br><span class="line">3. 程序中设置集群信息【eureka-service/src/main/resources/application-fat.yml】</span><br><span class="line">defaultZone: http://eureka-0.eureka.ms:$&#123;server.port&#125;/eureka/,http://eureka-1.eureka.ms:$&#123;server.port&#125;/eureka/,http://eureka-2.eureka.m</span><br><span class="line">s:$&#123;server.port&#125;/eureka/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Erureka web访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. 查看访问地址</span><br><span class="line">kubectl get ingress -n ms</span><br><span class="line"></span><br><span class="line">2. windows主机hosts设置</span><br><span class="line">192.168.31.202 eureka.ctnrs.com</span><br><span class="line"></span><br><span class="line">3. web浏览器访问</span><br><span class="line">http://eureka.ctnrs.com/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="在K8s中部署微服务"><a href="#在K8s中部署微服务" class="headerlink" title="在K8s中部署微服务"></a>在K8s中部署微服务</h2><blockquote>
+<p>eureka客户端设置【prefer-ip-address: true】使微服务以pod的ip注册</p>
+</blockquote>
+<ul>
+<li>部署业务程序（product、stock、order）</li>
+<li>部署网关（gateway）</li>
+<li>部署前端（portal）</li>
+</ul>
+<h2 id="微服务升级与扩容"><a href="#微服务升级与扩容" class="headerlink" title="微服务升级与扩容"></a>微服务升级与扩容</h2><ul>
+<li>微服务升级：对要升级的微服务进行上述步骤打包镜像:版本，替代运行的镜像</li>
+<li>微服务扩容：对Pod扩容副本数</li>
+</ul>
+<h1 id="K8S部署实践"><a href="#K8S部署实践" class="headerlink" title="K8S部署实践"></a>K8S部署实践</h1><h2 id="JVM内存限制"><a href="#JVM内存限制" class="headerlink" title="JVM内存限制"></a>JVM内存限制</h2><blockquote>
+<p>参考1：<a href="https://blog.csdn.net/gBbQRglVIr3dYi82/article/details/82754927" target="_blank" rel="noopener">https://blog.csdn.net/gBbQRglVIr3dYi82/article/details/82754927</a></p>
+<p>参考2：<a href="https://www.oracle.com/java/technologies/javase/8u191-relnotes.html" target="_blank" rel="noopener">https://www.oracle.com/java/technologies/javase/8u191-relnotes.html</a></p>
+<p>参考3：<a href="https://www.cnblogs.com/xiaoqi/p/container-jvm.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoqi/p/container-jvm.html</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. java 5/6/7/8u131-</span><br><span class="line">设置-Xmx</span><br><span class="line"></span><br><span class="line">2. java 8u131+和java9+</span><br><span class="line">设置-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap</span><br><span class="line"></span><br><span class="line">3.java 8u191+和java10+</span><br><span class="line">UseContainerSupport默认开启，可以感知容器内存和cpu限制；同时设置-XX:MaxRAMPercentage=75.0，这样为其他进程（debug、监控）留下足够的内存空间</span><br></pre></td></tr></table></figure>
+<h2 id="滚动更新-高可用"><a href="#滚动更新-高可用" class="headerlink" title="滚动更新-高可用"></a>滚动更新-高可用</h2><p>滚动更新是默认发布策略，当配置健康检查时，滚动更新会根据Probe状态来决定是否继续更新以及是否允许接<br>入流量，这样在整个滚动更新过程中可保持始终会有可用的Pod存在，达到平滑升级。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">readinessProbe:</span><br><span class="line">  tcpSocket:</span><br><span class="line">    port: 9999</span><br><span class="line">  initialDelaySeconds: 60</span><br><span class="line">  periodSeconds: 10</span><br><span class="line">livenessProbe:</span><br><span class="line">  tcpSocket:</span><br><span class="line">    port: 9999</span><br><span class="line">  initialDelaySeconds: 60</span><br><span class="line">  periodSeconds: 10</span><br></pre></td></tr></table></figure>
+<h2 id="滚动更新-pod删除"><a href="#滚动更新-pod删除" class="headerlink" title="滚动更新-pod删除"></a>滚动更新-pod删除</h2><p>滚动更新触发，Pod在删除过程中，有些节点kube-proxy还没来得及同步iptables规则，从而部分流量请求到Terminating的Pod上，导致请求出错。<br>解决办法：配置preStop回调，在容器终止前优雅暂停5秒，给kube-proxy多预留一点时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lifecycle:</span><br><span class="line">  preStop:</span><br><span class="line">    exec:</span><br><span class="line">      command:</span><br><span class="line">      - sh</span><br><span class="line">      - -c</span><br><span class="line">      - &quot;sleep 5&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="微服务链路监控-APM"><a href="#微服务链路监控-APM" class="headerlink" title="微服务链路监控-APM"></a>微服务链路监控-APM</h1><h2 id="全链路监控是什么"><a href="#全链路监控是什么" class="headerlink" title="全链路监控是什么"></a>全链路监控是什么</h2><p>随着微服务架构的流行，服务按照不同的维度进行拆分，一次请求往往需要涉及到多个服务。这些服务可能用不同编程语言开发，不同团队开发，可能部署很多副本。因此，就需要一些可以帮助理解系统行为、用于分析性能问题的工具，以便发生故障的时候，能够快速定位和解决问题。全链路监控组件就在这样的问题背景下产生了。</p>
+<p>全链路性能监控 从整体维度到局部维度展示各项指标，将跨应用的所有调用链性能信息集中展现，可方便度量整体和局部性能，并且方便找到故障产生的源头，生产上可极大缩短故障排除时间。</p>
+<h2 id="全链路监控解决的问题"><a href="#全链路监控解决的问题" class="headerlink" title="全链路监控解决的问题"></a>全链路监控解决的问题</h2><ul>
+<li>请求链路追踪：通过分析服务调用关系，绘制运行时拓扑信息，可视化展示</li>
+<li>调用情况衡量：各个调用环节的性能分析，例如吞吐量、响应时间、错误次数</li>
+<li>容量规划参考：扩容/缩容、服务降级、流量控制</li>
+<li>运行情况反馈：告警，通过调用链结合业务日志快速定位错误信息</li>
+</ul>
+<h2 id="全链路监控组件选择"><a href="#全链路监控组件选择" class="headerlink" title="全链路监控组件选择"></a>全链路监控组件选择</h2><p>全链路监控系统有很多，应从这几方面选择：</p>
+<ul>
+<li>探针的性能消耗<br>APM组件服务的影响应该做到足够小，数据分析要快，性能占用小。</li>
+<li>代码的侵入性<br>即也作为业务组件，应当尽可能少入侵或者无入侵其他业务系统，<br>对于使用方透明，减少开发人员的负担。</li>
+<li>监控维度<br>分析的维度尽可能多。</li>
+<li>可扩展性<br>一个优秀的调用跟踪系统必须支持分布式部署，具备良好的可扩展<br>性【服务端分布式部署】。能够支持的组件越多当然越好。</li>
+</ul>
+<p>常用APM组件：zipkin、skywalking、pinpoint</p>
+<h2 id="Pinpoint介绍"><a href="#Pinpoint介绍" class="headerlink" title="Pinpoint介绍"></a>Pinpoint介绍</h2><p>Pinpoint是一个APM（应用程序性能管理）工具，适用于用Java/PHP编写的大型分布式系统。</p>
+<p>可以监控的信息如下：</p>
+<ul>
+<li>服务器地图（ServerMap）通过可视化分布式系统的模块和他们之间的相互联系来理解系统拓扑。点击某个节点会 展示这个模块的详情，比如它当前的状态和请求数量。</li>
+<li>实时活动线程图 （Realtime Active Thread Chart） ：实时监控应用内部的活动线程。</li>
+<li>请求/响应分布图（ Request/Response Scatter Chart ） ：长期可视化请求数量和应答模式来定位潜在问题。通过在图表上拉拽可以选择请求查看 更多的详细信息。</li>
+<li>调用栈（ CallStack ）：在分布式环境中为每个调用生成代码级别的可视图，在单个视图中定位瓶颈和失败点。</li>
+<li>检查器（ Inspector ） ：查看应用上的其他详细信息，比如CPU使用率，内存/垃圾回收，TPS，和JVM参数。</li>
+</ul>
+<h2 id="Pinpoint服务端部署"><a href="#Pinpoint服务端部署" class="headerlink" title="Pinpoint服务端部署"></a>Pinpoint服务端部署</h2><ul>
+<li><p>docker方式部署：<a href="https://github.com/naver/pinpoint-docker" target="_blank" rel="noopener">https://github.com/naver/pinpoint-docker</a></p>
+<blockquote>
+<p>启动时会在本地构建镜像(docker-compose build)，构建过程中会从github拉取各组件的tar包，</p>
+<p>所以构建过程很慢</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/naver/pinpoint-docker.git</span><br><span class="line">cd pinpoint-docker</span><br><span class="line">docker-compose pull &amp;&amp; docker-compose up -d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署完成后包含的组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pinpoint-agent            # pinpoint agent组件（为应用程序范例提供agent程序） </span><br><span class="line">pinpoint-collector        # 收集agent的数据                   </span><br><span class="line">pinpoint-docker_zoo1_1    </span><br><span class="line">pinpoint-docker_zoo2_1    </span><br><span class="line">pinpoint-docker_zoo3_1    </span><br><span class="line">pinpoint-flink-jobmanager </span><br><span class="line">pinpoint-flink-taskmanager                          </span><br><span class="line">pinpoint-hbase             # 保存指标数据                            </span><br><span class="line">pinpoint-mysql             # 保存web页面数据</span><br><span class="line">pinpoint-quickstart        # 应用程序范例，通过共享存储挂载agent组件</span><br><span class="line">pinpoint-web               # 服务端web界面</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* 应用程序范例：http://xxxx:8000</span><br><span class="line">* pinpoint服务端web界面：http://xxxx:8079</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Pinpoint-Agent部署"><a href="#Pinpoint-Agent部署" class="headerlink" title="Pinpoint Agent部署"></a><a href="naver.github.io/pinpoint/installation.html#5-pinpoint-agent">Pinpoint Agent部署</a></h2><ul>
+<li><p>pinpoint agent程序供给</p>
+<ul>
+<li><p>程序获取：</p>
+<ul>
+<li>pinpoint web界面右侧【设置】–》installation–》Download Link</li>
+<li>实际地址：<code>https://github.com/naver/pinpoint/releases/download/v2.1.0/pinpoint-agent-2.1.0.tar.gz</code></li>
+</ul>
+</li>
+<li><p>程序设置【v2.1.0】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* pinpoint-root.config</span><br><span class="line">pinpoint.profiler.profiles.active=release # 设置加载的环境</span><br><span class="line"># 其他为全局配置，环境级别的配置会覆盖同名条目信息</span><br><span class="line"></span><br><span class="line">* profiles/release/pinpoint.config        # release环境设置</span><br><span class="line">profiler.transport.module=GRPC            # agent与server以grpc方式通信</span><br><span class="line">profiler.transport.grpc.collector.ip=192.168.31.250      # server地址</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>agent程序位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 通过initContainer方式将pinpoint agent程序复制到共享目录供应用程序使用</span><br><span class="line">2. 启动一个job或pod，将pinpoint agent程序挂载到集群存储中，其他pod挂载这个存储</span><br><span class="line">3. 制作镜像Dockerfile时，将pinpoint agent程序复制到镜像中</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>应用程序启动时加载pinpoint agent</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tomcat设置：</span><br><span class="line">#catalina.sh</span><br><span class="line">CATALINA_OPTS=&quot;$CATALINA_OPTS -javaagent:$AGENT_PATH/pinpoint-bootstrap-$VERSION.jar&quot;</span><br><span class="line">CATALINA_OPTS=&quot;$CATALINA_OPTS -Dpinpoint.agentId=$AGENT_ID&quot;</span><br><span class="line">CATALINA_OPTS=&quot;$CATALINA_OPTS -Dpinpoint.applicationName=$APPLICATION_NAME&quot;</span><br><span class="line"></span><br><span class="line">jar设置：</span><br><span class="line">java -jar -javaagent:$AGENT_PATH/pinpoint-bootstrap-$VERSION.jar -Dpinpoint.agentId=$AGENT_ID</span><br><span class="line">-Dpinpoint.applicationName=$APPLICATION_NAME xxx.jar</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+            <a href="/tags/SpringCloud/" rel="tag"># SpringCloud</a>
+          
+            <a href="/tags/APM/" rel="tag"># APM</a>
+          
+            <a href="/tags/Pinpoint/" rel="tag"># Pinpoint</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/11/容器化/分布式存储-ceph/" rel="next" title="分布式存储-ceph">
+                <i class="fa fa-chevron-left"></i> 分布式存储-ceph
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运维角度看微服务"><span class="nav-number">1.</span> <span class="nav-text">运维角度看微服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单体应用vs微服务"><span class="nav-number">1.1.</span> <span class="nav-text">单体应用vs微服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务特点"><span class="nav-number">1.2.</span> <span class="nav-text">微服务特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务难点和不足"><span class="nav-number">1.3.</span> <span class="nav-text">微服务难点和不足</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java微服务框架"><span class="nav-number">1.4.</span> <span class="nav-text">java微服务框架</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#K8S中部署微服务"><span class="nav-number">2.</span> <span class="nav-text">K8S中部署微服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构图"><span class="nav-number">2.1.</span> <span class="nav-text">架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务架构理解"><span class="nav-number">2.2.</span> <span class="nav-text">微服务架构理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要用注册中心"><span class="nav-number">2.3.</span> <span class="nav-text">为什么要用注册中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器交付流程"><span class="nav-number">2.4.</span> <span class="nav-text">容器交付流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在K8s部署项目流程"><span class="nav-number">2.5.</span> <span class="nav-text">在K8s部署项目流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务范例-Spring-Cloud"><span class="nav-number">3.</span> <span class="nav-text">微服务范例-Spring Cloud</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置条件"><span class="nav-number">3.1.</span> <span class="nav-text">前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#熟悉Spring-Cloud微服务项目"><span class="nav-number">3.2.</span> <span class="nav-text">熟悉Spring Cloud微服务项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源代码编译构建"><span class="nav-number">3.3.</span> <span class="nav-text">源代码编译构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建项目镜像并推送到镜像仓库"><span class="nav-number">3.4.</span> <span class="nav-text">构建项目镜像并推送到镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K8s服务编排"><span class="nav-number">3.5.</span> <span class="nav-text">K8s服务编排</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署Erureka集群"><span class="nav-number">3.6.</span> <span class="nav-text">部署Erureka集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在K8s中部署微服务"><span class="nav-number">3.7.</span> <span class="nav-text">在K8s中部署微服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微服务升级与扩容"><span class="nav-number">3.8.</span> <span class="nav-text">微服务升级与扩容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#K8S部署实践"><span class="nav-number">4.</span> <span class="nav-text">K8S部署实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM内存限制"><span class="nav-number">4.1.</span> <span class="nav-text">JVM内存限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动更新-高可用"><span class="nav-number">4.2.</span> <span class="nav-text">滚动更新-高可用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动更新-pod删除"><span class="nav-number">4.3.</span> <span class="nav-text">滚动更新-pod删除</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务链路监控-APM"><span class="nav-number">5.</span> <span class="nav-text">微服务链路监控-APM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全链路监控是什么"><span class="nav-number">5.1.</span> <span class="nav-text">全链路监控是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全链路监控解决的问题"><span class="nav-number">5.2.</span> <span class="nav-text">全链路监控解决的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全链路监控组件选择"><span class="nav-number">5.3.</span> <span class="nav-text">全链路监控组件选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pinpoint介绍"><span class="nav-number">5.4.</span> <span class="nav-text">Pinpoint介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pinpoint服务端部署"><span class="nav-number">5.5.</span> <span class="nav-text">Pinpoint服务端部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pinpoint-Agent部署"><span class="nav-number">5.6.</span> <span class="nav-text">Pinpoint Agent部署</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

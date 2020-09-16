@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="状态迁移版本库=》工作区=》暂存区=》版本库 clean 从工作区中清理未追踪的文件或目录  参数 -d 清除未追踪的目录 -f 强制删除未追踪的文件或目录 -x 删除为追踪的文件，使目录保持干净的原始状态应用清除未追踪的文件或目录：git clean -xdf   reset指定路径或文件的回退 还原暂存区内容，即撤销 git add操作 git reset HEAD 【file】  版本库整体">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-10T01:33:27.024Z">
+<meta property="og:updated_time" content="2020-09-15T19:06:50.580Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="版本库命令-git">
 <meta name="twitter:description" content="状态迁移版本库=》工作区=》暂存区=》版本库 clean 从工作区中清理未追踪的文件或目录  参数 -d 清除未追踪的目录 -f 强制删除未追踪的文件或目录 -x 删除为追踪的文件，使目录保持干净的原始状态应用清除未追踪的文件或目录：git clean -xdf   reset指定路径或文件的回退 还原暂存区内容，即撤销 git add操作 git reset HEAD 【file】  版本库整体">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-10T09:33:27+08:00">
-                2020-09-10
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T03:06:50+08:00">
+                2020-09-16
               </time>
             
           </span>
@@ -534,27 +534,32 @@
 <li>以下命令bfg就是【java -jar bfg.jar】的别名</li>
 </ul>
 <h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><ul>
-<li>克隆仓库元数据：git clone –mirror <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:my-account/my-repo.git</li>
-<li>移除文件【可以是下列任意一个操作】：<ul>
-<li>删除所有文件id_rsa或id_dsa：bfg –delete-files id_{dsa,rsa}  my-repo.git</li>
-<li>删除目录.git：bfg –delete-folders .git –delete-files .git  –no-blob-protection  my-repo.git</li>
-<li>删除大于1M的文件：bfg –strip-blobs-bigger-than 1M  my-repo.git</li>
-<li>删除密码等文本：bfg –replace-text banned.txt  my-repo.git<ul>
+<li><p>克隆仓库元数据：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --mirror git@github.com:my-account/my-repo.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>移除文件【可以是下列任意一个操作】：</p>
+<ul>
+<li>删除所有文件id_rsa或id_dsa：<code>bfg --delete-files id_{dsa,rsa}  my-repo.git</code></li>
+<li>删除目录.git：<code>bfg --delete-folders .git --delete-files .git  --no-blob-protection  my-repo.git</code></li>
+<li>删除大于1M的文件：<code>bfg --strip-blobs-bigger-than 1M  my-repo.git</code></li>
+<li>删除密码等文本：<code>bfg --replace-text banned.txt  my-repo.git</code><ul>
 <li>在指定的文件【比如：banned.txt】中一行定义一个要删除的密码等隐私信息，执行删除后，密码信息会被【REMOVED】关键词替换</li>
 <li>比如在banned.txt中包含原来密码信息【426hx118】，则在执行操作时会将历史记录中=的【426hx118】替换为REMOVED</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>将本地修改推送到远程<ol>
-<li>cd my-repo.git</li>
-<li>git reflog expire –expire=now –all &amp;&amp; git gc –prune=now –aggressive</li>
+<li><p>将本地修改推送到远程</p>
+<ol>
+<li><code>cd my-repo.git</code></li>
+<li><code>git reflog expire --expire=now --all &amp;&amp; git gc --prune=now --aggressive</code></li>
 <li>git push</li>
 </ol>
 </li>
-<li>将远程元数据信息同步到本地<ol>
-<li>cd my-repo</li>
-<li>git pull</li>
+<li><p>将远程元数据信息同步到本地</p>
+<ol>
+<li><code>cd my-repo</code></li>
+<li><code>git pull</code></li>
 </ol>
 </li>
 </ul>
@@ -699,7 +704,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">259</span>
+                  <span class="site-state-item-count">263</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
