@@ -136,8 +136,8 @@ PG数量阈值：
 
 可用安装方式如下，本文主要使用ceph-deploy安装
 
-* ceph-deploy：https://docs.ceph.com/ceph-deploy/docs/contents.html
-* ceph-ansible：https://docs.ceph.com/ceph-ansible/master/
+* ceph-deploy：https://docs.ceph.com/projects/ceph-deploy/en/latest/contents.html
+* ceph-ansible：https://github.com/ceph/ceph-ansible
 * [rook](https://rook.io/)：在k8s内部署ceph集群
 * 手动安装集群：https://ceph.readthedocs.io/en/latest/install/index_manual/#
 
@@ -210,23 +210,23 @@ echo "noop" >/sys/block/sd[x]/queue/scheduler
   ceph
 
   ```
+  cat >> /etc/yum.repos.d/ceph.repo << EOF
   [Ceph]
-  name=Ceph packages for $basearch
-  baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/$basearch
+  name=Ceph packages for \$basearch
+  baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/\$basearch
   gpgcheck=0
   priority=1
-  
   [Ceph-noarch]
   name=Ceph noarch packages
   baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/noarch
   gpgcheck=0
   priority=1
-  
   [ceph-source]
   name=Ceph source packages
   baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/SRPMS
   gpgcheck=0
   priority=1
+  EOF
   ```
 
   epel
@@ -333,7 +333,7 @@ echo "noop" >/sys/block/sd[x]/queue/scheduler
 
 ## ceph.conf
 
-1、该配置文件采用init文件语法，#和;为注释，ceph集群在启动的时候会按照顺序加载所有的conf配置文件。 配置文件分为以下几大块配置。
+1、该配置文件采用ini文件语法，#和;为注释，ceph集群在启动的时候会按照顺序加载所有的conf配置文件。 配置文件分为以下几大块配置。
 
     global：全局配置。
     osd：osd专用配置，可以使用osd.N，来表示某一个OSD专用配置，N为osd的编号，如0、2、1等。
@@ -424,7 +424,7 @@ RBD即RADOS Block Device的简称，RBD块存储是最稳定且最常用的存�
 - thin-provisioned：精简配置；相当于存储空间的动态分配，就是块的大小和在 Ceph中实际占用大小是没有关系的，刚创建出来的块是不占空间，今后用多大空间，才会在 Ceph 中占用多大空间。
 
 - 块存储本质就是将裸磁盘或类似裸磁盘(lvm)设备映射给主机使用，主机可以对其进行格式化并存储和读取数据，块设备读取速度快但是不支持共享。
-- ceph可以通过内核模块和librbd库提供块设备支持。客户端可以通过内核模块挂载rbd使用，客户端使用rbd块设备就像使用普通硬盘一样，可以对其就行格式化然后使用典型的是云平台的块存储服务。
+- ceph可以通过内核模块和librbd库提供块设备支持。客户端可以通过内核模块挂载rbd使用，客户端使用rbd块设备就像使用普通硬盘一样，可以对其就行格式化然后使用；典型的是云平台的块存储服务。
 
 使用场景：
 
@@ -452,7 +452,7 @@ RBD即RADOS Block Device的简称，RBD块存储是最稳定且最常用的存�
 
   * rbd01：pool的名称
 
-  * 【1】32：[pool中pg的数量](https://blog.csdn.net/qq_32485197/article/details/88892620)：osd数量 * 100/副本数 = 最接近2的幂次方的数【例如3个osd、3个副本，3*100/3=100~128=2ⁿ】
+  * 【1】32：[pool中pg的数量](https://blog.csdn.net/qq_32485197/article/details/88892620)：osd数量 \* 100/副本数 = 最接近2的幂次方的数【例如3个osd、3个副本，3\*100/3=100~128=2ⁿ】
 
   * 【2】32：pool中pgs的数量，一般设置和pg一样
 
@@ -648,13 +648,13 @@ RBD即RADOS Block Device的简称，RBD块存储是最稳定且最常用的存�
 
 ## CephFS介绍
 
-Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问。CephFS 需要至少一个元数据服务器 (Metadata Server - MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。  
+Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问。CephFS 需要至少一个元数据服务器 (MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。  
 
 CephFS依赖的底层组件:
 
-- OSDs (ceph-osd): CephFS 的数据和元数据就存储在 OSDs 上
+- OSD (ceph-osd): CephFS 的数据和元数据就存储在 OSDs上
 - MDS (ceph-mds): Metadata Servers, 管理着 CephFS 的元数据
-- Mons (ceph-mon): Monitors 管理着集群 Map 的主副本
+- Mon (ceph-mon): Monitors 管理着集群 Map 的主副本
 
 Ceph 存储集群的协议层是 Ceph 原生的 librados 库, 与核心集群交互.
 
@@ -812,6 +812,7 @@ CephFS库层包括 CephFS 库 libcephfs, 工作在 librados 的顶层, 代表着
   
   * 显示bucket列表：s3cmd ls
 * 删除空bucket：s3cmd rb s3://test1
+  
   * 显示bucket内容：s3cmd ls s3://test1
   
 * object操作
@@ -825,10 +826,10 @@ CephFS库层包括 CephFS 库 libcephfs, 工作在 librados 的顶层, 代表着
 
 * 权限设置
 
-  * 上传时设置：s3cmd put --acl-public file.txt s3://my-bucket-name/file.txt
-  * 单独设置：s3cmd setacl s3://myexamplebucket.calvium.com/ --acl-public --recursive
+  * 上传时设置：`s3cmd put --acl-public file.txt s3://my-bucket-name/file.txt`
+  * 单独设置：`s3cmd setacl s3://myexamplebucket.calvium.com/ --acl-public --recursive`
 
-# [Ceph Dashboard](https://docs.ceph.com/docs/nautilus/mgr/dashboard/)
+# [Ceph Dashboard](https://docs.ceph.com/en/nautilus/mgr/dashboard/)
 
 从Luminous开始，Ceph 提供了原生的Dashboard功能，通过Dashboard可以获取Ceph集群的各种状态信息、也可以执行一些CRUD操作
 
@@ -904,7 +905,7 @@ gpgcheck=0
 https://prometheus.io/download/
 
 2、解压压缩包
-# tar fvxz prometheus-2.14.0.linux-amd64.tar.gz
+# tar xzvf prometheus-2.14.0.linux-amd64.tar.gz
 
 3、将解压后的目录改名
 # mv prometheus-2.14.0.linux-amd64 /opt/prometheus
@@ -970,7 +971,7 @@ systemctl restart prometheus
 
 ## 配置grafana
 
-1、浏览器登录 grafana 管理界面【http://x.x.x.x:3000】  
+1、浏览器登录 grafana 管理界面：http://x.x.x.x:3000   
 2、添加data sources，点击configuration--》data sources  
 3、添加dashboard，点击HOME--》find dashboard on grafana.com  
 4、搜索ceph的dashboard    
@@ -1015,8 +1016,8 @@ systemctl restart prometheus
 
 * 使用限制：默认[不支持配额和容量](https://github.com/kubernetes-retired/external-storage/tree/master/ceph/cephfs#known-limitations)；网络上解决存储配额的方案如下
 
-  * 方式1：https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/
-  * 方式2：https://www.cnblogs.com/ltxdzh/p/9173706.html
+  * [方式1](https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/)
+  * [方式2](https://www.cnblogs.com/ltxdzh/p/9173706.html)
 
 ## ceph官方支持
 
@@ -1024,10 +1025,6 @@ ceph官方以csi方式向k8s提供存储
 
 * ceph rbd for kubernetes文档：https://docs.ceph.com/docs/master/rbd/rbd-kubernetes/
 * 项目地址：https://github.com/ceph/ceph-csi
-
-## [rook](https://rook.io/)
-
-云原生存储，使用k8s平台部署存储服务，可用的存储后端包含：Ceph、NFS、Cassandra、EdgeFS、CockroachDB、Yugabyte DB等
 
 # 运维管理
 
@@ -1145,7 +1142,7 @@ ceph官方以csi方式向k8s提供存储
   ceph-deploy osd create --data /dev/sd<id> $hostname
   ```
 
-  > ceph-volume lvm zap  /dev/sdb --destroy删除ceph-deploy在磁盘上创建的lvm信息，从而可以使硬盘重新加入集群
+  > `ceph-volume lvm zap  /dev/sdb --destroy`删除ceph-deploy在磁盘上创建的lvm信息，从而可以使硬盘重新加入集群
 
 * 删除OSD
 
@@ -1227,16 +1224,22 @@ ceph官方以csi方式向k8s提供存储
   ceph osd pool get {pool-name} {key}
   ```
 
-  范例：查看pg设置
+  范例：
 
   ```
-  ceph osd pool get rbd pg_num
+  ceph osd pool get rbd pg_num  # 查看pg设置
+  ceph osd pool get rbd size    # 查看副本设置
   ```
 
 * 调整存储池选项值
 
   ```
   ceph osd pool set {pool-name} {key} {value}
+  ```
+
+  常见设置选项
+
+  ```
   size：设置存储池中的对象副本数，详情参见设置对象副本数。仅适用于副本存储池。
   min_size：设置 I/O 需要的最小副本数，详情参见设置对象副本数。仅适用于副本存储池。
   pg_num：计算数据分布时的有效 PG 数。只能大于当前 PG 数。
@@ -1256,12 +1259,6 @@ ceph官方以csi方式向k8s提供存储
   ceph osd pool set {pool-name} pgp_num 128 
   1、扩容大小取跟它接近的2的N次方  
   2、在更改pool的PG数量时，需同时更改PGP的数量。PGP是为了管理placement而存在的专门的PG，它和PG的数量应该保持一致。如果你增加pool的pg_num，就需要同时增加pgp_num，保持它们大小一致，这样集群才能正常rebalancing。
-  ```
-
-* 获取对象副本数
-
-  ```
-  ceph osd dump | grep 'replicated size'
   ```
 
 ## 用户管理
