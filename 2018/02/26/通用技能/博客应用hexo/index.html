@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="安装参考 安装前提 Node.js Git  安装命令npm install -g hexo-cli 建站hexo建站 hexo init blog cd blog npm install  使用git版本控制 目录切换：cd blog 初始化：git init 关联远程：git remote add origin git@github.com:simple0426/blog.git 保持同步：g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.540Z">
+<meta property="og:updated_time" content="2020-09-22T13:48:33.807Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="博客应用hexo">
 <meta name="twitter:description" content="安装参考 安装前提 Node.js Git  安装命令npm install -g hexo-cli 建站hexo建站 hexo init blog cd blog npm install  使用git版本控制 目录切换：cd blog 初始化：git init 关联远程：git remote add origin git@github.com:simple0426/blog.git 保持同步：g">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T21:48:33+08:00">
+                2020-09-22
               </time>
             
           </span>
@@ -448,6 +448,10 @@
 <p>主题配置</p>
 </blockquote>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">10000</span></span><br><span class="line"><span class="comment"># Local search</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="加入代码块复制功能"><a href="#加入代码块复制功能" class="headerlink" title="加入代码块复制功能"></a>加入代码块复制功能</h2><p>在NexT主题的v6.3版本里已经加入了代码复制这个功能，所以如果你刚开始使用NexT，直接升级主题，并在主题配置文件中打开代码复制的开关就好了。</p>
+<p>在Next5.1.4版本中添加此功能：<a href="https://qiming.info/Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8A%A0%E5%85%A5%E4%BB%A3%E7%A0%81%E5%9D%97%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD/" target="_blank" rel="noopener">https://qiming.info/Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8A%A0%E5%85%A5%E4%BB%A3%E7%A0%81%E5%9D%97%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD/</a></p>
+<p>悬疑步骤：themes/next/_config.yml中增加codeblock配置选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">codeblock:</span><br><span class="line">  border_radius:</span><br><span class="line">  # Add copy button on codeblock</span><br><span class="line">  copy_button:</span><br><span class="line">    enable: true</span><br><span class="line">    # Show text copy result</span><br><span class="line">    show_result: true</span><br></pre></td></tr></table></figure>
 <h1 id="hexo命令"><a href="#hexo命令" class="headerlink" title="hexo命令"></a>hexo命令</h1><ul>
 <li>hexo init：新建一个网站。如果没有设置 folder ，Hexo 默认在目前的文件夹建立网站。</li>
 <li>hexo new 文章标题：新建一篇文章</li>
@@ -690,7 +694,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装前提"><span class="nav-number">1.1.</span> <span class="nav-text">安装前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装命令"><span class="nav-number">1.2.</span> <span class="nav-text">安装命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建站"><span class="nav-number">2.</span> <span class="nav-text">建站</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo建站"><span class="nav-number">2.1.</span> <span class="nav-text">hexo建站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用git版本控制"><span class="nav-number">2.2.</span> <span class="nav-text">使用git版本控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录介绍"><span class="nav-number">3.</span> <span class="nav-text">目录介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签插件"><span class="nav-number">4.</span> <span class="nav-text">标签插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入其他文章"><span class="nav-number">4.1.</span> <span class="nav-text">引入其他文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入代码"><span class="nav-number">4.2.</span> <span class="nav-text">引入代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Next主题"><span class="nav-number">5.</span> <span class="nav-text">Next主题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载"><span class="nav-number">5.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">5.2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#站点配置"><span class="nav-number">5.2.1.</span> <span class="nav-text">站点配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主题配置"><span class="nav-number">5.2.2.</span> <span class="nav-text">主题配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类与标签"><span class="nav-number">5.3.</span> <span class="nav-text">分类与标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">5.4.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-1"><span class="nav-number">5.4.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-1"><span class="nav-number">5.4.2.</span> <span class="nav-text">配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo命令"><span class="nav-number">6.</span> <span class="nav-text">hexo命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FAQ"><span class="nav-number">7.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文章插入图片"><span class="nav-number">7.1.</span> <span class="nav-text">文章插入图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#github-pages配置"><span class="nav-number">7.2.</span> <span class="nav-text">github-pages配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装插件"><span class="nav-number">7.2.1.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主站配置"><span class="nav-number">7.2.2.</span> <span class="nav-text">主站配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义域名"><span class="nav-number">7.2.3.</span> <span class="nav-text">自定义域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署github"><span class="nav-number">7.2.4.</span> <span class="nav-text">部署github</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#public的压缩bug"><span class="nav-number">7.3.</span> <span class="nav-text">public的压缩bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊字符处理"><span class="nav-number">7.4.</span> <span class="nav-text">特殊字符处理</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装前提"><span class="nav-number">1.1.</span> <span class="nav-text">安装前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装命令"><span class="nav-number">1.2.</span> <span class="nav-text">安装命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建站"><span class="nav-number">2.</span> <span class="nav-text">建站</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo建站"><span class="nav-number">2.1.</span> <span class="nav-text">hexo建站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用git版本控制"><span class="nav-number">2.2.</span> <span class="nav-text">使用git版本控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录介绍"><span class="nav-number">3.</span> <span class="nav-text">目录介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签插件"><span class="nav-number">4.</span> <span class="nav-text">标签插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入其他文章"><span class="nav-number">4.1.</span> <span class="nav-text">引入其他文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入代码"><span class="nav-number">4.2.</span> <span class="nav-text">引入代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Next主题"><span class="nav-number">5.</span> <span class="nav-text">Next主题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载"><span class="nav-number">5.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">5.2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#站点配置"><span class="nav-number">5.2.1.</span> <span class="nav-text">站点配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主题配置"><span class="nav-number">5.2.2.</span> <span class="nav-text">主题配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类与标签"><span class="nav-number">5.3.</span> <span class="nav-text">分类与标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">5.4.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-1"><span class="nav-number">5.4.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-1"><span class="nav-number">5.4.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入代码块复制功能"><span class="nav-number">5.5.</span> <span class="nav-text">加入代码块复制功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo命令"><span class="nav-number">6.</span> <span class="nav-text">hexo命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FAQ"><span class="nav-number">7.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文章插入图片"><span class="nav-number">7.1.</span> <span class="nav-text">文章插入图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#github-pages配置"><span class="nav-number">7.2.</span> <span class="nav-text">github-pages配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装插件"><span class="nav-number">7.2.1.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主站配置"><span class="nav-number">7.2.2.</span> <span class="nav-text">主站配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义域名"><span class="nav-number">7.2.3.</span> <span class="nav-text">自定义域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署github"><span class="nav-number">7.2.4.</span> <span class="nav-text">部署github</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#public的压缩bug"><span class="nav-number">7.3.</span> <span class="nav-text">public的压缩bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊字符处理"><span class="nav-number">7.4.</span> <span class="nav-text">特殊字符处理</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1211,6 +1215,77 @@
   
 
   
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
 
 </body>
 </html>
