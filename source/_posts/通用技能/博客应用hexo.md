@@ -100,7 +100,26 @@ local_search:
   enable: true
 ```
 
+## 加入代码块复制功能
+
+在NexT主题的v6.3版本里已经加入了代码复制这个功能，所以如果你刚开始使用NexT，直接升级主题，并在主题配置文件中打开代码复制的开关就好了。
+
+在Next5.1.4版本中添加此功能：https://qiming.info/Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8A%A0%E5%85%A5%E4%BB%A3%E7%A0%81%E5%9D%97%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD/
+
+悬疑步骤：themes/next/_config.yml中增加codeblock配置选项
+
+```
+codeblock:
+  border_radius:
+  # Add copy button on codeblock
+  copy_button:
+    enable: true
+    # Show text copy result
+    show_result: true
+```
+
 # hexo命令
+
 * hexo init：新建一个网站。如果没有设置 folder ，Hexo 默认在目前的文件夹建立网站。
 * hexo new 文章标题：新建一篇文章
 * hexo new draft 文章标题：新建一篇草稿【或私密文章】
