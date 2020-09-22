@@ -144,7 +144,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -154,7 +154,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -286,20 +286,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/03/系统管理/系统基础/linux系统原理-文件系统/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -354,7 +354,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/linux/" itemprop="url" rel="index">
                     <span itemprop="name">linux</span>
                   </a>
@@ -539,7 +539,7 @@
 <li>格式化实质：创建文件系统</li>
 <li>分区工具：fdisk【小于2T】和pated【大于2T】</li>
 </ul>
-<h2 id="MBR"><a href="#MBR" class="headerlink" title="MBR"></a>MBR</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/MBR.png" alt=""></p>
+<h2 id="MBR"><a href="#MBR" class="headerlink" title="MBR"></a>MBR</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/MBR.png" alt></p>
 <ul>
 <li>MBR(广义)：每个磁盘只有一个主引导扇区，它不属于任何分区【所以格式化不能清除mbr】</li>
 <li>物理位置：位于0柱面，0磁道，1扇区</li>
@@ -554,7 +554,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="分区构成"><a href="#分区构成" class="headerlink" title="分区构成"></a>分区构成</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png" alt=""></p>
+<h2 id="分区构成"><a href="#分区构成" class="headerlink" title="分区构成"></a>分区构成</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%88%86%E5%8C%BA%E6%9E%84%E6%88%90.png" alt></p>
 <ul>
 <li>组成(格式化后分区构成)：启动扇区、数个块组<ul>
 <li>启动扇区(boot sector)<ul>
@@ -658,7 +658,7 @@
 <h1 id="开机过程"><a href="#开机过程" class="headerlink" title="开机过程"></a>开机过程</h1><blockquote>
 <p>centos6系统启动过程</p>
 </blockquote>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.bmp" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.bmp" alt></p>
 <ul>
 <li>BIOS开机自检：检测硬件是否存在故障；根据bios设置确定引导次序</li>
 <li>MBR引导：bios读取MBR中的boot-loader（grub程序）</li>
@@ -693,8 +693,8 @@
 <li>5   带图形界面的多用户模式</li>
 <li>6   重启</li>
 </ul>
-<h2 id="grub-conf配置"><a href="#grub-conf配置" class="headerlink" title="grub.conf配置"></a>grub.conf配置</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-grub_conf.png" alt=""></p>
-<h2 id="inittab详解"><a href="#inittab详解" class="headerlink" title="inittab详解"></a>inittab详解</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-inittab.png" alt=""></p>
+<h2 id="grub-conf配置"><a href="#grub-conf配置" class="headerlink" title="grub.conf配置"></a>grub.conf配置</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-grub_conf.png" alt></p>
+<h2 id="inittab详解"><a href="#inittab详解" class="headerlink" title="inittab详解"></a>inittab详解</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/linux-inittab.png" alt></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
 <li><a href="https://blog.csdn.net/Apollon_krj/article/details/77869770" target="_blank" rel="noopener">MBR和启动扇区</a></li>
 </ul>
@@ -806,7 +806,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -819,7 +819,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -841,7 +841,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

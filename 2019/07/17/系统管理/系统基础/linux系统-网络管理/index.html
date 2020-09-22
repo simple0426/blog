@@ -141,7 +141,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -151,7 +151,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -283,20 +283,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -351,7 +351,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/linux/" itemprop="url" rel="index">
                     <span itemprop="name">linux</span>
                   </a>
@@ -551,7 +551,7 @@
 <li>iptables语法主要由路由表、规则链、匹配规则、执行动作构成</li>
 <li>iptables语法：iptables (-t 路由表) (<a href="#规则操作">规则操作</a> 规则链) (<a href="#功能参数">功能参数</a>) (<a href="#匹配规则">匹配规则</a>)  (-j <a href="#执行动作">执行动作</a>) </li>
 </ul>
-<h2 id="表和链"><a href="#表和链" class="headerlink" title="表和链"></a>表和链</h2><p>iptables包含4个表和5个链，路由表是对数据包的不同类型的操作，规则链是在处理流程中的不同时间点进行的操作<br><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif" alt=""></p>
+<h2 id="表和链"><a href="#表和链" class="headerlink" title="表和链"></a>表和链</h2><p>iptables包含4个表和5个链，路由表是对数据包的不同类型的操作，规则链是在处理流程中的不同时间点进行的操作<br><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-tables-chains.gif" alt></p>
 <ul>
 <li>路由表：优先级：raw &gt; mangle &gt; nat &gt; filter<ul>
 <li>filter：一般的主机过滤功能，默认表</li>
@@ -646,7 +646,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h2><h3 id="filter与nat数据流"><a href="#filter与nat数据流" class="headerlink" title="filter与nat数据流"></a>filter与nat数据流</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-filter-nat.gif" alt=""></p>
+<h2 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h2><h3 id="filter与nat数据流"><a href="#filter与nat数据流" class="headerlink" title="filter与nat数据流"></a>filter与nat数据流</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/iptables-filter-nat.gif" alt></p>
 <h3 id="主机防火墙设置"><a href="#主机防火墙设置" class="headerlink" title="主机防火墙设置"></a>主机防火墙设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">iptables -F</span><br><span class="line">iptables -X</span><br><span class="line">iptables -Z</span><br><span class="line">iptables -A INPUT -s 192.168.100.0/24 -j ACCEPT</span><br><span class="line">iptables -A INPUT -i lo -j ACCEPT</span><br><span class="line">iptables -A INPUT -p tcp -m multiport --dports 3306,80 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p icmp -j ACCEPT</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line">iptables -P INPUT DROP</span><br><span class="line">iptables -P OUTPUT ACCEPT</span><br><span class="line">iptables -P FORWARD DROP</span><br></pre></td></tr></table></figure>
 <h3 id="正向代理设置"><a href="#正向代理设置" class="headerlink" title="正向代理设置"></a>正向代理设置</h3><blockquote>
 <p>代理局域网主机访问公网</p>
@@ -827,7 +827,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -840,7 +840,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -862,7 +862,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

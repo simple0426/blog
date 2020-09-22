@@ -93,7 +93,7 @@
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-ext.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-arch.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/pg-pool-osd.png">
-<meta property="og:updated_time" content="2020-09-10T17:08:25.835Z">
+<meta property="og:updated_time" content="2020-09-22T12:58:00.988Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式存储-ceph">
 <meta name="twitter:description" content="Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统 特点高性能  摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。 考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。 能够支持上千个存储节点的规模，支持TB到PB级的数据。  高可用性  副本数可以灵活控制。 支持故障域分隔，数据强一致性。 多种">
@@ -145,7 +145,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -155,7 +155,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -287,20 +287,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -337,8 +337,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-11T01:08:25+08:00">
-                2020-09-11
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T20:58:00+08:00">
+                2020-09-22
               </time>
             
           </span>
@@ -355,7 +355,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -422,7 +422,7 @@
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-basic1.png" style="zoom: 80%;"></p>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-high.png" style="zoom: 80%;"></p>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-ext.png" style="zoom: 80%;"></p>
-<h2 id="架构与组件"><a href="#架构与组件" class="headerlink" title="架构与组件"></a>架构与组件</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-arch.png" alt=""></p>
+<h2 id="架构与组件"><a href="#架构与组件" class="headerlink" title="架构与组件"></a>架构与组件</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/ceph-arch.png" alt></p>
 <ul>
 <li>管理组件：<ul>
 <li>MGR(ceph-mgr，Luminous之后)：<ul>
@@ -464,7 +464,7 @@
 <li>PG(placement groups)：它是对象的集合；相同PG内的对象都会放到相同的硬盘上(OSD)；服务端数据均衡和恢复的最小粒度就是PG；</li>
 </ul>
 <p>PG与Pool关系：</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/pg-pool-osd.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/pg-pool-osd.png" alt></p>
 <ul>
 <li>一个Pool里有很多PG</li>
 <li>一个PG里有很多对象</li>
@@ -525,8 +525,8 @@
 </ul>
 <h1 id="Ceph安装"><a href="#Ceph安装" class="headerlink" title="Ceph安装"></a>Ceph安装</h1><p>可用安装方式如下，本文主要使用ceph-deploy安装</p>
 <ul>
-<li>ceph-deploy：<a href="https://docs.ceph.com/ceph-deploy/docs/contents.html" target="_blank" rel="noopener">https://docs.ceph.com/ceph-deploy/docs/contents.html</a></li>
-<li>ceph-ansible：<a href="https://docs.ceph.com/ceph-ansible/master/" target="_blank" rel="noopener">https://docs.ceph.com/ceph-ansible/master/</a></li>
+<li>ceph-deploy：<a href="https://docs.ceph.com/projects/ceph-deploy/en/latest/contents.html" target="_blank" rel="noopener">https://docs.ceph.com/projects/ceph-deploy/en/latest/contents.html</a></li>
+<li>ceph-ansible：<a href="https://github.com/ceph/ceph-ansible" target="_blank" rel="noopener">https://github.com/ceph/ceph-ansible</a></li>
 <li><a href="https://rook.io/" target="_blank" rel="noopener">rook</a>：在k8s内部署ceph集群</li>
 <li>手动安装集群：<a href="https://ceph.readthedocs.io/en/latest/install/index_manual/#" target="_blank" rel="noopener">https://ceph.readthedocs.io/en/latest/install/index_manual/#</a></li>
 </ul>
@@ -541,7 +541,7 @@
 <h2 id="安装集群"><a href="#安装集群" class="headerlink" title="安装集群"></a>安装集群</h2><ul>
 <li><p>设置yum源：ceph、epel</p>
 <p>ceph</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages for $basearch</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/$basearch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/noarch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph source packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/SRPMS</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;&gt; /etc/yum.repos.d/ceph.repo &lt;&lt; EOF</span><br><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages for \$basearch</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/\$basearch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/noarch</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph source packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/SRPMS</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 <p>epel</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
@@ -594,7 +594,7 @@
 </li>
 </ul>
 <p>确认集群状态：ceph -s</p>
-<h2 id="ceph-conf"><a href="#ceph-conf" class="headerlink" title="ceph.conf"></a>ceph.conf</h2><p>1、该配置文件采用init文件语法，#和;为注释，ceph集群在启动的时候会按照顺序加载所有的conf配置文件。 配置文件分为以下几大块配置。</p>
+<h2 id="ceph-conf"><a href="#ceph-conf" class="headerlink" title="ceph.conf"></a>ceph.conf</h2><p>1、该配置文件采用ini文件语法，#和;为注释，ceph集群在启动的时候会按照顺序加载所有的conf配置文件。 配置文件分为以下几大块配置。</p>
 <pre><code>global：全局配置。
 osd：osd专用配置，可以使用osd.N，来表示某一个OSD专用配置，N为osd的编号，如0、2、1等。
 mon：mon专用配置，也可以使用mon.A来为某一个monitor节点做专用配置，其中A为该节点的名称，ceph-monitor-2、ceph-monitor-1等。使用命令 ceph mon dump可以获取节点的名称。
@@ -622,7 +622,7 @@ $name：值为$type.$id。
 </li>
 <li><p>块存储本质就是将裸磁盘或类似裸磁盘(lvm)设备映射给主机使用，主机可以对其进行格式化并存储和读取数据，块设备读取速度快但是不支持共享。</p>
 </li>
-<li>ceph可以通过内核模块和librbd库提供块设备支持。客户端可以通过内核模块挂载rbd使用，客户端使用rbd块设备就像使用普通硬盘一样，可以对其就行格式化然后使用典型的是云平台的块存储服务。</li>
+<li>ceph可以通过内核模块和librbd库提供块设备支持。客户端可以通过内核模块挂载rbd使用，客户端使用rbd块设备就像使用普通硬盘一样，可以对其就行格式化然后使用；典型的是云平台的块存储服务。</li>
 </ul>
 <p>使用场景：</p>
 <ul>
@@ -638,7 +638,7 @@ $name：值为$type.$id。
 <ul>
 <li><p>rbd01：pool的名称</p>
 </li>
-<li><p>【1】32：<a href="https://blog.csdn.net/qq_32485197/article/details/88892620" target="_blank" rel="noopener">pool中pg的数量</a>：osd数量 <em> 100/副本数 = 最接近2的幂次方的数【例如3个osd、3个副本，3</em>100/3=100~128=2ⁿ】</p>
+<li><p>【1】32：<a href="https://blog.csdn.net/qq_32485197/article/details/88892620" target="_blank" rel="noopener">pool中pg的数量</a>：osd数量 * 100/副本数 = 最接近2的幂次方的数【例如3个osd、3个副本，3*100/3=100~128=2ⁿ】</p>
 </li>
 <li><p>【2】32：pool中pgs的数量，一般设置和pg一样</p>
 </li>
@@ -746,12 +746,12 @@ $name：值为$type.$id。
 </li>
 </ul>
 <h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2><p>快照使用：只对重要且数据量较小的rbd做快照</p>
-<h1 id="CephFS"><a href="#CephFS" class="headerlink" title="CephFS"></a>CephFS</h1><h2 id="CephFS介绍"><a href="#CephFS介绍" class="headerlink" title="CephFS介绍"></a>CephFS介绍</h2><p>Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问。CephFS 需要至少一个元数据服务器 (Metadata Server - MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。  </p>
+<h1 id="CephFS"><a href="#CephFS" class="headerlink" title="CephFS"></a>CephFS</h1><h2 id="CephFS介绍"><a href="#CephFS介绍" class="headerlink" title="CephFS介绍"></a>CephFS介绍</h2><p>Ceph File System (CephFS) 是与 POSIX 标准兼容的文件系统, 能够提供对 Ceph 存储集群上的文件访问。CephFS 需要至少一个元数据服务器 (MDS) daemon (ceph-mds) 运行, MDS daemon 管理着与存储在 CephFS 上的文件相关的元数据, 并且协调着对 Ceph 存储系统的访问。  </p>
 <p>CephFS依赖的底层组件:</p>
 <ul>
-<li>OSDs (ceph-osd): CephFS 的数据和元数据就存储在 OSDs 上</li>
+<li>OSD (ceph-osd): CephFS 的数据和元数据就存储在 OSDs上</li>
 <li>MDS (ceph-mds): Metadata Servers, 管理着 CephFS 的元数据</li>
-<li>Mons (ceph-mon): Monitors 管理着集群 Map 的主副本</li>
+<li>Mon (ceph-mon): Monitors 管理着集群 Map 的主副本</li>
 </ul>
 <p>Ceph 存储集群的协议层是 Ceph 原生的 librados 库, 与核心集群交互.</p>
 <p>CephFS库层包括 CephFS 库 libcephfs, 工作在 librados 的顶层, 代表着 Ceph 文件系统.</p>
@@ -866,12 +866,12 @@ $name：值为$type.$id。
 </li>
 <li><p>权限设置</p>
 <ul>
-<li>上传时设置：s3cmd put –acl-public file.txt s3://my-bucket-name/file.txt</li>
-<li>单独设置：s3cmd setacl s3://myexamplebucket.calvium.com/ –acl-public –recursive</li>
+<li>上传时设置：<code>s3cmd put --acl-public file.txt s3://my-bucket-name/file.txt</code></li>
+<li>单独设置：<code>s3cmd setacl s3://myexamplebucket.calvium.com/ --acl-public --recursive</code></li>
 </ul>
 </li>
 </ul>
-<h1 id="Ceph-Dashboard"><a href="#Ceph-Dashboard" class="headerlink" title="Ceph Dashboard"></a><a href="https://docs.ceph.com/docs/nautilus/mgr/dashboard/" target="_blank" rel="noopener">Ceph Dashboard</a></h1><p>从Luminous开始，Ceph 提供了原生的Dashboard功能，通过Dashboard可以获取Ceph集群的各种状态信息、也可以执行一些CRUD操作</p>
+<h1 id="Ceph-Dashboard"><a href="#Ceph-Dashboard" class="headerlink" title="Ceph Dashboard"></a><a href="https://docs.ceph.com/en/nautilus/mgr/dashboard/" target="_blank" rel="noopener">Ceph Dashboard</a></h1><p>从Luminous开始，Ceph 提供了原生的Dashboard功能，通过Dashboard可以获取Ceph集群的各种状态信息、也可以执行一些CRUD操作</p>
 <h2 id="启用dashboard"><a href="#启用dashboard" class="headerlink" title="启用dashboard"></a>启用dashboard</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、在每个mgr节点安装dashboard</span><br><span class="line"># yum install ceph-mgr-dashboard -y</span><br><span class="line">2、mgr开启dashboard功能</span><br><span class="line"># ceph mgr module enable dashboard</span><br><span class="line">3、生成自签名的证书【默认使用https(8443)方式提供服务】</span><br><span class="line"># ceph dashboard create-self-signed-cert  </span><br><span class="line">4、创建一个dashboard登录用户名/密码</span><br><span class="line"># ceph dashboard ac-user-create admin 123456 administrator </span><br><span class="line">5、查看服务访问方式</span><br><span class="line"># ceph mgr services</span><br></pre></td></tr></table></figure>
 <h2 id="自定义配置"><a href="#自定义配置" class="headerlink" title="自定义配置"></a>自定义配置</h2><blockquote>
 <p>重启dashboard：ceph mgr module disable/enable dashboard</p>
@@ -879,7 +879,7 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 使用http方式访问集群(8080)【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/ssl false</span><br><span class="line"># 指定集群dashboard的访问IP【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/server_addr $IP </span><br><span class="line"># 指定集群dashboard的访问端口【重启dashboard】</span><br><span class="line">ceph config set mgr mgr/dashboard/server_port $PORT</span><br></pre></td></tr></table></figure>
 <h2 id="开启Object-Gateway功能"><a href="#开启Object-Gateway功能" class="headerlink" title="开启Object Gateway功能"></a>开启Object Gateway功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、创建rgw用户</span><br><span class="line"># radosgw-admin user create --uid=user01 --display-name=user01 --system</span><br><span class="line"># radosgw-admin user info --uid=user01</span><br><span class="line">2、向Dashboard提供访问rgw的access-key/secret-key</span><br><span class="line"># ceph dashboard set-rgw-api-access-key $access_key</span><br><span class="line"># ceph dashboard set-rgw-api-secret-key $secret_key</span><br><span class="line">3、配置rgw主机名和端口</span><br><span class="line"># ceph dashboard set-rgw-api-host 192.168.31.201</span><br><span class="line"># ceph dashboard set-rgw-api-port 7480</span><br><span class="line">4、刷新web页面</span><br></pre></td></tr></table></figure>
 <h1 id="prometheus-grafana监控"><a href="#prometheus-grafana监控" class="headerlink" title="prometheus+grafana监控"></a>prometheus+grafana监控</h1><h2 id="安装grafana"><a href="#安装grafana" class="headerlink" title="安装grafana"></a><a href="https://mirror.tuna.tsinghua.edu.cn/help/grafana/" target="_blank" rel="noopener">安装grafana</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1、配置yum源文件【/etc/yum.repos.d/grafana.repo】</span><br><span class="line">[grafana]</span><br><span class="line">name=grafana</span><br><span class="line">baseurl=https://mirrors.tuna.tsinghua.edu.cn/grafana/yum/rpm</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">2.通过yum命令安装grafana</span><br><span class="line"># sudo yum makecache</span><br><span class="line"># sudo yum install grafana</span><br><span class="line"></span><br><span class="line">3.启动grafana并设为开机自启</span><br><span class="line"># systemctl start grafana-server.service </span><br><span class="line"># systemctl enable grafana-server.service</span><br></pre></td></tr></table></figure>
-<h2 id="安装prometheus"><a href="#安装prometheus" class="headerlink" title="安装prometheus"></a>安装prometheus</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">1、下载安装包，下载地址</span><br><span class="line">https://prometheus.io/download/</span><br><span class="line"></span><br><span class="line">2、解压压缩包</span><br><span class="line"># tar fvxz prometheus-2.14.0.linux-amd64.tar.gz</span><br><span class="line"></span><br><span class="line">3、将解压后的目录改名</span><br><span class="line"># mv prometheus-2.14.0.linux-amd64 /opt/prometheus</span><br><span class="line"></span><br><span class="line">4、查看promethus版本</span><br><span class="line"># /opt/prometheus/prometheus --version</span><br><span class="line"></span><br><span class="line">5、配置系统服务启动</span><br><span class="line"># vim /etc/systemd/system/prometheus.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=Prometheus Monitoring System</span><br><span class="line">Documentation=Prometheus Monitoring System</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/opt/prometheus/prometheus \</span><br><span class="line">  --config.file /opt/prometheus/prometheus.yml \</span><br><span class="line">  --web.listen-address=:9090</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">6、加载系统服务</span><br><span class="line"># systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">7、启动服务和添加开机自启动</span><br><span class="line"># systemctl start prometheus</span><br><span class="line"># systemctl enable prometheus</span><br></pre></td></tr></table></figure>
+<h2 id="安装prometheus"><a href="#安装prometheus" class="headerlink" title="安装prometheus"></a>安装prometheus</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">1、下载安装包，下载地址</span><br><span class="line">https://prometheus.io/download/</span><br><span class="line"></span><br><span class="line">2、解压压缩包</span><br><span class="line"># tar xzvf prometheus-2.14.0.linux-amd64.tar.gz</span><br><span class="line"></span><br><span class="line">3、将解压后的目录改名</span><br><span class="line"># mv prometheus-2.14.0.linux-amd64 /opt/prometheus</span><br><span class="line"></span><br><span class="line">4、查看promethus版本</span><br><span class="line"># /opt/prometheus/prometheus --version</span><br><span class="line"></span><br><span class="line">5、配置系统服务启动</span><br><span class="line"># vim /etc/systemd/system/prometheus.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=Prometheus Monitoring System</span><br><span class="line">Documentation=Prometheus Monitoring System</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/opt/prometheus/prometheus \</span><br><span class="line">  --config.file /opt/prometheus/prometheus.yml \</span><br><span class="line">  --web.listen-address=:9090</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">6、加载系统服务</span><br><span class="line"># systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">7、启动服务和添加开机自启动</span><br><span class="line"># systemctl start prometheus</span><br><span class="line"># systemctl enable prometheus</span><br></pre></td></tr></table></figure>
 <h2 id="mgr开启prometheus功能"><a href="#mgr开启prometheus功能" class="headerlink" title="mgr开启prometheus功能"></a>mgr开启prometheus功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># ceph mgr module enable prometheus</span><br><span class="line"># netstat -nltp | grep mgr 检查端口</span><br><span class="line"># curl 127.0.0.1:9283/metrics  测试返回值</span><br></pre></td></tr></table></figure>
 <h2 id="配置prometheus"><a href="#配置prometheus" class="headerlink" title="配置prometheus"></a>配置prometheus</h2><ul>
 <li>在 scrape_configs:配置项下添加【/opt/prometheus/prometheus.yml】</li>
@@ -893,7 +893,7 @@ $name：值为$type.$id。
 <li>检查prometheus服务器中是否添加成功</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">浏览器-》 http://x.x.x.x:9090 -》status -》Targets</span><br></pre></td></tr></table></figure>
-<h2 id="配置grafana"><a href="#配置grafana" class="headerlink" title="配置grafana"></a>配置grafana</h2><p>1、浏览器登录 grafana 管理界面【<a href="http://x.x.x.x:3000】" target="_blank" rel="noopener">http://x.x.x.x:3000】</a><br>2、添加data sources，点击configuration–》data sources<br>3、添加dashboard，点击HOME–》find dashboard on grafana.com<br>4、搜索ceph的dashboard<br>5、点击HOME–》Import dashboard, 选择合适的dashboard，记录编号</p>
+<h2 id="配置grafana"><a href="#配置grafana" class="headerlink" title="配置grafana"></a>配置grafana</h2><p>1、浏览器登录 grafana 管理界面：<a href="http://x.x.x.x:3000" target="_blank" rel="noopener">http://x.x.x.x:3000</a><br>2、添加data sources，点击configuration–》data sources<br>3、添加dashboard，点击HOME–》find dashboard on grafana.com<br>4、搜索ceph的dashboard<br>5、点击HOME–》Import dashboard, 选择合适的dashboard，记录编号</p>
 <h1 id="k8s对接ceph存储"><a href="#k8s对接ceph存储" class="headerlink" title="k8s对接ceph存储"></a>k8s对接ceph存储</h1><h2 id="k8s内置支持ceph-rbd"><a href="#k8s内置支持ceph-rbd" class="headerlink" title="k8s内置支持ceph rbd"></a>k8s内置支持ceph rbd</h2><p><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#ceph-rbd" target="_blank" rel="noopener">k8s原生支持ceph rbd</a>【但是目前不可用】使用限制和问题如下：</p>
 <ul>
 <li>当前测试支持的功能有：创建rbd image(创建pv/pvc)、删除rbd image(删除pv/pvc)、查看rbd image状态(查看pv/pvc)</li>
@@ -923,8 +923,8 @@ $name：值为$type.$id。
 </li>
 <li><p>使用限制：默认<a href="https://github.com/kubernetes-retired/external-storage/tree/master/ceph/cephfs#known-limitations" target="_blank" rel="noopener">不支持配额和容量</a>；网络上解决存储配额的方案如下</p>
 <ul>
-<li>方式1：<a href="https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/" target="_blank" rel="noopener">https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/</a></li>
-<li>方式2：<a href="https://www.cnblogs.com/ltxdzh/p/9173706.html" target="_blank" rel="noopener">https://www.cnblogs.com/ltxdzh/p/9173706.html</a></li>
+<li><a href="https://jeremyxu2010.github.io/2019/09/kubernetes%E4%BD%BF%E7%94%A8ceph%E5%AD%98%E5%82%A8%E5%8D%B7/" target="_blank" rel="noopener">方式1</a></li>
+<li><a href="https://www.cnblogs.com/ltxdzh/p/9173706.html" target="_blank" rel="noopener">方式2</a></li>
 </ul>
 </li>
 </ul>
@@ -933,7 +933,6 @@ $name：值为$type.$id。
 <li>ceph rbd for kubernetes文档：<a href="https://docs.ceph.com/docs/master/rbd/rbd-kubernetes/" target="_blank" rel="noopener">https://docs.ceph.com/docs/master/rbd/rbd-kubernetes/</a></li>
 <li>项目地址：<a href="https://github.com/ceph/ceph-csi" target="_blank" rel="noopener">https://github.com/ceph/ceph-csi</a></li>
 </ul>
-<h2 id="rook"><a href="#rook" class="headerlink" title="rook"></a><a href="https://rook.io/" target="_blank" rel="noopener">rook</a></h2><p>云原生存储，使用k8s平台部署存储服务，可用的存储后端包含：Ceph、NFS、Cassandra、EdgeFS、CockroachDB、Yugabyte DB等</p>
 <h1 id="运维管理"><a href="#运维管理" class="headerlink" title="运维管理"></a>运维管理</h1><h2 id="集群状态查看"><a href="#集群状态查看" class="headerlink" title="集群状态查看"></a>集群状态查看</h2><ul>
 <li><p>集群状态：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph -s            # 集群运行状态</span><br><span class="line">ceph -w            # 持续监控集群状态</span><br><span class="line">ceph health [detail] # 集群健康详情</span><br><span class="line">ceph df [detail]   # 集群空间使用量</span><br></pre></td></tr></table></figure>
@@ -984,7 +983,7 @@ $name：值为$type.$id。
 <p>进入到ceph-deploy执行目录/my-cluster，添加OSD</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create --data /dev/sd&lt;id&gt; $hostname</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>ceph-volume lvm zap  /dev/sdb –destroy删除ceph-deploy在磁盘上创建的lvm信息，从而可以使硬盘重新加入集群</p>
+<p><code>ceph-volume lvm zap  /dev/sdb --destroy</code>删除ceph-deploy在磁盘上创建的lvm信息，从而可以使硬盘重新加入集群</p>
 </blockquote>
 </li>
 <li><p>删除OSD</p>
@@ -1018,16 +1017,15 @@ $name：值为$type.$id。
 </li>
 <li><p>获取存储池选项值</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool get &#123;pool-name&#125; &#123;key&#125;</span><br></pre></td></tr></table></figure>
-<p>范例：查看pg设置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool get rbd pg_num</span><br></pre></td></tr></table></figure>
+<p>范例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool get rbd pg_num  # 查看pg设置</span><br><span class="line">ceph osd pool get rbd size    # 查看副本设置</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>调整存储池选项值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set &#123;pool-name&#125; &#123;key&#125; &#123;value&#125;</span><br><span class="line">size：设置存储池中的对象副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">min_size：设置 I/O 需要的最小副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">pg_num：计算数据分布时的有效 PG 数。只能大于当前 PG 数。</span><br><span class="line">pgp_num：计算数据分布时使用的有效 PGP 数量。小于等于存储池的 PG 数。</span><br><span class="line">hashpspool：给指定存储池设置/取消 HASHPSPOOL 标志。</span><br><span class="line">target_max_bytes：达到 max_bytes 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">target_max_objects：达到 max_objects 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">scrub_min_interval：在负载低时，洗刷存储池的最小间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_min_interval 。</span><br><span class="line">scrub_max_interval：不管集群负载如何，都要洗刷存储池的最大间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_max_interval 。</span><br><span class="line">deep_scrub_interval：“深度”洗刷存储池的间隔秒数。如果是 0 ，就按照配置文件里的 osd_deep_scrub_interval 。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set &#123;pool-name&#125; &#123;key&#125; &#123;value&#125;</span><br></pre></td></tr></table></figure>
+<p>常见设置选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">size：设置存储池中的对象副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">min_size：设置 I/O 需要的最小副本数，详情参见设置对象副本数。仅适用于副本存储池。</span><br><span class="line">pg_num：计算数据分布时的有效 PG 数。只能大于当前 PG 数。</span><br><span class="line">pgp_num：计算数据分布时使用的有效 PGP 数量。小于等于存储池的 PG 数。</span><br><span class="line">hashpspool：给指定存储池设置/取消 HASHPSPOOL 标志。</span><br><span class="line">target_max_bytes：达到 max_bytes 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">target_max_objects：达到 max_objects 阀值时会触发 Ceph 冲洗或驱逐对象。</span><br><span class="line">scrub_min_interval：在负载低时，洗刷存储池的最小间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_min_interval 。</span><br><span class="line">scrub_max_interval：不管集群负载如何，都要洗刷存储池的最大间隔秒数。如果是 0 ，就按照配置文件里的 osd_scrub_max_interval 。</span><br><span class="line">deep_scrub_interval：“深度”洗刷存储池的间隔秒数。如果是 0 ，就按照配置文件里的 osd_deep_scrub_interval 。</span><br></pre></td></tr></table></figure>
 <p>范例：调整pg设置(一般为扩容)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set &#123;pool-name&#125; pg_num 128</span><br><span class="line">ceph osd pool set &#123;pool-name&#125; pgp_num 128 </span><br><span class="line">1、扩容大小取跟它接近的2的N次方  </span><br><span class="line">2、在更改pool的PG数量时，需同时更改PGP的数量。PGP是为了管理placement而存在的专门的PG，它和PG的数量应该保持一致。如果你增加pool的pg_num，就需要同时增加pgp_num，保持它们大小一致，这样集群才能正常rebalancing。</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取对象副本数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd dump | grep &apos;replicated size&apos;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><p>Ceph 把数据以对象的形式存于各存储池中。Ceph 用户必须具有访问存储池的权限才能够读写数据。另外，Ceph 用户必须具有执行权限才能够使用 Ceph 的管理命令。<br>查看用户信息</p>
@@ -1168,7 +1166,7 @@ $name：值为$type.$id。
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -1181,7 +1179,7 @@ $name：值为$type.$id。
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1203,7 +1201,7 @@ $name：值为$type.$id。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1252,7 +1250,7 @@ $name：值为$type.$id。
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph介绍"><span class="nav-number">1.</span> <span class="nav-text">Ceph介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与其他存储系统对比"><span class="nav-number">1.2.</span> <span class="nav-text">与其他存储系统对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构与组件"><span class="nav-number">1.3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储原理-Pool-PG"><span class="nav-number">1.4.</span> <span class="nav-text">存储原理-Pool/PG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph的三种存储类型"><span class="nav-number">1.5.</span> <span class="nav-text">ceph的三种存储类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph安装"><span class="nav-number">2.</span> <span class="nav-text">Ceph安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境规划"><span class="nav-number">2.1.</span> <span class="nav-text">环境规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统初始化设置"><span class="nav-number">2.2.</span> <span class="nav-text">系统初始化设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装集群"><span class="nav-number">2.3.</span> <span class="nav-text">安装集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph-conf"><span class="nav-number">2.4.</span> <span class="nav-text">ceph.conf</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RBD"><span class="nav-number">3.</span> <span class="nav-text">RBD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD介绍"><span class="nav-number">3.1.</span> <span class="nav-text">RBD介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD-IO流程"><span class="nav-number">3.2.</span> <span class="nav-text">RBD IO流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD常见操作"><span class="nav-number">3.3.</span> <span class="nav-text">RBD常见操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-增删使用"><span class="nav-number">3.3.1.</span> <span class="nav-text">RBD-增删使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照"><span class="nav-number">3.3.2.</span> <span class="nav-text">RBD-快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照克隆"><span class="nav-number">3.3.3.</span> <span class="nav-text">RBD-快照克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-扩容缩容"><span class="nav-number">3.3.4.</span> <span class="nav-text">RBD-扩容缩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程挂载RBD"><span class="nav-number">3.3.5.</span> <span class="nav-text">远程挂载RBD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD镜像导入导出"><span class="nav-number">3.3.6.</span> <span class="nav-text">RBD镜像导入导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建议"><span class="nav-number">3.4.</span> <span class="nav-text">使用建议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CephFS"><span class="nav-number">4.</span> <span class="nav-text">CephFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CephFS介绍"><span class="nav-number">4.1.</span> <span class="nav-text">CephFS介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署CephFS"><span class="nav-number">4.2.</span> <span class="nav-text">部署CephFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端挂载"><span class="nav-number">4.3.</span> <span class="nav-text">客户端挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MDS主备和主主"><span class="nav-number">4.4.</span> <span class="nav-text">MDS主备和主主</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Object"><span class="nav-number">5.</span> <span class="nav-text">Ceph Object</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#管理工具-s3cmd"><span class="nav-number">5.1.</span> <span class="nav-text">管理工具-s3cmd</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Dashboard"><span class="nav-number">6.</span> <span class="nav-text">Ceph Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用dashboard"><span class="nav-number">6.1.</span> <span class="nav-text">启用dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义配置"><span class="nav-number">6.2.</span> <span class="nav-text">自定义配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启Object-Gateway功能"><span class="nav-number">6.3.</span> <span class="nav-text">开启Object Gateway功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus-grafana监控"><span class="nav-number">7.</span> <span class="nav-text">prometheus+grafana监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装grafana"><span class="nav-number">7.1.</span> <span class="nav-text">安装grafana</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装prometheus"><span class="nav-number">7.2.</span> <span class="nav-text">安装prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mgr开启prometheus功能"><span class="nav-number">7.3.</span> <span class="nav-text">mgr开启prometheus功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置prometheus"><span class="nav-number">7.4.</span> <span class="nav-text">配置prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置grafana"><span class="nav-number">7.5.</span> <span class="nav-text">配置grafana</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s对接ceph存储"><span class="nav-number">8.</span> <span class="nav-text">k8s对接ceph存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s内置支持ceph-rbd"><span class="nav-number">8.1.</span> <span class="nav-text">k8s内置支持ceph rbd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s社区支持"><span class="nav-number">8.2.</span> <span class="nav-text">k8s社区支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ceph-rbd"><span class="nav-number">8.2.1.</span> <span class="nav-text">ceph rbd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cephfs"><span class="nav-number">8.2.2.</span> <span class="nav-text">cephfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph官方支持"><span class="nav-number">8.3.</span> <span class="nav-text">ceph官方支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rook"><span class="nav-number">8.4.</span> <span class="nav-text">rook</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">9.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群状态查看"><span class="nav-number">9.1.</span> <span class="nav-text">集群状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群配置管理-实时"><span class="nav-number">9.2.</span> <span class="nav-text">集群配置管理-实时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群进程管理"><span class="nav-number">9.3.</span> <span class="nav-text">集群进程管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MON节点管理-添加和删除"><span class="nav-number">9.4.</span> <span class="nav-text">MON节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD节点管理-添加和删除"><span class="nav-number">9.5.</span> <span class="nav-text">OSD节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pool管理"><span class="nav-number">9.6.</span> <span class="nav-text">Pool管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">9.7.</span> <span class="nav-text">用户管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题汇总"><span class="nav-number">10.</span> <span class="nav-text">问题汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nearfull-osd-s-or-pool-s-nearfull"><span class="nav-number">10.1.</span> <span class="nav-text">nearfull osd(s) or pool(s) nearfull</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展阅读"><span class="nav-number">11.</span> <span class="nav-text">扩展阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PG状态"><span class="nav-number">11.1.</span> <span class="nav-text">PG状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD状态"><span class="nav-number">11.2.</span> <span class="nav-text">OSD状态</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph介绍"><span class="nav-number">1.</span> <span class="nav-text">Ceph介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与其他存储系统对比"><span class="nav-number">1.2.</span> <span class="nav-text">与其他存储系统对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构与组件"><span class="nav-number">1.3.</span> <span class="nav-text">架构与组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储原理-Pool-PG"><span class="nav-number">1.4.</span> <span class="nav-text">存储原理-Pool/PG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph的三种存储类型"><span class="nav-number">1.5.</span> <span class="nav-text">ceph的三种存储类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph安装"><span class="nav-number">2.</span> <span class="nav-text">Ceph安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境规划"><span class="nav-number">2.1.</span> <span class="nav-text">环境规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统初始化设置"><span class="nav-number">2.2.</span> <span class="nav-text">系统初始化设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装集群"><span class="nav-number">2.3.</span> <span class="nav-text">安装集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph-conf"><span class="nav-number">2.4.</span> <span class="nav-text">ceph.conf</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RBD"><span class="nav-number">3.</span> <span class="nav-text">RBD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD介绍"><span class="nav-number">3.1.</span> <span class="nav-text">RBD介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD-IO流程"><span class="nav-number">3.2.</span> <span class="nav-text">RBD IO流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBD常见操作"><span class="nav-number">3.3.</span> <span class="nav-text">RBD常见操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-增删使用"><span class="nav-number">3.3.1.</span> <span class="nav-text">RBD-增删使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照"><span class="nav-number">3.3.2.</span> <span class="nav-text">RBD-快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-快照克隆"><span class="nav-number">3.3.3.</span> <span class="nav-text">RBD-快照克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD-扩容缩容"><span class="nav-number">3.3.4.</span> <span class="nav-text">RBD-扩容缩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程挂载RBD"><span class="nav-number">3.3.5.</span> <span class="nav-text">远程挂载RBD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD镜像导入导出"><span class="nav-number">3.3.6.</span> <span class="nav-text">RBD镜像导入导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建议"><span class="nav-number">3.4.</span> <span class="nav-text">使用建议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CephFS"><span class="nav-number">4.</span> <span class="nav-text">CephFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CephFS介绍"><span class="nav-number">4.1.</span> <span class="nav-text">CephFS介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署CephFS"><span class="nav-number">4.2.</span> <span class="nav-text">部署CephFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端挂载"><span class="nav-number">4.3.</span> <span class="nav-text">客户端挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MDS主备和主主"><span class="nav-number">4.4.</span> <span class="nav-text">MDS主备和主主</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Object"><span class="nav-number">5.</span> <span class="nav-text">Ceph Object</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#管理工具-s3cmd"><span class="nav-number">5.1.</span> <span class="nav-text">管理工具-s3cmd</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ceph-Dashboard"><span class="nav-number">6.</span> <span class="nav-text">Ceph Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用dashboard"><span class="nav-number">6.1.</span> <span class="nav-text">启用dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义配置"><span class="nav-number">6.2.</span> <span class="nav-text">自定义配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启Object-Gateway功能"><span class="nav-number">6.3.</span> <span class="nav-text">开启Object Gateway功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus-grafana监控"><span class="nav-number">7.</span> <span class="nav-text">prometheus+grafana监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装grafana"><span class="nav-number">7.1.</span> <span class="nav-text">安装grafana</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装prometheus"><span class="nav-number">7.2.</span> <span class="nav-text">安装prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mgr开启prometheus功能"><span class="nav-number">7.3.</span> <span class="nav-text">mgr开启prometheus功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置prometheus"><span class="nav-number">7.4.</span> <span class="nav-text">配置prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置grafana"><span class="nav-number">7.5.</span> <span class="nav-text">配置grafana</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s对接ceph存储"><span class="nav-number">8.</span> <span class="nav-text">k8s对接ceph存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s内置支持ceph-rbd"><span class="nav-number">8.1.</span> <span class="nav-text">k8s内置支持ceph rbd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s社区支持"><span class="nav-number">8.2.</span> <span class="nav-text">k8s社区支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ceph-rbd"><span class="nav-number">8.2.1.</span> <span class="nav-text">ceph rbd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cephfs"><span class="nav-number">8.2.2.</span> <span class="nav-text">cephfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph官方支持"><span class="nav-number">8.3.</span> <span class="nav-text">ceph官方支持</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">9.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群状态查看"><span class="nav-number">9.1.</span> <span class="nav-text">集群状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群配置管理-实时"><span class="nav-number">9.2.</span> <span class="nav-text">集群配置管理-实时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群进程管理"><span class="nav-number">9.3.</span> <span class="nav-text">集群进程管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MON节点管理-添加和删除"><span class="nav-number">9.4.</span> <span class="nav-text">MON节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD节点管理-添加和删除"><span class="nav-number">9.5.</span> <span class="nav-text">OSD节点管理-添加和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pool管理"><span class="nav-number">9.6.</span> <span class="nav-text">Pool管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">9.7.</span> <span class="nav-text">用户管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题汇总"><span class="nav-number">10.</span> <span class="nav-text">问题汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nearfull-osd-s-or-pool-s-nearfull"><span class="nav-number">10.1.</span> <span class="nav-text">nearfull osd(s) or pool(s) nearfull</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展阅读"><span class="nav-number">11.</span> <span class="nav-text">扩展阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PG状态"><span class="nav-number">11.1.</span> <span class="nav-text">PG状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD状态"><span class="nav-number">11.2.</span> <span class="nav-text">OSD状态</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-custom-metrics.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-all.png">
-<meta property="og:updated_time" content="2020-08-20T08:31:51.650Z">
+<meta property="og:updated_time" content="2020-09-17T15:22:13.202Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-弹性伸缩">
 <meta name="twitter:description" content="弹性伸缩集群的容量能够及时响应业务的负载需求 业务负载类型 在线负载类：微服务、API、网站 离线业务：离线计算、大数据、机器学习 定时任务：定时批量任务  在线负载类对弹性伸缩的弹出时间敏感；离线业务对价格敏感；定时任务对调度敏感 本章中的弹性伸缩主要针对在线负载类业务。 弹性伸缩维度 CA(cluster autoscaler)：node个数扩容、缩容；使用cluster-autoscaler">
@@ -141,7 +141,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -151,7 +151,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -283,20 +283,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-20T16:31:51+08:00">
-                2020-08-20
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-17T23:22:13+08:00">
+                2020-09-17
               </time>
             
           </span>
@@ -351,7 +351,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -410,8 +410,9 @@
 <li>核心：pod优雅停机</li>
 <li>解决：pod中定义prestop钩子</li>
 <li>范例：如果我的tomcat里面跑的订单业务，数据要求不丢失。当我的tomcat正在做一个批量操作，耗时5分钟，怎么保证缩容的时候，实现等待这个批量操作和其他数据流量操作完成后在缩容呢？<ul>
-<li>prestop钩子要保证任务执行完</li>
-<li>任务要实现事务回滚或重复执行要幂等</li>
+<li>prestop查询执行结果，保证任务执行完</li>
+<li>prestop查询apiserver或服务注册中心：当前pod是不是已下线？下线了就关闭pod；未下线就进入查询循环继续等待</li>
+<li>执行的任务要实现事务回滚或重复执行要幂等</li>
 </ul>
 </li>
 </ul>
@@ -516,7 +517,7 @@
 </li>
 </ul>
 <h1 id="HPA范例-基于prometheus自定义指标"><a href="#HPA范例-基于prometheus自定义指标" class="headerlink" title="HPA范例-基于prometheus自定义指标"></a>HPA范例-基于prometheus自定义指标</h1><p>基于资源指标（cpu、内存）进行pod伸缩，使用metrics-server就可以(metrics.k8s.io)；但是如果想使用自定义指标：如请求qps/5xx错误数实现HPA，就需要部署单独的适配器来支持自定义指标(custom.metrics.k8s.io)；目前比较成熟的是 Prometheus Custom Metrics，由prometheus提供自定义指标，再利用k8s-prometheus-adpater将指标数据聚合到APIServer，以此实现和核心指标(metrics server)同样的效果</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-custom-metrics.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-custom-metrics.png" alt></p>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-all.png" style="zoom:200%;"></p>
 <h2 id="部署prometheus"><a href="#部署prometheus" class="headerlink" title="部署prometheus"></a>部署prometheus</h2><p>可以只部署prometheus-server和客户端组件【提供数据给HPA决策使用】</p>
 <p>分组件部署范例：<a href="https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/kubernetes/prometheus</a></p>
@@ -665,7 +666,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -678,7 +679,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -700,7 +701,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

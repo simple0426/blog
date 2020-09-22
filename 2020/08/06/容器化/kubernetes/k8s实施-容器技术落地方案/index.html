@@ -88,7 +88,7 @@
 <meta property="og:description" content="容器平台分层架构  基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库 容器引擎层：docker、harbor(镜像仓库) 容器编排层：kubernetes 访问和工具层-PaaS：web控制台、CICD、监控、日志  技术栈选择服务器 服务器类型：物理机、虚拟机 节点管理【ssd、GPU】 定义节点标签；pod使用亲和性调度 定义节点污点；pod使用容忍度调度">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg">
-<meta property="og:updated_time" content="2020-09-16T13:49:21.346Z">
+<meta property="og:updated_time" content="2020-09-22T13:08:57.535Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s实施-容器技术落地方案">
 <meta name="twitter:description" content="容器平台分层架构  基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库 容器引擎层：docker、harbor(镜像仓库) 容器编排层：kubernetes 访问和工具层-PaaS：web控制台、CICD、监控、日志  技术栈选择服务器 服务器类型：物理机、虚拟机 节点管理【ssd、GPU】 定义节点标签；pod使用亲和性调度 定义节点污点；pod使用容忍度调度">
@@ -140,7 +140,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -150,7 +150,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -282,20 +282,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:49:21+08:00">
-                2020-09-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T21:08:57+08:00">
+                2020-09-22
               </time>
             
           </span>
@@ -350,7 +350,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -388,7 +388,7 @@
       
 
       
-        <h1 id="容器平台分层架构"><a href="#容器平台分层架构" class="headerlink" title="容器平台分层架构"></a>容器平台分层架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg" alt=""></p>
+        <h1 id="容器平台分层架构"><a href="#容器平台分层架构" class="headerlink" title="容器平台分层架构"></a>容器平台分层架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg" alt></p>
 <ul>
 <li>基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库</li>
 <li>容器引擎层：docker、harbor(镜像仓库)</li>
@@ -608,6 +608,17 @@
 <li>apiserver访问限制、操作审计</li>
 <li>k8s事件信息归档、报警</li>
 </ul>
+<h1 id="公有云部署k8s"><a href="#公有云部署k8s" class="headerlink" title="公有云部署k8s"></a><a href="https://tech.souyunku.com/?p=22239" target="_blank" rel="noopener">公有云部署k8s</a></h1><ul>
+<li><p>阿里云ecs不支持keepalived vip,只能只用SLB来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1、 阿里云不能使用vip,要用vip只能走slb</span><br><span class="line">2、 slb已经没有免费的了,都要收费,包括内网slb</span><br><span class="line">3、 不支持手动指定slb的IP地址,所以之前生成的api证书之类的重新弄吧</span><br><span class="line">4、 要反代https(apiserver),只能用slb的四层反代</span><br><span class="line">5、 slb四层TCP反代(7443),不能直接反代到服务提供者上(即apiserver:6443)</span><br><span class="line">6、 只能将 tcp反代,先代理到另一个ecs上,ecs再用nginx之类代理到apiserver</span><br><span class="line">7、 即slb(tcp:7443)–&gt;nginx(tcp:7443)–&gt;apiserver(https:6443)</span><br><span class="line">(nginx和apiserver不能是同一个机器)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>阿里云ecs不支持flannel的gw模式【阿里云使用SDN网络，ECS之间、ECS访问其他网络都依靠交换机绑定的路由表】</p>
+<ul>
+<li>使用gw模式，但是在阿里云的路由表中添加到各容器网段的路由</li>
+<li>使用vxlan模式</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -716,7 +727,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -729,7 +740,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -751,7 +762,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -800,7 +811,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器平台分层架构"><span class="nav-number">1.</span> <span class="nav-text">容器平台分层架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术栈选择"><span class="nav-number">2.</span> <span class="nav-text">技术栈选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器"><span class="nav-number">2.1.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">2.2.</span> <span class="nav-text">存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">2.3.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像仓库"><span class="nav-number">2.4.</span> <span class="nav-text">镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">2.5.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志"><span class="nav-number">2.6.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CICD流程"><span class="nav-number">2.7.</span> <span class="nav-text">CICD流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他注意事项"><span class="nav-number">2.8.</span> <span class="nav-text">其他注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源规划"><span class="nav-number">3.</span> <span class="nav-text">资源规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件选择-通用"><span class="nav-number">3.1.</span> <span class="nav-text">硬件选择-通用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容量规划"><span class="nav-number">3.2.</span> <span class="nav-text">容量规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s最大限额"><span class="nav-number">3.3.</span> <span class="nav-text">k8s最大限额</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群部署方式"><span class="nav-number">4.</span> <span class="nav-text">集群部署方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群高可用"><span class="nav-number">5.</span> <span class="nav-text">集群高可用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据备份-etcd"><span class="nav-number">6.</span> <span class="nav-text">数据备份-etcd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm部署集群"><span class="nav-number">6.1.</span> <span class="nav-text">kubeadm部署集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制部署集群"><span class="nav-number">6.2.</span> <span class="nav-text">二进制部署集群</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题与调试"><span class="nav-number">7.</span> <span class="nav-text">常见问题与调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">7.1.</span> <span class="nav-text">常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod启动异常"><span class="nav-number">7.2.</span> <span class="nav-text">pod启动异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s-event"><span class="nav-number">7.2.1.</span> <span class="nav-text">k8s-event</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法通过service访问应用"><span class="nav-number">7.3.</span> <span class="nav-text">无法通过service访问应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">8.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS名称解析"><span class="nav-number">8.1.</span> <span class="nav-text">DNS名称解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性伸缩"><span class="nav-number">8.2.</span> <span class="nav-text">弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-controller"><span class="nav-number">8.3.</span> <span class="nav-text">ingress controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全"><span class="nav-number">8.4.</span> <span class="nav-text">安全</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#容器平台分层架构"><span class="nav-number">1.</span> <span class="nav-text">容器平台分层架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术栈选择"><span class="nav-number">2.</span> <span class="nav-text">技术栈选择</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器"><span class="nav-number">2.1.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">2.2.</span> <span class="nav-text">存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">2.3.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像仓库"><span class="nav-number">2.4.</span> <span class="nav-text">镜像仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">2.5.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志"><span class="nav-number">2.6.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CICD流程"><span class="nav-number">2.7.</span> <span class="nav-text">CICD流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他注意事项"><span class="nav-number">2.8.</span> <span class="nav-text">其他注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源规划"><span class="nav-number">3.</span> <span class="nav-text">资源规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件选择-通用"><span class="nav-number">3.1.</span> <span class="nav-text">硬件选择-通用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容量规划"><span class="nav-number">3.2.</span> <span class="nav-text">容量规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s最大限额"><span class="nav-number">3.3.</span> <span class="nav-text">k8s最大限额</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群部署方式"><span class="nav-number">4.</span> <span class="nav-text">集群部署方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群高可用"><span class="nav-number">5.</span> <span class="nav-text">集群高可用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据备份-etcd"><span class="nav-number">6.</span> <span class="nav-text">数据备份-etcd</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm部署集群"><span class="nav-number">6.1.</span> <span class="nav-text">kubeadm部署集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制部署集群"><span class="nav-number">6.2.</span> <span class="nav-text">二进制部署集群</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题与调试"><span class="nav-number">7.</span> <span class="nav-text">常见问题与调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">7.1.</span> <span class="nav-text">常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod启动异常"><span class="nav-number">7.2.</span> <span class="nav-text">pod启动异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s-event"><span class="nav-number">7.2.1.</span> <span class="nav-text">k8s-event</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法通过service访问应用"><span class="nav-number">7.3.</span> <span class="nav-text">无法通过service访问应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">8.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS名称解析"><span class="nav-number">8.1.</span> <span class="nav-text">DNS名称解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性伸缩"><span class="nav-number">8.2.</span> <span class="nav-text">弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-controller"><span class="nav-number">8.3.</span> <span class="nav-text">ingress controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全"><span class="nav-number">8.4.</span> <span class="nav-text">安全</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#公有云部署k8s"><span class="nav-number">9.</span> <span class="nav-text">公有云部署k8s</span></a></li></ol></div>
             
 
           </div>

@@ -143,7 +143,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -153,7 +153,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -285,20 +285,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/19/容器化/docker/docker入门介绍/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -353,7 +353,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/docker/" itemprop="url" rel="index">
                     <span itemprop="name">docker</span>
                   </a>
@@ -402,21 +402,21 @@
 <li>在同一个硬件上运行更多的负载</li>
 </ul>
 <h2 id="容器化devops"><a href="#容器化devops" class="headerlink" title="容器化devops"></a>容器化devops</h2><p>通过标准化“应用运行环境”，沟通开发(dev)和运维(ops)流程</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg" alt></p>
 <h2 id="容器与虚拟机"><a href="#容器与虚拟机" class="headerlink" title="容器与虚拟机"></a>容器与虚拟机</h2><ul>
 <li>区别：容器是在操作系统层面实现虚拟化，直接复用本地操作系统内核，它的技术基础是linux容器技术（LXC，即cgroups）；传统虚拟化方式则基于硬件层面实现虚拟化。</li>
 </ul>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg" alt></p>
 <ul>
 <li>融合：由于目前docker不支持热迁移，可以将docker容器放在KVM虚拟机里，通过虚拟机的迁移完成容器的迁移</li>
 </ul>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg" alt></p>
 <h1 id="docker介绍"><a href="#docker介绍" class="headerlink" title="docker介绍"></a><a href="https://docs.docker.com/get-started/overview/#docker-architecture" target="_blank" rel="noopener">docker介绍</a></h1><h2 id="docker架构"><a href="#docker架构" class="headerlink" title="docker架构"></a>docker架构</h2><ul>
 <li>docker daemon(dockerd)：监听API请求、管理docker对象（镜像、容器、网络、卷）</li>
 <li>docker client：用户管理docker的入口</li>
 <li>docker registry：镜像仓库</li>
 </ul>
-<p><img src="https://docs.docker.com/engine/images/architecture.svg" alt=""></p>
+<p><img src="https://docs.docker.com/engine/images/architecture.svg" alt></p>
 <h2 id="docker对象"><a href="#docker对象" class="headerlink" title="docker对象"></a>docker对象</h2><ul>
 <li>容器：视图隔离、资源可限制、独立文件系统的进程集合<ul>
 <li>可以把容器看做是一个简易的linux环境和运行在其中的应用程序</li>
@@ -639,7 +639,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -652,7 +652,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -674,7 +674,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

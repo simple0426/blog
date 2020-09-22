@@ -144,7 +144,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -154,7 +154,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -286,20 +286,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus高可用架构/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -354,7 +354,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/prometheus/" itemprop="url" rel="index">
                     <span itemprop="name">prometheus</span>
                   </a>
@@ -396,7 +396,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scrape_configs:</span><br><span class="line">- job_name: &apos;federate&apos;</span><br><span class="line">    scrape_interval: 15s</span><br><span class="line">    honor_labels: true</span><br><span class="line">    metrics_path: &apos;/federate&apos;</span><br><span class="line">    params:</span><br><span class="line">      &apos;match[]&apos;:</span><br><span class="line">        - &apos;&#123;job=~&quot;kubernetes.*&quot;&#125;&apos; #抓取目标prometheus中job为kubernetes开头的监控项</span><br><span class="line">    static_configs:</span><br><span class="line">      - targets:</span><br><span class="line">        - &apos;192.168.31.201:30090&apos;</span><br></pre></td></tr></table></figure>
 <h2 id="高可用方案"><a href="#高可用方案" class="headerlink" title="高可用方案"></a>高可用方案</h2><ul>
 <li><p>HA方案：启动多个prometheus-server，每个prometheus配置都相同，收集相同目标的数据</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha.jpg" alt></p>
 <ul>
 <li>优点：只能保证prometheus服务的可用性问题</li>
 <li>缺点：数据无法持久化、无法保证数据一致性；受制于单点性能限制(ServerA/ServerB)，无法进行动态扩展。</li>
@@ -404,7 +404,7 @@
 </ul>
 </li>
 <li><p>HA+远程存储：多台配置相同的prometheus(ServerA/ServerB)，都可以向远程存储写数据；使用keepalived机制，保证同一时间只启动其中的一台prometheus-server，也只有存活的prometheus可以向远程存储写数据</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-remote-storage.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-remote-storage.jpg" alt></p>
 <ul>
 <li>优点：数据可以长期存储、保证了数据的一致性；保证了prometheus-server的可用性</li>
 <li>缺点：单台server性能有限，无法收集更多监控数据</li>
@@ -412,7 +412,7 @@
 </ul>
 </li>
 <li><p>HA+远程存储+联邦集群：将不同的采集任务划分为不同功能区(ServerA/ServerB)，再启动一台单独的prometheus(ServerC)将重要的数据从ServerA和ServerB中汇总，同时启用外部存储进行数据持久化</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha-federate.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-ha-federate.jpg" alt></p>
 <ul>
 <li>优点：重要数据可以持久化、server可以灵活迁移；能够依据不同任务进行层级划分；ServerA/ServerB可以使用HA进行高可用</li>
 </ul>
@@ -426,13 +426,13 @@
 </ul>
 </li>
 <li><p>监控实现</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-sample.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/prometheus-sample.jpg" alt></p>
 </li>
 </ul>
 <h1 id="altermanager高可用"><a href="#altermanager高可用" class="headerlink" title="altermanager高可用"></a>altermanager高可用</h1><p>单点架构中，由于收敛规则中的group可以去重(repeat)，所以altermanager可以对接多个具有相同配置的prometheus-server</p>
 <h2 id="高可用方案-1"><a href="#高可用方案-1" class="headerlink" title="高可用方案"></a>高可用方案</h2><ul>
 <li><p>使用负载均衡，将prometheus发送的告警分流到不同的altermanager上</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alert-ha.jpg" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alert-ha.jpg" alt></p>
 </li>
 <li><p>使用altermanager的集群功能【使用gossip协议：去中心化、最终一致性】</p>
 <ul>
@@ -578,7 +578,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -591,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -613,7 +613,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -138,7 +138,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -148,7 +148,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -280,20 +280,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/28/软件开发/python开发/python常用模块/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -348,7 +348,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/python/" itemprop="url" rel="index">
                     <span itemprop="name">python</span>
                   </a>
@@ -438,8 +438,8 @@
 <h3 id="communicate"><a href="#communicate" class="headerlink" title="communicate"></a>communicate</h3><p>和管道通信，获取结果</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="comment">#打开一个管道对象，并把命令行执行结果保存到管道中</span></span><br><span class="line">df = subprocess.Popen([<span class="string">"df"</span>, <span class="string">"-P"</span>, <span class="string">"-k"</span>], stdout=subprocess.PIPE) </span><br><span class="line"><span class="comment">#和管道通信，获取数据</span></span><br><span class="line">output = df.communicate()[<span class="number">0</span>]           </span><br><span class="line"><span class="comment">#将获取的管道数据读到内存中【解码过程】</span></span><br><span class="line">print(output.decode(<span class="string">"utf-8"</span>))</span><br></pre></td></tr></table></figure>
 <h3 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h3><p>将一个子进程的输出，作为另一个子进程的输入</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">child1 = subprocess.Popen(<span class="string">'cat /etc/passwd'</span>, shell=<span class="keyword">True</span>, stdout=subprocess.PIPE)</span><br><span class="line">child2 = subprocess.Popen(<span class="string">'grep "0:0"'</span>, shell=<span class="keyword">True</span>, stdin=child1.stdout, stdout=subprocess.PIPE)</span><br><span class="line">out = child2.communicate()</span><br><span class="line">print(out[<span class="number">0</span>].decode())</span><br></pre></td></tr></table></figure>
-<h3 id="其他进程方法"><a href="#其他进程方法" class="headerlink" title="其他进程方法"></a>其他进程方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">child = subprocess.Popen(<span class="string">'sleep 60'</span>,shell=<span class="keyword">True</span>,stdout=subprocess.PIPE)</span><br><span class="line">child.poll()    <span class="comment">#检查子进程状态</span></span><br><span class="line">child.kill()     <span class="comment">#终止子进程</span></span><br><span class="line">child.send_signal()    <span class="comment">#向子进程发送信号</span></span><br><span class="line">child.terminate()   <span class="comment">#终止子进程</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">child1 = subprocess.Popen(<span class="string">'cat /etc/passwd'</span>, shell=<span class="literal">True</span>, stdout=subprocess.PIPE)</span><br><span class="line">child2 = subprocess.Popen(<span class="string">'grep "0:0"'</span>, shell=<span class="literal">True</span>, stdin=child1.stdout, stdout=subprocess.PIPE)</span><br><span class="line">out = child2.communicate()</span><br><span class="line">print(out[<span class="number">0</span>].decode())</span><br></pre></td></tr></table></figure>
+<h3 id="其他进程方法"><a href="#其他进程方法" class="headerlink" title="其他进程方法"></a>其他进程方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">child = subprocess.Popen(<span class="string">'sleep 60'</span>,shell=<span class="literal">True</span>,stdout=subprocess.PIPE)</span><br><span class="line">child.poll()    <span class="comment">#检查子进程状态</span></span><br><span class="line">child.kill()     <span class="comment">#终止子进程</span></span><br><span class="line">child.send_signal()    <span class="comment">#向子进程发送信号</span></span><br><span class="line">child.terminate()   <span class="comment">#终止子进程</span></span><br></pre></td></tr></table></figure>
 <h1 id="logging"><a href="#logging" class="headerlink" title="logging"></a>logging</h1><blockquote>
 <p>记录日志的模块</p>
 </blockquote>
@@ -673,7 +673,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -686,7 +686,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -708,7 +708,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="istio,servicemesh,灰度发布,金丝雀发布,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。 优点服务网格带来了巨大变革并且拥有其强大的技术优势，被称为第二代“微服务架构”。 第一，微服务治理与业务逻辑的解耦。服务网格把 SDK 中的大部分能力">
+<meta name="keywords" content="istio,servicemesh,灰度发布,金丝雀发布">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务网格-Istio">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。 优点服务网格带来了巨大变革并且拥有其强大的技术优势，被称为第二代“微服务架构”。 第一，微服务治理与业务逻辑的解耦。服务网格把 SDK 中的大部分能力">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.servicemesher.com/istio-handbook/images/istio-mesh-arch.png">
+<meta property="og:image" content="https://istio.io/latest/docs/examples/bookinfo/noistio.svg">
+<meta property="og:updated_time" content="2020-09-22T12:58:31.438Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="服务网格-Istio">
+<meta name="twitter:description" content="ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。 优点服务网格带来了巨大变革并且拥有其强大的技术优势，被称为第二代“微服务架构”。 第一，微服务治理与业务逻辑的解耦。服务网格把 SDK 中的大部分能力">
+<meta name="twitter:image" content="https://www.servicemesher.com/istio-handbook/images/istio-mesh-arch.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/">
+
+
+
+
+
+  <title>服务网格-Istio | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">服务网格-Istio</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-22T20:58:31+08:00">
+                2020-09-22
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T20:58:31+08:00">
+                2020-09-22
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ServiceMesh"><a href="#ServiceMesh" class="headerlink" title="ServiceMesh"></a>ServiceMesh</h1><p>Service Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间<strong>通信的基础设施层</strong>，它负责为构建复杂的云原生应用<strong>传递可靠的网络请求</strong>。在实践中，它是一组和应用服务部署在一起的轻量级的<strong>网络代理</strong>，并且对应用服务<strong>透明</strong>。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>服务网格带来了巨大变革并且拥有其强大的技术优势，被称为第二代“微服务架构”。</p>
+<p>第一，微服务治理与业务逻辑的解耦。服务网格把 SDK 中的<strong>大部分</strong>能力从应用中剥离出来，拆解为独立进程，以 sidecar的模式进行部署。服务网格通过将服务通信及相关管控功能从业务程序中分离并下沉到基础设施层，使其和业务系统完全解耦，使开发人员更加专注于业务本身。</p>
+<p>第二，异构系统的统一治理。通过将主体的服务治理能力下沉到基础设施，多语言的支持就轻松很多了。</p>
+<p>此外，服务网格相对于传统微服务框架，还拥有三大技术优势：</p>
+<ul>
+<li>可观察性。因为服务网格是一个专用的基础设施层，所有的服务间通信都要通过它，所以它在技术堆栈中处于独特的位置，以便在服务调用级别上提供统一的监控指标。</li>
+<li><p>流量控制。通过Service Mesh，可以为服务提供智能路由（蓝绿部署、金丝雀发布、A/B test）、超时重试、熔断、故障注入、流量镜像等各种控制能力。</p>
+</li>
+<li><p>安全。服务网格的安全相关的好处主要体现在以下三个核心领域：服务的认证、服务间通讯的加密、安全相关策略的强制执行。</p>
+</li>
+</ul>
+<h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><ul>
+<li>增加了复杂度。服务网格将 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 代理和其它组件引入到已经很复杂的分布式环境中，会极大地增加整体链路和操作运维的复杂性。</li>
+<li>运维人员需要更专业。在容器编排器（如 Kubernetes）上添加 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#istio" target="_blank" rel="noopener">Istio</a> 之类的服务网格，通常需要运维人员成为这两种技术的专家，以便充分使用二者的功能以及定位环境中遇到的问题。</li>
+<li>延迟。从链路层面来讲，服务网格是一种侵入性的、复杂的技术，会为系统调用增加显著的延迟。这个延迟是毫秒级别的，但是在特殊业务场景下，这个延迟可能也是难以容忍的。</li>
+<li>平台的适配。服务网格的侵入性迫使开发人员和运维人员适应高度自治的平台并遵守平台的规则。</li>
+</ul>
+<h1 id="Istio"><a href="#Istio" class="headerlink" title="Istio"></a><a href="https://istio.io/" target="_blank" rel="noopener">Istio</a></h1><p>Istio是Service Mesh的落地产品</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
+<li>流量管理(connect)：负载均衡、灰度发布、流量管理</li>
+<li>安全(security)：认证、授权、证书管理</li>
+<li>策略控制(policy)【不建议使用/功能逐步启用】：限流、ACL</li>
+<li>可观察性(observe)：监控、调用链</li>
+</ul>
+<h2 id="与k8s的区别"><a href="#与k8s的区别" class="headerlink" title="与k8s的区别"></a>与k8s的区别</h2><p>k8s（部署运维）：应用部署、资源共享、资源隔离、弹性伸缩</p>
+<p>Istio（服务治理）：流量管控、熔断限流、动态路由、链路追踪</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p><a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#istio" target="_blank" rel="noopener">Istio</a> 的架构由两部分组成，分别是数据平面（<a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#data-plane" target="_blank" rel="noopener">Data Plane</a>）和控制平面（<a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#control-plane" target="_blank" rel="noopener">Control Plane</a>）。</p>
+<p><strong>数据平面</strong></p>
+<p>由整个网格内的 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 代理组成，这些代理以 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 的形式和应用服务一起部署。每一个 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 会接管进入和离开服务的流量，并配合控制平面完成流量控制等方面的功能。可以把数据平面看做是网格内 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 代理的网络拓扑集合。</p>
+<p><strong>控制平面</strong></p>
+<p>顾名思义，就是控制和管理数据平面中的 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#sidecar" target="_blank" rel="noopener">sidecar</a> 代理，完成配置的分发、服务发现、和授权鉴权等功能。架构中拥有控制平面的优势在于，可以统一的对数据平面进行管理。在 <a href="https://www.servicemesher.com/istio-handbook/GLOSSARY.html#istio" target="_blank" rel="noopener">Istio</a> 1.5 版本中，控制平面由原来分散的、独立部署的几个组件整合为一个单体结构 istiod，变成了一个单进程、多模块的组织形态。</p>
+<p><img src="https://www.servicemesher.com/istio-handbook/images/istio-mesh-arch.png" alt></p>
+<p>主要实现组件如下：</p>
+<h3 id="Envoy"><a href="#Envoy" class="headerlink" title="Envoy"></a>Envoy</h3><p>Istio使用Envoy代理的扩展版本。Envoy是使用C ++开发的高性能代理，网格内服务发送和接收的所有流量（data plane流量）都经由 Envoy 代理。Envoy代理是与数据平面流量交互的唯一Istio组件。Envoy代理被部署为服务的辅助工具，通过Envoy的许多内置功能在逻辑上增强了服务，例如：</p>
+<ul>
+<li>Dynamic service discovery：动态服务发现</li>
+<li>Load balancing：负载均衡</li>
+<li>TLS termination：tls加密通信</li>
+<li>HTTP/2 and gRPC proxies：http/2和grpc代理</li>
+<li>Circuit breakers：断路器</li>
+<li>Health checks：健康检查</li>
+<li>Staged rollouts with %-based traffic split：基于流量百分比切分的概率发布</li>
+<li>Fault injection：故障注入</li>
+<li>Rich metrics：丰富的指标数据</li>
+</ul>
+<h3 id="Istiod"><a href="#Istiod" class="headerlink" title="Istiod"></a>Istiod</h3><p>整合旧版本pilot、citadel、galley的功能，以单进程、多模块的组织形态提供<strong>服务发现、配置管理、证书管理</strong>功能</p>
+<h1 id="核心功能-流量管理"><a href="#核心功能-流量管理" class="headerlink" title="核心功能-流量管理"></a>核心功能-流量管理</h1><p>为了在网格中导流，Istio 需要知道所有的 endpoint 在哪以及属于哪个服务。为了填充自己的服务注册表，Istio连接到服务发现系统。例如，如果您在 Kubernetes 集群上安装了 Istio，那么它将自动检测该集群中的service和endpoint。</p>
+<h2 id="VirtualService"><a href="#VirtualService" class="headerlink" title="VirtualService"></a>VirtualService</h2><p>用户指定的目标或是路由规则设定的目标，定义将流量如何路由到给定目标地址；位于k8s中service的上一层或同一层，匹配服务网格内对service或指定域名、ip的访问。</p>
+<ul>
+<li><p>hosts可以是 IP 地址、DNS 名称，或者依赖于平台的一个简称（例如 Kubernetes 服务的短名称）；hosts 字段实际上不必是 Istio 服务注册的一部分，它只是虚拟的目标地址；可以使用通配符（“*”）前缀，创建一组匹配所有服务的路由规则</p>
+</li>
+<li><p>http字段(使用tcp、tls来匹配tcp、tls流量)包含了虚拟服务的路由规则：</p>
+<ul>
+<li>match字段用来描述访问hosts的HTTP/1.1、HTTP2 和 gRPC 等流量的特征；可以在流量端口、header 字段、URI 等内容上设置匹配条件。</li>
+<li>route字段包含了指定的请求要流向哪个目标地址</li>
+<li>destination的host必须是存在于 Istio 服务注册中心的实际目标地址；可以是一个有代理的service，或者是一个通过Service Entry被添加进来的非网格服务。</li>
+</ul>
+</li>
+</ul>
+<p>路由规则优先级：<strong>路由规则</strong>按从上到下的顺序选择，虚拟服务中定义的第一条规则有最高优先级。本示例中，不满足第一个路由规则的流量均流向一个默认的目标，该目标在第二条规则中指定。因此，第二条规则没有 match 条件，直接将流量导向 v3 子集。</p>
+<p>更多的路由路由规则：您可以使用 AND 向同一个 <code>match</code> 块添加多个匹配条件，或者使用 OR 向同一个规则添加多个 <code>match</code> 块。对于任何给定的虚拟服务也可以有多个路由规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: VirtualService</span><br><span class="line">metadata:</span><br><span class="line">  name: reviews</span><br><span class="line">spec:</span><br><span class="line">  hosts:                            </span><br><span class="line">  - reviews</span><br><span class="line">  http:                              </span><br><span class="line">  - match:                           </span><br><span class="line">    - headers:</span><br><span class="line">        end-user:</span><br><span class="line">          exact: jason</span><br><span class="line">    route:                           </span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews                 # service名称</span><br><span class="line">        subset: v2                    # DestinationRule中定义的service下的不同工作负载(deployment/pod)</span><br><span class="line">  - route:</span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews</span><br><span class="line">        subset: v3</span><br></pre></td></tr></table></figure>
+<h2 id="DestinationRule"><a href="#DestinationRule" class="headerlink" title="DestinationRule"></a>DestinationRule</h2><p>定义目标(service)的不同工作负载(deployment)、目标(service)到工作负载的负载均衡、tls安全、连接池等策略；位于service和pod中间的一层，实现的是kube-proxy的功能；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: DestinationRule</span><br><span class="line">metadata:</span><br><span class="line">  name: my-destination-rule</span><br><span class="line">spec:</span><br><span class="line">  host: my-svc             # service名称</span><br><span class="line">  trafficPolicy:           # 负载均衡策略</span><br><span class="line">    loadBalancer:</span><br><span class="line">      simple: RANDOM</span><br><span class="line">  subsets:</span><br><span class="line">  - name: v1               # service的其中一个的工作负载名称</span><br><span class="line">    labels:                # 这个工作负载基于deployment/pod标签名称定义</span><br><span class="line">      version: v1</span><br><span class="line">  - name: v2</span><br><span class="line">    labels:</span><br><span class="line">      version: v2</span><br><span class="line">    trafficPolicy:</span><br><span class="line">      loadBalancer:</span><br><span class="line">        simple: ROUND_ROBIN</span><br><span class="line">  - name: v3</span><br><span class="line">    labels:</span><br><span class="line">      version: v3</span><br></pre></td></tr></table></figure>
+<h2 id="Gateway"><a href="#Gateway" class="headerlink" title="Gateway"></a>Gateway</h2><p>管理进出网格的流量。网关被配置为运行在网格边界的独立 Envoy 代理（<code>istio-ingressgateway</code> 和 <code>istio-egressgateway</code>），而不是服务工作负载的 sidecar 代理。和k8s中的ingress功能类似，部署时使用LoadBalancer类型的service资源，如果没有对接云厂商LB，可以使用NodePort访问。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: Gateway</span><br><span class="line">metadata:</span><br><span class="line">  name: ext-host-gwy</span><br><span class="line">spec:</span><br><span class="line">  selector:</span><br><span class="line">    app: my-gateway-controller</span><br><span class="line">  servers:             # 在网关处，匹配来自外部访问https://ext-host.example.com的流量</span><br><span class="line">  - port:</span><br><span class="line">      number: 443</span><br><span class="line">      name: https</span><br><span class="line">      protocol: HTTPS</span><br><span class="line">    hosts:                </span><br><span class="line">    - ext-host.example.com</span><br><span class="line">    tls:</span><br><span class="line">      mode: SIMPLE</span><br><span class="line">      serverCertificate: /tmp/tls.crt</span><br><span class="line">      privateKey: /tmp/tls.key</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: VirtualService</span><br><span class="line">metadata:</span><br><span class="line">  name: virtual-svc</span><br><span class="line">spec:                  # 在虚拟服务处，匹配来自网关ext-host-gwy中访问ext-host.example.com的流量</span><br><span class="line">  hosts:</span><br><span class="line">  - ext-host.example.com</span><br><span class="line">  gateways:  </span><br><span class="line">    - ext-host-gwy</span><br></pre></td></tr></table></figure>
+<h2 id="Service-Entry"><a href="#Service-Entry" class="headerlink" title="Service Entry"></a>Service Entry</h2><p>添加一个入口到 Istio 内部维护的服务注册中心。添加了服务入口后，Envoy 代理可以向服务发送流量，就好像它是网格内部的服务一样。配置服务入口允许您管理运行在网格外的服务的流量。，它包括以下几种能力：</p>
+<ul>
+<li>为外部目标 redirect 和转发请求，例如来自 web 端的 API 调用，或者流向遗留老系统的服务。</li>
+<li>为外部目标定义<a href="https://istio.io/latest/zh/docs/concepts/traffic-management/#retries" target="_blank" rel="noopener">重试</a>、<a href="https://istio.io/latest/zh/docs/concepts/traffic-management/#timeouts" target="_blank" rel="noopener">超时</a>和<a href="https://istio.io/latest/zh/docs/concepts/traffic-management/#fault-injection" target="_blank" rel="noopener">故障注入</a>策略。</li>
+<li>添加一个运行在虚拟机的服务来<a href="https://istio.io/latest/zh/docs/examples/virtual-machines/single-network/#running-services-on-the-added-VM" target="_blank" rel="noopener">扩展您的网格</a>。</li>
+<li>从逻辑上添加来自不同集群的服务到网格，在 Kubernetes 上实现一个<a href="https://istio.io/latest/zh/docs/setup/install/multicluster/gateways/#configure-the-example-services" target="_blank" rel="noopener">多集群 Istio 网格</a>。</li>
+</ul>
+<p>您不需要为网格服务要使用的每个外部服务都添加服务入口。默认情况下，Istio将Envoy代理配置为将请求传递给未知服务。但是，您不能使用 Istio 的特性来控制没有在网格中注册的目标流量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: ServiceEntry</span><br><span class="line">metadata:</span><br><span class="line">  name: svc-entry</span><br><span class="line">spec:</span><br><span class="line">  hosts:</span><br><span class="line">  - ext-svc.example.com</span><br><span class="line">  ports:</span><br><span class="line">  - number: 443</span><br><span class="line">    name: https</span><br><span class="line">    protocol: HTTPS</span><br><span class="line">  location: MESH_EXTERNAL</span><br><span class="line">  resolution: DNS</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: DestinationRule</span><br><span class="line">metadata:</span><br><span class="line">  name: ext-res-dr</span><br><span class="line">spec:</span><br><span class="line">  host: ext-svc.example.com</span><br><span class="line">  trafficPolicy:</span><br><span class="line">    tls:</span><br><span class="line">      mode: MUTUAL</span><br><span class="line">      clientCertificate: /etc/certs/myclientcert.pem</span><br><span class="line">      privateKey: /etc/certs/client_private_key.pem</span><br><span class="line">      caCertificates: /etc/certs/rootcacerts.pem</span><br></pre></td></tr></table></figure>
+<h1 id="Istio安装"><a href="#Istio安装" class="headerlink" title="Istio安装"></a><a href="https://istio.io/latest/docs/setup/getting-started/" target="_blank" rel="noopener">Istio安装</a></h1><ul>
+<li><p>下载并解压</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 执行脚本自动下载并解压</span><br><span class="line">curl -L https://istio.io/downloadIstio | sh -</span><br><span class="line"># 手动下载并解压</span><br><span class="line">https://github.com/istio/istio/releases</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目录介绍</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bin        # 二进制命令istioctl目录</span><br><span class="line">samples    # 应用范例</span><br><span class="line">manifests  # istio部署的各种资源文件</span><br><span class="line">tools      # 各种调试工具</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 移动二进制文件istioctl到PATH变量下</span><br><span class="line">mv bin/istioctl /usr/local/bin/</span><br><span class="line"># 命令行自动补全【~/.bashrc】</span><br><span class="line">source /root/istio-1.7.1/tools/istioctl.bash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 安装选项</span><br><span class="line">istioctl profile list</span><br><span class="line">* default 适用生产环境，需要资源较高，包含istiod、istio-ingressgateway</span><br><span class="line">* demo 展示istio的核心功能，需要资源适中，包含：istiod、istio-egressgateway、istio-ingressgateway；适合Bookinfo范例和相关任务的使用；包含链路追踪和日志，不适合性能测试</span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line">istioctl install --set profile=demo</span><br><span class="line"></span><br><span class="line"># 安装结果检查</span><br><span class="line">kubectl get pod -n istio-system </span><br><span class="line">kubectl get svc -n istio-system</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="istio卸载"><a href="#istio卸载" class="headerlink" title="istio卸载"></a>istio卸载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">istioctl x uninstall --purge</span><br><span class="line">kubectl delete namespace istio-system</span><br></pre></td></tr></table></figure>
+<h1 id="Envoy-sidecar注入"><a href="#Envoy-sidecar注入" class="headerlink" title="Envoy sidecar注入"></a>Envoy sidecar注入</h1><ul>
+<li><p>自动注入（命名空间）：添加名称空间标签，以指示Istio以后在相关名称空间部署应用程序时自动注入Envoy sidecar代理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label namespace default istio-injection=enabled</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>手动注入：手动向k8s工作负载注入Envoy sidecar代理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">istioctl kube-inject </span><br><span class="line"></span><br><span class="line"># Update resources on the fly before applying.</span><br><span class="line">kubectl apply -f &lt;(istioctl kube-inject -f &lt;resource.yaml&gt;)</span><br><span class="line"></span><br><span class="line"># Create a persistent version of the deployment with Envoy sidecar</span><br><span class="line"># injected.</span><br><span class="line">istioctl kube-inject -f deployment.yaml -o deployment-injected.yaml</span><br><span class="line"></span><br><span class="line"># Update an existing deployment.</span><br><span class="line">kubectl get deployment -o yaml | istioctl kube-inject -f - | kubectl apply -f -</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="Istio-web界面"><a href="#Istio-web界面" class="headerlink" title="Istio web界面"></a>Istio web界面</h1><ul>
+<li><p>部署Kiali仪表板以及Prometheus，Grafana和Jaeger。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f samples/addons</span><br><span class="line">while ! kubectl wait --for=condition=available --timeout=600s deployment/kiali -n istio-system; do sleep 1; done</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动web服务kiali</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">istioctl dashboard kiali --address 0.0.0.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web浏览器访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://x.x.x.x:20001/kiali</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="应用范例-Bookinfo"><a href="#应用范例-Bookinfo" class="headerlink" title="应用范例-Bookinfo"></a>应用范例-Bookinfo</h1><h2 id="应用介绍"><a href="#应用介绍" class="headerlink" title="应用介绍"></a>应用介绍</h2><p><img src="https://istio.io/latest/docs/examples/bookinfo/noistio.svg" alt></p>
+<ul>
+<li>productpage：前端页面，调用details和reviews服务</li>
+<li>details：包含书籍信息</li>
+<li>reviews：包含书籍评论信息，会调用ratings服务<ul>
+<li>v1版本不调用ratings服务</li>
+<li>v2版本调用ratings服务，将每个等级显示为1至5个黑色星星</li>
+<li>v3版本调用ratings服务，将每个等级显示为1到5个红色星星</li>
+</ul>
+</li>
+<li>ratings：包含有书评组成的评级信息</li>
+</ul>
+<h2 id="部署应用"><a href="#部署应用" class="headerlink" title="部署应用"></a>部署应用</h2><ul>
+<li><p>部署应用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查部署结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get svc,pod</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在集群中检查应用是否正常运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl exec &quot;$(kubectl get pod -l app=ratings -o jsonpath=&apos;&#123;.items[0].metadata.name&#125;&apos;)&quot; -c ratings -- curl -s productpage:9080/productpage | grep -o &quot;&lt;title&gt;.*&lt;/title&gt;&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="对外暴露应用"><a href="#对外暴露应用" class="headerlink" title="对外暴露应用"></a>对外暴露应用</h2><ul>
+<li><p>部署gateway以使服务网格外部可以访问应用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分析配置是否有问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">istioctl analyze</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取ingress gateway的部署主机ip(pod)和NodePort(service)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath=&apos;&#123;.spec.ports[?(@.name==&quot;http2&quot;)].nodePort&#125;&apos;)</span><br><span class="line">export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath=&apos;&#123;.spec.ports[?(@.name==&quot;https&quot;)].nodePort&#125;&apos;)</span><br><span class="line">export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath=&apos;&#123;.items[0].status.hostIP&#125;&apos;)</span><br><span class="line">export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT</span><br><span class="line">echo &quot;$GATEWAY_URL&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web浏览器访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo http://&quot;$GATEWAY_URL/productpage&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="金丝雀部署"><a href="#金丝雀部署" class="headerlink" title="金丝雀部署"></a>金丝雀部署</h2><p>上述部署中（bookinfo-gateway.yaml），没有针对每个service定义VirtualService，此时访问主页(http://$GATEWAY_URL/productpage)的流量都导向productpage服务，productpage服务以轮询的方式调用reviews服务的3种工作负载(v1、v2、v3)。以下主要对reviews服务进行金丝雀部署，逐步升级：v1–&gt;v2–&gt;v3</p>
+<ul>
+<li>使用v1版本【全部服务】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f destination-rule-all.yaml         # 定义各服务v1版本对应的工作负载(pod)</span><br><span class="line">kubectl apply -f virtual-service-all-v1.yaml       # 定义访问各服务时都访问服务的v1版本</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>A/B Test【jason用户访问v2，其他访问v1】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f virtual-service-reviews-test-v2.yaml </span><br><span class="line"></span><br><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: VirtualService</span><br><span class="line">metadata:</span><br><span class="line">  name: reviews</span><br><span class="line">spec:</span><br><span class="line">  hosts:</span><br><span class="line">    - reviews</span><br><span class="line">  http:</span><br><span class="line">  - match:</span><br><span class="line">    - headers:</span><br><span class="line">        end-user:</span><br><span class="line">          exact: jason</span><br><span class="line">    route:</span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews</span><br><span class="line">        subset: v2</span><br><span class="line">  - route:</span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews</span><br><span class="line">        subset: v1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>金丝雀部署【80%用户访问v1，20%用户访问v2】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f virtual-service-reviews-80-20.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: networking.istio.io/v1alpha3</span><br><span class="line">kind: VirtualService</span><br><span class="line">metadata:</span><br><span class="line">  name: reviews</span><br><span class="line">spec:</span><br><span class="line">  hosts:</span><br><span class="line">    - reviews</span><br><span class="line">  http:</span><br><span class="line">  - route:</span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews</span><br><span class="line">        subset: v1</span><br><span class="line">      weight: 80</span><br><span class="line">    - destination:</span><br><span class="line">        host: reviews</span><br><span class="line">        subset: v2</span><br><span class="line">      weight: 20</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>逐步增加v2版本访问权重(weight)，至最终完全访问v2</p>
+</li>
+<li><p>v2到v3的版本升级类似。</p>
+</li>
+</ul>
+<h2 id="应用卸载"><a href="#应用卸载" class="headerlink" title="应用卸载"></a>应用卸载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 卸载</span><br><span class="line">samples/bookinfo/platform/kube/cleanup.sh</span><br><span class="line"># 确认</span><br><span class="line">kubectl get virtualservices   #-- there should be no virtual services</span><br><span class="line">kubectl get destinationrules  #-- there should be no destination rules</span><br><span class="line">kubectl get gateway           #-- there should be no gateway</span><br><span class="line">kubectl get pods              #-- the Bookinfo pods should be deleted</span><br></pre></td></tr></table></figure>
+<h1 id="应用发布方案"><a href="#应用发布方案" class="headerlink" title="应用发布方案"></a><a href="https://my.oschina.net/izu/blog/3009733" target="_blank" rel="noopener">应用发布方案</a></h1><ul>
+<li>蓝绿发布</li>
+<li>滚动发布</li>
+<li>金丝雀发布/灰度发布【A/B Test】</li>
+</ul>
+<h2 id="蓝绿发布"><a href="#蓝绿发布" class="headerlink" title="蓝绿发布"></a>蓝绿发布</h2><p>项目逻辑上分为AB组，在项目升级时，首先把A组从负载均衡中摘除，进行新版本的部署。B组仍然继续提供<br>服务。A组升级完成上线，将B组从负载均衡中摘除。B组资源预先保留一段时间，A组在一段时间内持续可用没有问题时，删除B组占用资源；如果A组有问题时，立即切换到B组资源。<br>特点：</p>
+<ul>
+<li>策略简单</li>
+<li>升级/回滚速度快，只要老版本的资源不被删除，理论上，可以在任何时间回滚到老版本。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>需要两倍以上服务器资源，短时间内浪费一定资源成本</li>
+<li>有问题影响范围大</li>
+</ul>
+<h2 id="滚动发布"><a href="#滚动发布" class="headerlink" title="滚动发布"></a>滚动发布</h2><p>每次只升级一个或多个服务，升级完成后加入生产环境，不断执行这个过程，直到集群中的全部旧版<br>升级新版本。这也是kubernetes的默认发布策略。<br>特点：</p>
+<ul>
+<li>相对于蓝绿部署，更加节约资源——它不需要运行两个集群、两倍的实例数。</li>
+<li>部署过程自动化，一般不需要或不能人工干预</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>部署周期长</li>
+<li>发布策略较复杂：需要针对发布过程中的可用性、回滚等操作制定策略</li>
+<li>不易回滚</li>
+<li>影响范围较大</li>
+</ul>
+<h2 id="灰度发布-金丝雀发布"><a href="#灰度发布-金丝雀发布" class="headerlink" title="灰度发布/金丝雀发布"></a>灰度发布/金丝雀发布</h2><p>只升级部分服务，即让一部分用户继续用老版本，一部分用户开始用新版本，如果用户对新版本没有什么<br>意见，那么逐步扩大范围，把所有用户都迁移到新版本上面来。<br>特点：</p>
+<ul>
+<li>可以根据应用的可用性，不断调整新旧版本的使用比例</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>自动化要求高，需要处理新旧版本持续的上下线及不同版本的访问权重：例如90%的用户维持使用老版本，10%的用户尝鲜新版本。</li>
+<li>同时运行多个版本，需要处理多版本的兼容性</li>
+</ul>
+<h3 id="A-B-Test"><a href="#A-B-Test" class="headerlink" title="A/B Test"></a>A/B Test</h3><p>灰度发布的一种测试方式，主要对特定用户采样后，对收集到的反馈数据做相关对比，然后根据比对结果作出<br>决策。用来测试应用功能表现的方法，侧重应用的可用性，受欢迎程度等，最后决定是否升级</p>
+<h1 id="Istio金丝雀发布思路"><a href="#Istio金丝雀发布思路" class="headerlink" title="Istio金丝雀发布思路"></a>Istio金丝雀发布思路</h1><ul>
+<li>创建k8s资源<ul>
+<li>创建应用的多个版本(deployment/pod)，每个版本使用不同的标签区别(例如：version: v1/v2)</li>
+<li>使用service关联所有的版本</li>
+</ul>
+</li>
+<li>使用istio部署应用：部署应用时注入Envoy sidecar</li>
+<li>创建istio资源<ul>
+<li>使用DestinationRule关联所有的应用版本</li>
+<li>使用VirtualService定义路由策略（基于用户内容或基于百分比）</li>
+<li>【可选】ingress gateway暴露应用</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/istio/" rel="tag"># istio</a>
+          
+            <a href="/tags/servicemesh/" rel="tag"># servicemesh</a>
+          
+            <a href="/tags/灰度发布/" rel="tag"># 灰度发布</a>
+          
+            <a href="/tags/金丝雀发布/" rel="tag"># 金丝雀发布</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/" rel="next" title="k8s实施-微服务与SpringCloud容器化">
+                <i class="fa fa-chevron-left"></i> k8s实施-微服务与SpringCloud容器化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">133</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">267</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ServiceMesh"><span class="nav-number">1.</span> <span class="nav-text">ServiceMesh</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局限性"><span class="nav-number">1.2.</span> <span class="nav-text">局限性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Istio"><span class="nav-number">2.</span> <span class="nav-text">Istio</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">2.1.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与k8s的区别"><span class="nav-number">2.2.</span> <span class="nav-text">与k8s的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.3.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Envoy"><span class="nav-number">2.3.1.</span> <span class="nav-text">Envoy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Istiod"><span class="nav-number">2.3.2.</span> <span class="nav-text">Istiod</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心功能-流量管理"><span class="nav-number">3.</span> <span class="nav-text">核心功能-流量管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VirtualService"><span class="nav-number">3.1.</span> <span class="nav-text">VirtualService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DestinationRule"><span class="nav-number">3.2.</span> <span class="nav-text">DestinationRule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gateway"><span class="nav-number">3.3.</span> <span class="nav-text">Gateway</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-Entry"><span class="nav-number">3.4.</span> <span class="nav-text">Service Entry</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Istio安装"><span class="nav-number">4.</span> <span class="nav-text">Istio安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#istio卸载"><span class="nav-number">4.1.</span> <span class="nav-text">istio卸载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Envoy-sidecar注入"><span class="nav-number">5.</span> <span class="nav-text">Envoy sidecar注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Istio-web界面"><span class="nav-number">6.</span> <span class="nav-text">Istio web界面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用范例-Bookinfo"><span class="nav-number">7.</span> <span class="nav-text">应用范例-Bookinfo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用介绍"><span class="nav-number">7.1.</span> <span class="nav-text">应用介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署应用"><span class="nav-number">7.2.</span> <span class="nav-text">部署应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对外暴露应用"><span class="nav-number">7.3.</span> <span class="nav-text">对外暴露应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#金丝雀部署"><span class="nav-number">7.4.</span> <span class="nav-text">金丝雀部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用卸载"><span class="nav-number">7.5.</span> <span class="nav-text">应用卸载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用发布方案"><span class="nav-number">8.</span> <span class="nav-text">应用发布方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#蓝绿发布"><span class="nav-number">8.1.</span> <span class="nav-text">蓝绿发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动发布"><span class="nav-number">8.2.</span> <span class="nav-text">滚动发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#灰度发布-金丝雀发布"><span class="nav-number">8.3.</span> <span class="nav-text">灰度发布/金丝雀发布</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#A-B-Test"><span class="nav-number">8.3.1.</span> <span class="nav-text">A/B Test</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Istio金丝雀发布思路"><span class="nav-number">9.</span> <span class="nav-text">Istio金丝雀发布思路</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

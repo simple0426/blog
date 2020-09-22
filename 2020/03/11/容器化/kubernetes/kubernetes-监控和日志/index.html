@@ -141,7 +141,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -151,7 +151,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -283,20 +283,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/11/容器化/kubernetes/kubernetes-监控和日志/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -351,7 +351,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -444,12 +444,12 @@
 </tbody>
 </table>
 <h1 id="API聚合层"><a href="#API聚合层" class="headerlink" title="API聚合层"></a>API聚合层</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在kubernetes 1.7版本引入聚合层，允许第三方应用程序将自己注册到apiserver上，仍然通过apiserver的 HTTP URL对新的API进行访问和操作。为了实现这个机制，kubernetes在kube-apiserver服务中引入了一个API聚合层，用于将扩展的API的访问请求转发到用户服务的功能。当你访问apis/metrics.k8s.io/v1beta1的时候，实际上访问的是一个叫做kube-aggregator的代理。kube-apiserver是代理的一个后端，而Metrics server是另一个后端。通过这种方式，我们就可以很方便的扩展kubernetes的API了</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/kube-aggergation.png" alt></p>
 <h2 id="功能启用"><a href="#功能启用" class="headerlink" title="功能启用"></a>功能启用</h2><p>在kube-apiserver中添加启动参数用以开启API聚合层功能</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">--enable-aggregator-routing=true \</span><br><span class="line">--requestheader-client-ca-file=/opt/kubernetes/ssl/ca.pem \</span><br><span class="line">--requestheader-allowed-names=kubernetes \</span><br><span class="line">--requestheader-extra-headers-prefix=X-Remote-Extra- \</span><br><span class="line">--requestheader-group-headers=X-Remote-Group \</span><br><span class="line">--requestheader-username-headers=X-Remote-User \</span><br><span class="line">--proxy-client-cert-file=/opt/kubernetes/ssl/server.pem \</span><br><span class="line">--proxy-client-key-file=/opt/kubernetes/ssl/server-key.pem \</span><br></pre></td></tr></table></figure>
 <p>–requestheader-allowed-names：由ca签署的客户端证书的CN名称（可以是apiserver、kube-proxy、kubectl等证书的CN名称）</p>
 <h1 id="metrics-server"><a href="#metrics-server" class="headerlink" title="metrics-server"></a>metrics-server</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>metrics server从每个节点上的kubelet(cadvisor)公开的摘要API收集指标数据，然后通过kubernetes聚合器注册在master的APIServer中</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/hpa-metrics-sever.png" alt></p>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>项目地址：<a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a> </p>
 <p>使用前提：API Server开启聚合层功能</p>
 <p>下载资源文件：</p>
@@ -683,7 +683,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -696,7 +696,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -718,7 +718,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

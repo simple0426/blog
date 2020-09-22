@@ -144,7 +144,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -154,7 +154,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -286,20 +286,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -354,7 +354,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -392,7 +392,7 @@
       
 
       
-        <h1 id="运维角度看微服务"><a href="#运维角度看微服务" class="headerlink" title="运维角度看微服务"></a>运维角度看微服务</h1><h2 id="单体应用vs微服务"><a href="#单体应用vs微服务" class="headerlink" title="单体应用vs微服务"></a>单体应用vs微服务</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png" alt=""></p>
+        <h1 id="运维角度看微服务"><a href="#运维角度看微服务" class="headerlink" title="运维角度看微服务"></a>运维角度看微服务</h1><h2 id="单体应用vs微服务"><a href="#单体应用vs微服务" class="headerlink" title="单体应用vs微服务"></a>单体应用vs微服务</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png" alt></p>
 <p><strong>单体应用</strong>：将全部的功能在一个应用中实现，优缺点如下：</p>
 <ul>
 <li>优点：易于部署和测试</li>
@@ -425,7 +425,7 @@
 <li>dubbo：微服务治理框架</li>
 <li>spring cloud：基于spring boot的完整微服务解决方案</li>
 </ul>
-<h1 id="K8S中部署微服务"><a href="#K8S中部署微服务" class="headerlink" title="K8S中部署微服务"></a>K8S中部署微服务</h1><h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-1.png" alt=""></p>
+<h1 id="K8S中部署微服务"><a href="#K8S中部署微服务" class="headerlink" title="K8S中部署微服务"></a>K8S中部署微服务</h1><h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-1.png" alt></p>
 <h2 id="微服务架构理解"><a href="#微服务架构理解" class="headerlink" title="微服务架构理解"></a>微服务架构理解</h2><ul>
 <li>微服务间如何通信？REST API，RPC，MQ</li>
 <li>微服务如何发现彼此？注册中心</li>
@@ -453,8 +453,8 @@
 <li>怎么判断一个微服务副本是否可用？</li>
 </ul>
 <p>主流注册中心：Eureka(spring cloud)，Nacos(alibaba)，Consul，zookeeper</p>
-<h2 id="容器交付流程"><a href="#容器交付流程" class="headerlink" title="容器交付流程"></a>容器交付流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png" alt=""></p>
-<h2 id="在K8s部署项目流程"><a href="#在K8s部署项目流程" class="headerlink" title="在K8s部署项目流程"></a>在K8s部署项目流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png" alt=""></p>
+<h2 id="容器交付流程"><a href="#容器交付流程" class="headerlink" title="容器交付流程"></a>容器交付流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png" alt></p>
+<h2 id="在K8s部署项目流程"><a href="#在K8s部署项目流程" class="headerlink" title="在K8s部署项目流程"></a>在K8s部署项目流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png" alt></p>
 <h1 id="微服务范例-Spring-Cloud"><a href="#微服务范例-Spring-Cloud" class="headerlink" title="微服务范例-Spring Cloud"></a>微服务范例-Spring Cloud</h1><p>具体步骤：</p>
 <p>前置条件：在K8s中部署MySQL数据库、编译主机安装maven环境、启动harbor服务<br>第一步：熟悉Spring Cloud微服务项目<br>第二步：源代码编译构建<br>第三步：构建项目镜像并推送到镜像仓库<br>第四步：K8s服务编排<br>第五步：在K8s中部署注册中心(Eureka集群)<br>第六步：部署微服务业务程序（product、stock、order）<br>第七步：部署微服务网关服务（gateway）<br>第八步：部署微服务前端（portal）<br>第九步：微服务对外发布<br>第十步：微服务升级与扩容</p>
 <p><strong>自动化构建说明</strong>：使用项目中的脚本docker_build.sh可以完成2~9部操作</p>
@@ -493,7 +493,7 @@
 <li>build &amp;&amp; push</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker build -t $&#123;image_name&#125; .</span><br><span class="line">docker push $&#123;image_name&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="K8s服务编排"><a href="#K8s服务编排" class="headerlink" title="K8s服务编排"></a>K8s服务编排</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s-1.png" alt=""></p>
+<h2 id="K8s服务编排"><a href="#K8s服务编排" class="headerlink" title="K8s服务编排"></a>K8s服务编排</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s-1.png" alt></p>
 <ul>
 <li>前端portal、微服务网关gateway需要使用ingress对外暴露，以方便用户访问</li>
 <li>业务服务(product、stock、order)只需使用deployment部署pod，通过注册中心(Eureka)进行服务发现和负载均衡</li>
@@ -636,6 +636,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/09/22/容器化/服务网格-Istio/" rel="prev" title="服务网格-Istio">
+                服务网格-Istio <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -698,7 +702,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -711,7 +715,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -733,7 +737,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

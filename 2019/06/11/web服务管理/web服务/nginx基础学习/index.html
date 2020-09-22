@@ -140,7 +140,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -150,7 +150,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -282,20 +282,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/11/web服务管理/web服务/nginx基础学习/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -350,7 +350,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/web/" itemprop="url" rel="index">
                     <span itemprop="name">web</span>
                   </a>
@@ -429,7 +429,7 @@
 <li>-c filename   : set configuration file (default: conf/nginx.conf)</li>
 <li>-g directives : set global directives out of configuration file【配置文件外设置全局命令，如：-g daemon on】</li>
 </ul>
-<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/nginx-conf.png" alt=""></p>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/nginx-conf.png" alt></p>
 <h2 id="全局设置"><a href="#全局设置" class="headerlink" title="全局设置"></a>全局设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">user nginx nginx</span><br><span class="line">worker_processes  4;</span><br><span class="line">worker_cpu_affinity 01 10 01 10;</span><br><span class="line">pid logs/nginx.pid;</span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line">events &#123;</span><br><span class="line">    use epoll;</span><br><span class="line">    worker_connections  65535;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">worker_processes 4;</span><br><span class="line">    指明了nginx要开启的进程数，据官方说法，一般开一个就够了，多开几个，可以减少机器io带来的影响。 一般为当前机器总cpu核心数的1到2倍</span><br><span class="line">worker_cpu_affinity 01 10 01 10; </span><br><span class="line">    nginx默认是没有开启利用多核cpu的配置的。需要通过增加worker_cpu_affinity配置参数来充分利用多核cpu。</span><br><span class="line">    为每个进程开启一个cpu，1表示开启核心，0为关闭</span><br><span class="line">    2核2进程写法：</span><br><span class="line">    worker_processes 2；</span><br><span class="line">    worker_cpu_affinity 01 10;</span><br><span class="line">    2核4进程写法：</span><br><span class="line">    worker_processes  4;</span><br><span class="line">    worker_cpu_affinity 01 10 01 10;</span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line">    指定一个nginx进程可以打开的最多文件描述符数目，（需要使用命令“ulimit -n 65535”来设置。）</span><br><span class="line">worker_connections  65535;</span><br><span class="line">    用于定义Nginx每个进程的最大连接数</span><br></pre></td></tr></table></figure>
 <h2 id="http设置"><a href="#http设置" class="headerlink" title="http设置"></a>http设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">#    map $http_x_forwarded_for  $clientRealIp &#123;</span><br><span class="line">#            &quot;&quot;      $remote_addr;</span><br><span class="line">#            ~^(?P&lt;firstAddr&gt;[0-9\.]+),?.*$  $firstAddr;</span><br><span class="line">#    &#125;</span><br><span class="line">    lua_shared_dict limit 50m;  #防cc使用字典，大小50M</span><br><span class="line">    lua_package_path &quot;/home/zj-web/nginx/conf/waf/?.lua&quot;;</span><br><span class="line">    init_by_lua_file &quot;/home/zj-web/nginx/conf/waf/init.lua&quot;;</span><br><span class="line">    access_by_lua_file &quot;/home/zj-web/nginx/conf/waf/access.lua&quot;;</span><br><span class="line">    access_log  logs/access.log  main;</span><br><span class="line">    error_log   logs/error.log  error;</span><br><span class="line">    # tcp conf</span><br><span class="line">    include tcp.conf;</span><br><span class="line">    # gzip conf</span><br><span class="line">    include gzip.conf;</span><br><span class="line">    # site conf</span><br><span class="line">    include site-available/*.conf;</span><br><span class="line">    # realip conf</span><br><span class="line">    include realip.conf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -632,7 +632,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -645,7 +645,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -667,7 +667,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

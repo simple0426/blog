@@ -138,7 +138,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -148,7 +148,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -280,20 +280,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/02/系统管理/系统基础/linux使用技巧/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -348,7 +348,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/linux/" itemprop="url" rel="index">
                     <span itemprop="name">linux</span>
                   </a>
@@ -416,7 +416,7 @@
 </ul>
 <h1 id="1-…-100求和"><a href="#1-…-100求和" class="headerlink" title="1+…+100求和"></a>1+…+100求和</h1><ul>
 <li>shell下for循环：for((i=0;i&lt;=100;i++));do ((sum+=i));done;echo $sum</li>
-<li>awk下for循环：awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'<="" li="">
+<li>awk下for循环：awk 'BEGIN{{for(i=0;i<=100;i++)sum+=i}print sum}'< li>
 <li>seq与bc：seq -s + 100|bc</li>
 <li>seq与awk：seq 100|awk ‘{sum+=$0}END{print sum}’</li>
 </=100;i++)sum+=i}print></li></ul>
@@ -426,7 +426,7 @@
 <li>md5命令：md5sum</li>
 <li>openssl命令：openssl rand -base64 32</li>
 </ul>
-<h1 id="多主机全互联"><a href="#多主机全互联" class="headerlink" title="多主机全互联"></a><a href="https://github.com/simple0426/sysadm/tree/master/ansible/playbook/ssh_conn_all" target="_blank" rel="noopener">多主机全互联</a></h1><ol>
+<h1 id="多主机全互联"><a href="#多主机全互联" class="headerlink" title="多主机全互联"></a><a href="https://github.com/simple0426/sysadm/tree/master/ansible/playbook/ssh_conn_all" target="_blank" rel="noopener">多主机全互联</a></h1><ol start="0">
 <li><a href="https://github.com/simple0426/sysadm/blob/master/ansible/playbook/ssh_conn_all/create_user.yml" target="_blank" rel="noopener">通过root创建普通用户</a>，并把它加到sudo中；修改ansible hosts使用普通用户连接目标主机。</li>
 <li>在目标主机产生秘钥： ansible all -m shell -a ‘ssh-keygen -t rsa -P “” -f ~/.ssh/id_rsa’ </li>
 <li>将所有主机公钥取至本地： ansible all -m fetch -a “src=~/.ssh/id_rsa.pub dest=./tmp”  </li>
@@ -544,7 +544,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -557,7 +557,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -579,7 +579,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

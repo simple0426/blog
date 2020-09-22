@@ -146,7 +146,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -156,7 +156,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -288,20 +288,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="运维自动化之路">
     </span>
 
@@ -356,7 +356,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/kubernetes/" itemprop="url" rel="index">
                     <span itemprop="name">kubernetes</span>
                   </a>
@@ -471,7 +471,7 @@
 <li>Directrouting(vxlan+host-gw)：vxlan的直接路由模式，兼具vxlan和host-gw的优势，既保证了传输性能，又具备了跨二层网络转发报文的能力</li>
 </ul>
 <p>公有云VPC：Alivpc、AWSvpc、Alloc、GCE</p>
-<h3 id="VXLAN模式"><a href="#VXLAN模式" class="headerlink" title="VXLAN模式"></a>VXLAN模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png" alt=""></p>
+<h3 id="VXLAN模式"><a href="#VXLAN模式" class="headerlink" title="VXLAN模式"></a>VXLAN模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-vxlan.png" alt></p>
 <ul>
 <li>vxlan模式特点：<ul>
 <li>支持宿主机3层通信（不同子网）；只需宿主机网络互通，不需要单独配置到容器网络的路由</li>
@@ -495,7 +495,7 @@
 </ol>
 </li>
 </ol>
-<h3 id="Host-GW模式"><a href="#Host-GW模式" class="headerlink" title="Host-GW模式"></a>Host-GW模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png" alt=""></p>
+<h3 id="Host-GW模式"><a href="#Host-GW模式" class="headerlink" title="Host-GW模式"></a>Host-GW模式</h3><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/flanneld-hostgw.png" alt></p>
 <ul>
 <li><p>host-gw模式：</p>
 <ul>
@@ -555,7 +555,7 @@
 <li>路由模式：BGP，动态路由协议，适合大规模网络</li>
 <li>隧道模式：IP-IP</li>
 </ul>
-<h2 id="calico架构组件"><a href="#calico架构组件" class="headerlink" title="calico架构组件"></a><a href="https://docs.projectcalico.org/reference/architecture/overview" target="_blank" rel="noopener">calico架构组件</a></h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico.png" alt=""></p>
+<h2 id="calico架构组件"><a href="#calico架构组件" class="headerlink" title="calico架构组件"></a><a href="https://docs.projectcalico.org/reference/architecture/overview" target="_blank" rel="noopener">calico架构组件</a></h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico.png" alt></p>
 <ul>
 <li>Felix：在每个节点运行，负责维护宿主机上路由规则和ACL规则</li>
 <li>Etcd：分布式键值存储，保存Calico的策略和网络配置状态。</li>
@@ -613,7 +613,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="BGP模式"><a href="#BGP模式" class="headerlink" title="BGP模式"></a>BGP模式</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-bgp.png" alt=""></p>
+<h2 id="BGP模式"><a href="#BGP模式" class="headerlink" title="BGP模式"></a>BGP模式</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-bgp.png" alt></p>
 <p>pod1访问pod2流程：</p>
 <ol>
 <li><p>数据包从容器1的eth0到达veth pair另一端cali34</p>
@@ -664,7 +664,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># calicoctl get ipPool default-ipv4-ippool -o yaml &gt; ipip.yaml</span><br><span class="line"># vi ipip.yaml</span><br><span class="line">apiVersion: projectcalico.org/v3</span><br><span class="line">kind: IPPool</span><br><span class="line">metadata:</span><br><span class="line">  name: default-ipv4-ippool</span><br><span class="line">spec:</span><br><span class="line">  blockSize: 26</span><br><span class="line">  cidr: 10.244.0.0/16</span><br><span class="line">  ipipMode: Always</span><br><span class="line">  natOutgoing: true</span><br><span class="line">  nodeSelector: all()</span><br><span class="line">  vxlanMode: Never</span><br><span class="line"></span><br><span class="line"># calicoctl apply -f ipip.yaml</span><br><span class="line"># calicoctl get ippool -o wide</span><br></pre></td></tr></table></figure>
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理示意图如下：</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-ipip.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/calico-ipip.png" alt></p>
 <p>pod1访问pod2流程</p>
 <ol>
 <li><p>数据包从容器1的eth0到达veth pair另一端cali34</p>
@@ -674,7 +674,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.244.140.64/26 via 192.168.31.202 dev tunl0 proto bird onlink  # 到达其他pod子网段的流量：目的为对端宿主机ip、本地出口为隧道接口tunl0</span><br><span class="line">blackhole 10.244.196.128/26 proto bird # 到达本机pod网段的数据包，如果没有更高优先级路由，数据包直接丢弃</span><br><span class="line">10.244.196.130 dev calie8e9a5cf531 scope link # 目的为本机pod网段特定ip的数据包，交给指定的cali网卡</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<ol>
+<ol start="3">
 <li>通过隧道方式传输的数据包，借助物理网卡到达目的主机node2【只要宿主机网络可达，不需要是同一子网】</li>
 </ol>
 <h1 id="CNI插件选择"><a href="#CNI插件选择" class="headerlink" title="CNI插件选择"></a>CNI插件选择</h1><p>考虑因素如下：</p>
@@ -741,10 +741,10 @@
 <p>业务实现：</p>
 <ul>
 <li><p>方案一：选取k8s集群中的一个节点专门用于流量转发(设置污点禁止其他pod调度)，在路由器配置静态路由，将访问pod/service的流量转发到此节点</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/office-to-k8s.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/office-to-k8s.png" alt></p>
 </li>
 <li><p>方案二：通过k8s集群的路由反射器(calico/BGP-RR)和办公网的路由器进行BGP路由交互，从而使办公网感知pod/service网络的存在</p>
-<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-to-switch.png" alt=""></p>
+<p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-to-switch.png" alt></p>
 </li>
 </ul>
 <h1 id="网络策略-组件部署"><a href="#网络策略-组件部署" class="headerlink" title="网络策略-组件部署"></a>网络策略-组件部署</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>由于calico实现了网络策略功能，在综合calico(pod间访问控制)和flannel(pod间通信)的优点后，可以采用如下部署方式实现网络策略控制 (不含calico单独部署)  </p>
@@ -970,7 +970,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">simple0426</p>
               <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
@@ -983,7 +983,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">133</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1005,7 +1005,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">263</span>
+                  <span class="site-state-item-count">267</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
