@@ -271,3 +271,25 @@ ingress controller单独worker部署(污点)增加转发能力
 
 * apiserver访问限制、操作审计
 * k8s事件信息归档、报警
+
+# [公有云部署k8s](https://tech.souyunku.com/?p=22239)
+
+* 阿里云ecs不支持keepalived vip,只能只用SLB来实现
+
+  ```
+  1、 阿里云不能使用vip,要用vip只能走slb
+  2、 slb已经没有免费的了,都要收费,包括内网slb
+  3、 不支持手动指定slb的IP地址,所以之前生成的api证书之类的重新弄吧
+  4、 要反代https(apiserver),只能用slb的四层反代
+  5、 slb四层TCP反代(7443),不能直接反代到服务提供者上(即apiserver:6443)
+  6、 只能将 tcp反代,先代理到另一个ecs上,ecs再用nginx之类代理到apiserver
+  7、 即slb(tcp:7443)–>nginx(tcp:7443)–>apiserver(https:6443)
+  (nginx和apiserver不能是同一个机器)
+  ```
+
+* 阿里云ecs不支持flannel的gw模式【阿里云使用SDN网络，ECS之间、ECS访问其他网络都依靠交换机绑定的路由表】
+
+  * 使用gw模式，但是在阿里云的路由表中添加到各容器网段的路由
+  * 使用vxlan模式
+
+  
