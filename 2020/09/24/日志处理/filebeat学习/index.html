@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="mysqlbinlog,mysqldump,">
+  <meta name="keywords" content="filebeat,">
 
 
 
@@ -79,18 +79,23 @@
 
 
 
-<meta name="description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
-<meta name="keywords" content="mysqlbinlog,mysqldump">
+<meta name="description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
+<meta name="keywords" content="filebeat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql备份与恢复">
-<meta property="og:url" content="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/index.html">
+<meta property="og:title" content="filebeat学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/24/日志处理/filebeat学习/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
+<meta property="og:description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.385Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522095441298.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522095832263.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100310568.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100724855.png">
+<meta property="og:updated_time" content="2020-09-23T18:06:57.694Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql备份与恢复">
-<meta name="twitter:description" content="备份命令mysqldump -u 用户名 -p 密码 -h 主机 -P 端口 -S 指定链接mysql的socket –default-character-set  设置导出的字符集 -F, –flush-logs  在每个数据库备份前，刷新binlog日志 –compact 去除注释部分 –master-data：主要用于主从复制，–single-transaction会覆盖此选项 在导出数据前">
+<meta name="twitter:title" content="filebeat学习">
+<meta name="twitter:description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200522095441298.png">
 
 
 
@@ -120,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/">
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/24/日志处理/filebeat学习/">
 
 
 
 
 
-  <title>mysql备份与恢复 | 运维自动化之路</title>
+  <title>filebeat学习 | 运维自动化之路</title>
   
 
 
@@ -285,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/日志处理/filebeat学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -302,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">mysql备份与恢复</h1>
+          <h1 class="post-title" itemprop="name headline">filebeat学习</h1>
         
 
         <div class="post-meta">
@@ -314,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-25T17:52:05+08:00">
-                2019-09-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
+                2020-09-24
               </time>
             
 
@@ -330,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-24T02:06:57+08:00">
+                2020-09-24
               </time>
             
           </span>
@@ -349,8 +354,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -386,176 +391,136 @@
       
 
       
-        <h1 id="备份命令mysqldump"><a href="#备份命令mysqldump" class="headerlink" title="备份命令mysqldump"></a>备份命令mysqldump</h1><ul>
-<li>-u 用户名</li>
-<li>-p 密码</li>
-<li>-h 主机</li>
-<li>-P 端口</li>
-<li>-S 指定链接mysql的socket</li>
-<li>–default-character-set  设置导出的字符集</li>
-<li>-F, –flush-logs  在每个数据库备份前，刷新binlog日志</li>
-<li>–compact 去除注释部分</li>
-<li>–master-data：主要用于主从复制，–single-transaction会覆盖此选项<ul>
-<li>在导出数据前，对所有表添加读锁【turn –lock-all-tables on】；</li>
-<li>导出数据后，自动解锁【turns –lock-tablesoff】，并显示binlog文件名和文件内的position信息【CHANGE MASTER】。</li>
-</ul>
-</li>
-<li>–single-transaction      适用于innodb，保持数据一致性，隔离级别为：repeatable-read</li>
-<li>-A, –all-databases 备份所有库，等同于–databases DB1 DB2 。。。</li>
-<li>-B, –databases  导出多个数据库</li>
-<li>–ignore-table=database.table 备份库时忽略指定的表【可多次使用，每次一个表】</li>
-<li>-d, –no-data 导出表结构【不导出数据】</li>
-<li>-t, –no-create-info 导出数据【不添加create table语句】</li>
-<li>-R, –routines  导出存储过程和自定义函数</li>
-<li>-E, –events 导出事件</li>
-<li>–skip-triggers 不导出触发器【默认导出–triggers】</li>
-</ul>
-<h1 id="备份库表"><a href="#备份库表" class="headerlink" title="备份库表"></a>备份库表</h1><h2 id="备份所有库"><a href="#备份所有库" class="headerlink" title="备份所有库"></a>备份所有库</h2><p><code>mysqldump [OPTIONS] --all-databases [OPTIONS]</code></p>
-<h2 id="备份多个库"><a href="#备份多个库" class="headerlink" title="备份多个库"></a>备份多个库</h2><p><code>mysqldump [OPTIONS] --databases [OPTIONS] DB1 [DB2 DB3...]</code></p>
-<h2 id="备份单个库"><a href="#备份单个库" class="headerlink" title="备份单个库"></a>备份单个库</h2><p><code>mysqldump [OPTIONS] database [tables]</code></p>
+        <h1 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h1><p>filebeat由2个组件组成：inputs和harvester </p>
 <ul>
-<li>第1个字符串为数据库</li>
-<li>第2个字符串及之后字符串为数据表</li>
-</ul>
-<h2 id="备份表"><a href="#备份表" class="headerlink" title="备份表"></a>备份表</h2><p>mysqldump db1 table1 &gt; db1_table1.sql</p>
-<h2 id="备份表数据"><a href="#备份表数据" class="headerlink" title="备份表数据"></a>备份表数据</h2><p>mysqldump db1 table1 -t &gt; db1_table1.sql</p>
-<h2 id="备份表结构"><a href="#备份表结构" class="headerlink" title="备份表结构"></a>备份表结构</h2><p>mysqldump db1 table1 -d &gt; db1_table1.sql</p>
-<h2 id="分库分表备份"><a href="#分库分表备份" class="headerlink" title="分库分表备份"></a>分库分表备份</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DB_NAME=`mysql -uadmin -pzjht0724# -e &quot;show databases;&quot;|sed &apos;1,2d&apos;`</span><br><span class="line">mkdir  /home/zj-db/backup/$(date +%F) -p</span><br><span class="line">cd /home/zj-db/backup/$(date +%F)</span><br><span class="line"># backup every database with every table</span><br><span class="line">for db in $DB_NAME</span><br><span class="line">do</span><br><span class="line">    if [[ &quot;$db&quot; != &apos;information_schema&apos; &amp;&amp; &quot;$db&quot; != &apos;performance_schema&apos; &amp;&amp; &quot;$db&quot; != &apos;mysql&apos; &amp;&amp; &quot;$db&quot; != &apos;sys&apos; ]];then</span><br><span class="line">        mkdir /home/zj-db/backup/$(date +%F)/$db -p</span><br><span class="line">            TB_NAME=`mysql -uadmin -pzjht0724# -e &quot;show tables from $db;&quot;|sed &apos;1d&apos;`</span><br><span class="line">            for tb in $TB_NAME</span><br><span class="line">            do</span><br><span class="line">                    mysqldump -uadmin -pzjht0724# --lock-tables=0 $db $tb &gt; /home/zj-db/backup/$(date +%F)/$&#123;db&#125;/$&#123;tb&#125;.sql</span><br><span class="line">            done</span><br><span class="line">        # 备份压缩及加密</span><br><span class="line">        zip -r -Pzjht1234 $&#123;db&#125;.zip $db</span><br><span class="line">        rm -rf $db</span><br><span class="line">    fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-<h2 id="导出存储过程与函数"><a href="#导出存储过程与函数" class="headerlink" title="导出存储过程与函数"></a>导出存储过程与函数</h2><ul>
-<li>注意事项：必须结合数据的导出</li>
-<li>查看存储过程与函数<ul>
-<li>查看自定义函数：show function status;</li>
-<li>查看存储过程：show procedure status;</li>
-</ul>
+<li><p>harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】</p>
 </li>
-<li>操作：mysqldump crm_test -R &gt; crm_test.sql</li>
-</ul>
-<h1 id="备份选项"><a href="#备份选项" class="headerlink" title="备份选项"></a>备份选项</h1><h2 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h2><ul>
-<li>全量备份：使用mysqldump命令导出的数据</li>
-<li>增量备份：由于mysql的数据修改操作都记录在binlog中，执行日志文件切割轮转后，新增的binlog文件即视为增量备份<ul>
-<li>可以使用mysqldump -F或mysqladmin flush-logs切割轮转binlog文件</li>
-</ul>
+<li><p>inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个harvester；支持多种inputs类型，例如log、stdin、tcp、udp、docker、redis、syslog等</p>
 </li>
 </ul>
-<h2 id="物理备份和逻辑备份"><a href="#物理备份和逻辑备份" class="headerlink" title="物理备份和逻辑备份"></a>物理备份和逻辑备份</h2><table>
+<p>filebeat如何保持文件状态？</p>
+<p>Filebeat会保留每个文件的状态，并经常将状态刷新到注册表文件(registry)中的磁盘。该状态用于记住收割机正在读取的最后一个偏移量，并确保发送所有日志行。如果无法到达输出（例如Elasticsearch或Logstash），Filebeat会跟踪发送的最后几行，并在输出再次可用时继续读取文件。当Filebeat运行时，状态信息也保存在内存中，用于每个输入。重新启动Filebeat时，将使用注册表文件中的数据来重建状态，并且Filebeat会将每个收割机继续到最后一个已知位置。</p>
+<p>对于每个输入，Filebeat会保持找到的每个文件的状态。由于可以重命名或移动文件，因此文件名和路径不足以标识文件。对于每个文件，Filebeat都存储唯一的标识符以检测文件是否以前被收获过。</p>
+<p>注册表文件位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filebeat.registry_file: $&#123;path.data&#125;/registry</span><br></pre></td></tr></table></figure>
+<h1 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h1><p>可以将常见的日志进行格式化，直接输出到elasticsearch或kibana【此时就不需要再设置filebeat.inputs】</p>
+<ul>
+<li>在elasticsearch中安装ingest-geoip和ingest-user-agent</li>
+</ul>
+<blockquote>
+<p>安装要求：<a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/filebeat-modules-quickstart.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/beats/filebeat/6.5/filebeat-modules-quickstart.html</a></p>
+<p>其他版本说明：<a href="https://www.elastic.co/guide/en/elasticsearch/plugins/6.7/ingest-geoip.html" target="_blank" rel="noopener">v6.7之后作为elasticsearch的ingest processor无需安装</a></p>
+<p>docker方式：docker启动的elasticsearch已默认安装</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo bin/elasticsearch-plugin install ingest-geoip</span><br><span class="line">sudo bin/elasticsearch-plugin install ingest-user-agent</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启停模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./filebeat modules enable nginx</span><br><span class="line">./filebeat modules list</span><br><span class="line">./filebeat modules disable nginx</span><br></pre></td></tr></table></figure>
+<ul>
+<li>模块配置参数【modules.d/nginx.yml】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- module: nginx</span><br><span class="line">  access:</span><br><span class="line">    enabled: true</span><br><span class="line">    var.paths: [&quot;/var/log/nginx/access.log*&quot;] #设置nginx日志位置</span><br><span class="line">  error:</span><br><span class="line">    enabled: true</span><br><span class="line">    var.paths: [&quot;/var/log/nginx/error.log*&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>filebeat的主配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filebeat.config.modules:</span><br><span class="line">  reload.enabled: true                 # 运行动态加载配置</span><br><span class="line">  path: $&#123;path.config&#125;/modules.d/*.yml # 加载的模块位置</span><br></pre></td></tr></table></figure>
+<h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  filebeat [flags]</span><br><span class="line">  filebeat [command]</span><br><span class="line"></span><br><span class="line">命令选项：</span><br><span class="line">export   # 导出配置</span><br><span class="line">modules  # 模块管理</span><br><span class="line">test     # 测试配置</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-c filebeat.yml  # 指定配置文件名称(默认filebeat.yml)，相对于path.config</span><br><span class="line">-d publish       # 指定字符串调试</span><br><span class="line">-e               # filebeat日志记录到标准输出</span><br><span class="line">--path.data      # 数据目录       </span><br><span class="line">--path.home      # 根目录</span><br><span class="line">--path.logs      # 日志目录</span><br><span class="line"></span><br><span class="line">启动范例：</span><br><span class="line">./filebeat -e -c filebeat.yml -d &quot;publish&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/configuring-howto-filebeat.html" target="_blank" rel="noopener">配置选项</a></h1><h2 id="inputs设置"><a href="#inputs设置" class="headerlink" title="inputs设置"></a>inputs设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- type: log                  # 输入数据类型，日志文件-log</span><br><span class="line">  enabled: true              # 开启log类型功能,默认true</span><br><span class="line">  paths:                     # 日志文件路径,使用通配符</span><br><span class="line">  - /usr/local/filebeat-6.5.4/*.log</span><br><span class="line">  exclude_files: [&apos;.gz$&apos;]    # 排除指定的文件</span><br><span class="line">  include_lines: [&quot;^ERR&quot;, &quot;^WARN&quot;] # 只发送包含这些字样的日志【默认包含所有；在exclude_lines之前调用】</span><br><span class="line">  exclude_lines: [&quot;^OK&quot;]     # 不发送包含这些字样的日志</span><br><span class="line">  tags: [&quot;nginx&quot;, &quot;web&quot;]     # 添加标签</span><br><span class="line">  fields:                    # 添加字段，默认添加到子节点fields下</span><br><span class="line">    env: staging</span><br><span class="line">  fields_under_root: true    # 添加字段到根节点下</span><br><span class="line">  ignore_older: &quot;24h&quot;        # 超过 24小时没更新内容的文件不再监听。</span><br><span class="line">  scan_frequency: &quot;10s&quot;      # 每 10秒钟扫描一次目录，更新通配符匹配上的文件列表</span><br><span class="line">  tail_files: false          # 是否从文件末尾开始读取</span><br><span class="line">  harvester_buffer_size: 16384 # 实际读取文件时，每次读取 16384 字节</span><br><span class="line">  backoff: &quot;1s&quot;              # 每 1 秒检测一次文件是否有新的一行内容需要读取</span><br></pre></td></tr></table></figure>
+<h2 id="多行日志-multiline"><a href="#多行日志-multiline" class="headerlink" title="多行日志-multiline"></a><a href="https://blog.csdn.net/UbuntuTouch/article/details/106272704" target="_blank" rel="noopener">多行日志-multiline</a></h2><ul>
+<li>multiline.pattern：指定要匹配的正则表达式模式。</li>
+<li>multiline.negate：定义是否为否定模式，也就是和上面定义的模式相反。 默认为false。</li>
+<li>multiline.match：如何将模式匹配和不匹配的行组合到一个事件中</li>
+</ul>
+<table>
 <thead>
 <tr>
-<th>逻辑备份</th>
-<th>物理备份</th>
+<th>pattern：^b 匹配以b开始的行</th>
+<th>negate</th>
+<th>match</th>
+<th>结果</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>导出sql语句</td>
-<td>直接复制数据文件</td>
+<td><img src="https://img-blog.csdnimg.cn/20200522095441298.png" alt></td>
+<td>false</td>
+<td>after</td>
+<td>模式匹配的连续行追加到不匹配的行之后<br>【1-bb行追加到a行之后，2-bb行追加到c行之后】</td>
 </tr>
 <tr>
-<td>mysqldump</td>
-<td>scp、cp、rsync等</td>
+<td><img src="https://img-blog.csdnimg.cn/20200522095832263.png" alt></td>
+<td>false</td>
+<td>before</td>
+<td>模式匹配的连续行添加到下一个不匹配的行之前<br>【1-bb行添加到a行之前，2-bb行追加到c行之前】</td>
 </tr>
 <tr>
-<td>速度较慢</td>
-<td>速度较快</td>
+<td><img src="https://img-blog.csdnimg.cn/20200522100310568.png" alt></td>
+<td>true</td>
+<td>after</td>
+<td>模式不匹配的连续行添加到匹配行之后<br>【ac行追加到1-b行之后，de行追加到2-b行之后】</td>
 </tr>
 <tr>
-<td>支持server跨版本备份与恢复</td>
-<td>要求导入和导出的server版本尽量一致</td>
-</tr>
-<tr>
-<td>数据量小于100G使用逻辑备份</td>
-<td>数据量大于100G使用物理备份</td>
+<td><img src="https://img-blog.csdnimg.cn/20200522100724855.png" alt></td>
+<td>true</td>
+<td>before</td>
+<td>模式不匹配的连续行添加到下一个匹配行之前<br>【ac行添加到1-b行之前，de行添加到2-b行之前】</td>
 </tr>
 </tbody>
 </table>
-<h2 id="备份策略"><a href="#备份策略" class="headerlink" title="备份策略"></a>备份策略</h2><ul>
-<li>每天凌晨做一个全量备份</li>
-<li>在全量备份的同时执行日志轮转切割【flush-logs】作为增量备份点</li>
-</ul>
-<h1 id="binlog介绍"><a href="#binlog介绍" class="headerlink" title="binlog介绍"></a>binlog介绍</h1><h2 id="binlog介绍-1"><a href="#binlog介绍-1" class="headerlink" title="binlog介绍"></a>binlog介绍</h2><ul>
-<li>数据恢复：当数据库误删或者发生不可描述的事情时，可以通过 binlog 恢复到某个时间点的数据。</li>
-<li>主从复制：当有数据库更新之后，主库通过 binlog 记录并通知从库进行更新，从而保证主从数据库数据一致；</li>
-</ul>
-<h2 id="binlog功能设置"><a href="#binlog功能设置" class="headerlink" title="binlog功能设置"></a>binlog功能设置</h2><ul>
-<li>功能开关及文件名设置：log_bin=mysql-bin</li>
-</ul>
 <ul>
-<li>binlog日志格式：binlog_format=statement，可选参数值如下<ul>
-<li>statement：记录数据库执行的原始 SQL 语句</li>
-<li>row：记录具体的行的修改，这个为目前默认值</li>
-<li>mixed ：因为上边两种格式各有优缺点，所以就出现了 mixed 格式</li>
-</ul>
+<li><p>multiline.max_lines：单个事件中可以包含的最大行数，默认500</p>
+</li>
+<li><p>multiline.timeout：单个事件的读取超时时间，默认5s</p>
+</li>
+<li><p>multiline.flush_pattern：可以指定单个事件的结束匹配模式，这对于事件以特定标记开始和结束有用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[2015-08-24 11:49:14,389] Start new event</span><br><span class="line">[2015-08-24 11:49:14,395] Content of processing something</span><br><span class="line">[2015-08-24 11:49:14,399] End event</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ‘Start new event’</span><br><span class="line">multiline.negate: true</span><br><span class="line">multiline.match: after</span><br><span class="line">multiline.flush_pattern: ‘End event’</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<p>​       当看到“Start new event”模式并且以下几行与该模式不匹配时，它们将被追加到与该模式匹配的前一行。<br>​       当看到以“End event”开头的一行时，flush_pattern选项将指示多行事件结束。</p>
 <ul>
-<li>binlog文件切换条件<ul>
-<li>文件大小达到max_binlog_size参数大小</li>
-<li>执行 flush logs 命令</li>
-<li>重启 mysql 服务</li>
+<li>范例1</li>
 </ul>
-</li>
-</ul>
-<h2 id="binlog删除"><a href="#binlog删除" class="headerlink" title="binlog删除"></a>binlog删除</h2><ul>
-<li>设置日志过期变量：<ul>
-<li>查看：show variables like ‘expire_logs_days’;</li>
-<li>设置：set global expire_logs_days = 3;</li>
-</ul>
-</li>
-<li>手动删除日志<ul>
-<li>删除全部：reset master;</li>
-<li>清除MySQL-bin.010之前的日志文件：PURGE MASTER LOGS TO ‘MySQL-bin.010’;</li>
-<li>删除3天前：PURGE MASTER LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 3 DAY);</li>
-<li>删除指定日期前：PURGE MASTER LOGS BEFORE ‘2008-06-22 13:00:00’;</li>
-</ul>
-</li>
-</ul>
-<h2 id="binlog查看"><a href="#binlog查看" class="headerlink" title="binlog查看"></a>binlog查看</h2><p>因为 binlog 是二进制文件，不能像其他文件一样，直接打开查看。但 mysql 提供了 binlog 查看工具 mysqlbinlog，可以解析二进制文件。<br>不同格式的binlog查看方式也有不同，具体如下：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NullPointerException</span><br><span class="line">        at com.example.myproject.Book.getTitle(Book.java:16)</span><br><span class="line">        at com.example.myproject.Author.getBookTitles(Author.java:25)</span><br><span class="line">        at com.example.myproject.Bootstrap.main(Bootstrap.java:14)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ^[[:space:]] # 匹配空格开始的行</span><br><span class="line">multiline.negate: false         # 连续多行与匹配模式相同</span><br><span class="line">multiline.match: after          # 将匹配的行添加到不匹配的行之后</span><br></pre></td></tr></table></figure>
 <ul>
-<li>statement：执行 mysqlbinlog /path/bin-log.000001，可以直接看到原始执行的 SQL 语句</li>
-<li>row：则可读性没有那么好，但仍可通过参数使文档更加可读 mysqlbinlog -v /path/bin-log.000001</li>
+<li>范例2</li>
 </ul>
-<h1 id="binlog解析命令mysqlbinlog"><a href="#binlog解析命令mysqlbinlog" class="headerlink" title="binlog解析命令mysqlbinlog"></a>binlog解析命令mysqlbinlog</h1><ul>
-<li>-u, –user=name</li>
-<li>-h, –host=name </li>
-<li>-p, –password[=name]</li>
-<li>-P, –port=#</li>
-<li>-S, –socket=name</li>
-<li>-r, –result-file=name：导出内容到文件【重定向输出】</li>
-<li>–server-id=#：只导出指定server-id的内容</li>
-<li>–set-charset=name：设置字符集</li>
-<li>–base64-output=DECODE-ROWS：将base64编码的内容解码，以便于查看内容</li>
-<li>-d, –database=name 只导出指定数据库的内容</li>
-<li>-o, –offset=# 跳过开始的n行内容</li>
-<li>-start-datetime、–stop-datetime 解析两个时间点之间的 binlog，时间类型为DATETIME和TIMESTAMP<ul>
-<li>范例：mysqlbinlog mysql-bin.000001 -d seo -vv –base64-output=DECODE-ROWS –start-datetime=’2019-06-01 00:00:00’  –stop-datetime=’2019-07-01 00:00:00’ -r seo2.sql</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[beat-logstash-some-name-832-2015.11.28] IndexNotFoundException[no such index]</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver$WildcardExpressionResolver.resolve(IndexNameExpressionResolver.java:566)</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:133)</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:77)</span><br><span class="line">    at org.elasticsearch.action.admin.indices.delete.TransportDeleteIndexAction.checkBlock(TransportDeleteIndexAction.java:75)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ^\[   # 匹配以[开始的行</span><br><span class="line">multiline.negate: true   # 连续多行与匹配模式相反</span><br><span class="line">multiline.match: after   # 将不匹配的行放在匹配行之后</span><br></pre></td></tr></table></figure>
+<ul>
+<li>范例3</li>
 </ul>
-</li>
-<li>-start-position、–stop-position 解析两个position 之间的 binlog【包含开始点，不包含结束点】<ul>
-<li>范例：mysqlbinlog mysql-bin.000001 -d seo -vv –base64-output=DECODE-ROWS –start-position=46301253  –stop-position=46328958 -r seo3.sql</li>
-</ul>
-</li>
-</ul>
-<h1 id="binlog恢复数据"><a href="#binlog恢复数据" class="headerlink" title="binlog恢复数据"></a>binlog恢复数据</h1><h2 id="指定库恢复"><a href="#指定库恢复" class="headerlink" title="指定库恢复"></a>指定库恢复</h2><p>将全量备份之后的binlog使用-d参数后导出指定数据库</p>
-<h2 id="指定表恢复"><a href="#指定表恢复" class="headerlink" title="指定表恢复"></a>指定表恢复</h2><ul>
-<li>在测试库上将指定表所在库的数据恢复</li>
-<li>将指定表的数据导出</li>
-<li>将导出的表数据恢复到指定的库</li>
-</ul>
-<h1 id="备份与恢复操作"><a href="#备份与恢复操作" class="headerlink" title="备份与恢复操作"></a>备份与恢复操作</h1><blockquote>
-<p>开启binlog，并且binlog不能有过期删除操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalStateException: A book has a null property</span><br><span class="line">       at com.example.myproject.Author.getBookIds(Author.java:38)</span><br><span class="line">       at com.example.myproject.Bootstrap.main(Bootstrap.java:14)</span><br><span class="line">Caused by: java.lang.NullPointerException</span><br><span class="line">       at com.example.myproject.Book.getId(Book.java:22)</span><br><span class="line">       at com.example.myproject.Author.getBookIds(Author.java:35)</span><br><span class="line">       ... 1 more</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ^[[:space:]]+(at|\.&#123;3&#125;)[[:space:]]+\b|^Caused by:&apos; # 匹配2个条件之一，条件如下</span><br><span class="line">multiline.negate: false # 连续多行与匹配模式相同</span><br><span class="line">multiline.match: after  # 将匹配的行放到不匹配的行之后</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以空白开始，接着是 at 或3个点，再一个空白之后接任意字符</p>
+<p>以 Caused by: 开始</p>
 </blockquote>
-<ul>
-<li>【备份】mysqldump备份数据【全量备份】，添加-F参数切换binlog文件，并获取备份后的第一个binlog文件名【增量备份】</li>
-<li>【问题】服务出现异常，查明是因为mysql出现问题操作</li>
-<li>【停止服务】停止mysql的对外服务【可通过iptables封禁3306端口】</li>
-<li>【保护现场】备份全量备份数据和所有的binlog文件，防止数据二次破坏</li>
-<li>【获取增量备份（删除问题sql）】找到全量备份后的所有binlog，并使用mysqlbinlog工具将binlog转换为sql，同时删除有问题的sql语句</li>
-<li>【恢复全量备份】</li>
-<li>【恢复增量备份】</li>
-<li>【开启服务】检查恢复结果，确认正常后，开启对外服务</li>
+<h2 id="内部队列"><a href="#内部队列" class="headerlink" title="内部队列"></a>内部队列</h2><p>Filebeat在发布事件之前使用内部队列存储事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">queue.mem:</span><br><span class="line">  events: 4096          # 队列可以存储的事件数，默认4096</span><br><span class="line">  flush.min_events: 512 # 发布所需的最小事件数。如果将此值设置为0，则输出可以开始发布事件，而无需额外的等待时间。否则，输出必须等待更多事件可用。默认2048</span><br><span class="line">  flush.timeout: 5s    # 发布需要等待的最大等待时间flush.min_events。如果设置为0，事件将立即可供使用。默认1s</span><br></pre></td></tr></table></figure>
+<h2 id="output设置"><a href="#output设置" class="headerlink" title="output设置"></a>output设置</h2><ul>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/elasticsearch-output.html" target="_blank" rel="noopener">Elasticsearch</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">output.elasticsearch:</span><br><span class="line">  hosts: [&quot;https://localhost:9200&quot;]</span><br><span class="line">  index: &quot;filebeat-%&#123;[beat.version]&#125;-%&#123;+yyyy.MM.dd&#125;&quot;</span><br><span class="line">  username: &quot;filebeat_internal&quot;</span><br><span class="line">  password: &quot;YOUR_PASSWORD&quot;</span><br><span class="line">  ssl.certificate_authorities: [&quot;/etc/pki/root/ca.pem&quot;]</span><br><span class="line">  ssl.certificate: &quot;/etc/pki/client/cert.pem&quot;</span><br><span class="line">  ssl.key: &quot;/etc/pki/client/cert.key&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/logstash-output.html" target="_blank" rel="noopener">Logstash</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output.logstash:</span><br><span class="line">  hosts: [&quot;127.0.0.1:5044&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/kafka-output.html" target="_blank" rel="noopener">Kafka</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.kafka:</span><br><span class="line">  hosts: [&quot;kafka1:9092&quot;, &quot;kafka2:9092&quot;, &quot;kafka3:9092&quot;]</span><br><span class="line">  topic: &apos;%&#123;[fields.log_topic]&#125;&apos;  # 读取inputs中设置的自定义字段fields.log_topic的值</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/redis-output.html" target="_blank" rel="noopener">Redis</a></p>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/file-output.html" target="_blank" rel="noopener">File</a></p>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/console-output.html" target="_blank" rel="noopener">Console</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.console:</span><br><span class="line">  pretty: true</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
-<li><a href="https://learnku.com/articles/20628" target="_blank" rel="noopener">MySQL 通过 binlog 恢复数据</a></li>
-</ul>
+<h3 id="负载均衡output主机"><a href="#负载均衡output主机" class="headerlink" title="负载均衡output主机"></a>负载均衡output主机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.logstash:</span><br><span class="line">  hosts: [&quot;localhost:5044&quot;, &quot;localhost:5045&quot;]</span><br><span class="line">  loadbalance: true</span><br></pre></td></tr></table></figure>
+<h2 id="elasticsearch模板"><a href="#elasticsearch模板" class="headerlink" title="elasticsearch模板"></a>elasticsearch模板</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 1  </span><br><span class="line">  index.number_of_replicas: 1</span><br></pre></td></tr></table></figure>
+<h2 id="filebeat日志"><a href="#filebeat日志" class="headerlink" title="filebeat日志"></a>filebeat日志</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">logging.level: info</span><br><span class="line">logging.to_files: true</span><br><span class="line">logging.files:</span><br><span class="line">  path: /var/log/filebeat</span><br><span class="line">  name: filebeat</span><br><span class="line">  keepfiles: 7</span><br><span class="line">  permissions: 0644</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -573,9 +538,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/mysqlbinlog/" rel="tag"># mysqlbinlog</a>
-          
-            <a href="/tags/mysqldump/" rel="tag"># mysqldump</a>
+            <a href="/tags/filebeat/" rel="tag"># filebeat</a>
           
         </div>
       
@@ -588,8 +551,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/24/web服务管理/数据库/mysql安装与配置/" rel="next" title="mysql安装与配置">
-                <i class="fa fa-chevron-left"></i> mysql安装与配置
+              <a href="/2020/09/22/容器化/服务网格-Istio/" rel="next" title="服务网格-Istio">
+                <i class="fa fa-chevron-left"></i> 服务网格-Istio
               </a>
             
           </div>
@@ -597,10 +560,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/09/29/web服务管理/数据库/mysql主从同步/" rel="prev" title="mysql主从同步">
-                mysql主从同步 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -748,7 +707,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#备份命令mysqldump"><span class="nav-number">1.</span> <span class="nav-text">备份命令mysqldump</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份库表"><span class="nav-number">2.</span> <span class="nav-text">备份库表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#备份所有库"><span class="nav-number">2.1.</span> <span class="nav-text">备份所有库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份多个库"><span class="nav-number">2.2.</span> <span class="nav-text">备份多个库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份单个库"><span class="nav-number">2.3.</span> <span class="nav-text">备份单个库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表"><span class="nav-number">2.4.</span> <span class="nav-text">备份表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表数据"><span class="nav-number">2.5.</span> <span class="nav-text">备份表数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份表结构"><span class="nav-number">2.6.</span> <span class="nav-text">备份表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分库分表备份"><span class="nav-number">2.7.</span> <span class="nav-text">分库分表备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导出存储过程与函数"><span class="nav-number">2.8.</span> <span class="nav-text">导出存储过程与函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份选项"><span class="nav-number">3.</span> <span class="nav-text">备份选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全量备份与增量备份"><span class="nav-number">3.1.</span> <span class="nav-text">全量备份与增量备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物理备份和逻辑备份"><span class="nav-number">3.2.</span> <span class="nav-text">物理备份和逻辑备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份策略"><span class="nav-number">3.3.</span> <span class="nav-text">备份策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog介绍"><span class="nav-number">4.</span> <span class="nav-text">binlog介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog介绍-1"><span class="nav-number">4.1.</span> <span class="nav-text">binlog介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog功能设置"><span class="nav-number">4.2.</span> <span class="nav-text">binlog功能设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog删除"><span class="nav-number">4.3.</span> <span class="nav-text">binlog删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog查看"><span class="nav-number">4.4.</span> <span class="nav-text">binlog查看</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog解析命令mysqlbinlog"><span class="nav-number">5.</span> <span class="nav-text">binlog解析命令mysqlbinlog</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binlog恢复数据"><span class="nav-number">6.</span> <span class="nav-text">binlog恢复数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#指定库恢复"><span class="nav-number">6.1.</span> <span class="nav-text">指定库恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定表恢复"><span class="nav-number">6.2.</span> <span class="nav-text">指定表恢复</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份与恢复操作"><span class="nav-number">7.</span> <span class="nav-text">备份与恢复操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工作原理"><span class="nav-number">1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块"><span class="nav-number">2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行工具"><span class="nav-number">3.</span> <span class="nav-text">命令行工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置选项"><span class="nav-number">4.</span> <span class="nav-text">配置选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#inputs设置"><span class="nav-number">4.1.</span> <span class="nav-text">inputs设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多行日志-multiline"><span class="nav-number">4.2.</span> <span class="nav-text">多行日志-multiline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部队列"><span class="nav-number">4.3.</span> <span class="nav-text">内部队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#output设置"><span class="nav-number">4.4.</span> <span class="nav-text">output设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡output主机"><span class="nav-number">4.4.1.</span> <span class="nav-text">负载均衡output主机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch模板"><span class="nav-number">4.5.</span> <span class="nav-text">elasticsearch模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filebeat日志"><span class="nav-number">4.6.</span> <span class="nav-text">filebeat日志</span></a></li></ol></li></ol></div>
             
 
           </div>
