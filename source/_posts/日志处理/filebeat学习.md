@@ -84,6 +84,11 @@ Usage:
 export   # 导出配置
 modules  # 模块管理
 test     # 测试配置
+setup    # 在相关环境中进行初始化设置
+* --dashboards      在kibana中创建dashboard【kibana可用】
+* --machine-learnin 设置机器学习的job配置【机器学习节点可用】
+* --pipelines       在es中创建pipeline【es的ingest节点可用】
+* --template        在es中设置索引mappings模板
 
 参数：
 -c filebeat.yml  # 指定配置文件名称(默认filebeat.yml)，相对于path.config
@@ -272,11 +277,42 @@ output.logstash:
 
 ## elasticsearch模板
 
+filebeat可以在elasticsearch中创建索引，相关设置：**setup.template.\***
+
+开启方式：
+
+* 命令行方式：filebeat setup --template
+* 配置文件方式：setup.template.enabled: true【默认true】
+
+其他模板设置选项：
+
 ```
 setup.template.settings:
   index.number_of_shards: 1  
   index.number_of_replicas: 1 
 ```
+
+> 根据模板创建的默认索引名称(按天分隔)："filebeat-%{[beat.version]}-*"
+
+## kibana仪表盘
+
+filebeat(beats系列)可以在kibana中创建dashboard，相关设置：**setup.dashboards-\***、**setup.kibana**
+
+开启方式：
+
+* 命令行方式：filebeat setup --dashboards
+* 配置文件方式：setup.dashboards.enabled: false【默认false】
+
+其他模板设置选项：
+
+
+```
+setup.dashboards.enabled: true              # filebeat启动，在kibana创建filebeat类的dashboard
+setup.kibana:                               # kibana连接地址
+  host: "localhost:8601"
+```
+
+> filebeat在kibana中创建的dashboard默认引用的索引名称是：filebeat-\*
 
 ## filebeat日志
 
