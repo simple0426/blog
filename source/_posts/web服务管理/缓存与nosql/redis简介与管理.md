@@ -43,8 +43,8 @@ date: 2019-10-25 11:29:57
 * 获取排序集合中最高排名的成员
 
 ## 下载与安装
-* 下载：http://download.redis.io/releases/redis-4.0.14.tar.gz
-* 安装
+* 版本重要提示：从5.0版本开始，redis内置关键词slave切换为replica，[相关issue](https://github.com/redis/redis/issues/5335)
+* 下载与安装
 
 ```
 $ wget http://download.redis.io/releases/redis-5.0.5.tar.gz
@@ -53,7 +53,16 @@ $ cd redis-5.0.5
 $ make
 ```
 
+* 安装错误
+
+```
+错误：make安装报错 jemalloc/jemalloc.h: No such file or directory。
+原因：开始时gcc未安装，安装gcc后存在make编译残留
+解决：make distclean  && make
+```
+
 # [复制操作](https://redis.io/topics/replication)
+
 ## 同异步
 * 异步：redis复制是异步的，主实时发送操作的命令到从机
 * 部分同步：主从复制出现异常，从机可以通过部分同步功能(repl-backlog-size)与主机重新建立复制关系
@@ -157,9 +166,5 @@ $ make
     - omem：已使用的输出缓冲区大小
     - cmd：最近执行的命令
 * client kill：关闭客户端连接
-
-# 主从架构高可用
-* 中文参考：http://redisdoc.com/topic/sentinel.html
-* 官方参考：https://redis.io/topics/sentinel
 
 [redis-intro]:https://redis.io/topics/introduction
