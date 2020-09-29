@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sentinel,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="sentinel功能 监控：持续监控master和slave是否处于工作状态 通知：通过API通知系统管理员或程序某个redis实例故障 自动故障转移：当master故障时，自动将其中的一个slave提升为master，并配置其他slave连接新的master；当有客户端连接时，通知通知客户端使用新的地址 配置提供者：向客户端提供服务发现功能：即master的地址  快速部署运行sentinel1">
+<meta name="keywords" content="sentinel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis主从高可用-sentinel">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="sentinel功能 监控：持续监控master和slave是否处于工作状态 通知：通过API通知系统管理员或程序某个redis实例故障 自动故障转移：当master故障时，自动将其中的一个slave提升为master，并配置其他slave连接新的master；当有客户端连接时，通知通知客户端使用新的地址 配置提供者：向客户端提供服务发现功能：即master的地址  快速部署运行sentinel1">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-09-29T15:59:35.854Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis主从高可用-sentinel">
+<meta name="twitter:description" content="sentinel功能 监控：持续监控master和slave是否处于工作状态 通知：通过API通知系统管理员或程序某个redis实例故障 自动故障转移：当master故障时，自动将其中的一个slave提升为master，并配置其他slave连接新的master；当有客户端连接时，通知通知客户端使用新的地址 配置提供者：向客户端提供服务发现功能：即master的地址  快速部署运行sentinel1">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/">
+
+
+
+
+
+  <title>redis主从高可用-sentinel | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis主从高可用-sentinel</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-29T23:52:37+08:00">
+                2020-09-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-29T23:59:35+08:00">
+                2020-09-29
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="sentinel功能"><a href="#sentinel功能" class="headerlink" title="sentinel功能"></a><a href="https://redis.io/topics/sentinel" target="_blank" rel="noopener">sentinel功能</a></h1><ul>
+<li>监控：持续监控master和slave是否处于工作状态</li>
+<li>通知：通过API通知系统管理员或程序某个redis实例故障</li>
+<li>自动故障转移：当master故障时，自动将其中的一个slave提升为master，并配置其他slave连接新的master；当有客户端连接时，通知通知客户端使用新的地址</li>
+<li>配置提供者：向客户端提供服务发现功能：即master的地址</li>
+</ul>
+<h1 id="快速部署"><a href="#快速部署" class="headerlink" title="快速部署"></a>快速部署</h1><h2 id="运行sentinel"><a href="#运行sentinel" class="headerlink" title="运行sentinel"></a>运行sentinel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel /path/to/sentinel.conf</span><br><span class="line">或：redis-server /path/to/sentinel.conf --sentinel</span><br></pre></td></tr></table></figure>
+<p>配置文件是必须的，因为在重启时要保存集群状态；没有配置文件或配置文件不可写，sentinel将拒绝启动<br>sentinel默认监听在26379端口，用于和其他sentinel实例以及客户端通信</p>
+<h2 id="部署前的基础知识"><a href="#部署前的基础知识" class="headerlink" title="部署前的基础知识"></a>部署前的基础知识</h2><ol>
+<li>需要至少3个实例保证部署的健壮性，并需要保证它们不在一个故障区</li>
+<li>Sentinel + Redis的分布式系统不保证在故障转移期间已确认的写操作数据也保留，因为主从是异步复制的；但是一些部署方式可以限制写操作丢失只在某些特定的时刻，当然也会有一些其他不安全的部署方式</li>
+<li>需要客户端支持sentinel功能；大部分都支持，并非全部</li>
+<li>HA设置需要不断测试才能保证安全，因为错误的配置可能只在某些特定的情况下才会发挥作用</li>
+<li>sentinel、docker和其他形式的nat、端口转换被混合使用时都应该注意：docker默认的端口映射行为，破坏了sentinel对其他sentinel进程的自动服务发现、以及获取redis master的slave列表；应该查询sentinel和docker的相关内容进行设置</li>
+</ol>
+<h2 id="配置sentinel"><a href="#配置sentinel" class="headerlink" title="配置sentinel"></a>配置sentinel</h2><p>sentinel.conf 是一个自文档配置文件，典型的最小配置如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000</span><br><span class="line">sentinel failover-timeout mymaster 180000</span><br><span class="line">sentinel parallel-syncs mymaster 1</span><br><span class="line"></span><br><span class="line">sentinel monitor resque 192.168.1.3 6380 4</span><br><span class="line">sentinel down-after-milliseconds resque 10000</span><br><span class="line">sentinel failover-timeout resque 180000</span><br><span class="line">sentinel parallel-syncs resque 5</span><br></pre></td></tr></table></figure>
+<p>只需要设置要监控的master节点，并为每个独立的master节点设置不同的名称；不需要设置slave节点，这会通过自动发现实现；sentinel会用额外的信息自动更新关于slave的配置，为了在重启时依然保留相关配置信息。<br>每次在故障转移期间将slave提升为master时，以及每次发现新的Sentinel时，都会重写配置；以上配置监控了两组redis实例，每个实例都包含了数量不定的slave；一组实例叫mymaster，另一组叫resque。</p>
+<p>sentinel monitor语句参数的含义如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor &lt;master-group-name&gt; &lt;ip&gt; &lt;port&gt; &lt;quorum&gt;</span><br></pre></td></tr></table></figure>
+<p>第一行告诉sentinel监控一个叫mymaster的master，地址127.0.0.1，端口6379，选举需要的最小成员数2；<br>quorum参数含义如下：</p>
+<ul>
+<li>标记master不可用所需sentinel的最小数量</li>
+<li>quorum只用于检测master故障；为了执行故障转移，需要将一个sentinel选举为故障转移负责人，然后才有权继续进行故障转移操作，而这种选举只发生在具有多数sentinel进程可以互相通信的情况下。</li>
+</ul>
+<p>对于有5个sentinel进程的例子，quorum设置为2表示如下含义：</p>
+<ul>
+<li>如果有2个sentinel同意master不可达，则其中的2个将尝试启动故障转移</li>
+<li>如果有至少3个sentinel同意mster不可达，并且可以互相通信，则故障转移被授权并实际执行</li>
+</ul>
+<p>实际上，这意味着在发生故障期间，如果大多数Sentinel进程无法进行对话（在少数分区中也没有故障转移），则Sentinel不会启动故障转移。</p>
+<h2 id="其他sentinel选项"><a href="#其他sentinel选项" class="headerlink" title="其他sentinel选项"></a>其他sentinel选项</h2><p>其他sentinel选项的格式一般如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel &lt;option_name&gt; &lt;master_name&gt; &lt;option_value&gt;</span><br></pre></td></tr></table></figure>
+<p>一些选项的作用如下：</p>
+<ul>
+<li>down-after-milliseconds：sentinel认为实例不可达(不回复ping或回复错误)需要的时间，以毫秒计</li>
+<li>parallel-syncs：设置故障转移期间同时向新master进行数据同步的slave数量；这个slave数量越少，则故障转移完成需要的时间也就越多（一次同步一个，直到所有副本节点同步完成）；尽管多数情况下复制是非阻塞的，但也有一些情况会造成副本节点不可用；当设置为1时，可以保证复制期间仅有1个副本节点不可用，而此时未完成同步的其他副本节点可以使用旧数据向客户端提供服务。</li>
+</ul>
+<p>可以使用SENTINEL SET命令实时修改参数</p>
+<h2 id="避免写丢失的配置"><a href="#避免写丢失的配置" class="headerlink" title="避免写丢失的配置"></a>避免写丢失的配置</h2><blockquote>
+<p>redis.conf</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">min-replicas-to-write 1</span><br><span class="line">min-replicas-max-lag 10</span><br></pre></td></tr></table></figure>
+<p>当master可以写入至少1个slave中，且收到异步确认的消息不超过10s时，master才可以继续接受客户端的写操作；这样可以防止在发生故障转移时，旧的master依然接受写操作造成部分写操作丢失。</p>
+<h2 id="sentinel-docker-NAT问题"><a href="#sentinel-docker-NAT问题" class="headerlink" title="sentinel/docker/NAT问题"></a>sentinel/docker/NAT问题</h2><p>端口和地址映射对sentinel的影响：</p>
+<ul>
+<li>sentinel通过自动发现和其他sentinel协同工作，由于端口和地址映射，sentinel声明的地址和端口对其他sentinel而言是不正确且不能连接的</li>
+<li>sentinel通过在master使用命令INFO检测slave的连接信息，同样由于端口和地址映射，sentinel获取的slave连接信息是不正确的且不可达，最终会因为没有可用的slave无法完成故障切换工作</li>
+</ul>
+<p>对于第一个问题可以使用如下配置，使sentinel声明一个可以连接的地址和端口信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sentinel announce-ip &lt;ip&gt;</span><br><span class="line">sentinel announce-port &lt;port&gt;</span><br></pre></td></tr></table></figure>
+<p>对于第二个问题可以使用如下配置，强制slave向master声明一个可以连接的地址和端口【v3.2.2之后】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">replica-announce-ip 5.5.5.5</span><br><span class="line">replica-announce-port 1234</span><br></pre></td></tr></table></figure>
+<p>相应地，集群模式下也有相关的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cluster-announce-ip 10.1.1.5</span><br><span class="line">cluster-announce-port 6379</span><br><span class="line">cluster-announce-bus-port 6380</span><br></pre></td></tr></table></figure>
+<p>当然为了操作简单，也可以直接使用docker的host网络模式，直接使用宿主机的网络。</p>
+<h1 id="集群状态检查"><a href="#集群状态检查" class="headerlink" title="集群状态检查"></a>集群状态检查</h1><p>在本机运行3个sentinel实例(端口 5000, 5001, 5002)，同时运行一个master(6379)和一个slave(6380)，使用127.0.0.1进行相互连接<br>sentinel配置如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">port 5000</span><br><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 5000</span><br><span class="line">sentinel failover-timeout mymaster 60000</span><br><span class="line">sentinel parallel-syncs mymaster 1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从sentinel处检查redis master运行状态</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis-cli -p 5000</span><br><span class="line">127.0.0.1:5000&gt; sentinel master mymaster</span><br></pre></td></tr></table></figure>
+<ul>
+<li>检查其他sentinel和redis slave的信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SENTINEL replicas mymaster</span><br><span class="line">SENTINEL sentinels mymaster</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看redis master的地址</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SENTINEL get-master-addr-by-name mymaster</span><br></pre></td></tr></table></figure>
+<h1 id="配置修改和查看"><a href="#配置修改和查看" class="headerlink" title="配置修改和查看"></a>配置修改和查看</h1><p>API功能：查看自身的状态、检查被监控的redis master和slave的状态、订阅特定的事件、实时变更配置</p>
+<h2 id="查询sentinel状态"><a href="#查询sentinel状态" class="headerlink" title="查询sentinel状态"></a>查询sentinel状态</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PING # 返回PONG信息</span><br><span class="line">SENTINEL masters                      # 显示被监控的多个master列表</span><br><span class="line">SENTINEL master &lt;master name&gt;         # 显示指定master信息</span><br><span class="line">SENTINEL replicas &lt;master name&gt;       # 显示指定master的slave列表和信息</span><br><span class="line">SENTINEL sentinels &lt;master name&gt;      # 显示监控指定master的sentinel列表和信息</span><br><span class="line">SENTINEL get-master-addr-by-name &lt;master name&gt; # 显示指定master的ip和端口</span><br><span class="line">SENTINEL reset &lt;pattern&gt;              # 重置匹配(glob匹配)的master的所有信息（包含slave和sentinel信息）</span><br><span class="line">SENTINEL failover &lt;master name&gt;       # 强制进行故障转移，无需其他sentinel同意</span><br><span class="line">SENTINEL ckquorum &lt;master name&gt;       # 检测当前sentinel的配置是否满足故障转移的条件</span><br><span class="line">SENTINEL flushconfig                  # 强制将当前sentinel的状态写到磁盘</span><br></pre></td></tr></table></figure>
+<h2 id="实时修改sentinel配置"><a href="#实时修改sentinel配置" class="headerlink" title="实时修改sentinel配置"></a>实时修改sentinel配置</h2><blockquote>
+<p>需要在多个sentinel上修改</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SENTINEL MONITOR &lt;name&gt; &lt;ip&gt; &lt;port&gt; &lt;quorum&gt; # 监控一个新的master主从集群，ip选项不能时主机名</span><br><span class="line">SENTINEL REMOVE &lt;name&gt;                       # 移除一个master主从集群</span><br><span class="line">SENTINEL SET &lt;name&gt; &lt;option&gt; &lt;value&gt;         # 指定master的参数配置</span><br></pre></td></tr></table></figure>
+<h2 id="添加或移除sentinel"><a href="#添加或移除sentinel" class="headerlink" title="添加或移除sentinel"></a>添加或移除sentinel</h2><p><strong>添加</strong>：通过sentinel的自动发现功能，可以直接添加sentinel监控活动的master；为了保证在添加过程中，即使出现网络分区时也可以进行故障转移，应该一个一个的添加新的sentinel，间隔30s以上</p>
+<p><strong>删除</strong>：由于sentinel不会主动删除发现的sentinel信息，即使sentinel不可达；为了保证故障转移的可用，同时又不想动态修改故障转移的条件(quorum)，我们应当在没有网络分区的情况下执行下列步骤：</p>
+<ul>
+<li>停止任意的sentinel</li>
+<li>在所有可用sentinel实例执行<code>SENTINEL RESET *</code>命令【此命令是重置监控所有master的sentinel信息，也可以指定master】</li>
+<li>在所有可用sentinel实例执行<code>SENTINEL MASTER mastername</code>，以使显示的sentinel信息和活动的sentinel保持一致</li>
+</ul>
+<h2 id="移除旧的master或slave"><a href="#移除旧的master或slave" class="headerlink" title="移除旧的master或slave"></a>移除旧的master或slave</h2><p>sentinel不会主动删除保存的master下的slave信息，为了删除不可用的slave或旧的master，应该在所有sentinel上执行<code>SENTINEL RESET mastername</code>，这样可以使sentinel通过INFO命令重新获取master下的slave信息。</p>
+<h2 id="slave优先级"><a href="#slave优先级" class="headerlink" title="slave优先级"></a>slave优先级</h2><p>slave的设置<em>replica-priority</em>用于决定多个slave在故障转移中的优先级：</p>
+<ul>
+<li>replica-priority设置为0，slave永远不会提升为master</li>
+<li>replica-priority数值越小优先级越高</li>
+</ul>
+<h2 id="redis和sentinel认证"><a href="#redis和sentinel认证" class="headerlink" title="redis和sentinel认证"></a>redis和sentinel认证</h2><p>redis认证：在master和所有slave中设置指令以启用认证功能</p>
+<ul>
+<li>requirepass <em>string</em>：启用客户端连接的授权密码</li>
+<li>masterauth <em>string</em>：在slave中设置连接master的认证密码</li>
+</ul>
+<p>同时在master和slave中都设置这两个参数，以保障master与外部的任何连接(客户端、slave、sentinel)都需要认证、slave与外部的任何连接(客户端、sentinel)也需要认证、故障转移后master和slave角色转换后依然保持认证功能</p>
+<p>如果需要一个可以匿名访问的slave，可以设置如下：</p>
+<ul>
+<li>只设置masterauth，不设置requirepass</li>
+<li>设置replica-priority为0，此slave永远不能提升为master</li>
+</ul>
+<p>在redis启用认证的情况下，应该设置sentinel的认证参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel auth-pass &lt;master-group-name&gt; &lt;pass&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="sentinel实例认证"><a href="#sentinel实例认证" class="headerlink" title="sentinel实例认证"></a>sentinel实例认证</h2><p>从5.0.1之后，也可以开启sentinel自身的认证：<code>requirepass &quot;your_password_here&quot;</code>，<br>这个认证同时用于sentinel和其他sentinel实例，以及sentinel和客户端的认证<br>为了使sentinel运行正常，需要在所有sentinel实例配置此参数<br>这个参数也需要客户端库的支持。</p>
+<h1 id="精简配置范例"><a href="#精简配置范例" class="headerlink" title="精简配置范例"></a>精简配置范例</h1><p>3个redis(1master 2slave)、3个sentinel</p>
+<ul>
+<li><p>redis最简配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">bind 0.0.0.0</span><br><span class="line">port 6379</span><br><span class="line">daemonize yes</span><br><span class="line">dbfilename &quot;dump.rdb&quot;</span><br><span class="line">dir &quot;./&quot;</span><br><span class="line">requirepass &quot;123456&quot;</span><br><span class="line">masterauth &quot;123456&quot;</span><br><span class="line">min-replicas-to-write 1</span><br><span class="line">min-replicas-max-lag 10</span><br><span class="line"># replicaof 192.168.31.232 6379</span><br><span class="line"># replica-priority 50</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sentinel最简配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">port 5000</span><br><span class="line">daemonize yes</span><br><span class="line">dir &quot;/tmp&quot;</span><br><span class="line">sentinel monitor mymaster 192.168.31.232 6379 2</span><br><span class="line">sentinel auth-pass mymaster 123456</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="python客户端使用"><a href="#python客户端使用" class="headerlink" title="python客户端使用"></a>python客户端使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># pip install redis</span><br><span class="line">from redis.sentinel import Sentinel</span><br><span class="line">sentinel = Sentinel([</span><br><span class="line">    (&apos;192.168.31.231&apos;, 5000),</span><br><span class="line">    (&apos;192.168.31.232&apos;, 5000),</span><br><span class="line">    (&apos;192.168.31.233&apos;, 5000)],</span><br><span class="line">    socket_timeout=0.5)</span><br><span class="line"></span><br><span class="line"># 获取master的连接字符串（主要用于观察、显示）</span><br><span class="line"># master = sentinel.discover_master(&apos;mymaster&apos;)</span><br><span class="line"># print(master)</span><br><span class="line"># 获取master的连接（用于数据操作），mymaster为sentinel中配置的不同redis集群标识</span><br><span class="line">master = sentinel.master_for(&apos;mymaster&apos;, socket_timeout=0.5, password=&apos;123456&apos;, db=0)</span><br><span class="line">master.set(&apos;name&apos;, &apos;bar&apos;)</span><br><span class="line"></span><br><span class="line"># 获取slave的连接字符串（主要用于观察、显示）</span><br><span class="line"># slave = sentinel.discover_slaves(&apos;mymaster&apos;)</span><br><span class="line"># print(slave)</span><br><span class="line"># 获取slave连接，从slave读取数据（默认是round-roubin）</span><br><span class="line">slave = sentinel.slave_for(&apos;mymaster&apos;, socket_timeout=0.5, password=&apos;123456&apos;, db=0)</span><br><span class="line">res = slave.get(&apos;name&apos;)</span><br><span class="line">print(res)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/24/日志处理/filebeat学习/" rel="next" title="filebeat学习">
+                <i class="fa fa-chevron-left"></i> filebeat学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">135</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">268</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sentinel功能"><span class="nav-number">1.</span> <span class="nav-text">sentinel功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速部署"><span class="nav-number">2.</span> <span class="nav-text">快速部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行sentinel"><span class="nav-number">2.1.</span> <span class="nav-text">运行sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署前的基础知识"><span class="nav-number">2.2.</span> <span class="nav-text">部署前的基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置sentinel"><span class="nav-number">2.3.</span> <span class="nav-text">配置sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他sentinel选项"><span class="nav-number">2.4.</span> <span class="nav-text">其他sentinel选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免写丢失的配置"><span class="nav-number">2.5.</span> <span class="nav-text">避免写丢失的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sentinel-docker-NAT问题"><span class="nav-number">2.6.</span> <span class="nav-text">sentinel/docker/NAT问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群状态检查"><span class="nav-number">3.</span> <span class="nav-text">集群状态检查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置修改和查看"><span class="nav-number">4.</span> <span class="nav-text">配置修改和查看</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查询sentinel状态"><span class="nav-number">4.1.</span> <span class="nav-text">查询sentinel状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实时修改sentinel配置"><span class="nav-number">4.2.</span> <span class="nav-text">实时修改sentinel配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加或移除sentinel"><span class="nav-number">4.3.</span> <span class="nav-text">添加或移除sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移除旧的master或slave"><span class="nav-number">4.4.</span> <span class="nav-text">移除旧的master或slave</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#slave优先级"><span class="nav-number">4.5.</span> <span class="nav-text">slave优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis和sentinel认证"><span class="nav-number">4.6.</span> <span class="nav-text">redis和sentinel认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sentinel实例认证"><span class="nav-number">4.7.</span> <span class="nav-text">sentinel实例认证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#精简配置范例"><span class="nav-number">5.</span> <span class="nav-text">精简配置范例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python客户端使用"><span class="nav-number">6.</span> <span class="nav-text">python客户端使用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+</body>
+</html>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="简介 redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof） 可以被当做数据库、缓存、消息代理使用 使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用在windows上运行 microsoft实现的3.0版本 第三方实现的4/5版本    内置功能 主从异步复制 lua脚本 数据过期策略：LRU 事务 数据持久化策略：rdb、aof 高">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.413Z">
+<meta property="og:updated_time" content="2020-09-29T15:58:01.644Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis简介与管理">
 <meta name="twitter:description" content="简介 redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof） 可以被当做数据库、缓存、消息代理使用 使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用在windows上运行 microsoft实现的3.0版本 第三方实现的4/5版本    内置功能 主从异步复制 lua脚本 数据过期策略：LRU 事务 数据持久化策略：rdb、aof 高">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-29T23:58:01+08:00">
+                2020-09-29
               </time>
             
           </span>
@@ -424,10 +424,14 @@
 <li>获取排序集合中最高排名的成员</li>
 </ul>
 <h2 id="下载与安装"><a href="#下载与安装" class="headerlink" title="下载与安装"></a>下载与安装</h2><ul>
-<li>下载：<a href="http://download.redis.io/releases/redis-4.0.14.tar.gz" target="_blank" rel="noopener">http://download.redis.io/releases/redis-4.0.14.tar.gz</a></li>
-<li>安装</li>
+<li>版本重要提示：从5.0版本开始，redis内置关键词slave切换为replica，<a href="https://github.com/redis/redis/issues/5335" target="_blank" rel="noopener">相关issue</a></li>
+<li>下载与安装</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://download.redis.io/releases/redis-5.0.5.tar.gz</span><br><span class="line">$ tar xzf redis-5.0.5.tar.gz</span><br><span class="line">$ cd redis-5.0.5</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装错误</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">错误：make安装报错 jemalloc/jemalloc.h: No such file or directory。</span><br><span class="line">原因：开始时gcc未安装，安装gcc后存在make编译残留</span><br><span class="line">解决：make distclean  &amp;&amp; make</span><br></pre></td></tr></table></figure>
 <h1 id="复制操作"><a href="#复制操作" class="headerlink" title="复制操作"></a><a href="https://redis.io/topics/replication" target="_blank" rel="noopener">复制操作</a></h1><h2 id="同异步"><a href="#同异步" class="headerlink" title="同异步"></a>同异步</h2><ul>
 <li>异步：redis复制是异步的，主实时发送操作的命令到从机</li>
 <li>部分同步：主从复制出现异常，从机可以通过部分同步功能(repl-backlog-size)与主机重新建立复制关系<ul>
@@ -563,10 +567,6 @@
 </li>
 <li>client kill：关闭客户端连接</li>
 </ul>
-<h1 id="主从架构高可用"><a href="#主从架构高可用" class="headerlink" title="主从架构高可用"></a>主从架构高可用</h1><ul>
-<li>中文参考：<a href="http://redisdoc.com/topic/sentinel.html" target="_blank" rel="noopener">http://redisdoc.com/topic/sentinel.html</a></li>
-<li>官方参考：<a href="https://redis.io/topics/sentinel" target="_blank" rel="noopener">https://redis.io/topics/sentinel</a></li>
-</ul>
 
       
     </div>
@@ -686,7 +686,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">134</span>
+                  <span class="site-state-item-count">135</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -708,7 +708,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">267</span>
+                  <span class="site-state-item-count">268</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -757,7 +757,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置功能"><span class="nav-number">1.1.</span> <span class="nav-text">内置功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持的原子操作"><span class="nav-number">1.3.</span> <span class="nav-text">支持的原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载与安装"><span class="nav-number">1.4.</span> <span class="nav-text">下载与安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制操作"><span class="nav-number">2.</span> <span class="nav-text">复制操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#同异步"><span class="nav-number">2.1.</span> <span class="nav-text">同异步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主从架构"><span class="nav-number">2.2.</span> <span class="nav-text">主从架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非阻塞式"><span class="nav-number">2.3.</span> <span class="nav-text">非阻塞式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从机过期key处理"><span class="nav-number">2.4.</span> <span class="nav-text">从机过期key处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制选项"><span class="nav-number">2.5.</span> <span class="nav-text">复制选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态查看"><span class="nav-number">2.6.</span> <span class="nav-text">状态查看</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务端管理"><span class="nav-number">3.</span> <span class="nav-text">服务端管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置和优化"><span class="nav-number">3.1.</span> <span class="nav-text">配置和优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级或重启"><span class="nav-number">3.2.</span> <span class="nav-text">升级或重启</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主从模式"><span class="nav-number">3.2.1.</span> <span class="nav-text">主从模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高可用或集群模式"><span class="nav-number">3.2.2.</span> <span class="nav-text">高可用或集群模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端管理"><span class="nav-number">4.</span> <span class="nav-text">客户端管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数设置"><span class="nav-number">4.1.</span> <span class="nav-text">参数设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理命令"><span class="nav-number">4.2.</span> <span class="nav-text">管理命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主从架构高可用"><span class="nav-number">5.</span> <span class="nav-text">主从架构高可用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置功能"><span class="nav-number">1.1.</span> <span class="nav-text">内置功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持的原子操作"><span class="nav-number">1.3.</span> <span class="nav-text">支持的原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载与安装"><span class="nav-number">1.4.</span> <span class="nav-text">下载与安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制操作"><span class="nav-number">2.</span> <span class="nav-text">复制操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#同异步"><span class="nav-number">2.1.</span> <span class="nav-text">同异步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主从架构"><span class="nav-number">2.2.</span> <span class="nav-text">主从架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非阻塞式"><span class="nav-number">2.3.</span> <span class="nav-text">非阻塞式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从机过期key处理"><span class="nav-number">2.4.</span> <span class="nav-text">从机过期key处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制选项"><span class="nav-number">2.5.</span> <span class="nav-text">复制选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态查看"><span class="nav-number">2.6.</span> <span class="nav-text">状态查看</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务端管理"><span class="nav-number">3.</span> <span class="nav-text">服务端管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置和优化"><span class="nav-number">3.1.</span> <span class="nav-text">配置和优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级或重启"><span class="nav-number">3.2.</span> <span class="nav-text">升级或重启</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主从模式"><span class="nav-number">3.2.1.</span> <span class="nav-text">主从模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高可用或集群模式"><span class="nav-number">3.2.2.</span> <span class="nav-text">高可用或集群模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端管理"><span class="nav-number">4.</span> <span class="nav-text">客户端管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数设置"><span class="nav-number">4.1.</span> <span class="nav-text">参数设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理命令"><span class="nav-number">4.2.</span> <span class="nav-text">管理命令</span></a></li></ol></li></ol></div>
             
 
           </div>

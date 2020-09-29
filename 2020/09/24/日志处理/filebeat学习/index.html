@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200522095832263.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100310568.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100724855.png">
-<meta property="og:updated_time" content="2020-09-23T18:06:57.694Z">
+<meta property="og:updated_time" content="2020-09-25T10:25:06.809Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="filebeat学习">
 <meta name="twitter:description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-24T02:06:57+08:00">
-                2020-09-24
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-25T18:25:06+08:00">
+                2020-09-25
               </time>
             
           </span>
@@ -425,7 +425,7 @@
 <li>filebeat的主配置</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filebeat.config.modules:</span><br><span class="line">  reload.enabled: true                 # 运行动态加载配置</span><br><span class="line">  path: $&#123;path.config&#125;/modules.d/*.yml # 加载的模块位置</span><br></pre></td></tr></table></figure>
-<h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  filebeat [flags]</span><br><span class="line">  filebeat [command]</span><br><span class="line"></span><br><span class="line">命令选项：</span><br><span class="line">export   # 导出配置</span><br><span class="line">modules  # 模块管理</span><br><span class="line">test     # 测试配置</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-c filebeat.yml  # 指定配置文件名称(默认filebeat.yml)，相对于path.config</span><br><span class="line">-d publish       # 指定字符串调试</span><br><span class="line">-e               # filebeat日志记录到标准输出</span><br><span class="line">--path.data      # 数据目录       </span><br><span class="line">--path.home      # 根目录</span><br><span class="line">--path.logs      # 日志目录</span><br><span class="line"></span><br><span class="line">启动范例：</span><br><span class="line">./filebeat -e -c filebeat.yml -d &quot;publish&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  filebeat [flags]</span><br><span class="line">  filebeat [command]</span><br><span class="line"></span><br><span class="line">命令选项：</span><br><span class="line">export   # 导出配置</span><br><span class="line">modules  # 模块管理</span><br><span class="line">test     # 测试配置</span><br><span class="line">setup    # 在相关环境中进行初始化设置</span><br><span class="line">* --dashboards      在kibana中创建dashboard【kibana可用】</span><br><span class="line">* --machine-learnin 设置机器学习的job配置【机器学习节点可用】</span><br><span class="line">* --pipelines       在es中创建pipeline【es的ingest节点可用】</span><br><span class="line">* --template        在es中设置索引mappings模板</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-c filebeat.yml  # 指定配置文件名称(默认filebeat.yml)，相对于path.config</span><br><span class="line">-d publish       # 指定字符串调试</span><br><span class="line">-e               # filebeat日志记录到标准输出</span><br><span class="line">--path.data      # 数据目录       </span><br><span class="line">--path.home      # 根目录</span><br><span class="line">--path.logs      # 日志目录</span><br><span class="line"></span><br><span class="line">启动范例：</span><br><span class="line">./filebeat -e -c filebeat.yml -d &quot;publish&quot;</span><br></pre></td></tr></table></figure>
 <h1 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/configuring-howto-filebeat.html" target="_blank" rel="noopener">配置选项</a></h1><h2 id="inputs设置"><a href="#inputs设置" class="headerlink" title="inputs设置"></a>inputs设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- type: log                  # 输入数据类型，日志文件-log</span><br><span class="line">  enabled: true              # 开启log类型功能,默认true</span><br><span class="line">  paths:                     # 日志文件路径,使用通配符</span><br><span class="line">  - /usr/local/filebeat-6.5.4/*.log</span><br><span class="line">  exclude_files: [&apos;.gz$&apos;]    # 排除指定的文件</span><br><span class="line">  include_lines: [&quot;^ERR&quot;, &quot;^WARN&quot;] # 只发送包含这些字样的日志【默认包含所有；在exclude_lines之前调用】</span><br><span class="line">  exclude_lines: [&quot;^OK&quot;]     # 不发送包含这些字样的日志</span><br><span class="line">  tags: [&quot;nginx&quot;, &quot;web&quot;]     # 添加标签</span><br><span class="line">  fields:                    # 添加字段，默认添加到子节点fields下</span><br><span class="line">    env: staging</span><br><span class="line">  fields_under_root: true    # 添加字段到根节点下</span><br><span class="line">  ignore_older: &quot;24h&quot;        # 超过 24小时没更新内容的文件不再监听。</span><br><span class="line">  scan_frequency: &quot;10s&quot;      # 每 10秒钟扫描一次目录，更新通配符匹配上的文件列表</span><br><span class="line">  tail_files: false          # 是否从文件末尾开始读取</span><br><span class="line">  harvester_buffer_size: 16384 # 实际读取文件时，每次读取 16384 字节</span><br><span class="line">  backoff: &quot;1s&quot;              # 每 1 秒检测一次文件是否有新的一行内容需要读取</span><br></pre></td></tr></table></figure>
 <h2 id="多行日志-multiline"><a href="#多行日志-multiline" class="headerlink" title="多行日志-multiline"></a><a href="https://blog.csdn.net/UbuntuTouch/article/details/106272704" target="_blank" rel="noopener">多行日志-multiline</a></h2><ul>
 <li>multiline.pattern：指定要匹配的正则表达式模式。</li>
@@ -519,7 +519,28 @@
 </li>
 </ul>
 <h3 id="负载均衡output主机"><a href="#负载均衡output主机" class="headerlink" title="负载均衡output主机"></a>负载均衡output主机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.logstash:</span><br><span class="line">  hosts: [&quot;localhost:5044&quot;, &quot;localhost:5045&quot;]</span><br><span class="line">  loadbalance: true</span><br></pre></td></tr></table></figure>
-<h2 id="elasticsearch模板"><a href="#elasticsearch模板" class="headerlink" title="elasticsearch模板"></a>elasticsearch模板</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 1  </span><br><span class="line">  index.number_of_replicas: 1</span><br></pre></td></tr></table></figure>
+<h2 id="elasticsearch模板"><a href="#elasticsearch模板" class="headerlink" title="elasticsearch模板"></a>elasticsearch模板</h2><p>filebeat可以在elasticsearch中创建索引，相关设置：<strong>setup.template.*</strong></p>
+<p>开启方式：</p>
+<ul>
+<li>命令行方式：filebeat setup –template</li>
+<li>配置文件方式：setup.template.enabled: true【默认true】</li>
+</ul>
+<p>其他模板设置选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 1  </span><br><span class="line">  index.number_of_replicas: 1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>根据模板创建的默认索引名称(按天分隔)：”filebeat-%{[beat.version]}-*”</p>
+</blockquote>
+<h2 id="kibana仪表盘"><a href="#kibana仪表盘" class="headerlink" title="kibana仪表盘"></a>kibana仪表盘</h2><p>filebeat(beats系列)可以在kibana中创建dashboard，相关设置：<strong>setup.dashboards-*</strong>、<strong>setup.kibana</strong></p>
+<p>开启方式：</p>
+<ul>
+<li>命令行方式：filebeat setup –dashboards</li>
+<li>配置文件方式：setup.dashboards.enabled: false【默认false】</li>
+</ul>
+<p>其他模板设置选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.dashboards.enabled: true              # filebeat启动，在kibana创建filebeat类的dashboard</span><br><span class="line">setup.kibana:                               # kibana连接地址</span><br><span class="line">  host: &quot;localhost:8601&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>filebeat在kibana中创建的dashboard默认引用的索引名称是：filebeat-*</p>
+</blockquote>
 <h2 id="filebeat日志"><a href="#filebeat日志" class="headerlink" title="filebeat日志"></a>filebeat日志</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">logging.level: info</span><br><span class="line">logging.to_files: true</span><br><span class="line">logging.files:</span><br><span class="line">  path: /var/log/filebeat</span><br><span class="line">  name: filebeat</span><br><span class="line">  keepfiles: 7</span><br><span class="line">  permissions: 0644</span><br></pre></td></tr></table></figure>
 
       
@@ -560,6 +581,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/" rel="prev" title="redis主从高可用-sentinel">
+                redis主从高可用-sentinel <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -636,7 +661,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">134</span>
+                  <span class="site-state-item-count">135</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -658,7 +683,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">267</span>
+                  <span class="site-state-item-count">268</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -707,7 +732,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工作原理"><span class="nav-number">1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块"><span class="nav-number">2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行工具"><span class="nav-number">3.</span> <span class="nav-text">命令行工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置选项"><span class="nav-number">4.</span> <span class="nav-text">配置选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#inputs设置"><span class="nav-number">4.1.</span> <span class="nav-text">inputs设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多行日志-multiline"><span class="nav-number">4.2.</span> <span class="nav-text">多行日志-multiline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部队列"><span class="nav-number">4.3.</span> <span class="nav-text">内部队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#output设置"><span class="nav-number">4.4.</span> <span class="nav-text">output设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡output主机"><span class="nav-number">4.4.1.</span> <span class="nav-text">负载均衡output主机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch模板"><span class="nav-number">4.5.</span> <span class="nav-text">elasticsearch模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filebeat日志"><span class="nav-number">4.6.</span> <span class="nav-text">filebeat日志</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工作原理"><span class="nav-number">1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块"><span class="nav-number">2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行工具"><span class="nav-number">3.</span> <span class="nav-text">命令行工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置选项"><span class="nav-number">4.</span> <span class="nav-text">配置选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#inputs设置"><span class="nav-number">4.1.</span> <span class="nav-text">inputs设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多行日志-multiline"><span class="nav-number">4.2.</span> <span class="nav-text">多行日志-multiline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部队列"><span class="nav-number">4.3.</span> <span class="nav-text">内部队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#output设置"><span class="nav-number">4.4.</span> <span class="nav-text">output设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡output主机"><span class="nav-number">4.4.1.</span> <span class="nav-text">负载均衡output主机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch模板"><span class="nav-number">4.5.</span> <span class="nav-text">elasticsearch模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kibana仪表盘"><span class="nav-number">4.6.</span> <span class="nav-text">kibana仪表盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filebeat日志"><span class="nav-number">4.7.</span> <span class="nav-text">filebeat日志</span></a></li></ol></li></ol></div>
             
 
           </div>
