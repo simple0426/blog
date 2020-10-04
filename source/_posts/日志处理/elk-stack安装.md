@@ -36,9 +36,16 @@ filebeat==》kafka《==logstash==》elasticsearch《==kibana
 * logstash从kafka中读取数据，并写入elasticsearch集群
 * kibana从elasticsearch读取数据并在web界面展示
 
-# 安装要求
+# 源码安装要求
 
-## 节点环境
+## 软件版本
+
+* jdk【1.8.0_251】：https://www.injdk.cn/
+  * checksum：https://www.oracle.com/webfolder/s/digest/8u251checksum.html
+* elasticsearch/logstash/kibana/filebeat【6.5.4】：https://mirrors.huaweicloud.com/
+* kafka【2.11-2.0.0】：https://mirrors.bfsu.edu.cn/apache/kafka/
+
+## 节点规划
 
 | ip/主机名            | 组件                              | 配置   |
 | -------------------- | --------------------------------- | ------ |
@@ -47,9 +54,15 @@ filebeat==》kafka《==logstash==》elasticsearch《==kibana
 | 192.168.31.223/elk-3 | es(jdk)/kafka(zookeeper)/logstash | >=2C3G |
 | 192.168.31.250/-     | filebeat                          | >=2G   |
 
-## 系统设置
+## 系统初始化
 
 * 清空iptables
+
+  ```
+  iptables -F && \
+  iptables -X && \
+  iptables -Z
+  ```
 
 * 关闭firewalld
 
@@ -73,13 +86,6 @@ filebeat==》kafka《==logstash==》elasticsearch《==kibana
   192.168.31.222 elk-2
   192.168.31.223 elk-3
   ```
-
-## 软件下载
-
-* jdk【1.8.0_251】：https://www.injdk.cn/
-  * checksum：https://www.oracle.com/webfolder/s/digest/8u251checksum.html
-* elasticsearch/logstash/kibana/filebeat【6.5.4】：https://mirrors.huaweicloud.com/
-* kafka【2.11-2.0.0】：https://mirrors.bfsu.edu.cn/apache/kafka/
 
 
 # jdk安装
@@ -181,24 +187,24 @@ export JAVA_HOME PATH" > /etc/profile.d/java.sh
   配置文件含义
 
   ```
-  cluster.name: 集群名称【集群中唯一】
-  node.name: 节点名称【每个节点都不同】
-  node.master: 是否可以成为master
-  node.data: 是否为数据节点
-  path.data: 数据存储目录
-  path.logs: 日志存储
-  bootstrap.memory_lock: 内存锁定，是否禁用swap
-  bootstrap.system_call_filter: 系统调用过滤器
-  network.host: 绑定节点ip【每个节点都不同】
-  http.port: rest api地址
-  discovery.zen.minimum_master_nodes:集群可正常工作，参与master选举的节点数；官方推荐(N/2)+1，N为集群中所有具有master选择资格的节点数
-  discovery.zen.ping_timeout: 单播超时时间
-  discovery.zen.fd.ping_timeout: 节点发现超时时间
-  discovery.zen.ping.unicast.hosts: 向集群的其他节点发送单播【集群中的其他节点ip】
-  discovery.zen.fd.ping_interval: 启动节点发现的时间间隔
-  discovery.zen.fd.ping_retries: 节点发现重试次数
-  http.cors.enabled: 是否允许跨域访问，开启后可以使用elasticsearch-head访问es
-  http.cors.allow-origin: 允许的源域
+  cluster.name:                                        集群名称【集群中唯一】
+  node.name:                                           节点名称【每个节点都不同】
+  node.master:                                         是否可以成为master
+  node.data:                                           是否为数据节点
+  path.data:                                           数据存储目录
+  path.logs:                                           日志存储
+  bootstrap.memory_lock:                               内存锁定，是否禁用swap
+  bootstrap.system_call_filter:                        系统调用过滤器
+  network.host:                                        绑定节点ip【每个节点都不同】
+  http.port:                                           rest api地址
+  discovery.zen.minimum_master_nodes:                  集群可正常工作，参与master选举的节点数；官方推荐(N/2)+1，N为集群中所有具有master选择资格的节点数
+  discovery.zen.ping_timeout:                          单播超时时间
+  discovery.zen.fd.ping_timeout:                       节点发现超时时间
+  discovery.zen.ping.unicast.hosts:                    向集群的其他节点发送单播【集群中的其他节点ip】
+  discovery.zen.fd.ping_interval:                      启动节点发现的时间间隔
+  discovery.zen.fd.ping_retries:                       节点发现重试次数
+  http.cors.enabled:                                   是否允许跨域访问，开启后可以使用elasticsearch-head访问es
+  http.cors.allow-origin:                              允许的源域
   ```
 
 * jvm设置【/usr/local/elasticsearch-6.5.4/config/jvm.options】
@@ -677,7 +683,40 @@ kafka-manager：https://github.com/yahoo/CMAK
   user=root
   ```
 
-# 测试与查看
+---
 
-* 访问nginx
-* kibana创建索引模式、查看访问日志：http://192.168.31.222:5601/
+# YUM方式安装
+
+> elk安装6.8版本，安装要求和配置同上；安装顺序：elasticsearch、kibana、logstash、beats
+
+```
+# 安装jdk
+yum install -y java-1.8.0-openjdk
+
+# 配置elk yum源
+cat >> /etc/yum.repos.d/elk.repo << EOF
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://mirrors.cloud.tencent.com/elasticstack/6.x/yum/
+gpgcheck=0
+enabled=1
+autorefresh=1
+type=rpm-md
+EOF
+yum clean all
+yum makecache
+
+# 安装elk
+yum -y install elasticsearch
+yum -y install kibana
+yum -y install logstash
+
+# 查看集群状态
+curl http://192.168.31.221:9200/_cat/health?v
+
+# 查看节点状态
+curl http://192.168.31.221:9200/_cat/nodes?v
+ip             heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+节点ip         堆内存使用百分比 内存使用百分比 cpu使用率    1/5/15分钟负载    集群角色   节点名称
+```
+
