@@ -446,7 +446,19 @@ GET /haoke/user/_search?q=hejingqi
 
 # 文档操作
 
-## 增加
+## 索引/增加
+* 指定id
+
+```
+PUT 索引/类型/id
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+```
+
+* 自动产生id
 
 ```
 POST  索引/类型
@@ -483,19 +495,27 @@ POST  索引/类型
 
 ## 删除
 
+```
 DELETE  索引/类型/id
+```
 
 ## 查询
 
-GET 索引/类型/id
+```
+GET  索引/类型/id
+```
 
 * 数据格式化：GET  索引/类型/id?pretty
 * 返回指定字段：GET  索引/类型/id?_source=字段1,字段2。。。
 * 返回源数据：GET  索引/类型/id/_source
 
-## 存在性判断
+### 存在性判断
 
-HEAD 索引/类型/id【根据http返回码200/404判断文档是否存在】
+```
+HEAD   索引/类型/id
+```
+
+根据http返回码_200/404_判断文档是否存在
 
 ## 批量操作
 
@@ -519,10 +539,9 @@ HEAD 索引/类型/id【根据http返回码200/404判断文档是否存在】
   {"update":{"_index":"haoke","_type":"user","_id":2001}}
   {"doc":{"name":"小五"}}
   {"delete":{"_index":"haoke","_type":"user","_id":2001}}
-  
   ```
-
-  * _bulk接口支持的操作：create、update、delete、index
+  
+* _bulk接口支持的操作：create、update、delete、index
   * 每两行为一组，第一行定义要操作的文档，第二行定义文档数据【delete时没有第二行】
   * 每行末尾都需要有换行符\n【包含最后一行】
   * index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。
@@ -1055,15 +1074,34 @@ http://49.232.17.71:8200/haoke/user/_search
       print("%(name)s %(age)s %(hobby)s" % hit['_source'])
   ```
 
-# 集群管理
+# 信息查看-cat
 
-## 集群状态
+* [通用参数](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/cat.html#common-parameters)
 
-* 接口：_cluster/health
-* 状态：
-  * green：所有主分片和副本分片都可用
-  * yellow：主分片都可用，副本分片部分可用
-  * red：主分片部分可用
+```
+v                    查看详情
+help                 帮助信息
+h=column1,column2    过滤特定表头header
+bytes=b              数字类型格式化【bytes、size、time】
+format=json          文本格式化【text、json、yaml】
+s=column1,column2:desc,column3           排序         
+```
+
+* 常用用法
+
+```
+# 健康信息
+/_cat/health?v            
+* green：所有主分片和副本分片都可用
+* yellow：主分片都可用，副本分片部分可用
+* red：主分片部分可用
+
+# 索引信息
+/_cat/indices?v
+
+# 节点信息
+/_cat/nodes?v
+```
 
 # [容量评估](https://help.aliyun.com/document_detail/72660.html)
 
