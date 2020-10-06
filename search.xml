@@ -1553,7 +1553,7 @@ $name：值为$type.$id。
 <p>分词api：/_analyze【仅用于文本分析测试；text文本存储时会调用分词器(默认standard，可自定义)进行分词】</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;analyzer&quot;: &quot;standard&quot;,</span><br><span class="line">    &quot;text&quot;: &quot;hello world&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">    &quot;text&quot;: &quot;我是中国人&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="中文分词器IK"><a href="#中文分词器IK" class="headerlink" title="中文分词器IK"></a>中文分词器IK</h2><p>项目地址：<a href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener">https://github.com/medcl/elasticsearch-analysis-ik</a></p>
-<p>安装：</p>
+<p>安装：【插件需要在集群的每个节点都安装，安装后重启elasticsearch】</p>
 <p>方式1：下载预编译安装包<a href="https://github.com/medcl/elasticsearch-analysis-ik/releases" target="_blank" rel="noopener">https://github.com/medcl/elasticsearch-analysis-ik/releases</a></p>
 <ul>
 <li>创建插件目录：cd your-es-root/plugins/ &amp;&amp; mkdir ik</li>
@@ -1563,6 +1563,14 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.5.4/elasticsearch-analysis-ik-6.5.4.zip</span><br></pre></td></tr></table></figure>
 <h2 id="自定义分词器"><a href="#自定义分词器" class="headerlink" title="自定义分词器"></a>自定义分词器</h2><p>例如：创建映射的text类型字段时，自定义分词器</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;person&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;age&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;mail&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;hobby&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">                    &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="pipeline-ingest-node"><a href="#pipeline-ingest-node" class="headerlink" title="pipeline/ingest node"></a><a href="https://hacpai.com/article/1512990272091" target="_blank" rel="noopener">pipeline/ingest node</a></h1><p>预处理：对原始数据进行加工后再存入es集群中，比如使用logstash的grok进行数据处理</p>
+<p>ingest node：可以对数据进行预处理的节点，默认所有节点都是ingest node</p>
+<p>pipeline：在ingest node中定义的数据处理管道，对经过此管道的数据进行预处理</p>
+<p>Processors：对数据加工操作的抽象包装，例如：转换数据类型的Processors：convert</p>
+<h2 id="创建pipeline"><a href="#创建pipeline" class="headerlink" title="创建pipeline"></a>创建pipeline</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT /_ingest/pipeline/my-pipeline-id </span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;describe pipeline&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;convert&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;age&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="查看pipeline结构"><a href="#查看pipeline结构" class="headerlink" title="查看pipeline结构"></a>查看pipeline结构</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /_ingest/pipeline/my-pipeline-id</span><br></pre></td></tr></table></figure>
+<h2 id="使用pipeline处理数据"><a href="#使用pipeline处理数据" class="headerlink" title="使用pipeline处理数据"></a>使用pipeline处理数据</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /haoke/user?pipeline=my-pipeline-id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;hejingqi&quot;,</span><br><span class="line">    &quot;age&quot;: 32,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="搜索插入结果"><a href="#搜索插入结果" class="headerlink" title="搜索插入结果"></a>搜索插入结果</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /haoke/user/_search?q=hejingqi</span><br></pre></td></tr></table></figure>
 <h1 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h1><ul>
 <li><p>创建索引：settings中设置分片数、副本数</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT  /索引</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">            &quot;number_of_shards&quot;: &quot;2&quot;,</span><br><span class="line">            &quot;number_of_replicas&quot;: &quot;0&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1571,15 +1579,14 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DELETE  /索引</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="pipeline操作"><a href="#pipeline操作" class="headerlink" title="pipeline操作"></a><a href="https://hacpai.com/article/1512990272091" target="_blank" rel="noopener">pipeline操作</a></h1><p>预处理：对原始数据进行加工后再存入es集群中，比如使用logstash的grok进行数据处理</p>
-<p>ingest node：可以对数据进行预处理的节点，默认所有节点都是ingest node</p>
-<p>pipeline：在ingest node中定义的数据处理管道，对经过此管道的数据进行预处理</p>
-<p>Processors：对数据加工操作的抽象包装，例如：转换数据类型的Processors：convert</p>
-<h2 id="创建pipeline"><a href="#创建pipeline" class="headerlink" title="创建pipeline"></a>创建pipeline</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT /_ingest/pipeline/my-pipeline-id </span><br><span class="line">&#123;</span><br><span class="line">    &quot;description&quot;:&quot;describe pipeline&quot;,</span><br><span class="line">    &quot;processors&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;convert&quot;: &#123;</span><br><span class="line">                &quot;field&quot;: &quot;age&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;integer&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="查看pipeline结构"><a href="#查看pipeline结构" class="headerlink" title="查看pipeline结构"></a>查看pipeline结构</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /_ingest/pipeline/my-pipeline-id</span><br></pre></td></tr></table></figure>
-<h2 id="使用pipeline处理数据"><a href="#使用pipeline处理数据" class="headerlink" title="使用pipeline处理数据"></a>使用pipeline处理数据</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /haoke/user?pipeline=my-pipeline-id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;hejingqi&quot;,</span><br><span class="line">    &quot;age&quot;: 32,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="搜索插入结果"><a href="#搜索插入结果" class="headerlink" title="搜索插入结果"></a>搜索插入结果</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /haoke/user/_search?q=hejingqi</span><br></pre></td></tr></table></figure>
-<h1 id="文档操作"><a href="#文档操作" class="headerlink" title="文档操作"></a>文档操作</h1><h2 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST  索引/类型</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 20,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="文档操作"><a href="#文档操作" class="headerlink" title="文档操作"></a>文档操作</h1><h2 id="索引-增加"><a href="#索引-增加" class="headerlink" title="索引/增加"></a>索引/增加</h2><ul>
+<li>指定id</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT 索引/类型/id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user&quot; : &quot;kimchy&quot;,</span><br><span class="line">    &quot;post_date&quot; : &quot;2009-11-15T14:12:12&quot;,</span><br><span class="line">    &quot;message&quot; : &quot;trying out Elasticsearch&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>自动产生id</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST  索引/类型</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 20,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li><p>全量更新</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST  索引/类型/id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;张三&quot;,</span><br><span class="line">    &quot;age&quot;: 25,</span><br><span class="line">    &quot;sex&quot;: &quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1588,27 +1595,28 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST  索引/类型/id/_update</span><br><span class="line">&#123;</span><br><span class="line">    &quot;doc&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;李四&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>DELETE  索引/类型/id</p>
-<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>GET 索引/类型/id</p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DELETE  索引/类型/id</span><br></pre></td></tr></table></figure>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET  索引/类型/id</span><br></pre></td></tr></table></figure>
 <ul>
 <li>数据格式化：GET  索引/类型/id?pretty</li>
 <li>返回指定字段：GET  索引/类型/id?_source=字段1,字段2。。。</li>
 <li>返回源数据：GET  索引/类型/id/_source</li>
 </ul>
-<h2 id="存在性判断"><a href="#存在性判断" class="headerlink" title="存在性判断"></a>存在性判断</h2><p>HEAD 索引/类型/id【根据http返回码200/404判断文档是否存在】</p>
+<h3 id="存在性判断"><a href="#存在性判断" class="headerlink" title="存在性判断"></a>存在性判断</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HEAD   索引/类型/id</span><br></pre></td></tr></table></figure>
+<p>根据http返回码<em>200/404</em>判断文档是否存在</p>
 <h2 id="批量操作"><a href="#批量操作" class="headerlink" title="批量操作"></a>批量操作</h2><ul>
-<li><p>批量查询</p>
+<li><p>批量查询：mget</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET  索引/类型/_mget</span><br><span class="line">&#123;</span><br><span class="line">    &quot;ids&quot;: [&quot;y6zSIHQB2fO-rT1snG4Q&quot;, &quot;yqw2G3QB2fO-rT1sk26f&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>批量索引、插入、修改、删除</p>
+<li><p>批量索引、插入、修改、删除：bulk</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST  索引/类型/_bulk接口</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;itcast&quot;,&quot;_type&quot;:&quot;person&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:23,&quot;mail&quot;:&quot;111@qq.com&quot;,&quot;hobby&quot;:&quot;羽毛球、篮球、足球&quot;&#125;</span><br><span class="line">&#123;&quot;create&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;小一&quot;,&quot;age&quot;:23,&quot;sex&quot;:&quot;男&quot;&#125;</span><br><span class="line">&#123;&quot;update&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br><span class="line">&#123;&quot;doc&quot;:&#123;&quot;name&quot;:&quot;小五&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;delete&quot;:&#123;&quot;_index&quot;:&quot;haoke&quot;,&quot;_type&quot;:&quot;user&quot;,&quot;_id&quot;:2001&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
 <ul>
 <li>_bulk接口支持的操作：create、update、delete、index</li>
 <li>每两行为一组，第一行定义要操作的文档，第二行定义文档数据【delete时没有第二行】</li>
 <li>每行末尾都需要有换行符\n【包含最后一行】</li>
 <li>index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。</li>
-</ul>
-</li>
 </ul>
 <h1 id="搜索方式"><a href="#搜索方式" class="headerlink" title="搜索方式"></a>搜索方式</h1><p>基于_search接口的查询，根据参数位置的不同可以分为：</p>
 <ul>
@@ -1648,7 +1656,7 @@ $name：值为$type.$id。
 <li><p>全文-<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax" target="_blank" rel="noopener">正则表达式</a></p>
 </li>
 </ul>
-<h2 id="基于请求体"><a href="#基于请求体" class="headerlink" title="基于请求体"></a>基于请求体</h2><blockquote>
+<h2 id="基于请求体-词项"><a href="#基于请求体-词项" class="headerlink" title="基于请求体-词项"></a>基于请求体-词项</h2><blockquote>
 <p>此处为基于词项的查询，只对一个字段设置查询条件</p>
 </blockquote>
 <ul>
@@ -1762,7 +1770,15 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">        &quot;hobby&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="过滤-filter-和查询-query"><a href="#过滤-filter-和查询-query" class="headerlink" title="过滤(filter)和查询(query)"></a>过滤(filter)和查询(query)</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;filter&quot;: &#123;</span><br><span class="line">                &quot;term&quot;: &#123;</span><br><span class="line">                    &quot;age&quot;: 23</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;足球&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="信息查看-cat"><a href="#信息查看-cat" class="headerlink" title="信息查看-cat"></a>信息查看-cat</h1><ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.8/cat.html#common-parameters" target="_blank" rel="noopener">通用参数</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">v                                     查看详情</span><br><span class="line">help                                  帮助信息</span><br><span class="line">h=column1,column2                     过滤特定表头header</span><br><span class="line">bytes=b                               数字类型格式化【bytes、size、time】</span><br><span class="line">format=json                           文本格式化【text、json、yaml】</span><br><span class="line">s=column1,column2:desc,column3        排序</span><br></pre></td></tr></table></figure>
+<ul>
+<li>常见用法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 健康信息</span><br><span class="line">/_cat/health?v            </span><br><span class="line">* green：所有主分片和副本分片都可用</span><br><span class="line">* yellow：主分片都可用，副本分片部分可用</span><br><span class="line">* red：主分片部分可用</span><br><span class="line"></span><br><span class="line"># 索引信息</span><br><span class="line">/_cat/indices?v</span><br><span class="line"></span><br><span class="line"># 节点信息</span><br><span class="line">/_cat/nodes?v</span><br></pre></td></tr></table></figure>
+<h1 id="过滤VS查询"><a href="#过滤VS查询" class="headerlink" title="过滤VS查询"></a>过滤VS查询</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;bool&quot;: &#123;</span><br><span class="line">            &quot;filter&quot;: &#123;</span><br><span class="line">                &quot;term&quot;: &#123;</span><br><span class="line">                    &quot;age&quot;: 23</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match&quot;: &#123;</span><br><span class="line">            &quot;hobby&quot;: &quot;足球&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>filter只过滤结果，结果不会排序，但会缓存【利用缓存特性，可以用于精确匹配的搜索，如term查询】</li>
 <li>query查询结果会根据相关性排序(更耗时)，但不会缓存</li>
@@ -1776,15 +1792,6 @@ $name：值为$type.$id。
 </li>
 <li><p>使用</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from elasticsearch import Elasticsearch</span><br><span class="line"></span><br><span class="line">node_list = [</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.221&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.222&quot;, &quot;port&quot;: 9200&#125;,</span><br><span class="line">    &#123;&quot;host&quot;: &quot;192.168.31.223&quot;, &quot;port&quot;: 9200&#125;</span><br><span class="line">]</span><br><span class="line">es = Elasticsearch(hosts=node_list)</span><br><span class="line">doc = &#123;</span><br><span class="line">    &quot;name&quot;: &quot;赵七&quot;,</span><br><span class="line">    &quot;age&quot;: 33,</span><br><span class="line">    &quot;mail&quot;: &quot;424@qq.com&quot;,</span><br><span class="line">    &quot;hobby&quot;: &quot;听音乐、看电影、跑步&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 索引文档</span><br><span class="line"># res = es.index(&apos;haoke&apos;,doc_type=&apos;person&apos;, body=doc)</span><br><span class="line"># print(res[&apos;result&apos;])</span><br><span class="line"></span><br><span class="line"># 根据id查询单个文档</span><br><span class="line"># res = es.get(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, id=&apos;0mblTHQBBnpVRgexf4YB&apos;)</span><br><span class="line"># print(res[&apos;_source&apos;])</span><br><span class="line"></span><br><span class="line"># 刷新索引，使刚变更的文档可查</span><br><span class="line"># es.indices.refresh(index=&apos;haoke&apos;)</span><br><span class="line"></span><br><span class="line"># 搜索文档</span><br><span class="line">query_json = &#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;term&quot;: &#123;</span><br><span class="line">            &quot;age&quot;: 23</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">res = es.search(index=&apos;haoke&apos;, doc_type=&apos;person&apos;, body=query_json)</span><br><span class="line">for hit in res[&apos;hits&apos;][&apos;hits&apos;]:</span><br><span class="line">    print(&quot;%(name)s %(age)s %(hobby)s&quot; % hit[&apos;_source&apos;])</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h1 id="集群管理"><a href="#集群管理" class="headerlink" title="集群管理"></a>集群管理</h1><h2 id="集群状态"><a href="#集群状态" class="headerlink" title="集群状态"></a>集群状态</h2><ul>
-<li>接口：_cluster/health</li>
-<li>状态：<ul>
-<li>green：所有主分片和副本分片都可用</li>
-<li>yellow：主分片都可用，副本分片部分可用</li>
-<li>red：主分片部分可用</li>
-</ul>
 </li>
 </ul>
 <h1 id="容量评估"><a href="#容量评估" class="headerlink" title="容量评估"></a><a href="https://help.aliyun.com/document_detail/72660.html" target="_blank" rel="noopener">容量评估</a></h1><h2 id="磁盘总容量"><a href="#磁盘总容量" class="headerlink" title="磁盘总容量"></a>磁盘总容量</h2><ul>
@@ -2204,7 +2211,15 @@ $name：值为$type.$id。
 <li>logstash从kafka中读取数据，并写入elasticsearch集群</li>
 <li>kibana从elasticsearch读取数据并在web界面展示</li>
 </ul>
-<h1 id="安装要求"><a href="#安装要求" class="headerlink" title="安装要求"></a>安装要求</h1><h2 id="节点环境"><a href="#节点环境" class="headerlink" title="节点环境"></a>节点环境</h2><table>
+<h1 id="源码安装要求"><a href="#源码安装要求" class="headerlink" title="源码安装要求"></a>源码安装要求</h1><h2 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h2><ul>
+<li>jdk【1.8.0_251】：<a href="https://www.injdk.cn/" target="_blank" rel="noopener">https://www.injdk.cn/</a><ul>
+<li>checksum：<a href="https://www.oracle.com/webfolder/s/digest/8u251checksum.html" target="_blank" rel="noopener">https://www.oracle.com/webfolder/s/digest/8u251checksum.html</a></li>
+</ul>
+</li>
+<li>elasticsearch/logstash/kibana/filebeat【6.5.4】：<a href="https://mirrors.huaweicloud.com/" target="_blank" rel="noopener">https://mirrors.huaweicloud.com/</a></li>
+<li>kafka【2.11-2.0.0】：<a href="https://mirrors.bfsu.edu.cn/apache/kafka/" target="_blank" rel="noopener">https://mirrors.bfsu.edu.cn/apache/kafka/</a></li>
+</ul>
+<h2 id="节点规划"><a href="#节点规划" class="headerlink" title="节点规划"></a>节点规划</h2><table>
 <thead>
 <tr>
 <th>ip/主机名</th>
@@ -2235,8 +2250,9 @@ $name：值为$type.$id。
 </tr>
 </tbody>
 </table>
-<h2 id="系统设置"><a href="#系统设置" class="headerlink" title="系统设置"></a>系统设置</h2><ul>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><ul>
 <li><p>清空iptables</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">iptables -F &amp;&amp; \</span><br><span class="line">iptables -X &amp;&amp; \</span><br><span class="line">iptables -Z</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>关闭firewalld</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl stop firewalld </span><br><span class="line">systemctl disable firewalld</span><br></pre></td></tr></table></figure>
@@ -2248,14 +2264,6 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.168.31.221 elk-1</span><br><span class="line">192.168.31.222 elk-2</span><br><span class="line">192.168.31.223 elk-3</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="软件下载"><a href="#软件下载" class="headerlink" title="软件下载"></a>软件下载</h2><ul>
-<li>jdk【1.8.0_251】：<a href="https://www.injdk.cn/" target="_blank" rel="noopener">https://www.injdk.cn/</a><ul>
-<li>checksum：<a href="https://www.oracle.com/webfolder/s/digest/8u251checksum.html" target="_blank" rel="noopener">https://www.oracle.com/webfolder/s/digest/8u251checksum.html</a></li>
-</ul>
-</li>
-<li>elasticsearch/logstash/kibana/filebeat【6.5.4】：<a href="https://mirrors.huaweicloud.com/" target="_blank" rel="noopener">https://mirrors.huaweicloud.com/</a></li>
-<li>kafka【2.11-2.0.0】：<a href="https://mirrors.bfsu.edu.cn/apache/kafka/" target="_blank" rel="noopener">https://mirrors.bfsu.edu.cn/apache/kafka/</a></li>
-</ul>
 <h1 id="jdk安装"><a href="#jdk安装" class="headerlink" title="jdk安装"></a>jdk安装</h1><ul>
 <li>解压软件包：tar xzf jdk-8u251-linux-x64.tar.gz -C /usr/local/</li>
 <li>配置环境变量：source /etc/profile.d/java.sh</li>
@@ -2264,7 +2272,7 @@ $name：值为$type.$id。
 <ul>
 <li>测试安装：java -version</li>
 </ul>
-<h1 id="elasticsearch安装"><a href="#elasticsearch安装" class="headerlink" title="elasticsearch安装"></a>elasticsearch安装</h1><h2 id="安装要求-1"><a href="#安装要求-1" class="headerlink" title="安装要求"></a>安装要求</h2><ul>
+<h1 id="elasticsearch安装"><a href="#elasticsearch安装" class="headerlink" title="elasticsearch安装"></a>elasticsearch安装</h1><h2 id="安装要求"><a href="#安装要求" class="headerlink" title="安装要求"></a>安装要求</h2><ul>
 <li><p>新建普通用户：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd elastic</span><br><span class="line">echo &quot;123456&quot;|passwd --stdin elastic</span><br></pre></td></tr></table></figure>
 </li>
@@ -2289,7 +2297,7 @@ $name：值为$type.$id。
 <li><p>主配置【/usr/local/elasticsearch-6.5.4/config/elasticsearch.yml】</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cluster.name: elk</span><br><span class="line">node.name: 221</span><br><span class="line">node.master: true</span><br><span class="line">node.data: true</span><br><span class="line">path.data: /data/elasticsearch/data</span><br><span class="line">path.logs: /data/elasticsearch/logs</span><br><span class="line">bootstrap.memory_lock: true</span><br><span class="line">bootstrap.system_call_filter: false</span><br><span class="line">network.host: 192.168.31.221</span><br><span class="line">http.port: 9200</span><br><span class="line">discovery.zen.minimum_master_nodes: 2</span><br><span class="line">discovery.zen.ping_timeout: 100s</span><br><span class="line">discovery.zen.fd.ping_timeout: 100s</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.31.222&quot;,&quot;192.168.31.223&quot;]</span><br><span class="line">discovery.zen.fd.ping_interval: 10s</span><br><span class="line">discovery.zen.fd.ping_retries: 10</span><br><span class="line">http.cors.enabled: true</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure>
 <p>配置文件含义</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cluster.name: 集群名称【集群中唯一】</span><br><span class="line">node.name: 节点名称【每个节点都不同】</span><br><span class="line">node.master: 是否可以成为master</span><br><span class="line">node.data: 是否为数据节点</span><br><span class="line">path.data: 数据存储目录</span><br><span class="line">path.logs: 日志存储</span><br><span class="line">bootstrap.memory_lock: 内存锁定，是否禁用swap</span><br><span class="line">bootstrap.system_call_filter: 系统调用过滤器</span><br><span class="line">network.host: 绑定节点ip【每个节点都不同】</span><br><span class="line">http.port: rest api地址</span><br><span class="line">discovery.zen.minimum_master_nodes:集群可正常工作，参与master选举的节点数；官方推荐(N/2)+1，N为集群中所有具有master选择资格的节点数</span><br><span class="line">discovery.zen.ping_timeout: 单播超时时间</span><br><span class="line">discovery.zen.fd.ping_timeout: 节点发现超时时间</span><br><span class="line">discovery.zen.ping.unicast.hosts: 向集群的其他节点发送单播【集群中的其他节点ip】</span><br><span class="line">discovery.zen.fd.ping_interval: 启动节点发现的时间间隔</span><br><span class="line">discovery.zen.fd.ping_retries: 节点发现重试次数</span><br><span class="line">http.cors.enabled: 是否允许跨域访问，开启后可以使用elasticsearch-head访问es</span><br><span class="line">http.cors.allow-origin: 允许的源域</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cluster.name:                                        集群名称【集群中唯一】</span><br><span class="line">node.name:                                           节点名称【每个节点都不同】</span><br><span class="line">node.master:                                         是否可以成为master</span><br><span class="line">node.data:                                           是否为数据节点</span><br><span class="line">path.data:                                           数据存储目录</span><br><span class="line">path.logs:                                           日志存储</span><br><span class="line">bootstrap.memory_lock:                               内存锁定，是否禁用swap</span><br><span class="line">bootstrap.system_call_filter:                        系统调用过滤器</span><br><span class="line">network.host:                                        绑定节点ip【每个节点都不同】</span><br><span class="line">http.port:                                           rest api地址</span><br><span class="line">discovery.zen.minimum_master_nodes:                  集群可正常工作，参与master选举的节点数；官方推荐(N/2)+1，N为集群中所有具有master选择资格的节点数</span><br><span class="line">discovery.zen.ping_timeout:                          单播超时时间</span><br><span class="line">discovery.zen.fd.ping_timeout:                       节点发现超时时间</span><br><span class="line">discovery.zen.ping.unicast.hosts:                    向集群的其他节点发送单播【集群中的其他节点ip】</span><br><span class="line">discovery.zen.fd.ping_interval:                      启动节点发现的时间间隔</span><br><span class="line">discovery.zen.fd.ping_retries:                       节点发现重试次数</span><br><span class="line">http.cors.enabled:                                   是否允许跨域访问，开启后可以使用elasticsearch-head访问es</span><br><span class="line">http.cors.allow-origin:                              允许的源域</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>jvm设置【/usr/local/elasticsearch-6.5.4/config/jvm.options】</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-Xms1g #程序启动时占用的最小内存</span><br><span class="line">-Xmx1g #程序运行时占用的最大内存</span><br></pre></td></tr></table></figure>
@@ -2443,10 +2451,11 @@ $name：值为$type.$id。
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[program:filebeat]</span><br><span class="line">command=/usr/local/filebeat-6.5.4-linux-x86_64/filebeat -e -c /usr/local/filebeat-6.5.4-linux-x86_64/filebeat.yml</span><br><span class="line">startsec=10</span><br><span class="line">priority=25</span><br><span class="line">directory=/usr/local/filebeat-6.5.4-linux-x86_64</span><br><span class="line">autostart=true</span><br><span class="line">autorestart=true</span><br><span class="line">user=root</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="测试与查看"><a href="#测试与查看" class="headerlink" title="测试与查看"></a>测试与查看</h1><ul>
-<li>访问nginx</li>
-<li>kibana创建索引模式、查看访问日志：<a href="http://192.168.31.222:5601/" target="_blank" rel="noopener">http://192.168.31.222:5601/</a></li>
-</ul>
+<hr>
+<h1 id="YUM方式安装"><a href="#YUM方式安装" class="headerlink" title="YUM方式安装"></a>YUM方式安装</h1><blockquote>
+<p>elk安装6.8版本，安装要求和配置同上；安装顺序：elasticsearch、kibana、logstash、beats</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 安装jdk</span><br><span class="line">yum install -y java-1.8.0-openjdk</span><br><span class="line"></span><br><span class="line"># 配置elk yum源</span><br><span class="line">cat &gt;&gt; /etc/yum.repos.d/elk.repo &lt;&lt; EOF</span><br><span class="line">[elasticsearch-6.x]</span><br><span class="line">name=Elasticsearch repository for 6.x packages</span><br><span class="line">baseurl=https://mirrors.cloud.tencent.com/elasticstack/6.x/yum/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">autorefresh=1</span><br><span class="line">type=rpm-md</span><br><span class="line">EOF</span><br><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br><span class="line"></span><br><span class="line"># 安装elk</span><br><span class="line">yum -y install elasticsearch</span><br><span class="line">yum -y install kibana</span><br><span class="line">yum -y install logstash</span><br><span class="line"></span><br><span class="line"># 查看集群状态</span><br><span class="line">curl http://192.168.31.221:9200/_cat/health?v</span><br><span class="line"></span><br><span class="line"># 查看节点状态</span><br><span class="line">curl http://192.168.31.221:9200/_cat/nodes?v</span><br><span class="line">ip             heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name</span><br><span class="line">节点ip         堆内存使用百分比 内存使用百分比 cpu使用率    1/5/15分钟负载    集群角色   节点名称</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>elk</category>
@@ -15781,28 +15790,38 @@ spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs】
 </li>
 </ul>
 <h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><ul>
-<li>-X, –request 指定请求方法【默认get】</li>
-<li>-d/–data 指定post请求数据<ul>
+<li><p>-X, –request 指定请求方法【默认get】</p>
+</li>
+<li><p>-d/–data 指定post请求数据</p>
+<ul>
 <li>curl -X POST –data ‘{“message”: “01”, “pageIndex”: “1”}’ <a href="http://127.0.0.1:5000/python" target="_blank" rel="noopener">http://127.0.0.1:5000/python</a></li>
 </ul>
 </li>
-<li>-H/–header 指定要发送的header信息<ul>
+<li><p>-H/–header 指定要发送的header信息</p>
+<ul>
 <li>curl -H “Content-Type: application/json” -X POST  –data ‘{“userID”:10001}’ <a href="http://localhost:8085/GetUserInfo" target="_blank" rel="noopener">http://localhost:8085/GetUserInfo</a></li>
 </ul>
 </li>
-<li>-A 指定user-agent信息<ul>
+<li><p>-A 指定user-agent信息</p>
+<ul>
 <li>curl -A “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)” -o page.html  <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
 </ul>
 </li>
-<li>-b, –cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串<ul>
+<li><p>-b, –cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串</p>
+<ul>
 <li>curl -b ‘a=1;b=2’ <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
 </ul>
 </li>
-<li>-e, –referer指定上次访问的页面【可用于盗链】<ul>
+<li><p>-e, –referer指定上次访问的页面【可用于盗链】</p>
+<ul>
 <li>curl -o test.jpg -e <a href="http://oldboy.blog.51cto.com/2561410/1009292" target="_blank" rel="noopener">http://oldboy.blog.51cto.com/2561410/1009292</a> <a href="http://img1.51cto.com/attachment/201209/155625967.jpg" target="_blank" rel="noopener">http://img1.51cto.com/attachment/201209/155625967.jpg</a></li>
 </ul>
 </li>
-<li>-x, –proxy [protocol://]host[:port] 使用代理服务器：–proxy <a href="http://127.0.0.1:10809" target="_blank" rel="noopener">http://127.0.0.1:10809</a></li>
+<li><p>-x, –proxy [protocol://]host[:port] 使用代理服务器：–proxy <a href="http://127.0.0.1:10809" target="_blank" rel="noopener">http://127.0.0.1:10809</a></p>
+</li>
+<li><p>-g, –globoff 允许在URL中使用<code>[] {}</code>表示范围</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -g &quot;localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&amp;pretty&quot;</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 <h1 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h1><p>netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具</p>
 <h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><ul>
