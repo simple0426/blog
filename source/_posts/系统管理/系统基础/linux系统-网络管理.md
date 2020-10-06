@@ -79,17 +79,34 @@ date: 2019-07-17 17:18:07
 
 ## 请求
 * -X, --request 指定请求方法【默认get】
+
 * -d/--data 指定post请求数据
+    
     - curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python
+    
 * -H/--header 指定要发送的header信息
+    
     - curl -H "Content-Type: application/json" -X POST  --data '{"userID":10001}' http://localhost:8085/GetUserInfo
+    
 * -A 指定user-agent信息
+    
     - curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -o page.html  https://www.linuxidc.com
+    
 * -b, --cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串
+    
     - curl -b 'a=1;b=2' https://www.linuxidc.com
+    
 * -e, --referer指定上次访问的页面【可用于盗链】
+    
     - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
+    
 * -x, --proxy [protocol://]host[:port] 使用代理服务器：--proxy http://127.0.0.1:10809
+
+* -g, --globoff 允许在URL中使用`[] {}`表示范围
+
+    ```
+    curl -g "localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&pretty"
+    ```
 
 # nc
 netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具

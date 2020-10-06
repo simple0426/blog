@@ -325,7 +325,7 @@ POST /twitter/_forcemerge
 
 项目地址：https://github.com/medcl/elasticsearch-analysis-ik
 
-安装：
+安装：【插件需要在集群的每个节点都安装，安装后重启elasticsearch】
 
 方式1：下载预编译安装包https://github.com/medcl/elasticsearch-analysis-ik/releases
 
@@ -372,29 +372,7 @@ POST /twitter/_forcemerge
 }
 ```
 
-# 索引操作
-
-* 创建索引：settings中设置分片数、副本数
-
-  ```
-  PUT  /索引
-  {
-      "settings": {
-          "index": {
-              "number_of_shards": "2",
-              "number_of_replicas": "0"
-          }
-      }
-  }
-  ```
-
-* 删除索引：
-
-  ```
-  DELETE  /索引
-  ```
-
-# [pipeline操作](https://hacpai.com/article/1512990272091)
+# [pipeline/ingest node](https://hacpai.com/article/1512990272091)
 
 预处理：对原始数据进行加工后再存入es集群中，比如使用logstash的grok进行数据处理
 
@@ -443,6 +421,27 @@ POST /haoke/user?pipeline=my-pipeline-id
 ```
 GET /haoke/user/_search?q=hejingqi
 ```
+# 索引操作
+
+* 创建索引：settings中设置分片数、副本数
+
+  ```
+  PUT  /索引
+  {
+      "settings": {
+          "index": {
+              "number_of_shards": "2",
+              "number_of_replicas": "0"
+          }
+      }
+  }
+  ```
+
+* 删除索引：
+
+  ```
+  DELETE  /索引
+  ```
 
 # 文档操作
 
@@ -519,7 +518,7 @@ HEAD   索引/类型/id
 
 ## 批量操作
 
-* 批量查询
+* 批量查询：mget
 
   ```
   GET  索引/类型/_mget
@@ -528,7 +527,7 @@ HEAD   索引/类型/id
   }
   ```
 
-* 批量索引、插入、修改、删除
+* 批量索引、插入、修改、删除：bulk
 
   ```
   POST  索引/类型/_bulk接口
@@ -541,7 +540,7 @@ HEAD   索引/类型/id
   {"delete":{"_index":"haoke","_type":"user","_id":2001}}
   ```
   
-* _bulk接口支持的操作：create、update、delete、index
+  * _bulk接口支持的操作：create、update、delete、index
   * 每两行为一组，第一行定义要操作的文档，第二行定义文档数据【delete时没有第二行】
   * 每行末尾都需要有换行符\n【包含最后一行】
   * index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。
@@ -605,7 +604,7 @@ http://49.232.17.71:8200/haoke/user/_search
 
 - 全文-[正则表达式](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax )
 
-## 基于请求体
+## 基于请求体-词项
 
 > 此处为基于词项的查询，只对一个字段设置查询条件
 
@@ -987,7 +986,36 @@ http://49.232.17.71:8200/haoke/user/_search
   }
   ```
 
-# 过滤(filter)和查询(query)
+# 信息查看-cat
+
+* [通用参数](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/cat.html#common-parameters)
+
+```
+v                                     查看详情
+help                                  帮助信息
+h=column1,column2                     过滤特定表头header
+bytes=b                               数字类型格式化【bytes、size、time】
+format=json                           文本格式化【text、json、yaml】
+s=column1,column2:desc,column3        排序         
+```
+
+* 常见用法
+
+```
+# 健康信息
+/_cat/health?v            
+* green：所有主分片和副本分片都可用
+* yellow：主分片都可用，副本分片部分可用
+* red：主分片部分可用
+
+# 索引信息
+/_cat/indices?v
+
+# 节点信息
+/_cat/nodes?v
+```
+
+# 过滤VS查询
 
 ```
 {
@@ -1073,35 +1101,6 @@ http://49.232.17.71:8200/haoke/user/_search
   for hit in res['hits']['hits']:
       print("%(name)s %(age)s %(hobby)s" % hit['_source'])
   ```
-
-# 信息查看-cat
-
-* [通用参数](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/cat.html#common-parameters)
-
-```
-v                    查看详情
-help                 帮助信息
-h=column1,column2    过滤特定表头header
-bytes=b              数字类型格式化【bytes、size、time】
-format=json          文本格式化【text、json、yaml】
-s=column1,column2:desc,column3           排序         
-```
-
-* 常用用法
-
-```
-# 健康信息
-/_cat/health?v            
-* green：所有主分片和副本分片都可用
-* yellow：主分片都可用，副本分片部分可用
-* red：主分片部分可用
-
-# 索引信息
-/_cat/indices?v
-
-# 节点信息
-/_cat/nodes?v
-```
 
 # [容量评估](https://help.aliyun.com/document_detail/72660.html)
 
