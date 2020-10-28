@@ -4,27 +4,19 @@ tags:
 categories:
 ---
 
-# docker方式启动
+# 服务启动
 
 ```
-docker run -d --name kibana --link elastic:elasticsearch -p 8601:5601 elastic/kibana:6.5.4
+yum install filebeat -y
 ```
 
-Docker默认选项
+配置选项
 
-| `server.name`                                   | `kibana`                    |
-| ----------------------------------------------- | --------------------------- |
-| `server.host`                                   | `"0"`                       |
-| `elasticsearch.hosts`                           | `http://elasticsearch:9200` |
-| `monitoring.ui.container.elasticsearch.enabled` | `true`                      |
-
-环境变量设置
-
-| **Environment Variable** | **Kibana Setting**   |
-| ------------------------ | -------------------- |
-| `SERVER_NAME`            | `server.name`        |
-| `SERVER_BASEPATH`        | `server.basePath`    |
-| `MONITORING_ENABLED`     | `monitoring.enabled` |
+* server.port: 5601
+* server.host: "192.168.31.222"
+* elasticsearch.url: "http://192.168.31.221:9200"
+* kibana.index: ".kibana"
+* i18n.locale: "zh-CN" #6.7版本以上支持直接汉化
 
 # 页面功能
 
