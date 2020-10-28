@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="logstash,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="配置文件语法基础语法 区块标识 {} 变量赋值 nginx =&amp;gt; 5 变量引用 [nginx] 双引号下引用变量 &amp;quot;%{nginx}&amp;quot; 引用数组 [arry][1]    变量数据类型 数字 字符串 布尔值 数组【列表】  1match =&amp;gt; [&amp;quot;datetime&amp;quot;, &amp;quot;UNIX&amp;quot;, &amp;quot;ISO8601&amp;quot;]">
+<meta name="keywords" content="logstash">
+<meta property="og:type" content="article">
+<meta property="og:title" content="logstash学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/10/29/日志处理/logstash学习/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="配置文件语法基础语法 区块标识 {} 变量赋值 nginx =&amp;gt; 5 变量引用 [nginx] 双引号下引用变量 &amp;quot;%{nginx}&amp;quot; 引用数组 [arry][1]    变量数据类型 数字 字符串 布尔值 数组【列表】  1match =&amp;gt; [&amp;quot;datetime&amp;quot;, &amp;quot;UNIX&amp;quot;, &amp;quot;ISO8601&amp;quot;]">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-10-28T17:34:20.699Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="logstash学习">
+<meta name="twitter:description" content="配置文件语法基础语法 区块标识 {} 变量赋值 nginx =&amp;gt; 5 变量引用 [nginx] 双引号下引用变量 &amp;quot;%{nginx}&amp;quot; 引用数组 [arry][1]    变量数据类型 数字 字符串 布尔值 数组【列表】  1match =&amp;gt; [&amp;quot;datetime&amp;quot;, &amp;quot;UNIX&amp;quot;, &amp;quot;ISO8601&amp;quot;]">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/10/29/日志处理/logstash学习/">
+
+
+
+
+
+  <title>logstash学习 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/29/日志处理/logstash学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">logstash学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T01:13:38+08:00">
+                2020-10-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-29T01:34:20+08:00">
+                2020-10-29
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="配置文件语法"><a href="#配置文件语法" class="headerlink" title="配置文件语法"></a><a href="https://www.elastic.co/guide/en/logstash/6.8/configuration.html" target="_blank" rel="noopener">配置文件语法</a></h1><h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ul>
+<li>区块标识 <code>{}</code></li>
+<li>变量赋值 <code>nginx =&gt; 5</code></li>
+<li>变量引用 <code>[nginx]</code><ul>
+<li>双引号下引用变量 <code>&quot;%{nginx}&quot;</code></li>
+<li>引用数组 <code>[arry][1]</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="变量数据类型"><a href="#变量数据类型" class="headerlink" title="变量数据类型"></a>变量数据类型</h2><ul>
+<li>数字</li>
+<li>字符串</li>
+<li>布尔值</li>
+<li>数组【列表】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">match =&gt; [&quot;datetime&quot;, &quot;UNIX&quot;, &quot;ISO8601&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>哈希【字典】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">options =&gt; &#123;</span><br><span class="line">  key1 =&gt; &quot;value1&quot;,</span><br><span class="line">  key2 =&gt; &quot;value2&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if EXPRESSION &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125; else if EXPRESSION &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>==（等于）!=（不等于） &lt; &lt;=（小于，小于等于）&gt;&gt;=（大于，大于等于）</li>
+<li>=~（匹配正则）!~（不匹配正则）</li>
+<li>in（包含）not in（不包含）</li>
+<li>and（与）or（或）nand（非与）xor（非或）</li>
+<li>（）（复合表达式）!()（复合表达式取反）</li>
+</ul>
+<h1 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h1><p>logstash事件处理管道有三个阶段：inputs → filters → outputs。input和output都支持编解码器。常见的几种插件类型如下：</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/logstash/6.8/input-plugins.html" target="_blank" rel="noopener">Input</a>：产生事件；使用input将数据获取到Logstash</li>
+<li><a href="https://www.elastic.co/guide/en/logstash/6.8/filter-plugins.html" target="_blank" rel="noopener">Filter</a>：定义事件；如果事件符合特定条件，则可以将过滤器与条件语句结合使用以对事件执行操作。</li>
+<li><a href="https://www.elastic.co/guide/en/logstash/6.8/output-plugins.html" target="_blank" rel="noopener">Output</a>：将事件传送到任何位置。output是Logstash管道的最后阶段。一个事件可以传递给多个output，只有完成所有output处理，该事件才执行完成。</li>
+<li><a href="https://www.elastic.co/guide/en/logstash/6.8/codec-plugins.html" target="_blank" rel="noopener">Codec</a>：编解码器</li>
+</ul>
+<p>插件管理命令如下：</p>
+<ul>
+<li>bin/logstash-plugin install         # 安装</li>
+<li>bin/logstash-plugin remove      # 删除</li>
+<li>bin/logstash-plugin update      # 更新</li>
+<li>bin/logstash-plugin list             # 列表显示</li>
+</ul>
+<h2 id="input"><a href="#input" class="headerlink" title="input"></a>input</h2><p>input类插件包含一些通用配置项：add_field(增加的字段)、codec(编解码器)、tags(标签)、type(类型)</p>
+<ul>
+<li><p>stdin：标准输入，主要用于调试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  stdin&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>file：读取文件，类似unix下的tail -0f命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">file &#123;</span><br><span class="line">  path =&gt; &quot;/var/log/messages&quot;</span><br><span class="line">  type =&gt; &quot;syslog&quot;</span><br><span class="line">  tags =&gt; [&quot;syslog&quot;, &quot;test&quot;]</span><br><span class="line">  start_position =&gt; &quot;beginning&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>beats：处理由beats发送的事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  beats &#123;</span><br><span class="line">    port =&gt; 5044</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>redis：从redis中读取数据，redis一般作为filebeat的数据缓冲服务</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  redis &#123;</span><br><span class="line">    host =&gt; <span class="string">"127.0.0.1"</span></span><br><span class="line">    port =&gt; <span class="string">"6379"</span></span><br><span class="line">    password =&gt; <span class="string">"123456"</span></span><br><span class="line">    key =&gt; <span class="string">"logstash"</span></span><br><span class="line">    data_type =&gt; <span class="string">"list"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h2><p>filter插件包含一些通用选项：add_field、add_tag、remove_field、remove_tag</p>
+<ul>
+<li><p>mutate：对事件字段执行常规转换。您可以重命名，删除，替换和修改事件中的字段。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] 2020-09-26 12:07:15 [cn.itcast.dashboard.Main] - DAU|4903|提交订单|2020-09-26 01:01:14</span><br><span class="line">[INFO] 2020-09-26 12:07:16 [cn.itcast.dashboard.Main] - DAU|2589|查看订单|2020-09-26 12:05:03</span><br><span class="line">[INFO] 2020-09-26 12:07:17 [cn.itcast.dashboard.Main] - DAU|8259|使用优惠券|2020-09-26 09:05:13</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">filter &#123;</span><br><span class="line">  mutate &#123;</span><br><span class="line">    split =&gt; &#123; &quot;message&quot; =&gt; &quot;|&quot; &#125; # 内容分割</span><br><span class="line">    add_field =&gt; &#123;                # 添加字段</span><br><span class="line">      &quot;userID&quot; =&gt; &quot;%&#123;message[1]&#125;&quot;</span><br><span class="line">      &quot;visit&quot; =&gt; &quot;%&#123;message[2]&#125;&quot;</span><br><span class="line">      &quot;date&quot; =&gt; &quot;%&#123;message[3]&#125;&quot;</span><br><span class="line">     &#125;</span><br><span class="line">    convert =&gt; &#123;                  # 转换数据类型</span><br><span class="line">      &quot;userID&quot; =&gt; &quot;integer&quot;</span><br><span class="line">      &quot;visit&quot; =&gt; &quot;string&quot;</span><br><span class="line">      &quot;date&quot; =&gt; &quot;string&quot;   </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>geoip：将ip地址解析为相应的经纬度、国家、城市等信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">filter &#123;</span><br><span class="line">  geoip &#123;</span><br><span class="line">   source =&gt; &quot;message&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dissect：可以处理有明显分隔符的文本；不使用正则表达式解析，速度也更快</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Dec 14 10:35:01 opserver12 CRON[25115]: (root) CMD (command -v debian-sa1 &gt; /dev/null &amp;&amp; debian-sa1 1 1)</span><br><span class="line">dissect &#123;</span><br><span class="line">    mapping =&gt; &#123;</span><br><span class="line">       &quot;message&quot; =&gt; &quot;%&#123;ts&#125; %&#123;+ts/2&#125; %&#123;+ts/1&#125; %&#123;src&#125; %&#123;prog&#125;[%&#123;pid&#125;]: %&#123;msg&#125;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">   convert_datatype =&gt; &#123;</span><br><span class="line">       pid =&gt; &quot;int&quot;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">* %&#123;key&#125;    表示字段</span><br><span class="line">* %&#123;+key/n&#125; n表示聚合字段附加的第几次内容【原始字段%&#123;key&#125;等同%&#123;+key/0&#125;】</span><br><span class="line">* convert_datatype：转换输出数据类型</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># http://www.baidu.com/test?he=123</span><br><span class="line">dissect &#123;</span><br><span class="line">    mapping =&gt; &#123;</span><br><span class="line">        &quot;message&quot; =&gt; &quot;http://%&#123;domain&#125;/%&#123;?url&#125;?%&#123;?arg1&#125;=%&#123;&amp;arg1&#125;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">* %&#123;?string&#125; 表示只是占位符，不会生产捕获字段最终的event【不会显示字段】</span><br><span class="line">* %&#123;?string&#125; %&#123;&amp;string&#125; 表示这是一个键值对</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>date：处理日期文本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">filter &#123;</span><br><span class="line">  date &#123;</span><br><span class="line">   locale =&gt; &quot;en_US&quot; # 语言环境</span><br><span class="line">   match =&gt; [&quot;message&quot;, &quot;dd/MM/yyyy:HH:mm:ss&quot;, &quot;MMM  d HH:mm:ss&quot;, &quot;MMM dd HH:mm:ss&quot;, &quot;ISO8601&quot;] # 匹配文本</span><br><span class="line">   timezone =&gt; &quot;Asia/Shanghai&quot; # 文本表示的时区</span><br><span class="line">   target =&gt; &quot;logdate&quot; # 将文本赋值给字段</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>grok：通过正则表达式匹配任意文本</p>
+</li>
+</ul>
+<h2 id="output"><a href="#output" class="headerlink" title="output"></a>output</h2><ul>
+<li><p>stdout：标准输出，主要用于调试</p>
+</li>
+<li><p>file：写入事件到文件</p>
+</li>
+<li><p>elasticsearch：将事件数据发送到Elasticsearch。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">output &#123;</span><br><span class="line"> elasticsearch &#123;</span><br><span class="line">   hosts =&gt; [&quot;192.168.31.221:9200&quot;,&quot;192.168.31.222:9200&quot;,&quot;192.168.31.223:9200&quot;]</span><br><span class="line">   index =&gt; &quot;logstash-%&#123;type&#125;-%&#123;+YYYY.MM.dd&#125;&quot;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="codec"><a href="#codec" class="headerlink" title="codec"></a>codec</h2><ul>
+<li><p>json：编解码json格式数据</p>
+</li>
+<li><p>multiline：将多行文本事件（例如Java异常和stacktrace消息）合并到单个事件中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">    stdin &#123;</span><br><span class="line">      codec =&gt; multiline &#123;</span><br><span class="line">        pattern =&gt; &quot;^\s&quot; # 以空白开始的行合并到上边非空白开始的行</span><br><span class="line">        what =&gt; &quot;previous&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="grok插件"><a href="#grok插件" class="headerlink" title="grok插件"></a>grok插件</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>可以使用正则表达式匹配任意文本，根据正则表达式位置的不同可以分为：</p>
+<ul>
+<li><p>实时解析模式：在match中定义正则表达式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(?&lt;field_name&gt;the pattern here)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>预编译模式：单独定义模式后，在match中引用模式名称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;PATTERN_NAME:field_name:data_type&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>预编译模式可以直接使用内置的模式，也可以自定义模式：</p>
+<ul>
+<li>内置模式：约有120种，通过<a href="https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns" target="_blank" rel="noopener">logstash-patterns-core</a>插件实现</li>
+<li>自定义模式：可以在任意目录的任意文件里定义，只需通过patterns_dir参数加载目录即可使用</li>
+</ul>
+<h2 id="模式使用"><a href="#模式使用" class="headerlink" title="模式使用"></a>模式使用</h2><p>预编译模式使用步骤：(在线调试工具：<a href="http://grokdebug.herokuapp.com/）" target="_blank" rel="noopener">http://grokdebug.herokuapp.com/）</a></p>
+<ul>
+<li><p>模式的定义：<code>PATTERN_NAME  pattern</code>（内置模式无需定义，可以直接使用；）</p>
+<ul>
+<li><p>正则表达式默认不匹配换行，如果需要，则在正则前加(?m)</p>
+</li>
+<li><p>语法范例：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USERNAME [a-z0-9.-]+    定义模式USERNAME是由小写字母数字等组成</span><br><span class="line">NGINXLOG %&#123;COMBINEDAPACHELOG&#125; (%&#123;QS:proxyip&#125;|-) (%&#123;BASE16FLOAT:upstream_response_time&#125;|-) (%&#123;BASE16FLOAT:request_time&#125;)   使用内置的模式组合定义</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>模式的应用：%{PATTERN_NAME:field_name:data_type} </p>
+<ul>
+<li>PATTERN_NAME：引用的模式名称</li>
+<li>field_name：模式匹配的文本输出到指定字段</li>
+<li>data_type：定义输出字段数据类型</li>
+</ul>
+</li>
+</ul>
+<h2 id="多模式匹配"><a href="#多模式匹配" class="headerlink" title="多模式匹配"></a>多模式匹配</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># patterns/custom</span><br><span class="line">CUSTOM_DATE [0-9]&#123;1,4&#125;\-[0-9]&#123;1,2&#125;\-[0-9]&#123;1,2&#125; [0-9]&#123;1,2&#125;\:[0-9]&#123;1,2&#125;\:[0-9]&#123;1,2&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">filter &#123;</span><br><span class="line">  grok &#123;</span><br><span class="line">    patterns_dir =&gt; &quot;./patterns&quot;</span><br><span class="line">    match =&gt; &#123; # 字典方式</span><br><span class="line">      &quot;message&quot; =&gt; [</span><br><span class="line">         &quot;%&#123;CUSTOM_DATE:date&#125;&quot;, # 如果是日期类型使用date字段存储数据</span><br><span class="line">         &quot;%&#123;WORD:any&#125;&quot;          # 如果是其他文字使用any字段存储</span><br><span class="line">         ]</span><br><span class="line">      &#125;</span><br><span class="line">   # match =&gt; [&quot;message&quot;, &quot;%&#123;CUSTOM_DATE:date&#125;&quot;, &quot;%&#123;WORD:any&#125;&quot;] 列表方式</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="命令行启动"><a href="#命令行启动" class="headerlink" title="命令行启动"></a>命令行启动</h1><ul>
+<li>-f 指定配置文件路径</li>
+<li>-e 指定配置字符串</li>
+<li>-t 测试配置语法并退出</li>
+<li>-r 自动加载配置更新</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/logstash -r -f grok.rb</span><br></pre></td></tr></table></figure>
+<h1 id="综合范例"><a href="#综合范例" class="headerlink" title="综合范例"></a><a href="https://www.elastic.co/guide/en/logstash/6.8/config-examples.html" target="_blank" rel="noopener">综合范例</a></h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NGINXLOG %&#123;IPORHOST:remote_addr&#125; - (%&#123;HTTPDUSER:remote_user&#125;|-) \[%&#123;HTTPDATE:time_local&#125;\] \&quot;(%&#123;WORD:method&#125; %&#123;URIPATH:baseurl&#125;(?:\?%&#123;NOTSPACE:param&#125;) HTTP/1.1)\&quot; %&#123;NUMBER:status&#125; (%&#123;NUMBER:body_bytes_sent&#125;|-) \&quot;(%&#123;URI:http_referer&#125;|%&#123;DATA:http_referer&#125;)\&quot; \&quot;(?:%&#123;GREEDYDATA:http_user_agent&#125;|-)\&quot; \&quot;(%&#123;IPORHOST:http_x_forwarded_for&#125;|%&#123;DATA:http_x_forwarded_for&#125;)\&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">   file &#123;</span><br><span class="line">    type =&gt; &quot;nginx-access&quot;  </span><br><span class="line">    path =&gt; [ &quot;/home/zj-ops/test/input/logs/access.log&quot; ]</span><br><span class="line">    tags =&gt; [ &quot;nginx&quot;,&quot;access&quot;]</span><br><span class="line">    start_position =&gt; beginning</span><br><span class="line">   &#125;</span><br><span class="line">    file &#123;</span><br><span class="line">    type =&gt; &quot;nginx-error&quot; </span><br><span class="line">    path =&gt; [ &quot;/home/zj-ops/test/input/logs/error.log&quot; ]</span><br><span class="line">    tags =&gt; [ &quot;nginx&quot;,&quot;error&quot;]</span><br><span class="line">    start_position =&gt; beginning</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line"> if [type] == &quot;nginx-access&quot; &#123;</span><br><span class="line">        grok&#123;</span><br><span class="line">            patterns_dir =&gt; &quot;./patterns&quot;</span><br><span class="line">            match =&gt; [&quot;message&quot;,&quot;%&#123;NGINXLOG&#125;&quot;] # 预编译模式</span><br><span class="line">        &#125;</span><br><span class="line">        date&#123;</span><br><span class="line">            match =&gt; [&quot;time&quot;,&quot;dd/MMM/yyyy:HH:mm:ss Z&quot;]</span><br><span class="line">            target =&gt; &quot;logdate&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        ruby&#123;</span><br><span class="line">            code =&gt; &quot;event.set(&apos;logdateunix&apos;,event.get(&apos;logdate&apos;).to_i)&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else if [type] == &quot;nginx-error&quot; &#123; </span><br><span class="line">        grok &#123;</span><br><span class="line">        match =&gt; [</span><br><span class="line">            &quot;message&quot;, &quot;(?&lt;time&gt;\d&#123;4&#125;/\d&#123;2&#125;/\d&#123;2&#125;\s&#123;1,&#125;\d&#123;2&#125;:\d&#123;2&#125;:\d&#123;2&#125;)\s&#123;1,&#125;\[%&#123;DATA:err_severity&#125;\]\s&#123;1,&#125;%&#123;GREEDYDATA:err_message&#125;&quot;] #实时解析模式</span><br><span class="line">        &#125;</span><br><span class="line">        date&#123;</span><br><span class="line">            match =&gt; [&quot;time&quot;,&quot;yyyy/MM/dd HH:mm:ss&quot;]</span><br><span class="line">            target =&gt; &quot;logdate&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        ruby&#123;</span><br><span class="line">            code =&gt; &quot;event.set(&apos;logdateunix&apos;,event.get(&apos;logdate&apos;).to_i)&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">output&#123;</span><br><span class="line">   elasticsearch&#123;</span><br><span class="line">        hosts =&gt; [&quot;10.10.10.10:9200&quot;]</span><br><span class="line">        index =&gt; &quot;logstash-nginx-%&#123;+YYYY.MM.dd&#125;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/logstash/" rel="tag"># logstash</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/" rel="next" title="redis主从高可用-sentinel">
+                <i class="fa fa-chevron-left"></i> redis主从高可用-sentinel
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">136</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">268</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件语法"><span class="nav-number">1.</span> <span class="nav-text">配置文件语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础语法"><span class="nav-number">1.1.</span> <span class="nav-text">基础语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">变量数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件判断"><span class="nav-number">1.3.</span> <span class="nav-text">条件判断</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插件"><span class="nav-number">2.</span> <span class="nav-text">插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#input"><span class="nav-number">2.1.</span> <span class="nav-text">input</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filter"><span class="nav-number">2.2.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#output"><span class="nav-number">2.3.</span> <span class="nav-text">output</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codec"><span class="nav-number">2.4.</span> <span class="nav-text">codec</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#grok插件"><span class="nav-number">3.</span> <span class="nav-text">grok插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">3.1.</span> <span class="nav-text">使用方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式使用"><span class="nav-number">3.2.</span> <span class="nav-text">模式使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多模式匹配"><span class="nav-number">3.3.</span> <span class="nav-text">多模式匹配</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行启动"><span class="nav-number">4.</span> <span class="nav-text">命令行启动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#综合范例"><span class="nav-number">5.</span> <span class="nav-text">综合范例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+</body>
+</html>
