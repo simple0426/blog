@@ -220,6 +220,27 @@ filter插件包含一些通用选项：add_field、add_tag、remove_field、remo
    }
   }
   ```
+  
+  索引名称因为时区滞后8小时处理【新建日期字段】
+  
+  ```
+  filter {
+      ruby {
+          code => "event.set('index_date', event.get('@timestamp').time.localtime + 8*60*60)"
+      }
+      mutate {
+          convert => ["index_date", "string"]
+          gsub => ["index_date", "T([\S\s]*?)Z", ""]
+          gsub => ["index_date", "-", "."]
+      }
+  }
+  output {
+   elasticsearch {
+     hosts => ["192.168.31.221:9200","192.168.31.222:9200","192.168.31.223:9200"]
+     index => "logstash-%{type}-%{index_date}"
+   }
+  }
+  ```
 
 ## codec
 
@@ -263,7 +284,7 @@ input {
 
 ## 模式使用
 
-预编译模式使用步骤：(在线调试工具：http://grokdebug.herokuapp.com/）
+预编译模式使用步骤：【在线调试工具：http://grokdebug.herokuapp.com/ 】
 
 * 模式的定义：`PATTERN_NAME  pattern`（内置模式无需定义，可以直接使用；）
 
@@ -318,7 +339,7 @@ bin/logstash -r -f grok.rb
 # [综合范例](https://www.elastic.co/guide/en/logstash/6.8/config-examples.html)
 
 ```
-NGINXLOG %{IPORHOST:remote_addr} - (%{HTTPDUSER:remote_user}|-) \[%{HTTPDATE:time_local}\] \"(%{WORD:method} %{URIPATH:baseurl}(?:\?%{NOTSPACE:param}) HTTP/1.1)\" %{NUMBER:status} (%{NUMBER:body_bytes_sent}|-) \"(%{URI:http_referer}|%{DATA:http_referer})\" \"(?:%{GREEDYDATA:http_user_agent}|-)\" \"(%{IPORHOST:http_x_forwarded_for}|%{DATA:http_x_forwarded_for})\"
+NGINXLOG %{IPORHOST:remote_addr} - %{USER:remote_user} \[%{HTTPDATE:time_local}\] \"%{WORD:method} %{URIPATH:baseurl}(?:\?%{NOTSPACE:param}|) HTTP/%{NUMBER:httpversion}\" %{NUMBER:http_status} %{NUMBER:body_bytes_sent} \"%{GREEDYDATA:http_referer}\" \"%{GREEDYDATA:http_user_agent}\" \"(?<http_x_forwarded_for>.*?)\"
 ```
 
 ```
@@ -343,7 +364,7 @@ filter {
             match => ["message","%{NGINXLOG}"] # 预编译模式
         }
         date{
-            match => ["time","dd/MMM/yyyy:HH:mm:ss Z"]
+            match => ["time_local","dd/MMM/yyyy:HH:mm:ss Z"]
             target => "logdate"
         }
         ruby{
@@ -355,7 +376,7 @@ filter {
             "message", "(?<time>\d{4}/\d{2}/\d{2}\s{1,}\d{2}:\d{2}:\d{2})\s{1,}\[%{DATA:err_severity}\]\s{1,}%{GREEDYDATA:err_message}"] #实时解析模式
         }
         date{
-            match => ["time","yyyy/MM/dd HH:mm:ss"]
+            match => ["time_local","dd/MMM/yyyy HH:mm:ss Z"]
             target => "logdate"
         }
         ruby{

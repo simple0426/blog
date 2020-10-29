@@ -545,6 +545,30 @@ HEAD   索引/类型/id
   * 每行末尾都需要有换行符\n【包含最后一行】
   * index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。
 
+* delete_by_query接口条件删除
+
+  ```
+  POST logstash-nginx-access-2020.10.29/_delete_by_query
+  {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "ids": {
+              "values": [
+                "BbyIc3UByBVJ-pL9-P6X",
+                "BryIc3UByBVJ-pL9-P6X",
+                "B7yIc3UByBVJ-pL9-P6X",
+                "BLyIc3UByBVJ-pL9-P6X"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+  ```
+
 # 搜索方式
 
 基于_search接口的查询，根据参数位置的不同可以分为：

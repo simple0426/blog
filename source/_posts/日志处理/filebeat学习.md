@@ -205,7 +205,7 @@ Caused by: java.lang.NullPointerException
 ```
 
 ```
-multiline.pattern: ^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:' # 匹配2个条件之一，条件如下
+multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:' # 匹配2个条件之一，条件如下
 multiline.negate: false # 连续多行与匹配模式相同
 multiline.match: after  # 将匹配的行放到不匹配的行之后
 ```
