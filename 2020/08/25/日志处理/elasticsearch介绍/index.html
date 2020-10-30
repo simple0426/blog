@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="引言数据分类和搜索 结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录  倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了te">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-10-06T13:20:50.999Z">
+<meta property="og:updated_time" content="2020-10-29T09:12:06.185Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticsearch介绍">
 <meta name="twitter:description" content="引言数据分类和搜索 结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索 非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】  索引分类 索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指向一条数据记录  倒排索引：是针对文档(字段)内容建立索引，然后索引指向文档(数据记录)，实现了te">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-06T21:20:50+08:00">
-                2020-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-29T17:12:06+08:00">
+                2020-10-29
               </time>
             
           </span>
@@ -712,6 +712,11 @@
 <li>每行末尾都需要有换行符\n【包含最后一行】</li>
 <li>index操作时，不需要添加id；没有文档时为create操作、有文档时为update操作。</li>
 </ul>
+<ul>
+<li><p>delete_by_query接口条件删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">POST logstash-nginx-access-2020.10.29/_delete_by_query</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;bool&quot;: &#123;</span><br><span class="line">      &quot;must&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;ids&quot;: &#123;</span><br><span class="line">            &quot;values&quot;: [</span><br><span class="line">              &quot;BbyIc3UByBVJ-pL9-P6X&quot;,</span><br><span class="line">              &quot;BryIc3UByBVJ-pL9-P6X&quot;,</span><br><span class="line">              &quot;B7yIc3UByBVJ-pL9-P6X&quot;,</span><br><span class="line">              &quot;BLyIc3UByBVJ-pL9-P6X&quot;</span><br><span class="line">            ]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
 <h1 id="搜索方式"><a href="#搜索方式" class="headerlink" title="搜索方式"></a>搜索方式</h1><p>基于_search接口的查询，根据参数位置的不同可以分为：</p>
 <ul>
 <li>基于URI的搜索(GET)：/_search?q=字符串查询语法</li>
@@ -1062,7 +1067,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">136</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="samba,">
+  <meta name="keywords" content="kibana,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="安装samba软件用户设置创建系统用户组groupadd marketop 创建系统用户 useradd -g marketop -s /usr/sbin/nologin -M ceshi1 useradd -g marketop -s /usr/sbin/nologin -M marketop  将系统用户转为samba用户 同时设置密码   smbpasswd -a marketop smbp">
-<meta name="keywords" content="samba">
+<meta name="description" content="服务启动1yum install filebeat -y 配置选项  server.port: 5601 server.host: “192.168.31.222” elasticsearch.url: “http://192.168.31.221:9200&amp;quot; kibana.index: “.kibana” i18n.locale: “zh-CN” #6.7版本以上支持直接汉化  页面功">
+<meta name="keywords" content="kibana">
 <meta property="og:type" content="article">
-<meta property="og:title" content="文件共享samba">
-<meta property="og:url" content="http://blog.unlazy.cn/2018/02/26/系统管理/辅助开发/文件共享samba/index.html">
+<meta property="og:title" content="kibana学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/10/30/日志处理/kibana学习/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="安装samba软件用户设置创建系统用户组groupadd marketop 创建系统用户 useradd -g marketop -s /usr/sbin/nologin -M ceshi1 useradd -g marketop -s /usr/sbin/nologin -M marketop  将系统用户转为samba用户 同时设置密码   smbpasswd -a marketop smbp">
+<meta property="og:description" content="服务启动1yum install filebeat -y 配置选项  server.port: 5601 server.host: “192.168.31.222” elasticsearch.url: “http://192.168.31.221:9200&amp;quot; kibana.index: “.kibana” i18n.locale: “zh-CN” #6.7版本以上支持直接汉化  页面功">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.468Z">
+<meta property="og:updated_time" content="2020-10-30T05:24:27.299Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文件共享samba">
-<meta name="twitter:description" content="安装samba软件用户设置创建系统用户组groupadd marketop 创建系统用户 useradd -g marketop -s /usr/sbin/nologin -M ceshi1 useradd -g marketop -s /usr/sbin/nologin -M marketop  将系统用户转为samba用户 同时设置密码   smbpasswd -a marketop smbp">
+<meta name="twitter:title" content="kibana学习">
+<meta name="twitter:description" content="服务启动1yum install filebeat -y 配置选项  server.port: 5601 server.host: “192.168.31.222” elasticsearch.url: “http://192.168.31.221:9200&amp;quot; kibana.index: “.kibana” i18n.locale: “zh-CN” #6.7版本以上支持直接汉化  页面功">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.unlazy.cn/2018/02/26/系统管理/辅助开发/文件共享samba/">
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/10/30/日志处理/kibana学习/">
 
 
 
 
 
-  <title>文件共享samba | 运维自动化之路</title>
+  <title>kibana学习 | 运维自动化之路</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/系统管理/辅助开发/文件共享samba/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/30/日志处理/kibana学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">文件共享samba</h1>
+          <h1 class="post-title" itemprop="name headline">kibana学习</h1>
         
 
         <div class="post-meta">
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T16:09:59+08:00">
-                2018-02-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-30T13:24:27+08:00">
+                2020-10-30
               </time>
             
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:24:27+08:00">
+                2020-10-30
               </time>
             
           </span>
@@ -349,8 +349,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -386,46 +386,57 @@
       
 
       
-        <h1 id="安装samba软件"><a href="#安装samba软件" class="headerlink" title="安装samba软件"></a>安装samba软件</h1><h1 id="用户设置"><a href="#用户设置" class="headerlink" title="用户设置"></a>用户设置</h1><h2 id="创建系统用户组"><a href="#创建系统用户组" class="headerlink" title="创建系统用户组"></a>创建系统用户组</h2><p>groupadd marketop</p>
-<h2 id="创建系统用户"><a href="#创建系统用户" class="headerlink" title="创建系统用户"></a>创建系统用户</h2><ul>
-<li>useradd -g marketop -s /usr/sbin/nologin -M ceshi1</li>
-<li>useradd -g marketop -s /usr/sbin/nologin -M marketop</li>
-</ul>
-<h2 id="将系统用户转为samba用户"><a href="#将系统用户转为samba用户" class="headerlink" title="将系统用户转为samba用户"></a>将系统用户转为samba用户</h2><blockquote>
-<p>同时设置密码</p>
-</blockquote>
+        <h1 id="服务启动"><a href="#服务启动" class="headerlink" title="服务启动"></a>服务启动</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install filebeat -y</span><br></pre></td></tr></table></figure>
+<p>配置选项</p>
 <ul>
-<li>smbpasswd -a marketop</li>
-<li>smbpasswd -a ceshi1</li>
+<li>server.port: 5601</li>
+<li>server.host: “192.168.31.222”</li>
+<li>elasticsearch.url: “<a href="http://192.168.31.221:9200&quot;" target="_blank" rel="noopener">http://192.168.31.221:9200&quot;</a></li>
+<li>kibana.index: “.kibana”</li>
+<li>i18n.locale: “zh-CN” #6.7版本以上支持直接汉化</li>
 </ul>
-<h1 id="目录设置"><a href="#目录设置" class="headerlink" title="目录设置"></a>目录设置</h1><h2 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h2><p>mkdir market_operation</p>
-<h2 id="变更目录所有者"><a href="#变更目录所有者" class="headerlink" title="变更目录所有者"></a>变更目录所有者</h2><p>chown ceshi1.marketop market_operation/</p>
-<h2 id="目录设置粘滞位"><a href="#目录设置粘滞位" class="headerlink" title="目录设置粘滞位"></a>目录设置粘滞位</h2><blockquote>
-<p>当一个目录被设置为”粘着位”(用chmod a+t),则该目录下的文件只能由<br>一、超级管理员删除<br>二、该目录的所有者删除<br>三、该文件的所有者删除<br>也就是说,即便该目录是任何人都可以写,但也只有文件的属主才可以删除文件。</p>
-</blockquote>
-<p>chmod a+t market_operation/</p>
-<h1 id="配置文件设置"><a href="#配置文件设置" class="headerlink" title="配置文件设置"></a>配置文件设置</h1><h2 id="可用参数"><a href="#可用参数" class="headerlink" title="可用参数"></a>可用参数</h2><ul>
-<li>[public] 共享文件夹名称</li>
-<li>path 共享路径</li>
-<li>public 公共文件夹，不许凭证可访问（访问权限在本地设置）</li>
-<li>writable 可对文件夹写操作</li>
-<li>Valid users 有访问文件夹权限的用户【@为组 】</li>
-<li>browseable 该文件夹是否可见</li>
-<li>read only =yes （默认）</li>
-<li>write list= @shichang，cw1  可写权限列表（当前面为readonly=yes 时可写用户列表）</li>
-<li>directory mask= 0744 （文件夹建立后的默认权限）</li>
-<li>create  mask = 0600（文件建立后的默认权限）</li>
-</ul>
-<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">   workgroup = WORKGROUP</span><br><span class="line">        server string = %h server (Samba, Ubuntu)</span><br><span class="line">   dns proxy = no</span><br><span class="line">   security = user</span><br><span class="line">   log file = /var/log/samba/log.%m</span><br><span class="line">   max log size = 1000</span><br><span class="line">   syslog = 0</span><br><span class="line">   panic action = /usr/share/samba/panic-action %d</span><br><span class="line">   server role = standalone server</span><br><span class="line">   passdb backend = tdbsam</span><br><span class="line">   obey pam restrictions = yes</span><br><span class="line">   unix password sync = yes</span><br><span class="line">   passwd program = /usr/bin/passwd %u</span><br><span class="line">   passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .</span><br><span class="line">   pam password change = yes</span><br><span class="line">   map to guest = bad user</span><br><span class="line">   usershare allow guests = yes</span><br><span class="line"># 自定义选项</span><br><span class="line">[市场部]</span><br><span class="line">        path = /home/dell/market_operation</span><br><span class="line">        readonly = yes</span><br><span class="line">        write list = zhangwanting</span><br><span class="line">        valid users = @marketop</span><br><span class="line">        directory mask = 0755</span><br><span class="line">        create mask = 0640</span><br></pre></td></tr></table></figure>
-<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><ul>
-<li>连接：<code>win + R</code>  =》 <code>\\10.10.10.244</code></li>
-<li>切换用户测试：<ul>
-<li>删除网络连接：net use <code>****</code> /d</li>
+<h1 id="页面功能"><a href="#页面功能" class="headerlink" title="页面功能"></a>页面功能</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Discovery         发现：索引数据搜索</span><br><span class="line">Visualize         可视化：根据索引数据创建可视化界面</span><br><span class="line">Dashboard         仪表盘：将多个可视化界面聚合为一个仪表盘</span><br><span class="line">Dev tools         开发工具：可用于调试es语法、logstash的grok语法</span><br><span class="line">Management        管理：索引管理</span><br></pre></td></tr></table></figure>
+<h1 id="内置范例"><a href="#内置范例" class="headerlink" title="内置范例"></a>内置范例</h1><ul>
+<li>安装nginx软件</li>
+<li>使用filebeat的nginx modules抓取nginx日志并格式化</li>
+<li>filebeat对接elasticsearch，并在elasticsearch中自动创建索引filebeat-*</li>
+<li><p>使用filebeat的kibana设置，在kibana中创建dashboards（默认使用索引filebeat-*）</p>
+</li>
+<li><p>在kibana中搜索es索引</p>
+<ul>
+<li>在discovery中查看文本型nginx日志</li>
+<li>在dashboard中查看图表型nginx访问记录</li>
 </ul>
 </li>
 </ul>
-<h2 id="mac"><a href="#mac" class="headerlink" title="mac"></a>mac</h2><p>finder =》 连接服务器 =》 <code>smb://10.10.10.244</code></p>
-<h2 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h2><p><code>mount -t cifs –o username=sc1,passwordd=sc1 //10.10.10.1/Market   /mnt</code></p>
+<h1 id="自定义功能"><a href="#自定义功能" class="headerlink" title="自定义功能"></a>自定义功能</h1><ul>
+<li><p>在Visualize中创建单个可视化图表并保存</p>
+<ul>
+<li>设置Y轴，一般为数据</li>
+<li>设置X轴，一般是时间</li>
+</ul>
+</li>
+<li><p>在dashboard最终创建仪表盘并保存</p>
+<ul>
+<li>在仪表盘中添加可视化图表并调整位置</li>
+</ul>
+</li>
+</ul>
+<h1 id="实践范例-nginx日志"><a href="#实践范例-nginx日志" class="headerlink" title="实践范例-nginx日志"></a>实践范例-nginx日志</h1><ul>
+<li>可视化：<ul>
+<li>PV统计（折线）</li>
+<li>URI访问TOP 10（表格）</li>
+<li>UV统计（折线）</li>
+<li>用户地理位置分布（坐标地图）</li>
+<li>IP访问TOP 10（表格）</li>
+</ul>
+</li>
+<li>仪表盘：<ul>
+<li>资源访问：PV统计、URI访问TOP 10</li>
+<li>IP访问：UV统计、用户地理位置分布、IP访问TOP 10</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -443,7 +454,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/samba/" rel="tag"># samba</a>
+            <a href="/tags/kibana/" rel="tag"># kibana</a>
           
         </div>
       
@@ -456,8 +467,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/26/系统管理/系统基础/文件同步rsync/" rel="next" title="文件同步rsync">
-                <i class="fa fa-chevron-left"></i> 文件同步rsync
+              <a href="/2020/10/29/日志处理/logstash学习/" rel="next" title="logstash学习">
+                <i class="fa fa-chevron-left"></i> logstash学习
               </a>
             
           </div>
@@ -465,10 +476,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/26/系统管理/辅助开发/版本库命令-git/" rel="prev" title="版本库命令-git">
-                版本库命令-git <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -616,7 +623,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装samba软件"><span class="nav-number">1.</span> <span class="nav-text">安装samba软件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户设置"><span class="nav-number">2.</span> <span class="nav-text">用户设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建系统用户组"><span class="nav-number">2.1.</span> <span class="nav-text">创建系统用户组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建系统用户"><span class="nav-number">2.2.</span> <span class="nav-text">创建系统用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将系统用户转为samba用户"><span class="nav-number">2.3.</span> <span class="nav-text">将系统用户转为samba用户</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录设置"><span class="nav-number">3.</span> <span class="nav-text">目录设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建目录"><span class="nav-number">3.1.</span> <span class="nav-text">创建目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更目录所有者"><span class="nav-number">3.2.</span> <span class="nav-text">变更目录所有者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录设置粘滞位"><span class="nav-number">3.3.</span> <span class="nav-text">目录设置粘滞位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件设置"><span class="nav-number">4.</span> <span class="nav-text">配置文件设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可用参数"><span class="nav-number">4.1.</span> <span class="nav-text">可用参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">4.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">5.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#windows"><span class="nav-number">5.1.</span> <span class="nav-text">windows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac"><span class="nav-number">5.2.</span> <span class="nav-text">mac</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux"><span class="nav-number">5.3.</span> <span class="nav-text">linux</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务启动"><span class="nav-number">1.</span> <span class="nav-text">服务启动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#页面功能"><span class="nav-number">2.</span> <span class="nav-text">页面功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内置范例"><span class="nav-number">3.</span> <span class="nav-text">内置范例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义功能"><span class="nav-number">4.</span> <span class="nav-text">自定义功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实践范例-nginx日志"><span class="nav-number">5.</span> <span class="nav-text">实践范例-nginx日志</span></a></li></ol></div>
             
 
           </div>
