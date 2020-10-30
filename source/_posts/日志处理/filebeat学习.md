@@ -326,3 +326,48 @@ logging.files:
   permissions: 0644
 ```
 
+# 最佳实践
+
+## 数据类型
+
+* 系统日志
+* nginx访问/错误日志
+* java、tomcat日志
+
+## 配置范例
+
+```
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/messages
+  fields:
+    type: syslog
+  fields_under_root: true
+- type: log
+  enabled: true
+  paths:
+  - /var/log/nginx/access.log*
+  fields:
+    type: nginx-access
+  fields_under_root: true
+- type: log
+  enabled: true
+  paths:
+  - /var/log/nginx/error.log*
+  fields:
+    type: nginx-error
+  fields_under_root: true
+- type: log
+  enabled: true
+  paths:
+  - /var/log/nginx/tomcat.log*
+  fields:
+    type: tomcat
+  fields_under_root: true
+  multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+  multiline.negate: false
+  multiline.match: after
+```
+

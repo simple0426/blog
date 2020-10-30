@@ -1,8 +1,12 @@
 ---
 title: kibana学习
 tags:
+  - kibana
 categories:
+  - elk
+date: 2020-10-30 13:24:27
 ---
+
 
 # 服务启动
 
@@ -47,3 +51,16 @@ Management        管理：索引管理
 
 * 在dashboard最终创建仪表盘并保存
   * 在仪表盘中添加可视化图表并调整位置
+
+# 实践范例-nginx日志
+
+* 可视化：
+  * PV统计（折线）
+  * URI访问TOP 10（表格）
+  * UV统计（折线）
+  * 用户地理位置分布（坐标地图）
+  * IP访问TOP 10（表格）
+* 仪表盘：
+  * 资源访问：PV统计、URI访问TOP 10
+  * IP访问：UV统计、用户地理位置分布、IP访问TOP 10
+

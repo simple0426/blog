@@ -336,7 +336,7 @@ filter {
 bin/logstash -r -f grok.rb
 ```
 
-# [综合范例](https://www.elastic.co/guide/en/logstash/6.8/config-examples.html)
+# [实践范例-nginx日志](https://www.elastic.co/guide/en/logstash/6.8/config-examples.html)
 
 ```
 NGINXLOG %{IPORHOST:remote_addr} - %{USER:remote_user} \[%{HTTPDATE:time_local}\] \"%{WORD:method} %{URIPATH:baseurl}(?:\?%{NOTSPACE:param}|) HTTP/%{NUMBER:httpversion}\" %{NUMBER:http_status} %{NUMBER:body_bytes_sent} \"%{GREEDYDATA:http_referer}\" \"%{GREEDYDATA:http_user_agent}\" \"(?<http_x_forwarded_for>.*?)\"
@@ -344,51 +344,35 @@ NGINXLOG %{IPORHOST:remote_addr} - %{USER:remote_user} \[%{HTTPDATE:time_local}\
 
 ```
 input {
-   file {
-    type => "nginx-access"  
-    path => [ "/home/zj-ops/test/input/logs/access.log" ]
-    tags => [ "nginx","access"]
-    start_position => beginning
-   }
-    file {
-    type => "nginx-error" 
-    path => [ "/home/zj-ops/test/input/logs/error.log" ]
-    tags => [ "nginx","error"]
-    start_position => beginning
-}
+  beats {
+    port => 5044
+  }
 }
 filter {
- if [type] == "nginx-access" {
-        grok{
-            patterns_dir => "./patterns"
-            match => ["message","%{NGINXLOG}"] # 预编译模式
-        }
-        date{
-            match => ["time_local","dd/MMM/yyyy:HH:mm:ss Z"]
-            target => "logdate"
-        }
-        ruby{
-            code => "event.set('logdateunix',event.get('logdate').to_i)"
-        }
-    } else if [type] == "nginx-error" { 
-        grok {
-        match => [
-            "message", "(?<time>\d{4}/\d{2}/\d{2}\s{1,}\d{2}:\d{2}:\d{2})\s{1,}\[%{DATA:err_severity}\]\s{1,}%{GREEDYDATA:err_message}"] #实时解析模式
-        }
-        date{
-            match => ["time_local","dd/MMM/yyyy HH:mm:ss Z"]
-            target => "logdate"
-        }
-        ruby{
-            code => "event.set('logdateunix',event.get('logdate').to_i)"
-        }
+  ruby {
+      code => "event.set('index_date', event.get('@timestamp').time.localtime + 8*60*60)"
+  }
+  mutate {
+      convert => ["index_date", "string"]
+      gsub => ["index_date", "T([\S\s]*?)Z", ""]
+      gsub => ["index_date", "-", "."]
+  }
+  if [type] == "nginx-access" {
+    grok {
+      patterns_dir => "/etc/logstash/conf.d/patterns"
+      match => ["message", "%{NGINXLOG}"]
+      remove_field => "message"
     }
+    geoip {
+      source => "remote_addr"
+    }
+  }
 }
-output{
-   elasticsearch{
-        hosts => ["10.10.10.10:9200"]
-        index => "logstash-nginx-%{+YYYY.MM.dd}"
-    }
+output {
+ elasticsearch {
+   hosts => ["192.168.31.221:9200","192.168.31.222:9200","192.168.31.223:9200"]
+   index => "logstash-%{type}-%{index_date}"
+ }
 }
 ```
 
