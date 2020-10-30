@@ -38,7 +38,6 @@ Management        管理：索引管理
 * 使用filebeat的nginx modules抓取nginx日志并格式化
 * filebeat对接elasticsearch，并在elasticsearch中自动创建索引filebeat-\*
 * 使用filebeat的kibana设置，在kibana中创建dashboards（默认使用索引filebeat-\*）
-
 * 在kibana中搜索es索引
   * 在discovery中查看文本型nginx日志
   * 在dashboard中查看图表型nginx访问记录
