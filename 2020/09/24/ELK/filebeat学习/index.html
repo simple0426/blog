@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="filebeat,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
+<meta name="keywords" content="filebeat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="filebeat学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522095441298.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522095832263.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100310568.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200522100724855.png">
+<meta property="og:updated_time" content="2020-10-30T05:20:46.496Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="filebeat学习">
+<meta name="twitter:description" content="工作原理filebeat由2个组件组成：inputs和harvester   harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】  inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个har">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200522095441298.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
+
+
+
+
+
+  <title>filebeat学习 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">filebeat学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
+                2020-09-24
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:20:46+08:00">
+                2020-10-30
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h1><p>filebeat由2个组件组成：inputs和harvester </p>
+<ul>
+<li><p>harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】</p>
+</li>
+<li><p>inputs：负责管理harvester并查找所有可以读取的资源；如果输入类型是日志，则查找器查找路径匹配的所有文件，并为每个文件启动一个harvester；支持多种inputs类型，例如log、stdin、tcp、udp、docker、redis、syslog等</p>
+</li>
+</ul>
+<p>filebeat如何保持文件状态？</p>
+<p>Filebeat会保留每个文件的状态，并经常将状态刷新到注册表文件(registry)中的磁盘。该状态用于记住收割机正在读取的最后一个偏移量，并确保发送所有日志行。如果无法到达输出（例如Elasticsearch或Logstash），Filebeat会跟踪发送的最后几行，并在输出再次可用时继续读取文件。当Filebeat运行时，状态信息也保存在内存中，用于每个输入。重新启动Filebeat时，将使用注册表文件中的数据来重建状态，并且Filebeat会将每个收割机继续到最后一个已知位置。</p>
+<p>对于每个输入，Filebeat会保持找到的每个文件的状态。由于可以重命名或移动文件，因此文件名和路径不足以标识文件。对于每个文件，Filebeat都存储唯一的标识符以检测文件是否以前被收获过。</p>
+<p>注册表文件位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filebeat.registry_file: $&#123;path.data&#125;/registry</span><br></pre></td></tr></table></figure>
+<h1 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h1><p>可以将常见的日志进行格式化，直接输出到elasticsearch或kibana【此时就不需要再设置filebeat.inputs】</p>
+<ul>
+<li>在elasticsearch中安装ingest-geoip和ingest-user-agent</li>
+</ul>
+<blockquote>
+<p>安装要求：<a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/filebeat-modules-quickstart.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/beats/filebeat/6.5/filebeat-modules-quickstart.html</a></p>
+<p>其他版本说明：<a href="https://www.elastic.co/guide/en/elasticsearch/plugins/6.7/ingest-geoip.html" target="_blank" rel="noopener">v6.7之后作为elasticsearch的ingest processor无需安装</a></p>
+<p>docker方式：docker启动的elasticsearch已默认安装</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo bin/elasticsearch-plugin install ingest-geoip</span><br><span class="line">sudo bin/elasticsearch-plugin install ingest-user-agent</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启停模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./filebeat modules enable nginx</span><br><span class="line">./filebeat modules list</span><br><span class="line">./filebeat modules disable nginx</span><br></pre></td></tr></table></figure>
+<ul>
+<li>模块配置参数【modules.d/nginx.yml】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- module: nginx</span><br><span class="line">  access:</span><br><span class="line">    enabled: true</span><br><span class="line">    var.paths: [&quot;/var/log/nginx/access.log*&quot;] #设置nginx日志位置</span><br><span class="line">  error:</span><br><span class="line">    enabled: true</span><br><span class="line">    var.paths: [&quot;/var/log/nginx/error.log*&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>filebeat的主配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filebeat.config.modules:</span><br><span class="line">  reload.enabled: true                 # 运行动态加载配置</span><br><span class="line">  path: $&#123;path.config&#125;/modules.d/*.yml # 加载的模块位置</span><br></pre></td></tr></table></figure>
+<h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  filebeat [flags]</span><br><span class="line">  filebeat [command]</span><br><span class="line"></span><br><span class="line">命令选项：</span><br><span class="line">export   # 导出配置</span><br><span class="line">modules  # 模块管理</span><br><span class="line">test     # 测试配置</span><br><span class="line">setup    # 在相关环境中进行初始化设置</span><br><span class="line">* --dashboards      在kibana中创建dashboard【kibana可用】</span><br><span class="line">* --machine-learnin 设置机器学习的job配置【机器学习节点可用】</span><br><span class="line">* --pipelines       在es中创建pipeline【es的ingest节点可用】</span><br><span class="line">* --template        在es中设置索引mappings模板</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-c filebeat.yml  # 指定配置文件名称(默认filebeat.yml)，相对于path.config</span><br><span class="line">-d publish       # 指定字符串调试</span><br><span class="line">-e               # filebeat日志记录到标准输出</span><br><span class="line">--path.data      # 数据目录       </span><br><span class="line">--path.home      # 根目录</span><br><span class="line">--path.logs      # 日志目录</span><br><span class="line"></span><br><span class="line">启动范例：</span><br><span class="line">./filebeat -e -c filebeat.yml -d &quot;publish&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/configuring-howto-filebeat.html" target="_blank" rel="noopener">配置选项</a></h1><h2 id="inputs设置"><a href="#inputs设置" class="headerlink" title="inputs设置"></a>inputs设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- type: log                  # 输入数据类型，日志文件-log</span><br><span class="line">  enabled: true              # 开启log类型功能,默认true</span><br><span class="line">  paths:                     # 日志文件路径,使用通配符</span><br><span class="line">  - /usr/local/filebeat-6.5.4/*.log</span><br><span class="line">  exclude_files: [&apos;.gz$&apos;]    # 排除指定的文件</span><br><span class="line">  include_lines: [&quot;^ERR&quot;, &quot;^WARN&quot;] # 只发送包含这些字样的日志【默认包含所有；在exclude_lines之前调用】</span><br><span class="line">  exclude_lines: [&quot;^OK&quot;]     # 不发送包含这些字样的日志</span><br><span class="line">  tags: [&quot;nginx&quot;, &quot;web&quot;]     # 添加标签</span><br><span class="line">  fields:                    # 添加字段，默认添加到子节点fields下</span><br><span class="line">    env: staging</span><br><span class="line">  fields_under_root: true    # 添加字段到根节点下</span><br><span class="line">  ignore_older: &quot;24h&quot;        # 超过 24小时没更新内容的文件不再监听。</span><br><span class="line">  scan_frequency: &quot;10s&quot;      # 每 10秒钟扫描一次目录，更新通配符匹配上的文件列表</span><br><span class="line">  tail_files: false          # 是否从文件末尾开始读取</span><br><span class="line">  harvester_buffer_size: 16384 # 实际读取文件时，每次读取 16384 字节</span><br><span class="line">  backoff: &quot;1s&quot;              # 每 1 秒检测一次文件是否有新的一行内容需要读取</span><br></pre></td></tr></table></figure>
+<h2 id="多行日志-multiline"><a href="#多行日志-multiline" class="headerlink" title="多行日志-multiline"></a><a href="https://blog.csdn.net/UbuntuTouch/article/details/106272704" target="_blank" rel="noopener">多行日志-multiline</a></h2><ul>
+<li>multiline.pattern：指定要匹配的正则表达式模式。</li>
+<li>multiline.negate：定义是否为否定模式，也就是和上面定义的模式相反。 默认为false。</li>
+<li>multiline.match：如何将模式匹配和不匹配的行组合到一个事件中</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>pattern：^b 匹配以b开始的行</th>
+<th>negate</th>
+<th>match</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://img-blog.csdnimg.cn/20200522095441298.png" alt></td>
+<td>false</td>
+<td>after</td>
+<td>模式匹配的连续行追加到不匹配的行之后<br>【1-bb行追加到a行之后，2-bb行追加到c行之后】</td>
+</tr>
+<tr>
+<td><img src="https://img-blog.csdnimg.cn/20200522095832263.png" alt></td>
+<td>false</td>
+<td>before</td>
+<td>模式匹配的连续行添加到下一个不匹配的行之前<br>【1-bb行添加到a行之前，2-bb行追加到c行之前】</td>
+</tr>
+<tr>
+<td><img src="https://img-blog.csdnimg.cn/20200522100310568.png" alt></td>
+<td>true</td>
+<td>after</td>
+<td>模式不匹配的连续行添加到匹配行之后<br>【ac行追加到1-b行之后，de行追加到2-b行之后】</td>
+</tr>
+<tr>
+<td><img src="https://img-blog.csdnimg.cn/20200522100724855.png" alt></td>
+<td>true</td>
+<td>before</td>
+<td>模式不匹配的连续行添加到下一个匹配行之前<br>【ac行添加到1-b行之前，de行添加到2-b行之前】</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>multiline.max_lines：单个事件中可以包含的最大行数，默认500</p>
+</li>
+<li><p>multiline.timeout：单个事件的读取超时时间，默认5s</p>
+</li>
+<li><p>multiline.flush_pattern：可以指定单个事件的结束匹配模式，这对于事件以特定标记开始和结束有用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[2015-08-24 11:49:14,389] Start new event</span><br><span class="line">[2015-08-24 11:49:14,395] Content of processing something</span><br><span class="line">[2015-08-24 11:49:14,399] End event</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ‘Start new event’</span><br><span class="line">multiline.negate: true</span><br><span class="line">multiline.match: after</span><br><span class="line">multiline.flush_pattern: ‘End event’</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>​       当看到“Start new event”模式并且以下几行与该模式不匹配时，它们将被追加到与该模式匹配的前一行。<br>​       当看到以“End event”开头的一行时，flush_pattern选项将指示多行事件结束。</p>
+<ul>
+<li>范例1</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NullPointerException</span><br><span class="line">        at com.example.myproject.Book.getTitle(Book.java:16)</span><br><span class="line">        at com.example.myproject.Author.getBookTitles(Author.java:25)</span><br><span class="line">        at com.example.myproject.Bootstrap.main(Bootstrap.java:14)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ^[[:space:]] # 匹配空格开始的行</span><br><span class="line">multiline.negate: false         # 连续多行与匹配模式相同</span><br><span class="line">multiline.match: after          # 将匹配的行添加到不匹配的行之后</span><br></pre></td></tr></table></figure>
+<ul>
+<li>范例2</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[beat-logstash-some-name-832-2015.11.28] IndexNotFoundException[no such index]</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver$WildcardExpressionResolver.resolve(IndexNameExpressionResolver.java:566)</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:133)</span><br><span class="line">    at org.elasticsearch.cluster.metadata.IndexNameExpressionResolver.concreteIndices(IndexNameExpressionResolver.java:77)</span><br><span class="line">    at org.elasticsearch.action.admin.indices.delete.TransportDeleteIndexAction.checkBlock(TransportDeleteIndexAction.java:75)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: ^\[   # 匹配以[开始的行</span><br><span class="line">multiline.negate: true   # 连续多行与匹配模式相反</span><br><span class="line">multiline.match: after   # 将不匹配的行放在匹配行之后</span><br></pre></td></tr></table></figure>
+<ul>
+<li>范例3</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalStateException: A book has a null property</span><br><span class="line">       at com.example.myproject.Author.getBookIds(Author.java:38)</span><br><span class="line">       at com.example.myproject.Bootstrap.main(Bootstrap.java:14)</span><br><span class="line">Caused by: java.lang.NullPointerException</span><br><span class="line">       at com.example.myproject.Book.getId(Book.java:22)</span><br><span class="line">       at com.example.myproject.Author.getBookIds(Author.java:35)</span><br><span class="line">       ... 1 more</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiline.pattern: &apos;^[[:space:]]+(at|\.&#123;3&#125;)[[:space:]]+\b|^Caused by:&apos; # 匹配2个条件之一，条件如下</span><br><span class="line">multiline.negate: false # 连续多行与匹配模式相同</span><br><span class="line">multiline.match: after  # 将匹配的行放到不匹配的行之后</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以空白开始，接着是 at 或3个点，再一个空白之后接任意字符</p>
+<p>以 Caused by: 开始</p>
+</blockquote>
+<h2 id="内部队列"><a href="#内部队列" class="headerlink" title="内部队列"></a>内部队列</h2><p>Filebeat在发布事件之前使用内部队列存储事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">queue.mem:</span><br><span class="line">  events: 4096          # 队列可以存储的事件数，默认4096</span><br><span class="line">  flush.min_events: 512 # 发布所需的最小事件数。如果将此值设置为0，则输出可以开始发布事件，而无需额外的等待时间。否则，输出必须等待更多事件可用。默认2048</span><br><span class="line">  flush.timeout: 5s    # 发布需要等待的最大等待时间flush.min_events。如果设置为0，事件将立即可供使用。默认1s</span><br></pre></td></tr></table></figure>
+<h2 id="output设置"><a href="#output设置" class="headerlink" title="output设置"></a>output设置</h2><ul>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/elasticsearch-output.html" target="_blank" rel="noopener">Elasticsearch</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">output.elasticsearch:</span><br><span class="line">  hosts: [&quot;https://localhost:9200&quot;]</span><br><span class="line">  index: &quot;filebeat-%&#123;[beat.version]&#125;-%&#123;+yyyy.MM.dd&#125;&quot;</span><br><span class="line">  username: &quot;filebeat_internal&quot;</span><br><span class="line">  password: &quot;YOUR_PASSWORD&quot;</span><br><span class="line">  ssl.certificate_authorities: [&quot;/etc/pki/root/ca.pem&quot;]</span><br><span class="line">  ssl.certificate: &quot;/etc/pki/client/cert.pem&quot;</span><br><span class="line">  ssl.key: &quot;/etc/pki/client/cert.key&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/logstash-output.html" target="_blank" rel="noopener">Logstash</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output.logstash:</span><br><span class="line">  hosts: [&quot;127.0.0.1:5044&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/kafka-output.html" target="_blank" rel="noopener">Kafka</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.kafka:</span><br><span class="line">  hosts: [&quot;kafka1:9092&quot;, &quot;kafka2:9092&quot;, &quot;kafka3:9092&quot;]</span><br><span class="line">  topic: &apos;%&#123;[fields.log_topic]&#125;&apos;  # 读取inputs中设置的自定义字段fields.log_topic的值</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/redis-output.html" target="_blank" rel="noopener">Redis</a></p>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/file-output.html" target="_blank" rel="noopener">File</a></p>
+</li>
+<li><p><a href="https://www.elastic.co/guide/en/beats/filebeat/6.5/console-output.html" target="_blank" rel="noopener">Console</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.console:</span><br><span class="line">  pretty: true</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="负载均衡output主机"><a href="#负载均衡output主机" class="headerlink" title="负载均衡output主机"></a>负载均衡output主机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.logstash:</span><br><span class="line">  hosts: [&quot;localhost:5044&quot;, &quot;localhost:5045&quot;]</span><br><span class="line">  loadbalance: true</span><br></pre></td></tr></table></figure>
+<h2 id="elasticsearch模板"><a href="#elasticsearch模板" class="headerlink" title="elasticsearch模板"></a>elasticsearch模板</h2><p>filebeat可以在elasticsearch中创建索引，相关设置：<strong>setup.template.*</strong></p>
+<p>开启方式：</p>
+<ul>
+<li>命令行方式：filebeat setup –template</li>
+<li>配置文件方式：setup.template.enabled: true【默认true】</li>
+</ul>
+<p>其他模板设置选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 1  </span><br><span class="line">  index.number_of_replicas: 1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>根据模板创建的默认索引名称(按天分隔)：”filebeat-%{[beat.version]}-*”</p>
+</blockquote>
+<h2 id="kibana仪表盘"><a href="#kibana仪表盘" class="headerlink" title="kibana仪表盘"></a>kibana仪表盘</h2><p>filebeat(beats系列)可以在kibana中创建dashboard，相关设置：<strong>setup.dashboards-*</strong>、<strong>setup.kibana</strong></p>
+<p>开启方式：</p>
+<ul>
+<li>命令行方式：filebeat setup –dashboards</li>
+<li>配置文件方式：setup.dashboards.enabled: false【默认false】</li>
+</ul>
+<p>其他模板设置选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setup.dashboards.enabled: true              # filebeat启动，在kibana创建filebeat类的dashboard</span><br><span class="line">setup.kibana:                               # kibana连接地址</span><br><span class="line">  host: &quot;localhost:8601&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>filebeat在kibana中创建的dashboard默认引用的索引名称是：filebeat-*</p>
+</blockquote>
+<h2 id="filebeat日志"><a href="#filebeat日志" class="headerlink" title="filebeat日志"></a>filebeat日志</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">logging.level: info</span><br><span class="line">logging.to_files: true</span><br><span class="line">logging.files:</span><br><span class="line">  path: /var/log/filebeat</span><br><span class="line">  name: filebeat</span><br><span class="line">  keepfiles: 7</span><br><span class="line">  permissions: 0644</span><br></pre></td></tr></table></figure>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
+<li>系统日志</li>
+<li>nginx访问/错误日志</li>
+<li>java、tomcat日志</li>
+</ul>
+<h2 id="配置范例"><a href="#配置范例" class="headerlink" title="配置范例"></a>配置范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- type: log</span><br><span class="line">  enabled: true</span><br><span class="line">  paths:</span><br><span class="line">    - /var/log/messages</span><br><span class="line">  fields:</span><br><span class="line">    type: syslog</span><br><span class="line">  fields_under_root: true</span><br><span class="line">- type: log</span><br><span class="line">  enabled: true</span><br><span class="line">  paths:</span><br><span class="line">  - /var/log/nginx/access.log*</span><br><span class="line">  fields:</span><br><span class="line">    type: nginx-access</span><br><span class="line">  fields_under_root: true</span><br><span class="line">- type: log</span><br><span class="line">  enabled: true</span><br><span class="line">  paths:</span><br><span class="line">  - /var/log/nginx/error.log*</span><br><span class="line">  fields:</span><br><span class="line">    type: nginx-error</span><br><span class="line">  fields_under_root: true</span><br><span class="line">- type: log</span><br><span class="line">  enabled: true</span><br><span class="line">  paths:</span><br><span class="line">  - /var/log/nginx/tomcat.log*</span><br><span class="line">  fields:</span><br><span class="line">    type: tomcat</span><br><span class="line">  fields_under_root: true</span><br><span class="line">  multiline.pattern: &apos;^[[:space:]]+(at|\.&#123;3&#125;)[[:space:]]+\b|^Caused by:&apos;</span><br><span class="line">  multiline.negate: false</span><br><span class="line">  multiline.match: after</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/filebeat/" rel="tag"># filebeat</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/22/容器化/服务网格-Istio/" rel="next" title="服务网格-Istio">
+                <i class="fa fa-chevron-left"></i> 服务网格-Istio
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/" rel="prev" title="redis主从高可用-sentinel">
+                redis主从高可用-sentinel <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">270</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工作原理"><span class="nav-number">1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块"><span class="nav-number">2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行工具"><span class="nav-number">3.</span> <span class="nav-text">命令行工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置选项"><span class="nav-number">4.</span> <span class="nav-text">配置选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#inputs设置"><span class="nav-number">4.1.</span> <span class="nav-text">inputs设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多行日志-multiline"><span class="nav-number">4.2.</span> <span class="nav-text">多行日志-multiline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部队列"><span class="nav-number">4.3.</span> <span class="nav-text">内部队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#output设置"><span class="nav-number">4.4.</span> <span class="nav-text">output设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡output主机"><span class="nav-number">4.4.1.</span> <span class="nav-text">负载均衡output主机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch模板"><span class="nav-number">4.5.</span> <span class="nav-text">elasticsearch模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kibana仪表盘"><span class="nav-number">4.6.</span> <span class="nav-text">kibana仪表盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filebeat日志"><span class="nav-number">4.7.</span> <span class="nav-text">filebeat日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">5.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">5.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置范例"><span class="nav-number">5.2.</span> <span class="nav-text">配置范例</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+</body>
+</html>

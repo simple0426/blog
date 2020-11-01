@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ansible.cfg,ssh,inventory,hosts,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet 软件特性 基于当前的架构理解，使用简单的语言描述操作过程（playbook编写） 操作的可重用性及操作过程的可追溯性（playbook的可读性、roles的可重用性） 任何操作都是基于状态的描述（模块的幂等特性），只需保证目标对象最终要达到的状态，而不管目标对象的当前状态 基于openssh进行安全通信，无">
+<meta name="keywords" content="ansible.cfg,ssh,inventory,hosts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ansible之基础学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/05/17/CICD/ansible/ansible之基础学习/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="简介ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet 软件特性 基于当前的架构理解，使用简单的语言描述操作过程（playbook编写） 操作的可重用性及操作过程的可追溯性（playbook的可读性、roles的可重用性） 任何操作都是基于状态的描述（模块的幂等特性），只需保证目标对象最终要达到的状态，而不管目标对象的当前状态 基于openssh进行安全通信，无">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.421Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ansible之基础学习">
+<meta name="twitter:description" content="简介ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet 软件特性 基于当前的架构理解，使用简单的语言描述操作过程（playbook编写） 操作的可重用性及操作过程的可追溯性（playbook的可读性、roles的可重用性） 任何操作都是基于状态的描述（模块的幂等特性），只需保证目标对象最终要达到的状态，而不管目标对象的当前状态 基于openssh进行安全通信，无">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/05/17/CICD/ansible/ansible之基础学习/">
+
+
+
+
+
+  <title>ansible之基础学习 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/17/CICD/ansible/ansible之基础学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ansible之基础学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T14:30:41+08:00">
+                2019-05-17
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet</p>
+<h2 id="软件特性"><a href="#软件特性" class="headerlink" title="软件特性"></a>软件特性</h2><ul>
+<li>基于当前的架构理解，使用简单的语言描述操作过程（playbook编写）</li>
+<li>操作的可重用性及操作过程的可追溯性（playbook的可读性、roles的可重用性）</li>
+<li>任何操作都是基于状态的描述（模块的幂等特性），只需保证目标对象最终要达到的状态，而不管目标对象的当前状态</li>
+<li>基于openssh进行安全通信，无需额外的端口，无需客户端</li>
+<li>管理各种基础设置，比如裸机(cobbler)、操作系统、虚拟化(vagrant)、容器(docker)、云、网络、存储等</li>
+<li>内置功能丰富的模块，同时拥有强大的社区（galaxy）</li>
+<li>管理软件迭代过程中使用的多个阶段环境（比如dev/test/stage/prod，通过多inventory实现）</li>
+<li>可以实现服务的滚动更新（percentage）和不停机更新</li>
+</ul>
+<h2 id="实现操作"><a href="#实现操作" class="headerlink" title="实现操作"></a>实现操作</h2><ul>
+<li>安装软件【yum、apt】</li>
+<li>服务启停控制【service】</li>
+<li>文件修改【lineinfile】</li>
+<li>文件上传与下载【copy、fetch】</li>
+<li>执行命令【command】</li>
+</ul>
+<h1 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h1><h2 id="安装要求"><a href="#安装要求" class="headerlink" title="安装要求"></a>安装要求</h2><h3 id="控制端"><a href="#控制端" class="headerlink" title="控制端"></a>控制端</h3><ul>
+<li>当前版本(2.8)要求控制端的python版本<ul>
+<li>python2（2.7）</li>
+<li>python3（3.5以上）</li>
+</ul>
+</li>
+<li>控制端不支持在windows上安装</li>
+<li>可以在RHEL/CentOS/Debian/Ubuntu/macOS/BSDs等linux主机安装</li>
+</ul>
+<h3 id="被控端"><a href="#被控端" class="headerlink" title="被控端"></a>被控端</h3><ul>
+<li>python版本要求<ul>
+<li>python2（2.6或以上）</li>
+<li>python3（3.5或以上）</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装命令"><a href="#安装命令" class="headerlink" title="安装命令"></a>安装命令</h2><ul>
+<li>yum：yum install ansible</li>
+<li><p>apt：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install software-properties-common</span><br><span class="line">sudo apt-add-repository --yes --update ppa:ansible/ansible</span><br><span class="line">sudo apt install ansible</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>pip：pip install ansible</p>
+</li>
+<li><a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html" target="_blank" rel="noopener">其他安装参考</a></li>
+</ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>假如远端主机开启selinux，如果需要使用copy/file/template模块，则需要先安装libselinux-python软件</li>
+<li>被控端，ansible默认使用的python解释器位置为/usr/bin/python，可以使用ansible_python_interpreter设置</li>
+<li>ansible有个原生模块“raw”不需要使用python解释器，可以使用它初始化安装python：ansible myhost –become -m raw -a “yum install -y python2”</li>
+<li>pip或源码安装的ansilbe默认没有配置文件<a href="https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg" target="_blank" rel="noopener">ansible.cfg</a></li>
+</ul>
+<h1 id="设置ansible"><a href="#设置ansible" class="headerlink" title="设置ansible"></a>设置ansible</h1><blockquote>
+<p>主要为设置ansible.cfg文件</p>
+</blockquote>
+<ul>
+<li>配置文件ansible.cfg中定义了ansible执行时的参数配置</li>
+<li>可以使用环境变量或命令行参数进行部分选项设置，多种选项的优先级是：命令行》环境变量》配置文件</li>
+<li>配置文件默认加载顺序：<ul>
+<li>环境变量ANSIBLE_CONFIG</li>
+<li>当前目录下的ansible.cfg【但是当前目录权限为其他人可写时，则拒绝加载】</li>
+<li>用户主目录下的.ansible.cfg</li>
+<li>系统目录/etc/ansible/ansible.cfg</li>
+</ul>
+</li>
+</ul>
+<h2 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a><a href="https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings" target="_blank" rel="noopener">常用参数</a></h2><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>inventory</td>
+<td>资源清单</td>
+</tr>
+<tr>
+<td>library</td>
+<td>模块位置【冒号分隔多个位置】</td>
+</tr>
+<tr>
+<td>forks</td>
+<td>几个进程在工作【默认5个】</td>
+</tr>
+<tr>
+<td>host_key_checking</td>
+<td>如果远端主机第一次被链接是否执行秘钥检查【设置为False】</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>ssh连接超时</td>
+</tr>
+<tr>
+<td>log_path</td>
+<td>日志路径</td>
+</tr>
+<tr>
+<td>sudo_user</td>
+<td>sudo用户</td>
+</tr>
+<tr>
+<td>remote_port</td>
+<td>ssh连接端口</td>
+</tr>
+<tr>
+<td>ssh_args</td>
+<td>额外的ssh连接参数【可用于跳板机配置】</td>
+</tr>
+<tr>
+<td>scp_if_ssh</td>
+<td>如果有跳板机，则需设置为True</td>
+</tr>
+<tr>
+<td>retry_files_enabled</td>
+<td>关闭因playbook无法执行而产生的retry文件</td>
+</tr>
+<tr>
+<td>deprecation_warnings = False</td>
+<td>关闭警告信息</td>
+</tr>
+<tr>
+<td>stdout_callback</td>
+<td>定义屏幕输出格式为yaml(json格式输出遇到换行时不直观)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[defaults]</span><br><span class="line">inventory      = ./hosts</span><br><span class="line">remote_port    = 22</span><br><span class="line">host_key_checking = False</span><br><span class="line">stdout_callback = yaml</span><br><span class="line">callback_whitelist = timer</span><br><span class="line">command_warnings = False</span><br><span class="line">fact_caching = jsonfile</span><br><span class="line">fact_caching_connection=/tmp</span><br><span class="line">fact_caching_timeout = 86400</span><br><span class="line">retry_files_enabled = False</span><br></pre></td></tr></table></figure>
+<h1 id="设置inventory"><a href="#设置inventory" class="headerlink" title="设置inventory"></a>设置inventory</h1><p>inventory即执行任务的主机资源列表，默认指的是/etc/ansible/hosts文件</p>
+<h2 id="引用inventory"><a href="#引用inventory" class="headerlink" title="引用inventory"></a>引用inventory</h2><ul>
+<li>默认使用/etc/ansible/hosts或ansible.cfg中定义的hosts</li>
+<li><a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html" target="_blank" rel="noopener">动态的获取主机资源</a>，比如<ul>
+<li>使用脚本，动态获取主机资源</li>
+<li>通过插件，从云上获取主机资源</li>
+</ul>
+</li>
+<li>主机资源文件可以是多种格式的，默认是ini，也可以是yaml<ul>
+<li>查看ansible支持的主机资源类型：ansible-doc -t inventory –list</li>
+</ul>
+</li>
+<li>多种主机资源聚合时<ul>
+<li>可以在命令行中多次使用-i参数指定</li>
+<li>也可以建立一个目录，在目录下定义多个主机资源文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="定义inventory"><a href="#定义inventory" class="headerlink" title="定义inventory"></a>定义inventory</h2><ul>
+<li>可以在inventory中定义主机变量和组变量【一般只设置<a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters" target="_blank" rel="noopener">连接类型的内置变量</a>，常用参数如下：】<ul>
+<li>ansible_user：ansible连接远程主机使用的ssh用户</li>
+<li>ansible_host：远程连接主机</li>
+<li>ansible_port：远程连接使用的端口</li>
+<li>ansible_password：远程连接面</li>
+<li>ansible_connecttion：定义hosts的连接方式【值为local时为执行本地操作】</li>
+</ul>
+</li>
+<li>一个主机可以被包含在多个组中，一个组也可以包含另一个组</li>
+<li>当主机名或ip中包含连续的字母或数字时，可以使用正则形式，比如<ul>
+<li>www[a-f].example.com</li>
+<li>192.168.0.1[0-9]</li>
+</ul>
+</li>
+<li>默认的组是all【包含所有主机】和ungrouped【包含未分组的主机】</li>
+<li>当控制端与远程主机没有使用标准的22端口通信时，<ul>
+<li>如果使用的是paramiko进行连接【比如centos6/RHEL6】,则不会读取ssh配置文件中的端口信息</li>
+<li>当使用openssh进行连接时，则会使用ssh配置文件中的端口信息</li>
+<li>所以当使用非标准端口进行通信时，应该在inventory中明确指明使用的端口，例如：<ul>
+<li>后缀形式：<code>badwolf.example.com:5309</code></li>
+<li>变量形式：<code>jumper ansible_port=5555 ansible_host=192.0.2.50</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">crm ansible_user=&apos;root&apos; ansible_ssh_pass=&apos;123456&apos;     定义主机和主机变量</span><br><span class="line">[docker]      定义docker组</span><br><span class="line">192.168.99.10[2:9]</span><br><span class="line">[docker:vars]      定义docker组变量</span><br><span class="line">ansible_ssh_pass=&quot;123&quot;</span><br><span class="line">[newserver:children]      newserver组包含webservers组</span><br><span class="line">webservers</span><br></pre></td></tr></table></figure>
+<h1 id="远程连接设置"><a href="#远程连接设置" class="headerlink" title="远程连接设置"></a>远程连接设置</h1><ul>
+<li>ansible默认使用原生openssh用于远程连接，并将开启ControlPersist 功能  </li>
+<li>由于RHEL6和centos6的openssh版本过老无法使用ControlPersist 功能，在这些系统上将会使用paramiko来替代openssh用于远程连接  </li>
+<li>有时会出现个别设备不支持sftp，这时候就需要使用scp来替代【比如使用跳板机】  </li>
+</ul>
+<h2 id="密码方式登录"><a href="#密码方式登录" class="headerlink" title="密码方式登录"></a>密码方式登录</h2><p>在inventory文件中设置ansible_user和ansible_password参数</p>
+<h2 id="秘钥方式登录"><a href="#秘钥方式登录" class="headerlink" title="秘钥方式登录"></a>秘钥方式登录</h2><blockquote>
+<p>先使用密码方式，建立秘钥后取消密码选项</p>
+</blockquote>
+<ul>
+<li>产生秘钥：ssh-keygen -t rsa -P “” -f ./bastion</li>
+<li>传送公钥：ansible ops -m copy -a “src=keyfiles/bastion.pub dest=~/.ssh/authorized_keys mode=0600”</li>
+</ul>
+<h1 id="跳板机设置"><a href="#跳板机设置" class="headerlink" title="跳板机设置"></a>跳板机设置</h1><h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><p>ansible可以通过跳板机管理远程内网服务器</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><ul>
+<li>通过ssh的代理转发功能实现本地使用远程主机内网ip登录远程服务器，</li>
+<li>本案例中使用证书登录，即ansible主机与跳板机(bastion)、跳板机与目标服务器(internal)之间均使用证书登录</li>
+</ul>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="产生秘钥"><a href="#产生秘钥" class="headerlink" title="产生秘钥"></a>产生秘钥</h3><ul>
+<li>ssh-keygen -t rsa -P “” -f ./bastion</li>
+<li>ssh-keygen -t rsa -P “” -f ./internal</li>
+</ul>
+<h3 id="传送公钥"><a href="#传送公钥" class="headerlink" title="传送公钥"></a>传送公钥</h3><blockquote>
+<p>公钥放置在某用户主目录下，则以后必须使用相应的用户登录，此例中<br>ansible主机使用muker登录跳板机，跳板机使用muker登录目标主机</p>
+</blockquote>
+<ul>
+<li>ansible ops -m copy -a “src=keyfiles/bastion.pub dest=~/.ssh/authorized_keys mode=0600”</li>
+<li>ansible 1.1.1.1【下例中172.16.0.205主机的公网ip】 -m copy -a “src=keyfiles/internal.pub dest=~/.ssh/authorized_keys mode=0600”</li>
+</ul>
+<h3 id="设置sshd-可选"><a href="#设置sshd-可选" class="headerlink" title="设置sshd(可选)"></a>设置sshd(可选)</h3><blockquote>
+<p>设置ssh服务只允许证书登录</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># /etc/ssh/sshd_conf</span><br><span class="line">PermitRootLogin no</span><br><span class="line">PasswordAuthentication no</span><br></pre></td></tr></table></figure>
+<h3 id="ssh配置"><a href="#ssh配置" class="headerlink" title="ssh配置"></a>ssh配置</h3><ul>
+<li>ssh发起连接时，默认使用~/.ssh/config配置，可使用-F参数强制使用指定配置文件</li>
+<li>本地私钥权限必须为0600</li>
+<li>config文件配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Host ops</span><br><span class="line">  User muker #连接跳板机使用的用户名</span><br><span class="line">  HostName 47.99.78.151 #跳板机ip</span><br><span class="line">  ProxyCommand none</span><br><span class="line">  BatchMode yes #跳板机模式</span><br><span class="line">  IdentityFile ~/keyfiles/bastion #本地连跳板机时使用的私钥</span><br><span class="line">  StrictHostKeyChecking no #首次登录时禁止秘钥检查</span><br><span class="line">Host 172.16.0.*  # 目标主机网络</span><br><span class="line">  ServerAliveInterval 60 </span><br><span class="line">  TCPKeepAlive        yes</span><br><span class="line">  ProxyCommand ssh -qaY -i ~/keyfiles/bastion muker@ops &apos;nc -w 14400 %h %p&apos; # ssh代理转发</span><br><span class="line">  IdentityFile    ~/keyfiles/internal #跳板机使用私钥internal连接目标主机</span><br><span class="line">  StrictHostKeyChecking no</span><br></pre></td></tr></table></figure>
+<h3 id="ssh登录测试"><a href="#ssh登录测试" class="headerlink" title="ssh登录测试"></a>ssh登录测试</h3><ul>
+<li>登录跳板机： ssh -F keyfiles/config ops</li>
+<li>登录目标内网主机：ssh -F keyfiles/config <a href="mailto:muker@172.16.0.205" target="_blank" rel="noopener">muker@172.16.0.205</a></li>
+</ul>
+<h3 id="ansible配置"><a href="#ansible配置" class="headerlink" title="ansible配置"></a>ansible配置</h3><ul>
+<li><p>ansible.cfg</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ssh_connection]</span><br><span class="line">ssh_args = -C -o ControlMaster=auto -F keyfiles/config</span><br><span class="line">scp_if_ssh = True #文件复制操作强制使用scp模式</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>hosts</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ops ansible_user=&apos;muker&apos;</span><br><span class="line">172.16.0.205 ansible_user=&apos;muker&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="ansible测试"><a href="#ansible测试" class="headerlink" title="ansible测试"></a>ansible测试</h3><blockquote>
+<p>ping测试</p>
+</blockquote>
+<ul>
+<li>ansible ops -m ping</li>
+<li>ansible 172.16.0.205 -m ping</li>
+</ul>
+<h1 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h1><ul>
+<li>ping：测试主机连通性</li>
+<li>setup：用于获取操作系统信息<ul>
+<li>ansible 127.0.0.1 -m setup -a “filter=ansible_os*”</li>
+</ul>
+</li>
+<li>command/shell：执行命令【command为命令行下默认模块】<ul>
+<li>creates：当文件存在时，module所在task不执行【可用于实现幂等性】</li>
+</ul>
+</li>
+<li><p>template：模板系统，可以复制包含变量名的文件</p>
+<ul>
+<li>validate：检查由实参渲染的模板文件语法是否正常，如nginx配置文件、sudo文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- name: write the nginx config file</span><br><span class="line">  template: src=nginx2.conf dest=/etc/nginx/nginx.conf validate=&apos;nginx -t -c %s&apos;</span><br><span class="line">  notify:</span><br><span class="line">  - restart nginx</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>file：创建、删除文件或目录</p>
+<ul>
+<li>state：directory、absent</li>
+</ul>
+</li>
+<li>yum/apt：软件包管理</li>
+<li>service：服务管理</li>
+<li>user：用户管理</li>
+<li>git：git操作</li>
+<li>copy：复制文件和目录<ul>
+<li>缺点：当复制的目录有多级或目录内的文件数据过多时，传输效率异常低下</li>
+<li>优点：可以备份（backup），可以检测配置文件的有效性（validate）</li>
+</ul>
+</li>
+<li>archive：打包文件和目录<ul>
+<li>缺点：不会复制空目录或空文件【比如python包文件<code>__init__.py</code>即可以是空文件】</li>
+</ul>
+</li>
+<li>synchronize：使用rsync模块同步文件和目录<ul>
+<li>优点：传输效率高</li>
+<li>缺点：<ul>
+<li>必须使用ansible.cfg中的ssh配置选项</li>
+<li>不能备份、不能检测配置文件有效性</li>
+<li>不能解析hosts文件中的变量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>haproxy：控制haproxy服务</p>
+<ul>
+<li>haproxy版本：1.5【增加后端服务器drain状态（软下线）】</li>
+<li>haproxy依赖：安装socat，并在haproxy.cnf中配置：stats socket /var/run/haproxy.sock mode 600 level admin<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 此配置主要将后端的某台服务器软下线【不接受新连接，已经建立的连接正常处理并关闭】</span><br><span class="line">- name: disable &#123;&#123; project &#125;&#125; in haproxy</span><br><span class="line">  haproxy: state=drain backend=&apos;&#123;&#123; project &#125;&#125;&apos; host=&apos;&#123;&#123; inventory_hostname &#125;&#125;&apos; socket=/var/run/haproxy.sock </span><br><span class="line"># 上线某个后端的某台主机并等待，保障此后端主机可用</span><br><span class="line">- name: enable &#123;&#123; project &#125;&#125; in haproxy</span><br><span class="line">  haproxy: state=enabled backend=&apos;&#123;&#123; project &#125;&#125;&apos; host=&apos;&#123;&#123; inventory_hostname &#125;&#125;&apos; socket=/var/run/haproxy.sock wait=yes</span><br><span class="line">  delegate_to: &apos;&#123;&#123; haproxy &#125;&#125;&apos;</span><br><span class="line">  become: yes</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>fetch：从远程主机拉取文件到本地</p>
+<ul>
+<li>dest：保存为本地文件或保存在本地目录【必须以斜线结尾】</li>
+<li>flat：设置为yes时，和copy一样的行为；当为no时，则保存在本地的dest/&lt;remote_hostname&gt;/&lt;absolute_path&gt;下</li>
+<li>src：远程主机上的文件</li>
+<li>validate_checksum：是否在传输完成后进行校验</li>
+<li>范例：ansible test1 -m fetch -a “src=~/vendor/redis-4.0.14.tar.gz dest=files/ flat=yes”</li>
+</ul>
+</li>
+<li>blockinfile：插入、更新、删除多行文本内容<ul>
+<li>group/owner/mode：属主属组权限等</li>
+<li>backup：备份文件</li>
+<li>block：在标记处将要插入的文本；如果选项缺失或是空字符串，则和state=present一样都是删除内容</li>
+<li>path：文件路径</li>
+<li>create：文件不存在则新创建</li>
+<li>validate：文件语法检查</li>
+<li>state：present为添加或更新，absent为删除</li>
+<li>marker：替换内容的前后注释信息，默认：”# {mark} ANSIBLE MANAGED BLOCK”</li>
+<li>insertafter：在指定标记后插入内容<ul>
+<li>‘EOF’表示文件末尾</li>
+<li>regex表示一般正则表达式，如果匹配不到则使用EOF</li>
+</ul>
+</li>
+<li>insertbefore：在指定标记钱插入内容<ul>
+<li>‘BOF’表示文件开始</li>
+<li>regex表示一般正则表达式，如果匹配不到则使用EOF</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 修改mavne仓库为阿里云</span><br><span class="line">- name: add aliyun repo</span><br><span class="line">  blockinfile:</span><br><span class="line">    path: /usr/local/apache-maven-3.6.0/conf/settings.xml</span><br><span class="line">    marker: &quot;&lt;!-- &#123;mark&#125; ANSIBLE MANAGED BLOCK --&gt;&quot;</span><br><span class="line">    backup: yes</span><br><span class="line">    insertafter: &quot;&lt;mirrors&gt;&quot;</span><br><span class="line">    block: |</span><br><span class="line">      &lt;mirror&gt;</span><br><span class="line">         &lt;id&gt;nexus-aliyun&lt;/id&gt;</span><br><span class="line">         &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">         &lt;name&gt;Nexus aliyun&lt;/name&gt;</span><br><span class="line">         &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;</span><br><span class="line">      &lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ansible-cfg/" rel="tag"># ansible.cfg</a>
+          
+            <a href="/tags/ssh/" rel="tag"># ssh</a>
+          
+            <a href="/tags/inventory/" rel="tag"># inventory</a>
+          
+            <a href="/tags/hosts/" rel="tag"># hosts</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/15/web服务管理/web服务/angular运行环境/" rel="next" title="angular运行环境">
+                <i class="fa fa-chevron-left"></i> angular运行环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/25/CICD/ansible/ansible之playbook学习/" rel="prev" title="ansible之playbook学习">
+                ansible之playbook学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">270</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件特性"><span class="nav-number">1.1.</span> <span class="nav-text">软件特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现操作"><span class="nav-number">1.2.</span> <span class="nav-text">实现操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软件安装"><span class="nav-number">2.</span> <span class="nav-text">软件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装要求"><span class="nav-number">2.1.</span> <span class="nav-text">安装要求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#控制端"><span class="nav-number">2.1.1.</span> <span class="nav-text">控制端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#被控端"><span class="nav-number">2.1.2.</span> <span class="nav-text">被控端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装命令"><span class="nav-number">2.2.</span> <span class="nav-text">安装命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">2.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置ansible"><span class="nav-number">3.</span> <span class="nav-text">设置ansible</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用参数"><span class="nav-number">3.1.</span> <span class="nav-text">常用参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">3.2.</span> <span class="nav-text">范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置inventory"><span class="nav-number">4.</span> <span class="nav-text">设置inventory</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引用inventory"><span class="nav-number">4.1.</span> <span class="nav-text">引用inventory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义inventory"><span class="nav-number">4.2.</span> <span class="nav-text">定义inventory</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#远程连接设置"><span class="nav-number">5.</span> <span class="nav-text">远程连接设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#密码方式登录"><span class="nav-number">5.1.</span> <span class="nav-text">密码方式登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#秘钥方式登录"><span class="nav-number">5.2.</span> <span class="nav-text">秘钥方式登录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#跳板机设置"><span class="nav-number">6.</span> <span class="nav-text">跳板机设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现目标"><span class="nav-number">6.1.</span> <span class="nav-text">实现目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-number">6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作步骤"><span class="nav-number">6.3.</span> <span class="nav-text">操作步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#产生秘钥"><span class="nav-number">6.3.1.</span> <span class="nav-text">产生秘钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传送公钥"><span class="nav-number">6.3.2.</span> <span class="nav-text">传送公钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置sshd-可选"><span class="nav-number">6.3.3.</span> <span class="nav-text">设置sshd(可选)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh配置"><span class="nav-number">6.3.4.</span> <span class="nav-text">ssh配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh登录测试"><span class="nav-number">6.3.5.</span> <span class="nav-text">ssh登录测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible配置"><span class="nav-number">6.3.6.</span> <span class="nav-text">ansible配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible测试"><span class="nav-number">6.3.7.</span> <span class="nav-text">ansible测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用模块"><span class="nav-number">7.</span> <span class="nav-text">常用模块</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+</body>
+</html>

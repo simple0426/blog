@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="playbook,include,多环境,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="playbook简介playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：  module：实现功能的基本组成单元，类似程序代码 它应该是幂等效果，即多次执行和一次执行具有同样的效果   task：执行module，用以实现特定功能，类似运行代码后的进程 role：是由task、handler、var等组成以实现特定功能，它还可能包含模块、插件等其他功能">
+<meta name="keywords" content="playbook,include,多环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ansible之playbook学习">
+<meta property="og:url" content="http://blog.unlazy.cn/2019/05/25/CICD/ansible/ansible之playbook学习/index.html">
+<meta property="og:site_name" content="运维自动化之路">
+<meta property="og:description" content="playbook简介playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：  module：实现功能的基本组成单元，类似程序代码 它应该是幂等效果，即多次执行和一次执行具有同样的效果   task：执行module，用以实现特定功能，类似运行代码后的进程 role：是由task、handler、var等组成以实现特定功能，它还可能包含模块、插件等其他功能">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T04:43:03.418Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ansible之playbook学习">
+<meta name="twitter:description" content="playbook简介playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：  module：实现功能的基本组成单元，类似程序代码 它应该是幂等效果，即多次执行和一次执行具有同样的效果   task：执行module，用以实现特定功能，类似运行代码后的进程 role：是由task、handler、var等组成以实现特定功能，它还可能包含模块、插件等其他功能">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.unlazy.cn/2019/05/25/CICD/ansible/ansible之playbook学习/">
+
+
+
+
+
+  <title>ansible之playbook学习 | 运维自动化之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">运维自动化之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">在进步的道路上，只有起点没有终点。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-repo">
+          <a href="/repo/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            资源库
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/25/CICD/ansible/ansible之playbook学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ansible之playbook学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-25T22:33:05+08:00">
+                2019-05-25
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
+                2020-01-18
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="playbook简介"><a href="#playbook简介" class="headerlink" title="playbook简介"></a>playbook简介</h1><p>playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：</p>
+<ul>
+<li>module：实现功能的基本组成单元，类似程序代码<ul>
+<li>它应该是幂等效果，即多次执行和一次执行具有同样的效果</li>
+</ul>
+</li>
+<li>task：执行module，用以实现特定功能，类似运行代码后的进程</li>
+<li>role：是由task、handler、var等组成以实现特定功能，它还可能包含模块、插件等其他功能组件</li>
+<li>play：是将一些主机(inventory)和一些role或task进行映射、绑定，以达到在这些主机上实现特定功能</li>
+<li>playbook：playbook是多个play的集合，以达到在多主机进行多功能的部署</li>
+<li>block：一般用于task的逻辑分组以及在play中进行错误处理</li>
+<li>handlers：事件触发器，当远程系统发生变化时执行的触发器【即特定task】</li>
+</ul>
+<h2 id="playbook功能"><a href="#playbook功能" class="headerlink" title="playbook功能"></a>playbook功能</h2><ul>
+<li>管理配置文件</li>
+<li>远程部署服务</li>
+<li>多层架构下的滚动更新</li>
+<li>将操作委派给其他主机</li>
+<li>在部署等操作过程中和监控系统、负载均衡系统交互</li>
+</ul>
+<h1 id="block范例"><a href="#block范例" class="headerlink" title="block范例"></a>block范例</h1><h2 id="task逻辑分组"><a href="#task逻辑分组" class="headerlink" title="task逻辑分组"></a>task逻辑分组</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">- hosts: 127.0.0.1</span><br><span class="line">  debugger: on_skipped</span><br><span class="line">  tasks:</span><br><span class="line">    - name: display memory and cpu load</span><br><span class="line">      block:</span><br><span class="line">      - name: display memory</span><br><span class="line">        shell: free -m</span><br><span class="line">        register: mem</span><br><span class="line">      - debug: msg=&quot;&#123;&#123; mem.stdout &#125;&#125;&quot;</span><br><span class="line">      - name: display cpu load</span><br><span class="line">        shell: uptime</span><br><span class="line">        register: uptime</span><br><span class="line">      - debug: msg=&quot;&#123;&#123; uptime.stdout &#125;&#125;&quot;</span><br><span class="line">      when: ansible_facts[&apos;distribution&apos;] == &apos;Ubuntu&apos;</span><br><span class="line">      become: yes</span><br><span class="line">    - name: touch file</span><br><span class="line">      command: touch /tmp/test</span><br></pre></td></tr></table></figure>
+<h2 id="play中错误处理"><a href="#play中错误处理" class="headerlink" title="play中错误处理"></a>play中错误处理</h2><p>类似python中的try/expect/finally<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">- hosts: 127.0.0.1</span><br><span class="line">  tasks:</span><br><span class="line">    - name: Handler the error</span><br><span class="line">      block:                          # 标记可能出现异常的区块</span><br><span class="line">        - debug: msg=&apos;I execute normally&apos;</span><br><span class="line">        - name: I force a failure</span><br><span class="line">          command: /bin/false</span><br><span class="line">        - debug: msg=&quot;I never execute&quot;</span><br><span class="line">#      ignore_errors: yes     # ignore与rescue功能互斥</span><br><span class="line">      rescue:                       # 出现异常时的处理</span><br><span class="line">        - debug: msg=&apos;I caught an error&apos;</span><br><span class="line">        - name: &apos;force an error in rescue&apos;</span><br><span class="line">          command: /bin/false</span><br><span class="line">        - debug: msg=&apos;I alse never executes&apos;</span><br><span class="line">      always:                       # 无论是否出现异常都执行的任务</span><br><span class="line">        - name: other tasks</span><br><span class="line">          command: uptime</span><br></pre></td></tr></table></figure></p>
+<h1 id="handlers语法"><a href="#handlers语法" class="headerlink" title="handlers语法"></a>handlers语法</h1><ul>
+<li>不支持在notify和handlers的name中使用变量</li>
+<li>在handers中定义listen选项，既可以作为handler的名称被notify使用，也可以将多个handler分组以便notify使用</li>
+<li>一个触发器仅被执行一次，即使在一个play中声明多次</li>
+<li>在一个play中，多个触发器共同在task列表执行完成后执行</li>
+<li>触发器的运行顺序根据handlers中的定义顺序执行，和notify的使用顺序无关</li>
+<li>pre_tasks/tasks/post_tasks中的触发器在相应部分的末尾被触发</li>
+<li>不能触发位于include中触发器，但可以使用import中包含的触发器</li>
+</ul>
+<h1 id="task语法"><a href="#task语法" class="headerlink" title="task语法"></a>task语法</h1><ul>
+<li>name：task名称，以描述这个task的具体任务；可以在name中使用已经定义过的变量</li>
+<li>action：task定义旧形式<ul>
+<li>task定义新形式：【module：options】</li>
+<li>task定义旧形式：【action：module options】</li>
+</ul>
+</li>
+<li>module：执行的模块；如果模块中的参数过长，可以在末尾留出空格并以缩进形式开启新行</li>
+<li>notify：在任务执行完成后激活触发器的执行；</li>
+<li>run_once：在一组主机中仅执行一次【即仅在一组主机的第一个主机上执行，但是执行结果可以应用到所有主机】</li>
+<li>delegate_facts：True 从主机或主机组之外的其他主机收集facts信息【一般和delegate_to搭配使用】</li>
+<li>delegate_to：在主机或主机组的task中定义其他主机要执行的任务 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">本地操作实现</span><br><span class="line">shell：free -m</span><br><span class="line">run_once：true</span><br><span class="line">delegate_to:localhost</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="play语法"><a href="#play语法" class="headerlink" title="play语法"></a>play语法</h1><ul>
+<li>name：play名称</li>
+<li>hosts：将要执行任务的主机，以逗号分隔多个主机或多个组</li>
+<li>remote_user：远程连接用户<ul>
+<li>remote_user、ansible_user【ansible_ssh_user】、命令行下的-u参数 三者具有相同功能都是用于ssh远程连接时设置用户</li>
+<li>remote_user主要在ansible.cfg、play中设置</li>
+<li>ansible_user主要在inventory中设置</li>
+</ul>
+</li>
+<li>order：设置执行任务的主机顺序<ul>
+<li>默认inventory，即以inventory中定义的顺序执行任务</li>
+</ul>
+</li>
+<li>gather_facts：是否收集操作系统信息</li>
+<li>vars：定义的变量</li>
+<li>tasks：执行任务列表</li>
+<li>pre_tasks/post_tasks：tasks之前或之后执行的任务列表</li>
+<li>roles：角色列表</li>
+<li>handlers：触发器列表；实际也是任务列表，和普通的任务没什么不同</li>
+<li>any_errors_fatal: True：对于一个任务，只有所有主机都执行成功才认为是成功，才能执行下一个任务；否则认定为失败，失败则playbook立即停止运行并退出</li>
+<li>serial：指定在主机组或主机列表中执行任务时，同时有几台主机在执行任务，此功能主要用于灰度发布<ul>
+<li>可以是数字或数字列表</li>
+<li>可以是百分比或百分比列表</li>
+<li>也可以是数字和百分比的混合<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- hosts: 172.17.134.58,172.17.134.63</span><br><span class="line">  gather_facts: no</span><br><span class="line">  vars: &#123; haproxy: 172.17.134.53, end_sec: 10 &#125;</span><br><span class="line">  serial: 1</span><br><span class="line">  tasks:</span><br><span class="line">    - include: files/deploy/double_srv.yml</span><br><span class="line">      tags: [&apos;service_user&apos;]</span><br><span class="line">      vars:  &#123; project: service_user, project_port: 8050, start_sec: 30 &#125;</span><br><span class="line"># 由于serial为1，同时只有一台主机在执行任务，循环2次执行完此任务；</span><br><span class="line"># 若serial为2，则同时会有2台主机执行任务，一次循环即可执行完</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="公共语法"><a href="#公共语法" class="headerlink" title="公共语法"></a>公共语法</h1><p>play或task中都可以使用的语法</p>
+<ul>
+<li>environment：在task和play中设置环境变量<ul>
+<li>environment: PATH: /home//open_api:</li>
+</ul>
+</li>
+<li><p>tags：在play、roles、task级别设置标签，以便只执行特定标签任务</p>
+<ul>
+<li><p>play级别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: deploy java</span><br><span class="line">  hosts: 172.17.12.14</span><br><span class="line">  tags: [&apos;java&apos;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>role级别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">roles:</span><br><span class="line">    - &#123; role: interface_app, tags: [&apos;interface_app&apos;]&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task级别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: debug info</span><br><span class="line">  debug: &quot;msg=&#123;&#123; ansible_env.PATH &#125;&#125;&quot;</span><br><span class="line">  tags: [&apos;path&apos;]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>include：包含另一个play或task</p>
+<ul>
+<li>此功能已被拆分为include_xxx和import_xxx两类模块，未来可能被遗弃：<a href="https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module" target="_blank" rel="noopener">https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module</a></li>
+<li>包含play：与hosts同级的另一个play</li>
+<li><p>包含task：task列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">- hosts: ops</span><br><span class="line">  vars:</span><br><span class="line">    - key: 8</span><br><span class="line">  tasks:</span><br><span class="line">    - name: debug info</span><br><span class="line">      debug: msg=&quot;The &#123;&#123; inventory_hostname &#125;&#125; Value is &#123;&#123; key &#125;&#125;&quot;</span><br><span class="line">    - include: task.yml</span><br><span class="line">- include: play2.yml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>与when搭配使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- include: service_base.yml</span><br><span class="line">  when: change|changed and project == &apos;service_base&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>动态导入与静态导入</p>
+<ul>
+<li>include_x：为动态导入，即在运行时遇到该任务点时才执行导入操作<ul>
+<li>include_role：加载并执行一个role</li>
+<li>include_tasks：动态包含任务列表</li>
+</ul>
+</li>
+<li>import_x：为静态导入，即在ansible整体解析时执行导入操作<ul>
+<li>import_playbook：导入playbook</li>
+<li>import_role：导入role到一个play中</li>
+<li>import_tasks：导入task列表</li>
+</ul>
+</li>
+<li>当使用tags或when时<ul>
+<li>对于import，task选项(options)将会被复制进子task中</li>
+<li>对于include，task选项(options)只会影响自身，不会影响子task</li>
+</ul>
+</li>
+<li>include_x使用限制<ul>
+<li>被包含的tags或tasks不会出现在命令行下–list-tags或–list-tasks中</li>
+<li>主play中的notify不会触发include包含的handler</li>
+<li>不能使用–start-at-task从include包含的task处执行</li>
+</ul>
+</li>
+<li>import_x使用限制<ul>
+<li>循环时只能使用include而不是import</li>
+<li>inventory中的变量不能用于目标文件名或角色名</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>wait_for：在继续其他任务时，等待一个状态成立</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 指定的时间后【delay】，检测某台主机的某个端口是否还有tcp连接【drained】，最多等待300s，在300s内，  </span><br><span class="line"># 如果为drained状态则继续执行其他任务，但是exclude_hosts中包含的主机【列表】与所操作的主机连接排除在外</span><br><span class="line">- name: wait &#123;&#123; project &#125;&#125; port drain</span><br><span class="line">  wait_for: </span><br><span class="line">    host: &apos;&#123;&#123; inventory_hostname &#125;&#125;&apos; </span><br><span class="line">    port: &apos;&#123;&#123; project_port &#125;&#125;&apos; </span><br><span class="line">    state: drained </span><br><span class="line">    timeout: 300 </span><br><span class="line">    delay: &apos;&#123;&#123; end_sec &#125;&#125;&apos; </span><br><span class="line">    exclude_hosts: &apos;&#123;&#123; micro_srv &#125;&#125;&apos;</span><br><span class="line"># 在指定时间后检测端口是否开启</span><br><span class="line">- name: wait &#123;&#123; project &#125;&#125; port up</span><br><span class="line">  wait_for: host=&apos;&#123;&#123; inventory_hostname &#125;&#125;&apos; port=&apos;&#123;&#123; project_port &#125;&#125;&apos; state=started delay=&apos;&#123;&#123; start_sec &#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="roles目录"><a href="#roles目录" class="headerlink" title="roles目录"></a>roles目录</h1><ul>
+<li>roles以包含规定目录名的语法来构成</li>
+<li>每个规定的目录名下必须包含main.yml文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">roles/                          角色主目录</span><br><span class="line">   common/                 common角色目录</span><br><span class="line">     files/                      文件目录</span><br><span class="line">     templates/              模板目录</span><br><span class="line">     tasks/                    任务列表目录</span><br><span class="line">     handlers/                handler目录</span><br><span class="line">     vars/                      不可被inventory定义覆盖的变量目录</span><br><span class="line">     defaults/                 可被inventory定义覆盖的变量目录</span><br><span class="line">     meta/                      meta中定义角色依赖关系</span><br></pre></td></tr></table></figure>
+<h1 id="playbook目录"><a href="#playbook目录" class="headerlink" title="playbook目录"></a>playbook目录</h1><h2 id="通用设置"><a href="#通用设置" class="headerlink" title="通用设置"></a>通用设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">site.yml                      主playbook入口</span><br><span class="line">webservers.yml           特殊任务playbook入口</span><br><span class="line">hosts                         自定义inventory</span><br><span class="line">group_vars/                组变量</span><br><span class="line">   all</span><br><span class="line">   dbservers</span><br><span class="line">host_vars/                  主机变量</span><br><span class="line">   host1</span><br><span class="line">   host2</span><br><span class="line">roles</span><br></pre></td></tr></table></figure>
+<h2 id="多环境设置"><a href="#多环境设置" class="headerlink" title="多环境设置"></a>多环境设置</h2><ul>
+<li>在区分环境时【比如开发、测试、生产、预上线、生产】，只需将jinventory及相关变量放置到同级目录即可</li>
+<li>执行范例：ansible-playbook -i environments/pre/hosts site-pre.yml -t interface_campaign</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"># 主目录结构</span><br><span class="line">├── ansible.cfg</span><br><span class="line">├── environments</span><br><span class="line">│   ├── pre</span><br><span class="line">│   └── prod</span><br><span class="line">├── files</span><br><span class="line">│   ├── conf</span><br><span class="line">│   ├── keyfile</span><br><span class="line">│   ├── pre</span><br><span class="line">│   └── prod</span><br><span class="line">├── readme.md</span><br><span class="line">├── roles</span><br><span class="line">│   ├── common</span><br><span class="line">│   ├── project_java</span><br><span class="line">│   ├── project_python</span><br><span class="line">│   ├── python_web</span><br><span class="line">├── site-pre.yml</span><br><span class="line">├── site-prod.yml</span><br><span class="line">└── tasks</span><br><span class="line">    ├── ChPass_DenyRoot_AddKey.yml</span><br><span class="line">    └── UseRoot_AddUser.yml</span><br><span class="line"></span><br><span class="line"># environment目录结构</span><br><span class="line">├── pre</span><br><span class="line">│   ├── group_vars</span><br><span class="line">│   │   └── all</span><br><span class="line">│   ├── hosts</span><br><span class="line">│   └── host_vars</span><br><span class="line">│       ├── 172.17.134.53</span><br><span class="line">│       └── 172.17.134.63</span><br><span class="line">└── prod</span><br><span class="line">    ├── group_vars</span><br><span class="line">    │   └── all</span><br><span class="line">    ├── hosts</span><br><span class="line">    └── host_vars</span><br><span class="line">        ├── 172.17.12.10</span><br><span class="line">        └── 172.17.8.18</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/playbook/" rel="tag"># playbook</a>
+          
+            <a href="/tags/include/" rel="tag"># include</a>
+          
+            <a href="/tags/多环境/" rel="tag"># 多环境</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/17/CICD/ansible/ansible之基础学习/" rel="next" title="ansible之基础学习">
+                <i class="fa fa-chevron-left"></i> ansible之基础学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/29/CICD/ansible/ansible之命令行/" rel="prev" title="ansible之命令行">
+                ansible之命令行 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">simple0426</p>
+              <p class="site-description motion-element" itemprop="description">运维自动化，流程标准化！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">270</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/simple0426" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5591345570" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#playbook简介"><span class="nav-number">1.</span> <span class="nav-text">playbook简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#playbook功能"><span class="nav-number">1.1.</span> <span class="nav-text">playbook功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#block范例"><span class="nav-number">2.</span> <span class="nav-text">block范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#task逻辑分组"><span class="nav-number">2.1.</span> <span class="nav-text">task逻辑分组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#play中错误处理"><span class="nav-number">2.2.</span> <span class="nav-text">play中错误处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#handlers语法"><span class="nav-number">3.</span> <span class="nav-text">handlers语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task语法"><span class="nav-number">4.</span> <span class="nav-text">task语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#play语法"><span class="nav-number">5.</span> <span class="nav-text">play语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#公共语法"><span class="nav-number">6.</span> <span class="nav-text">公共语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#roles目录"><span class="nav-number">7.</span> <span class="nav-text">roles目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#playbook目录"><span class="nav-number">8.</span> <span class="nav-text">playbook目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用设置"><span class="nav-number">8.1.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多环境设置"><span class="nav-number">8.2.</span> <span class="nav-text">多环境设置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">simple0426</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+</body>
+</html>
