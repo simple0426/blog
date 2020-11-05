@@ -49,10 +49,7 @@ date: 2020-08-06 15:38:16
 ## 镜像仓库
 
 * 主流方案-harbor：支持权限管理、日志审计等功能
-* 其他方案
-  * nexus
-  - jfrog
-  - Dockerdistribution
+* 其他方案：nexus
 
 ## 监控
 
@@ -60,7 +57,7 @@ date: 2020-08-06 15:38:16
 
 ## 日志
 
-filebeat + kafka + logstash + elasticsearch + kibana
+filebeat + kafka/redis + logstash + elasticsearch + kibana
 
 ## CICD流程
 
@@ -147,7 +144,9 @@ Pod 总数不超过 150000
   --key=/etc/kubernetes/pki/etcd/peer.key
   ```
 
-* 故障时：暂停kube-apiserver和etcd容器【kubelet管理静态pod：--pod-manifest-path=Directory】
+* 故障时：暂停kube-apiserver和etcd容器
+
+  > 这两个组件是kubelet管理的静态pod，相关配置参数：--pod-manifest-path=Directory
 
   ```
   mv /etc/kubernetes/manifests/{kube-apiserver.yaml,etcd.yaml} /etc/kubernetes
@@ -182,7 +181,7 @@ Pod 总数不超过 150000
   --key=/opt/etcd/ssl/server-key.pem
   ```
 
-* g故障时：暂停apiserver和etcd集群
+* 故障时：暂停apiserver和etcd集群
 
   ```
   systemctl stop kube-apiserver
@@ -218,7 +217,9 @@ Pod 总数不超过 150000
 ## 常见问题
 
 * 网络通信
-* tls证书：服务器时间不同步；证书中hosts字段包含所有k8s集群和etcd节点ip
+* tls证书：
+  * 服务器时间不同步
+  * 证书中hosts字段包含所有k8s集群master和etcd节点ip
 * rbac权限
   * pod连接apiserver使用serviceaccount
   * 组件(kubelet/kube-proxy/kubectl)连接apiserver使用kubeconfig
@@ -232,7 +233,7 @@ Pod 总数不超过 150000
 * describe查看pod调度情况
 * logs查看pod运行日志
 
-### k8s-event
+### k8s event
 
 * 全部事件查看：kubectl get event
 

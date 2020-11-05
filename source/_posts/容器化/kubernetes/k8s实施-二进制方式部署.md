@@ -99,7 +99,7 @@ sudo sysctl --system
 
 * master节点部署master组件（apiserver、scheduler、controller-manager）和node（kubelet、kube-proxy）组件，所以工作负载也可以在master上运行
 * etcd部署在3个节点上（211/212/213）
-* k8s集群和etcd使用两台证书(即2个CA)
+* k8s集群和etcd使用两套证书(即2个CA)
 * 先实现单master架构，后扩容为多master架构
 * 高可用架构采用nginx+keepalived实现，nginx和keepalived也部署在master节点
 
