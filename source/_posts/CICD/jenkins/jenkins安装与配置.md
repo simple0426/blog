@@ -108,6 +108,8 @@ docker run --name jenkins \
 
 # 全局工具
 
+使用工具后，jenkins可以自动下载【可选】并安装maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn
+
 ## maven
 
 > Maven Configuration处本意为设置全局的maven settings.xml文件，经过多次试验均无效；所以Maven Configuration保持默认设置；
@@ -164,6 +166,30 @@ jdk也有多种安装方式
 
   * 可以在tools中设置JAVA_HOME/MAVEN_HOME，然后以tools方式使用maven、jdk
   * 也可以在pipeline中以shell方式设置JAVA_HOME/MAVEN_HOME，然后直接使用maven、jdk
+
+## 使用范例
+
+```
+pipeline {
+    agent any
+    tools {
+      jdk 'jdk-251'
+      maven 'mvn-3.5'
+    }
+    stages {
+        stage('java') {
+            steps {
+                sh 'java -version'
+            }
+        }
+        stage('maven') {
+            steps {
+                sh 'mvn -version'
+            }
+        }
+    }
+}
+```
 
 # 集成docker
 

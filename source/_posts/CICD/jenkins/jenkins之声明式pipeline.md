@@ -11,16 +11,16 @@ categories: ['CICD']
 * pipeline
 * blue ocean(图形化/更直观的查看pipeline执行状态)
 
-# 基础语法结构stages
+# 基础语法结构-stages
 ```
 pipeline {
-   agent any    //指定构建环境 
+   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】
 
    stages {     //构建步骤，至少包含一个stage
       stage('build') {
         parallel{   //指定多个stage并行构建
             stage('build-1'){ 
-                steps{    //在一个stage构建中的详细步骤
+                steps{    //在一个stage构建中的详细步骤，有且只有一个steps
                     echo 'build stage 1'
                 }        
             }
@@ -40,7 +40,59 @@ pipeline {
 }
 ```
 
+# 其他重要指令
+
+* environment：用于设置环境变量，可以定义在pipeline或stage部分
+* tools：定义可以使用的工具，可以定义在pipeline或stage部分
+* input：定义在stage部分会暂停pipeline提示用户输入
+* parallel：并行执行多个stage
+* triggers：定义执行pipeline的触发器
+* cron：用法同crontab，一般用于trigger【范例：分/时/日/月/周】
+
+# pipeline设置-options
+
+* buildDiscarder：保存的历史构建数量
+
+  ```
+  options { buildDiscarder(logRotator(numToKeepStr: '1')) }
+  ```
+
+* checkoutToSubdirectory：从版本库拉取代码到子目录中【默认：工作目录的根目录】
+
+  ```
+  options { checkoutToSubdirectory('foo') }
+  ```
+
+* disableConcurrentBuilds：禁止pipeline并行执行，防止出现抢占资源或调度冲突
+
+  ```
+  options { disableConcurrentBuilds() }
+  ```
+
+* newContainerPerStage：使用docker构建时，每个stage都使用新的容器
+
+  ```
+  options { newContainerPerStage() }
+  ```
+
+* retry：发生失败时执行重试的次数（包含第一次失败）；可以在pipeline或stage块
+
+  ```
+  options { retry(3) }
+  ```
+
+* timeout：执行超时时间，超过此时间pipeline被终止；可以设置在pipeline或stage块
+
+  单位：HOURS、MINUTES、SECONDS
+
+  实践：一般设置10分钟即可
+
+  ```
+  options { timeout(time: 1, unit: 'HOURS') }
+  ```
+
 # [参数化构建](https://jenkins.io/doc/book/pipeline/syntax/#parameters)
+
 |   参数类型   |          参数说明          |
 |--------------|----------------------------|
 | string       | 字符串                     |
@@ -202,75 +254,5 @@ pipeline{
             echo 'I will always say Hello World'
         }
     }
-}
-```
-
-# if语句
->grovvy编程，等同于pipeline下的when
-
-```
-pipeline{
-    agent any
-
-    environment{
-        ENVIRONMENT_TEST_FLAG = 'NO'
-    }
-    stages{
-        stage('Init'){
-            steps{
-                script{
-                    BUILD_EXPRESSION = true
-                    DEPLOY_USER = 'liumiaocn'
-                }
-            }
-        }
-        stage('Build'){
-            steps{
-                script{
-                    if(BUILD_EXPRESSION){
-                        sh 'echo Build stage...'
-                    }
-                }
-            }
-            // when{
-            //     expression {BUILD_EXPRESSION}
-            // }
-            // steps{
-            //     sh 'echo Build stage ...'
-            // }
-        }
-        stage('Test'){
-            steps{
-                script{
-                    if(ENVIRONMENT_TEST_FLAG == 'YES'){
-                        sh 'echo Test stage...'
-                    }
-                }
-            }
-                // when{
-                //     environment name: 'ENVIRONMENT_TEST_FLAG',
-                //     value: 'YES'
-                // }
-                // steps{
-                //     sh 'echo Test stage ...'
-                // }
-        }
-        stage('Deploy'){
-            steps{
-                script{
-                    if(DEPLOY_USER == 'liumiaocn'){
-                        sh 'echo Deploy stage...'
-                    }
-                }
-            }
-            // when{
-            //     equals expected: 'liumiaocn',
-            //     actual: DEPLOY_USER
-            // }
-            // steps{
-            //     sh 'echo Deploy stage ...'
-            // }
-        }
-    }       
 }
 ```
