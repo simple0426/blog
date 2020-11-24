@@ -81,8 +81,17 @@ networks:
 
 # docker-compose命令
 ## 安装
-* sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-* sudo chmod +x /usr/local/bin/docker-compose
+* 下载：
+
+  ```
+  # 官方
+  curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  
+  # daocloud
+  curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.5/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  ```
+
+* 权限：chmod +x /usr/local/bin/docker-compose
 
 ## 命令参数
 >docker-compose命令默认使用当前目录下的docker-com.yml文件，可以使用-f参数指定要使用的文件

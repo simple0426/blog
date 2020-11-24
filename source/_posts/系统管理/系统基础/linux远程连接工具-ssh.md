@@ -49,7 +49,24 @@ Host 172.16.0.*  # 目标主机网络
   StrictHostKeyChecking no
 ```
 
+* 用途2：实现快速登录
+
+```
+Host *
+     IdentityFile ~/.ssh/feidao
+     PreferredAuthentications publickey,keyboard-interactive,password
+     ForwardAgent yes
+     StrictHostKeyChecking no
+     ServerAliveInterval 300
+     ServerAliveCountMax 24
+Host gitlab
+     User root
+     Hostname 10.0.124.6
+     Port 22
+```
+
 # ssh命令
+
 ssh 选项 user@host `command`
 ## 命令选项
 * -a：禁用转发身份验证代理连接

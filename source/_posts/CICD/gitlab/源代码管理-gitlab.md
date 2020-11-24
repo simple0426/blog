@@ -23,7 +23,7 @@ docker run -d \
   -v $PWD/data:/var/opt/gitlab \
   -v /etc/localtime:/etc/localtime \
   --restart=always \
-  -e GITLAB_OMNIBUS_CONFIG="external_url 'http://172.17.8.53/'" \
+  -e GITLAB_OMNIBUS_CONFIG="external_url 'http://172.17.8.53/';gitlab_rails['gitlab_shell_ssh_port'] = 9998" \
   gitlab/gitlab-ce:latest
 ```
 ### ubuntu16.04
@@ -80,8 +80,8 @@ gitlab_rails['gitlab_email_from'] = "gitlab@abc.com"
 ```
 
 * [邮箱功能测试][gitlab-mail]
-    - 进入控制台：gitlab-rails console
-    - 测试：Notify.test_email('destination_email@address.com', 'Message Subject', 'Message Body').deliver_now
+    - 进入控制台：`gitlab-rails console`
+    - 测试：`Notify.test_email('destination_email@address.com', 'Message Subject', 'Message Body').deliver_now`
 
 ## 常用命令
 * 查看gitlab版本：`cat /opt/gitlab/version-manifest.json` 
