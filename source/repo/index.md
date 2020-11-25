@@ -56,7 +56,7 @@ trusted-host=mirrors.aliyun.com
      <id>nexus-aliyun</id>
      <mirrorOf>central</mirrorOf>
      <name>Nexus aliyun</name>
-     <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+     <url>https://maven.aliyun.com/repository/public</url>
    </mirror>
  </mirrors>
 ```
