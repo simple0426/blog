@@ -7,11 +7,7 @@ tags:
 categories: ['CICD']
 ---
 
-# pipeline插件
-* pipeline
-* blue ocean(图形化/更直观的查看pipeline执行状态)
-
-# 基础语法结构-stages
+# 基本结构-stages
 ```
 pipeline {
    agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】
@@ -39,6 +35,51 @@ pipeline {
    }
 }
 ```
+
+# steps内部指令
+
+* sh：执行shell命令
+
+* echo：执行echo命令
+
+* script：执行groovy语法
+
+* bat、powershel：执行windows批处理
+
+* error：主动报错并终止pipeline执行
+
+* timeout：代码块执行超时，默认单位min
+
+  * time：超时时间
+  * unit：时间单位，NANOSECONDS 、MICROSECONDS、MILLISECONDS、SECONDS、MINUTES(默认)、HOURS、DAYS
+
+* waitUntil：不断重复waitUntil块内代码直到条件为true。waitUntil步骤最好与timeout步骤共同使用避免死循环
+
+  ```
+  timeout(time: 10,unit: 'SECONDS'){
+    waitUntil{
+      sleep(11)
+      sh 'ok'
+    }
+  }
+  ```
+
+* retry：重复执行代码块
+
+  ```
+  retry(20){
+    script{
+      sh script 'curl http://example', returnStatus: true
+    }
+  }
+  ```
+
+* sleep：休眠时间。默认seconds，其他同timeout
+
+  ```
+  sleep(120)
+  sleep(time: 2,unit: "MINUTES")
+  ```
 
 # 其他重要指令
 
@@ -91,7 +132,7 @@ pipeline {
   options { timeout(time: 1, unit: 'HOURS') }
   ```
 
-# [参数化构建](https://jenkins.io/doc/book/pipeline/syntax/#parameters)
+# [参数化构建-parameters](https://jenkins.io/doc/book/pipeline/syntax/#parameters)
 
 |   参数类型   |          参数说明          |
 |--------------|----------------------------|
@@ -161,7 +202,7 @@ pipeline{
     }
 }
 ```
-# [when处理](https://jenkins.io/doc/book/pipeline/syntax/#when)【pre处理】
+# [条件-when](https://jenkins.io/doc/book/pipeline/syntax/#when)【pre处理】
 |    条件类型   |                                         使用说明                                        |                                              备注                                             |
 |---------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | branch        | 指定分支构建时触发                                                                      | 只支持多分支pipeline                                                                          |
