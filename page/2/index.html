@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/11/01/ELK/elk-安全和访问控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/" itemprop="url">redis主从高可用-sentinel</a></h1>
+                <a class="post-title-link" href="/2020/11/01/ELK/elk-安全和访问控制/" itemprop="url">elk-安全和访问控制</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-29T23:52:37+08:00">
-                2020-09-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-01T22:10:42+08:00">
+                2020-11-01
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-29T23:59:35+08:00">
-                2020-09-29
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-01T23:25:26+08:00">
+                2020-11-01
               </time>
             
           </span>
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/redis/" itemprop="url" rel="index">
-                    <span itemprop="name">redis</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -389,14 +389,13 @@
       
         
           
-          sentinel功能
-监控：持续监控master和slave是否处于工作状态
-通知：通过API通知系统管理员或程序某个redis实例故障
-自动故障转移：当master故障时，自动将其中的一个slave提升为master，并配置其他slave连接新的master；当有客户端连接时，通知通知客户端使用新
+          本文主要基于通过 TLS 加密和基于角色的访问控制确保 Elasticsearch 的安全完成
+前言从elastic stack 6.8和7.1开始，会在软件分发版本中免费提供多项安全功能，例如elasticsearch之间的TLS加密通信，kibana中基于角色的访问控制(RBAC)等.
+在完成下
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/29/web服务管理/缓存与nosql/redis主从高可用-sentinel/#more" rel="contents">
+            <a class="btn" href="/2020/11/01/ELK/elk-安全和访问控制/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -447,7 +446,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/25/web服务管理/缓存与nosql/redis简介与管理/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/12/运维开发/django开发/django开发之基本设置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -466,7 +465,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/25/web服务管理/缓存与nosql/redis简介与管理/" itemprop="url">redis简介与管理</a></h1>
+                <a class="post-title-link" href="/2018/06/12/运维开发/django开发/django开发之基本设置/" itemprop="url">django开发之基本设置</a></h1>
         
 
         <div class="post-meta">
@@ -478,8 +477,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-25T11:29:57+08:00">
-                2019-10-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T14:27:26+08:00">
+                2018-06-12
               </time>
             
 
@@ -494,8 +493,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-29T23:58:01+08:00">
-                2020-09-29
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T15:42:12+08:00">
+                2020-10-30
               </time>
             
           </span>
@@ -513,8 +512,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/redis/" itemprop="url" rel="index">
-                    <span itemprop="name">redis</span>
+                  <a href="/categories/django/" itemprop="url" rel="index">
+                    <span itemprop="name">django</span>
                   </a>
                 </span>
 
@@ -552,19 +551,16 @@
       
         
           
-          简介
-redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof）
-可以被当做数据库、缓存、消息代理使用
-使用C语言编写，不需要外部依赖，官方默认支持linux系统，也可以使用在windows上运行
-microsoft实现的3.0版本
-第三方实现的4/5版本
+          MTV模型MTV即是通用的web开发模型MVC在django中的实现，  此外django中还有一个URLconf。
 
-
-
+M【models】：建立和操作数据库
+T【templates】：建立和渲染html
+V【views】：连接models和templates，进行逻辑操作
+URLconf：匹配相关的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/25/web服务管理/缓存与nosql/redis简介与管理/#more" rel="contents">
+            <a class="btn" href="/2018/06/12/运维开发/django开发/django开发之基本设置/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -615,7 +611,7 @@ microsoft实现的3.0版本
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/博客应用hexo/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/30/ELK/kibana学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -634,7 +630,7 @@ microsoft实现的3.0版本
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/26/通用知识/博客应用hexo/" itemprop="url">博客应用hexo</a></h1>
+                <a class="post-title-link" href="/2020/10/30/ELK/kibana学习/" itemprop="url">kibana学习</a></h1>
         
 
         <div class="post-meta">
@@ -646,8 +642,8 @@ microsoft实现的3.0版本
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T13:43:05+08:00">
-                2018-02-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-30T13:24:27+08:00">
+                2020-10-30
               </time>
             
 
@@ -662,8 +658,8 @@ microsoft实现的3.0版本
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T21:48:33+08:00">
-                2020-09-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T15:37:13+08:00">
+                2020-10-30
               </time>
             
           </span>
@@ -681,8 +677,8 @@ microsoft实现的3.0版本
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -720,25 +716,17 @@ microsoft实现的3.0版本
       
         
           
-          安装参考
-安装前提
-Node.js
-Git
+          服务启动1yum install filebeat -y
+配置选项
 
-安装命令npm install -g hexo-cli
-建站hexo建站
-hexo init blog
-cd blog
-npm install
-
-使用git版本控制
-目录切换：cd blog
-初始化：git init
-关联远程：git remote ad
+server.port: 5601
+server.host: “192.168.31.222”
+elasticsearch.url: “http://192.168.31.221:9200&quot;
+kibana.index: 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/26/通用知识/博客应用hexo/#more" rel="contents">
+            <a class="btn" href="/2020/10/30/ELK/kibana学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -789,7 +777,7 @@ npm install
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/29/ELK/logstash学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -808,7 +796,7 @@ npm install
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/" itemprop="url">k8s实施-容器技术落地方案</a></h1>
+                <a class="post-title-link" href="/2020/10/29/ELK/logstash学习/" itemprop="url">logstash学习</a></h1>
         
 
         <div class="post-meta">
@@ -820,8 +808,8 @@ npm install
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-06T15:38:16+08:00">
-                2020-08-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T01:13:38+08:00">
+                2020-10-29
               </time>
             
 
@@ -836,8 +824,8 @@ npm install
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T21:08:57+08:00">
-                2020-09-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:21:55+08:00">
+                2020-10-30
               </time>
             
           </span>
@@ -855,8 +843,8 @@ npm install
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -894,20 +882,26 @@ npm install
       
         
           
-          容器平台分层架构
+          配置文件语法基础语法
+区块标识 {}
+变量赋值 nginx =&gt; 5
+变量引用 [nginx]
+双引号下引用变量 &quot;%{nginx}&quot;
+引用数组 [arry][1]
 
-基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库
-容器引擎层：docker、harbor(镜像仓库)
-容器编排层：kubernetes
-访问和工具层-PaaS：web控制台、CICD、监控、日志
 
-技术栈选择服务器
-服务器类型：物理机、虚拟机
-节点管
+
+变量数据类型
+数字
+字符串
+布尔值
+数组【列表】
+
+1match =&gt; [&quot;datet
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/#more" rel="contents">
+            <a class="btn" href="/2020/10/29/ELK/logstash学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -958,7 +952,7 @@ npm install
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -977,7 +971,7 @@ npm install
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/22/容器化/服务网格-Istio/" itemprop="url">服务网格-Istio</a></h1>
+                <a class="post-title-link" href="/2020/09/24/ELK/filebeat学习/" itemprop="url">filebeat学习</a></h1>
         
 
         <div class="post-meta">
@@ -989,8 +983,8 @@ npm install
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-22T20:58:31+08:00">
-                2020-09-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
+                2020-09-24
               </time>
             
 
@@ -1005,8 +999,8 @@ npm install
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T20:58:31+08:00">
-                2020-09-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:20:46+08:00">
+                2020-10-30
               </time>
             
           </span>
@@ -1024,8 +1018,8 @@ npm install
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1063,12 +1057,15 @@ npm install
       
         
           
-          ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。
-优点服务网格带来了巨大变革并且拥有其强大的技术优势
+          工作原理filebeat由2个组件组成：inputs和harvester 
+
+harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】
+
+inputs：负责管理harvester并查
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/22/容器化/服务网格-Istio/#more" rel="contents">
+            <a class="btn" href="/2020/09/24/ELK/filebeat学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1119,7 +1116,7 @@ npm install
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/25/ELK/elasticsearch介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1138,7 +1135,7 @@ npm install
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/11/容器化/分布式存储-ceph/" itemprop="url">分布式存储-ceph</a></h1>
+                <a class="post-title-link" href="/2020/08/25/ELK/elasticsearch介绍/" itemprop="url">elasticsearch介绍</a></h1>
         
 
         <div class="post-meta">
@@ -1150,8 +1147,8 @@ npm install
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-11T01:08:25+08:00">
-                2020-09-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-25T11:09:25+08:00">
+                2020-08-25
               </time>
             
 
@@ -1166,8 +1163,8 @@ npm install
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-22T20:58:00+08:00">
-                2020-09-22
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-29T17:12:06+08:00">
+                2020-10-29
               </time>
             
           </span>
@@ -1185,8 +1182,8 @@ npm install
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1224,16 +1221,16 @@ npm install
       
         
           
-          Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统
-特点高性能
+          引言数据分类和搜索
+结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索
+非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】
 
-摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。
-考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。
-能够支持上千个存储节点的规模
+索引分类
+索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/11/容器化/分布式存储-ceph/#more" rel="contents">
+            <a class="btn" href="/2020/08/25/ELK/elasticsearch介绍/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1284,7 +1281,7 @@ npm install
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1303,7 +1300,7 @@ npm install
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/" itemprop="url">kubernetes-弹性伸缩</a></h1>
+                <a class="post-title-link" href="/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/" itemprop="url">消息队列RabbitMQ</a></h1>
         
 
         <div class="post-meta">
@@ -1315,8 +1312,8 @@ npm install
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-12T18:28:41+08:00">
-                2020-08-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-01T18:31:24+08:00">
+                2019-11-01
               </time>
             
 
@@ -1331,8 +1328,8 @@ npm install
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-17T23:22:13+08:00">
-                2020-09-17
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-14T20:19:11+08:00">
+                2020-10-14
               </time>
             
           </span>
@@ -1350,8 +1347,8 @@ npm install
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/消息队列/" itemprop="url" rel="index">
+                    <span itemprop="name">消息队列</span>
                   </a>
                 </span>
 
@@ -1389,20 +1386,20 @@ npm install
       
         
           
-          弹性伸缩集群的容量能够及时响应业务的负载需求
-业务负载类型
-在线负载类：微服务、API、网站
-离线业务：离线计算、大数据、机器学习
-定时任务：定时批量任务
+          使用对比与python中的queue
+线程queue：同一个进程下不同线程间的交互
+进程Queue：父子进程交互，或同属于一个进程下的多个子进程间交互
+消息中间件(rabbitmq)：不同程序间的交互
 
-在线负载类对弹性伸缩的弹出时间敏感；离线业务对价格敏感；定时任务对调度敏感
-本章中的弹性伸缩主要针对在线负载类业务。
-弹性伸缩维度
-CA(cl
+同类产品对比
+RabbitMQ
+由高并发语言Erlang编写
+基于AMQP协议实现
+为了保证消息
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/#more" rel="contents">
+            <a class="btn" href="/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1453,7 +1450,7 @@ CA(cl
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/03/容器化/kubernetes/k8s实施-构建基于jenkins的发布平台/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/23/容器化/云原生技术简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1472,7 +1469,7 @@ CA(cl
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/03/容器化/kubernetes/k8s实施-构建基于jenkins的发布平台/" itemprop="url">k8s实施-构建基于jenkins的发布平台</a></h1>
+                <a class="post-title-link" href="/2019/10/23/容器化/云原生技术简介/" itemprop="url">云原生技术简介</a></h1>
         
 
         <div class="post-meta">
@@ -1484,8 +1481,8 @@ CA(cl
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-03T19:35:10+08:00">
-                2020-08-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-23T22:31:17+08:00">
+                2019-10-23
               </time>
             
 
@@ -1500,8 +1497,8 @@ CA(cl
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-17T10:25:46+08:00">
-                2020-09-17
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-07T10:43:11+08:00">
+                2020-10-07
               </time>
             
           </span>
@@ -1519,8 +1516,8 @@ CA(cl
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
                   </a>
                 </span>
 
@@ -1558,17 +1555,24 @@ CA(cl
       
         
           
-          发布流程设计
+          总览云原生以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行
+官方支持CNCF：云原生基金会
+云原生技术生态
+云原生实现流程
+即CNCF路线图Trail map
 
-开发人员从镜像仓库harbor中拉取基础镜像，对应用进行容器化开发
-开发人员提交代码到代码仓库gitlab中
-gitlab收到代码提交请求后通过webhook方式触发jenkins
-jenkins收到请求后对代码进行打包，生产可执行程序(如，marven打包)
-打包完成后，基于doc
+
+容器化
+一般使用docker作为容器
+任何程序及其依赖都可以容器化
+使用微服务切割程序、开发新的功能
+
+CI/CD
+设置
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/03/容器化/kubernetes/k8s实施-构建基于jenkins的发布平台/#more" rel="contents">
+            <a class="btn" href="/2019/10/23/容器化/云原生技术简介/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1619,7 +1623,7 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/14/ELK/elk-stack安装/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1638,7 +1642,7 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/" itemprop="url">k8s实施-二进制方式部署</a></h1>
+                <a class="post-title-link" href="/2020/08/14/ELK/elk-stack安装/" itemprop="url">elk-stack安装</a></h1>
         
 
         <div class="post-meta">
@@ -1650,8 +1654,8 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-12T02:50:22+08:00">
-                2020-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-14T17:49:46+08:00">
+                2020-08-14
               </time>
             
 
@@ -1666,8 +1670,8 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:54:27+08:00">
-                2020-09-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-06T20:47:07+08:00">
+                2020-10-06
               </time>
             
           </span>
@@ -1685,8 +1689,8 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1724,24 +1728,16 @@ jenkins收到请求后对代码进行打包，生产可执行程序(如，marven
       
         
           
-          重度参考
-部署一套完整的Kubernetes高可用集群（上）
-​部署一套完整的Kubernetes高可用集群（下）
-
-前置条件系统设置
-主机数：4台以上
-操作系统： CentOS7.x-86_x64 
-软件版本：
-docker：19.03
-kubernetes：1.18
-
-
-硬件要求：2核2G以上
-
+          组件介绍
+elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储
+logstash：日志收集、过滤、转换
+kibana：数据可视化
+kafka：数据缓冲队列；提高系统扩展性，可以使关键组件顶住峰值访问压力
+filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/#more" rel="contents">
+            <a class="btn" href="/2020/08/14/ELK/elk-stack安装/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1792,7 +1788,7 @@ kubernetes：1.18
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/11/容器化/kubernetes/k8s实施-kubeadm方式部署/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1811,7 +1807,7 @@ kubernetes：1.18
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/03/11/容器化/kubernetes/k8s实施-kubeadm方式部署/" itemprop="url">k8s实施-kubeadm方式部署</a></h1>
+                <a class="post-title-link" href="/2019/07/17/系统管理/系统基础/linux系统-网络管理/" itemprop="url">linux系统-网络管理</a></h1>
         
 
         <div class="post-meta">
@@ -1823,8 +1819,8 @@ kubernetes：1.18
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-11T17:04:08+08:00">
-                2020-03-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-17T17:18:07+08:00">
+                2019-07-17
               </time>
             
 
@@ -1839,8 +1835,8 @@ kubernetes：1.18
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:54:08+08:00">
-                2020-09-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-06T20:17:06+08:00">
+                2020-10-06
               </time>
             
           </span>
@@ -1858,8 +1854,8 @@ kubernetes：1.18
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
                   </a>
                 </span>
 
@@ -1897,13 +1893,20 @@ kubernetes：1.18
       
         
           
-          kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署  
-
-kubeadm ini
+          命令列表
+tcpdump
+-i eth0：指定监听的网络接口
+tcp port 3306：监听本机tcp协议3306端口
+icmp：监听icmp协议
+ip host 192.168.100.2：监听指定来源的主机
+-t：不显示时间戳
+-n：补办ip解析成域名
+-nn：不把端口转换成对应的协议
+-c：
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/03/11/容器化/kubernetes/k8s实施-kubeadm方式部署/#more" rel="contents">
+            <a class="btn" href="/2019/07/17/系统管理/系统基础/linux系统-网络管理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="简介 Secure shell protocol：安全的shell协议   服务端软件：openssh 客户端软件：securecrt、putty、openssh-client 登录方式： 口令：交互式输入用户名和密码 秘钥：使用秘钥文件 产生秘钥对：ssh-keygen -t rsa -P “” -f ./bastion 传送公钥到远端：ssh-copy-id -i ~/.ssh/bastion">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-12T15:27:18.122Z">
+<meta property="og:updated_time" content="2020-11-24T07:54:40.074Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux远程连接工具-ssh">
 <meta name="twitter:description" content="简介 Secure shell protocol：安全的shell协议   服务端软件：openssh 客户端软件：securecrt、putty、openssh-client 登录方式： 口令：交互式输入用户名和密码 秘钥：使用秘钥文件 产生秘钥对：ssh-keygen -t rsa -P “” -f ./bastion 传送公钥到远端：ssh-copy-id -i ~/.ssh/bastion">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-12T23:27:18+08:00">
-                2020-02-12
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T15:54:40+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -411,6 +411,10 @@
 <li>用途1：通过ssh代理转发实现跳板机功能（主机A通过B登录C）</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Host ops</span><br><span class="line">  User muker #连接跳板机使用的用户名</span><br><span class="line">  HostName 47.99.78.151 #跳板机ip</span><br><span class="line">  ProxyCommand none</span><br><span class="line">  BatchMode yes #跳板机模式</span><br><span class="line">  IdentityFile ~/keyfiles/bastion #本地连跳板机时使用的私钥</span><br><span class="line">  StrictHostKeyChecking no #首次登录时禁止秘钥检查</span><br><span class="line">Host 172.16.0.*  # 目标主机网络</span><br><span class="line">  ServerAliveInterval 60 </span><br><span class="line">  TCPKeepAlive        yes</span><br><span class="line">  ProxyCommand ssh -qaY -i ~/keyfiles/bastion muker@ops &apos;nc -w 14400 %h %p&apos; # ssh代理转发</span><br><span class="line">  IdentityFile    ~/keyfiles/internal #跳板机使用私钥internal连接目标主机</span><br><span class="line">  StrictHostKeyChecking no</span><br></pre></td></tr></table></figure>
+<ul>
+<li>用途2：实现快速登录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Host *</span><br><span class="line">     IdentityFile ~/.ssh/feidao</span><br><span class="line">     PreferredAuthentications publickey,keyboard-interactive,password</span><br><span class="line">     ForwardAgent yes</span><br><span class="line">     StrictHostKeyChecking no</span><br><span class="line">     ServerAliveInterval 300</span><br><span class="line">     ServerAliveCountMax 24</span><br><span class="line">Host gitlab</span><br><span class="line">     User root</span><br><span class="line">     Hostname 10.0.124.6</span><br><span class="line">     Port 22</span><br></pre></td></tr></table></figure>
 <h1 id="ssh命令"><a href="#ssh命令" class="headerlink" title="ssh命令"></a>ssh命令</h1><p>ssh 选项 user@host <code>command</code></p>
 <h2 id="命令选项"><a href="#命令选项" class="headerlink" title="命令选项"></a>命令选项</h2><ul>
 <li>-a：禁用转发身份验证代理连接</li>

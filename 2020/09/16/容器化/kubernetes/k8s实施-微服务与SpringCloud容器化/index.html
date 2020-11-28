@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta name="description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加而增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信">
 <meta name="keywords" content="微服务,SpringCloud,APM,Pinpoint">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k8s实施-微服务与SpringCloud容器化">
 <meta property="og:url" content="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta property="og:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加而增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-1.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s-1.png">
-<meta property="og:updated_time" content="2020-09-16T13:52:29.915Z">
+<meta property="og:updated_time" content="2020-11-05T03:44:00.177Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s实施-微服务与SpringCloud容器化">
-<meta name="twitter:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信；必备">
+<meta name="twitter:description" content="运维角度看微服务单体应用vs微服务 单体应用：将全部的功能在一个应用中实现，优缺点如下：  优点：易于部署和测试 缺点： 代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】 构建和部署成本大【编译时间随代码量增加而增加、单个功能更新需要重新部署整个应用】 扩展困难    微服务：是一种设计风格，将不同的功能拆分到不同的应用中实现，不同的子应用通过REST api进行通信">
 <meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png">
 
 
@@ -336,8 +336,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:52:29+08:00">
-                2020-09-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T11:44:00+08:00">
+                2020-11-05
               </time>
             
           </span>
@@ -398,7 +398,7 @@
 <li>优点：易于部署和测试</li>
 <li>缺点：<ul>
 <li>代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】</li>
-<li>构建和部署成本大【编译时间随代码量增加、单个功能更新需要重新部署整个应用】</li>
+<li>构建和部署成本大【编译时间随代码量增加而增加、单个功能更新需要重新部署整个应用】</li>
 <li>扩展困难</li>
 </ul>
 </li>
@@ -431,7 +431,7 @@
 <li>微服务如何发现彼此？注册中心</li>
 <li>组件之间怎么个调用关系？</li>
 <li>哪个服务作为整个网站入口？前后端分离</li>
-<li>哪些微服务需要对外访问？前端、微服务网关</li>
+<li>哪些微服务需要提供外部访问入口？前端、微服务网关</li>
 <li><p>微服务怎么部署？更新？扩容？</p>
 <ul>
 <li>部署：kubectl apply、helm install【jenkins】</li>
@@ -452,7 +452,7 @@
 <li>怎么实现一个微服务多个副本负载均衡？</li>
 <li>怎么判断一个微服务副本是否可用？</li>
 </ul>
-<p>主流注册中心：Eureka(spring cloud)，Nacos(alibaba)，Consul，zookeeper</p>
+<p>主流注册中心：Eureka(spring cloud)，Nacos(alibaba)，Consul</p>
 <h2 id="容器交付流程"><a href="#容器交付流程" class="headerlink" title="容器交付流程"></a>容器交付流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-cicd.png" alt></p>
 <h2 id="在K8s部署项目流程"><a href="#在K8s部署项目流程" class="headerlink" title="在K8s部署项目流程"></a>在K8s部署项目流程</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice-k8s.png" alt></p>
 <h1 id="微服务范例-Spring-Cloud"><a href="#微服务范例-Spring-Cloud" class="headerlink" title="微服务范例-Spring Cloud"></a>微服务范例-Spring Cloud</h1><p>具体步骤：</p>

@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-16T13:54:27.242Z">
+<meta property="og:updated_time" content="2020-11-05T02:11:11.238Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s实施-二进制方式部署">
 <meta name="twitter:description" content="重度参考 部署一套完整的Kubernetes高可用集群（上） ​部署一套完整的Kubernetes高可用集群（下）  前置条件系统设置 主机数：4台以上 操作系统： CentOS7.x-86_x64  软件版本： docker：19.03 kubernetes：1.18   硬件要求：2核2G以上 网络：主机间互联、且可以连接公网（下载容器镜像） 主机名、MAC地址唯一，在hosts中做手动解析">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-16T21:54:27+08:00">
-                2020-09-16
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T10:11:11+08:00">
+                2020-11-05
               </time>
             
           </span>
@@ -461,7 +461,7 @@
 <ul>
 <li>master节点部署master组件（apiserver、scheduler、controller-manager）和node（kubelet、kube-proxy）组件，所以工作负载也可以在master上运行</li>
 <li>etcd部署在3个节点上（211/212/213）</li>
-<li>k8s集群和etcd使用两台证书(即2个CA)</li>
+<li>k8s集群和etcd使用两套证书(即2个CA)</li>
 <li>先实现单master架构，后扩容为多master架构</li>
 <li>高可用架构采用nginx+keepalived实现，nginx和keepalived也部署在master节点</li>
 </ul>

@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/11/01/ELK/elk-安全和访问控制/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/11/01/ELK/elk-安全和访问控制/" itemprop="url">elk-安全和访问控制</a></h1>
+                <a class="post-title-link" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/" itemprop="url">jenkins之声明式pipeline</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-01T22:10:42+08:00">
-                2020-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-10T15:12:41+08:00">
+                2020-02-10
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-11-01T23:25:26+08:00">
-                2020-11-01
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-28T14:57:59+08:00">
+                2020-11-28
               </time>
             
           </span>
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -389,13 +389,11 @@
       
         
           
-          本文主要基于通过 TLS 加密和基于角色的访问控制确保 Elasticsearch 的安全完成
-前言从elastic stack 6.8和7.1开始，会在软件分发版本中免费提供多项安全功能，例如elasticsearch之间的TLS加密通信，kibana中基于角色的访问控制(RBAC)等.
-在完成下
+          基本结构-stages12345678910111213141516171819202122232425pipeline &#123;   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】   stages &#123;     //构建步骤，至少
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/11/01/ELK/elk-安全和访问控制/#more" rel="contents">
+            <a class="btn" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -446,7 +444,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/12/运维开发/django开发/django开发之基本设置/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/10/CICD/jenkins/jenkins安装与配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -465,7 +463,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/12/运维开发/django开发/django开发之基本设置/" itemprop="url">django开发之基本设置</a></h1>
+                <a class="post-title-link" href="/2020/02/10/CICD/jenkins/jenkins安装与配置/" itemprop="url">jenkins安装与配置</a></h1>
         
 
         <div class="post-meta">
@@ -477,8 +475,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T14:27:26+08:00">
-                2018-06-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-10T15:12:23+08:00">
+                2020-02-10
               </time>
             
 
@@ -493,8 +491,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T15:42:12+08:00">
-                2020-10-30
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-25T17:36:01+08:00">
+                2020-11-25
               </time>
             
           </span>
@@ -512,8 +510,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/django/" itemprop="url" rel="index">
-                    <span itemprop="name">django</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -551,16 +549,16 @@
       
         
           
-          MTV模型MTV即是通用的web开发模型MVC在django中的实现，  此外django中还有一个URLconf。
+          安装
+需要提前配置java8运行环境
 
-M【models】：建立和操作数据库
-T【templates】：建立和渲染html
-V【views】：连接models和templates，进行逻辑操作
-URLconf：匹配相关的
+虚拟机方式
+centos安装
+123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/12/运维开发/django开发/django开发之基本设置/#more" rel="contents">
+            <a class="btn" href="/2020/02/10/CICD/jenkins/jenkins安装与配置/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -611,7 +609,7 @@ URLconf：匹配相关的
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/30/ELK/kibana学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -630,7 +628,7 @@ URLconf：匹配相关的
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/10/30/ELK/kibana学习/" itemprop="url">kibana学习</a></h1>
+                <a class="post-title-link" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/" itemprop="url">源代码管理-gitlab</a></h1>
         
 
         <div class="post-meta">
@@ -642,8 +640,8 @@ URLconf：匹配相关的
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-30T13:24:27+08:00">
-                2020-10-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-06T14:48:16+08:00">
+                2020-07-06
               </time>
             
 
@@ -658,8 +656,8 @@ URLconf：匹配相关的
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T15:37:13+08:00">
-                2020-10-30
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T16:47:31+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -677,8 +675,8 @@ URLconf：匹配相关的
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -716,17 +714,14 @@ URLconf：匹配相关的
       
         
           
-          服务启动1yum install filebeat -y
-配置选项
+          gitlab服务软件安装docker方式
+由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务
 
-server.port: 5601
-server.host: “192.168.31.222”
-elasticsearch.url: “http://192.168.31.221:9200&quot;
-kibana.index: 
+123456789101112docker run -
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/10/30/ELK/kibana学习/#more" rel="contents">
+            <a class="btn" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -777,7 +772,7 @@ kibana.index:
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/29/ELK/logstash学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/12/10/容器化/docker/docker-compose学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -796,7 +791,7 @@ kibana.index:
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/10/29/ELK/logstash学习/" itemprop="url">logstash学习</a></h1>
+                <a class="post-title-link" href="/2019/12/10/容器化/docker/docker-compose学习/" itemprop="url">docker-compose学习</a></h1>
         
 
         <div class="post-meta">
@@ -808,8 +803,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T01:13:38+08:00">
-                2020-10-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-10T00:39:53+08:00">
+                2019-12-10
               </time>
             
 
@@ -824,8 +819,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:21:55+08:00">
-                2020-10-30
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T16:14:37+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -843,8 +838,8 @@ kibana.index:
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
                   </a>
                 </span>
 
@@ -882,26 +877,13 @@ kibana.index:
       
         
           
-          配置文件语法基础语法
-区块标识 {}
-变量赋值 nginx =&gt; 5
-变量引用 [nginx]
-双引号下引用变量 &quot;%{nginx}&quot;
-引用数组 [arry][1]
-
-
-
-变量数据类型
-数字
-字符串
-布尔值
-数组【列表】
-
-1match =&gt; [&quot;datet
+          介绍docker compose是一个用于定义和管理多容器的docker工具，可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。
+核心概念
+services：它定义了一个应用包含的多个服务(服务的载
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/10/29/ELK/logstash学习/#more" rel="contents">
+            <a class="btn" href="/2019/12/10/容器化/docker/docker-compose学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -952,7 +934,7 @@ kibana.index:
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/07/系统管理/系统基础/linux远程连接工具-ssh/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -971,7 +953,7 @@ kibana.index:
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/24/ELK/filebeat学习/" itemprop="url">filebeat学习</a></h1>
+                <a class="post-title-link" href="/2019/08/07/系统管理/系统基础/linux远程连接工具-ssh/" itemprop="url">linux远程连接工具-ssh</a></h1>
         
 
         <div class="post-meta">
@@ -983,8 +965,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
-                2020-09-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-07T13:35:14+08:00">
+                2019-08-07
               </time>
             
 
@@ -999,844 +981,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-30T13:20:46+08:00">
-                2020-10-30
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          工作原理filebeat由2个组件组成：inputs和harvester 
-
-harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】
-
-inputs：负责管理harvester并查
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/09/24/ELK/filebeat学习/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/25/ELK/elasticsearch介绍/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/25/ELK/elasticsearch介绍/" itemprop="url">elasticsearch介绍</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-25T11:09:25+08:00">
-                2020-08-25
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-29T17:12:06+08:00">
-                2020-10-29
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          引言数据分类和搜索
-结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索
-非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】
-
-索引分类
-索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/08/25/ELK/elasticsearch介绍/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/" itemprop="url">消息队列RabbitMQ</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-01T18:31:24+08:00">
-                2019-11-01
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-14T20:19:11+08:00">
-                2020-10-14
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/消息队列/" itemprop="url" rel="index">
-                    <span itemprop="name">消息队列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          使用对比与python中的queue
-线程queue：同一个进程下不同线程间的交互
-进程Queue：父子进程交互，或同属于一个进程下的多个子进程间交互
-消息中间件(rabbitmq)：不同程序间的交互
-
-同类产品对比
-RabbitMQ
-由高并发语言Erlang编写
-基于AMQP协议实现
-为了保证消息
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/01/web服务管理/消息中间件/消息队列RabbitMQ/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/23/容器化/云原生技术简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/23/容器化/云原生技术简介/" itemprop="url">云原生技术简介</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-23T22:31:17+08:00">
-                2019-10-23
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-07T10:43:11+08:00">
-                2020-10-07
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
-                    <span itemprop="name">虚拟化</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          总览云原生以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行
-官方支持CNCF：云原生基金会
-云原生技术生态
-云原生实现流程
-即CNCF路线图Trail map
-
-
-容器化
-一般使用docker作为容器
-任何程序及其依赖都可以容器化
-使用微服务切割程序、开发新的功能
-
-CI/CD
-设置
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/10/23/容器化/云原生技术简介/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/14/ELK/elk-stack安装/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/14/ELK/elk-stack安装/" itemprop="url">elk-stack安装</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-14T17:49:46+08:00">
-                2020-08-14
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-06T20:47:07+08:00">
-                2020-10-06
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          组件介绍
-elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储
-logstash：日志收集、过滤、转换
-kibana：数据可视化
-kafka：数据缓冲队列；提高系统扩展性，可以使关键组件顶住峰值访问压力
-filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/08/14/ELK/elk-stack安装/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/17/系统管理/系统基础/linux系统-网络管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/17/系统管理/系统基础/linux系统-网络管理/" itemprop="url">linux系统-网络管理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-17T17:18:07+08:00">
-                2019-07-17
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-06T20:17:06+08:00">
-                2020-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T15:54:40+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -1893,20 +1039,894 @@ filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于
       
         
           
-          命令列表
-tcpdump
--i eth0：指定监听的网络接口
-tcp port 3306：监听本机tcp协议3306端口
-icmp：监听icmp协议
-ip host 192.168.100.2：监听指定来源的主机
--t：不显示时间戳
--n：补办ip解析成域名
--nn：不把端口转换成对应的协议
--c：
+          简介
+Secure shell protocol：安全的shell协议
+
+
+服务端软件：openssh
+客户端软件：securecrt、putty、openssh-client
+登录方式：
+口令：交互式输入用户名和密码
+秘钥：使用秘钥文件
+产生秘钥对：ssh-keygen -t rsa -P “” 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/07/17/系统管理/系统基础/linux系统-网络管理/#more" rel="contents">
+            <a class="btn" href="/2019/08/07/系统管理/系统基础/linux远程连接工具-ssh/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/" itemprop="url">k8s实施-微服务与SpringCloud容器化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-16T21:36:33+08:00">
+                2020-09-16
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T11:44:00+08:00">
+                2020-11-05
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          运维角度看微服务单体应用vs微服务
+单体应用：将全部的功能在一个应用中实现，优缺点如下：
+
+优点：易于部署和测试
+缺点：
+代码量膨胀，难以维护【服务之间耦合性太高，单个应用变动可能引起其他服务不可用】
+构建和部署成本大【编译时间随代码量增加而增加、单个功能更新需要重新部署整个应用】
+扩展困难
+
+
+
+
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/09/16/容器化/kubernetes/k8s实施-微服务与SpringCloud容器化/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/" itemprop="url">k8s实施-容器技术落地方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-06T15:38:16+08:00">
+                2020-08-06
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T11:33:45+08:00">
+                2020-11-05
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          容器平台分层架构
+
+基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库
+容器引擎层：docker、harbor(镜像仓库)
+容器编排层：kubernetes
+访问和工具层-PaaS：web控制台、CICD、监控、日志
+
+技术栈选择服务器
+服务器类型：物理机、虚拟机
+节点管
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/06/容器化/kubernetes/k8s实施-容器技术落地方案/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/" itemprop="url">k8s实施-二进制方式部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-12T02:50:22+08:00">
+                2020-07-12
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-05T10:11:11+08:00">
+                2020-11-05
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          重度参考
+部署一套完整的Kubernetes高可用集群（上）
+​部署一套完整的Kubernetes高可用集群（下）
+
+前置条件系统设置
+主机数：4台以上
+操作系统： CentOS7.x-86_x64 
+软件版本：
+docker：19.03
+kubernetes：1.18
+
+
+硬件要求：2核2G以上
+
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/07/12/容器化/kubernetes/k8s实施-二进制方式部署/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/07/通用知识/时间格式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/07/通用知识/时间格式/" itemprop="url">时间格式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-07T10:48:03+08:00">
+                2019-08-07
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-03T20:41:07+08:00">
+                2020-11-03
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          
+
+
+格式符
+含义
+范例
+
+
+
+
+%a
+缩写的星期几
+Sun
+
+
+%A
+完整的星期几
+Sunday
+
+
+%b/%h
+缩写的月份
+Mar
+
+
+%B
+完整的月份
+March
+
+
+%c
+日期和时间表示法
+Sun Aug 19 02:56:02 2012
+
+
+%d
+一月中的第几天（01-31）
+19
+
+
+%
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/08/07/通用知识/时间格式/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus高可用架构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus高可用架构/" itemprop="url">prometheus高可用架构</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:41:33+08:00">
+                2020-08-05
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-03T20:40:31+08:00">
+                2020-11-03
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          prometheus高可用联邦功能prometheus原生支持联邦架构，能够实现从别的prometheus抓取符合特定条件的数据
+1234567891011scrape_configs:- job_name: &apos;federate&apos;    scrape_interval: 15s 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/05/监控报警/prometheus高可用架构/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

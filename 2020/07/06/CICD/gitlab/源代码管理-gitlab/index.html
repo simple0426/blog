@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="gitlab服务软件安装docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务  123456789101112docker run -d \  --name gitlab \  -p 8443:443 \  -p 9999:80 \">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-06T10:05:33.593Z">
+<meta property="og:updated_time" content="2020-11-24T08:47:31.217Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="源代码管理-gitlab">
 <meta name="twitter:description" content="gitlab服务软件安装docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务  123456789101112docker run -d \  --name gitlab \  -p 8443:443 \  -p 9999:80 \">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-06T18:05:33+08:00">
-                2020-07-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T16:47:31+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -389,7 +389,7 @@
         <h1 id="gitlab服务"><a href="#gitlab服务" class="headerlink" title="gitlab服务"></a>gitlab服务</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a><a href="https://mirrors.tuna.tsinghua.edu.cn/help/gitlab-ce/" target="_blank" rel="noopener">软件安装</a></h2><h3 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a><a href="https://docs.gitlab.com/omnibus/docker/" target="_blank" rel="noopener">docker方式</a></h3><blockquote>
 <p>由于gitlab的访问端口由external_url中决定，如下配置中<br>容器中的gitlab服务暴露在80端口，宿主机以外通过<a href="http://172.17.8.53:9999/访问gitlab的web服务" target="_blank" rel="noopener">http://172.17.8.53:9999/访问gitlab的web服务</a></p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  -p 8443:443 \</span><br><span class="line">  -p 9999:80 \</span><br><span class="line">  -p 9998:22 \</span><br><span class="line">  -v $PWD/config:/etc/gitlab \</span><br><span class="line">  -v $PWD/logs:/var/log/gitlab \</span><br><span class="line">  -v $PWD/data:/var/opt/gitlab \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://172.17.8.53/&apos;&quot; \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  -p 8443:443 \</span><br><span class="line">  -p 9999:80 \</span><br><span class="line">  -p 9998:22 \</span><br><span class="line">  -v $PWD/config:/etc/gitlab \</span><br><span class="line">  -v $PWD/logs:/var/log/gitlab \</span><br><span class="line">  -v $PWD/data:/var/opt/gitlab \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://172.17.8.53/&apos;;gitlab_rails[&apos;gitlab_shell_ssh_port&apos;] = 9998&quot; \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
 <h3 id="ubuntu16-04"><a href="#ubuntu16-04" class="headerlink" title="ubuntu16.04"></a>ubuntu16.04</h3><ul>
 <li>软件源</li>
 </ul>
@@ -417,8 +417,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">gitlab_rails[&apos;smtp_enable&apos;] = true</span><br><span class="line">gitlab_rails[&apos;smtp_address&apos;] = &quot;smtp.exmail.qq.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_port&apos;] = 465</span><br><span class="line">gitlab_rails[&apos;smtp_user_name&apos;] = &quot;gitlab@abc.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_password&apos;] = &quot;Git@abc123&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_domain&apos;] = &quot;exmail.qq.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_authentication&apos;] = &quot;login&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_enable_starttls_auto&apos;] = true</span><br><span class="line">gitlab_rails[&apos;smtp_tls&apos;] = true</span><br><span class="line">gitlab_rails[&apos;gitlab_email_from&apos;] = &quot;gitlab@abc.com&quot;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><a href="https://docs.gitlab.com/omnibus/settings/smtp.html#testing-the-smtp-configuration" target="_blank" rel="noopener">邮箱功能测试</a><ul>
-<li>进入控制台：gitlab-rails console</li>
-<li>测试：Notify.test_email(<a href="mailto:&#39;destination_email@address.com" target="_blank" rel="noopener">&#39;destination_email@address.com</a>‘, ‘Message Subject’, ‘Message Body’).deliver_now</li>
+<li>进入控制台：<code>gitlab-rails console</code></li>
+<li>测试：<code>Notify.test_email(&#39;destination_email@address.com&#39;, &#39;Message Subject&#39;, &#39;Message Body&#39;).deliver_now</code></li>
 </ul>
 </li>
 </ul>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="介绍docker compose是一个用于定义和管理多容器的docker工具，可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。 核心概念 services：它定义了一个应用包含的多个服务(服务的载体即是容器) 容器可以从docker hub的image创建 也可以从本地的Dockerfile b">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-24T11:35:17.854Z">
+<meta property="og:updated_time" content="2020-11-24T08:14:37.359Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-compose学习">
 <meta name="twitter:description" content="介绍docker compose是一个用于定义和管理多容器的docker工具，可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。 核心概念 services：它定义了一个应用包含的多个服务(服务的载体即是容器) 容器可以从docker hub的image创建 也可以从本地的Dockerfile b">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-24T19:35:17+08:00">
-                2020-02-24
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-24T16:14:37+08:00">
+                2020-11-24
               </time>
             
           </span>
@@ -430,8 +430,11 @@
 <li>none</li>
 </ul>
 <h1 id="docker-compose命令"><a href="#docker-compose命令" class="headerlink" title="docker-compose命令"></a>docker-compose命令</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
-<li>sudo curl -L “<a href="https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$" target="_blank" rel="noopener">https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$</a>(uname -s)-$(uname -m)” -o /usr/local/bin/docker-compose</li>
-<li>sudo chmod +x /usr/local/bin/docker-compose</li>
+<li><p>下载：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 官方</span><br><span class="line">curl -L &quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span><br><span class="line"></span><br><span class="line"># daocloud</span><br><span class="line">curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.5/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>权限：chmod +x /usr/local/bin/docker-compose</p>
+</li>
 </ul>
 <h2 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数"></a>命令参数</h2><blockquote>
 <p>docker-compose命令默认使用当前目录下的docker-com.yml文件，可以使用-f参数指定要使用的文件</p>

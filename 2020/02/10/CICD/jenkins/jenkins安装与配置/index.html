@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-15T15:34:00.969Z">
+<meta property="og:updated_time" content="2020-11-25T09:36:01.881Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins安装与配置">
 <meta name="twitter:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-15T23:34:00+08:00">
-                2020-09-15
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-25T17:36:01+08:00">
+                2020-11-25
               </time>
             
           </span>
@@ -480,7 +480,8 @@
 </ul>
 </li>
 </ul>
-<h1 id="全局工具"><a href="#全局工具" class="headerlink" title="全局工具"></a>全局工具</h1><h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><blockquote>
+<h1 id="全局工具"><a href="#全局工具" class="headerlink" title="全局工具"></a>全局工具</h1><p>使用工具后，jenkins可以自动下载【可选】并安装maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn</p>
+<h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><blockquote>
 <p>Maven Configuration处本意为设置全局的maven settings.xml文件，经过多次试验均无效；所以Maven Configuration保持默认设置；</p>
 </blockquote>
 <p>maven有多种安装方式</p>
@@ -501,7 +502,7 @@
 <li>在宿主机安装jdk后，在JDK installations处指定JAVA_HOME</li>
 <li>指定install automatically，从java.sun.com安装【需要oracle账号】</li>
 <li>指定install automatically，从指定的url处下载*.zip/*.tar.gz文件；<strong>注意</strong>：必须指定解压子目录，且子目录名称为解压的原始目录，如<ul>
-<li>URL：<a href="https://jre.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz" target="_blank" rel="noopener">https://jre.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz</a></li>
+<li>URL：<a href="https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz" target="_blank" rel="noopener">https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz</a> </li>
 <li>子目录：jdk1.8.0_251</li>
 </ul>
 </li>
@@ -523,6 +524,7 @@
 </ul>
 </li>
 </ul>
+<h2 id="使用范例"><a href="#使用范例" class="headerlink" title="使用范例"></a>使用范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    tools &#123;</span><br><span class="line">      jdk &apos;jdk-251&apos;</span><br><span class="line">      maven &apos;mvn-3.5&apos;</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&apos;java&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;java -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;maven&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;mvn -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="集成docker"><a href="#集成docker" class="headerlink" title="集成docker"></a>集成docker</h1><ul>
 <li>插件<ul>
 <li>Docker Commons Plugin：给各种docker插件提供基础的API</li>
@@ -737,7 +739,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机方式"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker方式"><span class="nav-number">1.2.</span> <span class="nav-text">docker方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问和认证"><span class="nav-number">2.</span> <span class="nav-text">访问和认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用国内镜像"><span class="nav-number">3.</span> <span class="nav-text">使用国内镜像</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#邮件设置"><span class="nav-number">4.</span> <span class="nav-text">邮件设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#节点管理"><span class="nav-number">5.</span> <span class="nav-text">节点管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全局工具"><span class="nav-number">6.</span> <span class="nav-text">全局工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#maven"><span class="nav-number">6.1.</span> <span class="nav-text">maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jdk"><span class="nav-number">6.2.</span> <span class="nav-text">jdk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注意"><span class="nav-number">6.3.</span> <span class="nav-text">使用注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集成docker"><span class="nav-number">7.</span> <span class="nav-text">集成docker</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机方式"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker方式"><span class="nav-number">1.2.</span> <span class="nav-text">docker方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问和认证"><span class="nav-number">2.</span> <span class="nav-text">访问和认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用国内镜像"><span class="nav-number">3.</span> <span class="nav-text">使用国内镜像</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#邮件设置"><span class="nav-number">4.</span> <span class="nav-text">邮件设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#节点管理"><span class="nav-number">5.</span> <span class="nav-text">节点管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全局工具"><span class="nav-number">6.</span> <span class="nav-text">全局工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#maven"><span class="nav-number">6.1.</span> <span class="nav-text">maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jdk"><span class="nav-number">6.2.</span> <span class="nav-text">jdk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注意"><span class="nav-number">6.3.</span> <span class="nav-text">使用注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用范例"><span class="nav-number">6.4.</span> <span class="nav-text">使用范例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集成docker"><span class="nav-number">7.</span> <span class="nav-text">集成docker</span></a></li></ol></div>
             
 
           </div>
