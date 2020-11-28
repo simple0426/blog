@@ -131,7 +131,7 @@ jdk也有多种安装方式
 * 在宿主机安装jdk后，在JDK installations处指定JAVA_HOME
 * 指定install automatically，从java.sun.com安装【需要oracle账号】
 * 指定install automatically，从指定的url处下载\*.zip/\*.tar.gz文件；__注意__：必须指定解压子目录，且子目录名称为解压的原始目录，如
-  * URL：https://jre.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz
+  * URL：https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz 
   * 子目录：jdk1.8.0_251
 
 ## 使用注意
