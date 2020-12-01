@@ -90,6 +90,29 @@ pipeline {
 * triggers：定义执行pipeline的触发器
 * cron：用法同crontab，一般用于trigger【范例：分/时/日/月/周】
 
+# 变量
+
+printenv：执行shell命令，显示所有的变量名称
+
+## 内置变量
+
+* BUILD_URL:本次构建的访问地址
+* JOB_BASE_NAME：创建的构建任务名称
+* BUILD_NUMBER：构建序列号
+* WORKSPACE：本次构建工作目录
+
+## 自定义局部变量
+
+```
+    environment {
+      name = "hejq"
+    }
+```
+
+## 全局变量
+
+Manage Jenkins→Configure System→Global properties 页勾选“Environment variables”
+
 # pipeline设置-options
 
 * buildDiscarder：保存的历史构建数量
