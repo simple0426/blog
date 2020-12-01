@@ -380,7 +380,7 @@ Pinpoint是一个APM（应用程序性能管理）工具，适用于用Java/PHP�
   * pinpoint服务端web界面：http://xxxx:8079
   ```
 
-## [Pinpoint Agent部署](naver.github.io/pinpoint/installation.html#5-pinpoint-agent)
+## [Pinpoint Agent部署](https://pinpoint-apm.github.io/pinpoint/installation.html#5-pinpoint-agent)
 
 * pinpoint agent程序供给
 
