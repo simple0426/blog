@@ -10,8 +10,8 @@ categories: ['linux']
 # 文件swap
 ## 创建空文件
 *  fallocate -l 4G /home/swapfile 
-*  truncate -s 2G /swapfile 
-*  dd if=/dev/zero of=/swapfile bs=4096 count=512k  
+*  truncate -s 4G /home/swapfile 
+*  dd if=/dev/zero of=/home/swapfile bs=8192 count=512k  
 
 ## 格式化与挂载
 ```
