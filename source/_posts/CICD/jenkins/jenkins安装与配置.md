@@ -46,6 +46,7 @@ docker run --name jenkins \
   -v /usr/local/maven:/usr/local/maven \
   -v /usr/local/jdk:/usr/local/jdk \
   -v /etc/localtime:/etc/localtime \
+  -e TZ=Asia/Shanghai \
   -e JAVA_OPTS="-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true" \
   --restart=always \
   jenkins/jenkins:lts

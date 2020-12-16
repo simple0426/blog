@@ -35,7 +35,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * --oom-kill-disable：关闭系统oom，避免系统内存不足时杀死容器
 
 * --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
-    
+  
     - --cpu-shares int：设置多个容器使用cpu的相对权重
     
 * -p 10086:22（可多次使用）：映射宿主机端口10086到容器端口22
@@ -59,7 +59,14 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 
 ## 最佳实践
 * 操作系统镜像，没有默认启动命令，需要设置-it及-d，保持容器运行
+
 * 应用程序镜像，只需设置-d，就可保持容器运行
+
+* 设置时区和时间
+
+  ```
+  -e TZ=Asia/Shanghai -v /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+  ```
 
 # 容器管理
 * start、stop、restart：启动、停止、重启一个容器
@@ -197,10 +204,21 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * 减少镜像层：一次RUN指令形成新的一层，因此，多条shell命令要尽可能的写在一行；
     - 使用&&连接多个命令
     - 过长的行使用反斜线续行
+    
 * 优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小
+
 * 减少网络传输事件：使用软件包、maven仓库等
+
 * 多阶段构建：代码编译、部署写在一个Dockerfile
+
 * 选择尽可能小的基础镜像：如alpine
+
+* 设置时区和时间
+
+    ```
+    RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+        echo "Asia/shanghai" > /etc/timezone
+    ```
 
 ## Dockerfile范例
 ```
