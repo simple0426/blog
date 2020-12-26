@@ -212,11 +212,8 @@ spec:
     + valueFrom：读取pod环境变量
       + configMapKeyRef
       + secretKeyRef
-      + fieldRef：【metadata.name, metadata.namespace,
-              metadata.labels, metadata.annotations, spec.nodeName,
-              spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs】
-      + resourceFieldRef：【limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu,
-             requests.memory and requests.ephemeral-storage】
+      + fieldRef：【metadata.name, metadata.namespace,metadata.labels, metadata.annotations, spec.nodeName,spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs】
+      + resourceFieldRef：【limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu,requests.memory and requests.ephemeral-storage】
   - envFrom【从ConfigMap和secret获取值】
     - configMapRef
     - secretRef
