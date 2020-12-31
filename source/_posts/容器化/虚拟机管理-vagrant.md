@@ -68,8 +68,9 @@ date: 2019-11-18 21:24:01
 
 # Vagrantfile
 ## 网络设置
-* 端口转发（宿主机4567映射虚拟机80）：config.vm.network :forwarded_port, guest: 80, host: 4567
-* 设置公网ip(与宿主机同一个网络)：config.vm.network :public_network, ip: "10.150.20.180"
+* 端口转发（宿主机4567映射虚拟机80）：`config.vm.network :forwarded_port, guest: 80, host: 4567`
+* 设置公网ip（桥接模式）：`config.vm.network :public_network, ip: "10.150.20.180"`
+* 设置私有ip（host-only模式）：`config.vm.network "private_network", ip: "192.168.31.150"`
 
 ## 目录映射
 * 设置：config.vm.synced_folder "src/", "/srv/website"【src为宿主机目录，website为虚拟机目录】
