@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量  –nam">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-14T05:56:43.112Z">
+<meta property="og:updated_time" content="2020-12-16T08:44:29.575Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker容器和镜像">
 <meta name="twitter:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量  –nam">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-09-14T13:56:43+08:00">
-                2020-09-14
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-16T16:44:29+08:00">
+                2020-12-16
               </time>
             
           </span>
@@ -432,8 +432,13 @@
 </li>
 </ul>
 <h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><ul>
-<li>操作系统镜像，没有默认启动命令，需要设置-it及-d，保持容器运行</li>
-<li>应用程序镜像，只需设置-d，就可保持容器运行</li>
+<li><p>操作系统镜像，没有默认启动命令，需要设置-it及-d，保持容器运行</p>
+</li>
+<li><p>应用程序镜像，只需设置-d，就可保持容器运行</p>
+</li>
+<li><p>设置时区和时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-e TZ=Asia/Shanghai -v /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 <h1 id="容器管理"><a href="#容器管理" class="headerlink" title="容器管理"></a>容器管理</h1><ul>
 <li><p>start、stop、restart：启动、停止、重启一个容器</p>
@@ -606,15 +611,23 @@
 </li>
 </ul>
 <h2 id="Dockerfile最佳实践"><a href="#Dockerfile最佳实践" class="headerlink" title="Dockerfile最佳实践"></a>Dockerfile最佳实践</h2><ul>
-<li>减少镜像层：一次RUN指令形成新的一层，因此，多条shell命令要尽可能的写在一行；<ul>
+<li><p>减少镜像层：一次RUN指令形成新的一层，因此，多条shell命令要尽可能的写在一行；</p>
+<ul>
 <li>使用&amp;&amp;连接多个命令</li>
 <li>过长的行使用反斜线续行</li>
 </ul>
 </li>
-<li>优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</li>
-<li>减少网络传输事件：使用软件包、maven仓库等</li>
-<li>多阶段构建：代码编译、部署写在一个Dockerfile</li>
-<li>选择尽可能小的基础镜像：如alpine</li>
+<li><p>优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</p>
+</li>
+<li><p>减少网络传输事件：使用软件包、maven仓库等</p>
+</li>
+<li><p>多阶段构建：代码编译、部署写在一个Dockerfile</p>
+</li>
+<li><p>选择尽可能小的基础镜像：如alpine</p>
+</li>
+<li><p>设置时区和时间</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">    echo &quot;Asia/shanghai&quot; &gt; /etc/timezone</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 <h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a>Dockerfile范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
 <h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a>多阶段构建范例</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>

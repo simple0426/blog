@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="基本结构-stages12345678910111213141516171819202122232425pipeline &amp;#123;   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】   stages &amp;#123;     //构建步骤，至少包含一个stage      stage(&amp;apos;build&amp;apos;) &amp;#123;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-11-28T06:57:59.287Z">
+<meta property="og:updated_time" content="2020-12-17T08:24:41.038Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins之声明式pipeline">
 <meta name="twitter:description" content="基本结构-stages12345678910111213141516171819202122232425pipeline &amp;#123;   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】   stages &amp;#123;     //构建步骤，至少包含一个stage      stage(&amp;apos;build&amp;apos;) &amp;#123;">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-11-28T14:57:59+08:00">
-                2020-11-28
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-17T16:24:41+08:00">
+                2020-12-17
               </time>
             
           </span>
@@ -422,6 +422,15 @@
 <li>triggers：定义执行pipeline的触发器</li>
 <li>cron：用法同crontab，一般用于trigger【范例：分/时/日/月/周】</li>
 </ul>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><p>printenv：执行shell命令，显示所有的变量名称</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li>BUILD_URL:本次构建的访问地址</li>
+<li>JOB_BASE_NAME：创建的构建任务名称</li>
+<li>BUILD_NUMBER：构建序列号</li>
+<li>WORKSPACE：本次构建工作目录</li>
+</ul>
+<h2 id="自定义局部变量"><a href="#自定义局部变量" class="headerlink" title="自定义局部变量"></a>自定义局部变量</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">environment &#123;</span><br><span class="line">  name = &quot;hejq&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h2><p>Manage Jenkins→Configure System→Global properties 页勾选“Environment variables”</p>
 <h1 id="pipeline设置-options"><a href="#pipeline设置-options" class="headerlink" title="pipeline设置-options"></a>pipeline设置-options</h1><ul>
 <li><p>buildDiscarder：保存的历史构建数量</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">options &#123; buildDiscarder(logRotator(numToKeepStr: &apos;1&apos;)) &#125;</span><br></pre></td></tr></table></figure>
@@ -764,7 +773,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本结构-stages"><span class="nav-number">1.</span> <span class="nav-text">基本结构-stages</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#steps内部指令"><span class="nav-number">2.</span> <span class="nav-text">steps内部指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他重要指令"><span class="nav-number">3.</span> <span class="nav-text">其他重要指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pipeline设置-options"><span class="nav-number">4.</span> <span class="nav-text">pipeline设置-options</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参数化构建-parameters"><span class="nav-number">5.</span> <span class="nav-text">参数化构建-parameters</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件-when【pre处理】"><span class="nav-number">6.</span> <span class="nav-text">条件-when【pre处理】</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#post处理"><span class="nav-number">7.</span> <span class="nav-text">post处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置条件"><span class="nav-number">7.1.</span> <span class="nav-text">内置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">7.2.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本结构-stages"><span class="nav-number">1.</span> <span class="nav-text">基本结构-stages</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#steps内部指令"><span class="nav-number">2.</span> <span class="nav-text">steps内部指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他重要指令"><span class="nav-number">3.</span> <span class="nav-text">其他重要指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#变量"><span class="nav-number">4.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置变量"><span class="nav-number">4.1.</span> <span class="nav-text">内置变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义局部变量"><span class="nav-number">4.2.</span> <span class="nav-text">自定义局部变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局变量"><span class="nav-number">4.3.</span> <span class="nav-text">全局变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pipeline设置-options"><span class="nav-number">5.</span> <span class="nav-text">pipeline设置-options</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参数化构建-parameters"><span class="nav-number">6.</span> <span class="nav-text">参数化构建-parameters</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件-when【pre处理】"><span class="nav-number">7.</span> <span class="nav-text">条件-when【pre处理】</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#post处理"><span class="nav-number">8.</span> <span class="nav-text">post处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内置条件"><span class="nav-number">8.1.</span> <span class="nav-text">内置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例"><span class="nav-number">8.2.</span> <span class="nav-text">范例</span></a></li></ol></li></ol></div>
             
 
           </div>

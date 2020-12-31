@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-11-25T09:36:01.881Z">
+<meta property="og:updated_time" content="2020-12-16T08:42:12.895Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins安装与配置">
 <meta name="twitter:description" content="安装 需要提前配置java8运行环境  虚拟机方式 centos安装 123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.keyyum install jenkin">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-11-25T17:36:01+08:00">
-                2020-11-25
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-16T16:42:12+08:00">
+                2020-12-16
               </time>
             
           </span>
@@ -415,7 +415,7 @@
 </ul>
 <h2 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a>docker方式</h2><ul>
 <li><p>启动参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run --name jenkins \</span><br><span class="line">  -u root -d \</span><br><span class="line">  -p 80:8080 -p 50000:50000 \</span><br><span class="line">  -v /data/jenkins/:/var/jenkins_home \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /usr/bin/docker:/usr/bin/docker \</span><br><span class="line">  -v /usr/local/maven:/usr/local/maven \</span><br><span class="line">  -v /usr/local/jdk:/usr/local/jdk \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  -e JAVA_OPTS=&quot;-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true&quot; \</span><br><span class="line">  --restart=always \</span><br><span class="line">  jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker run --name jenkins \</span><br><span class="line">  -u root -d \</span><br><span class="line">  -p 80:8080 -p 50000:50000 \</span><br><span class="line">  -v /data/jenkins/:/var/jenkins_home \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /usr/bin/docker:/usr/bin/docker \</span><br><span class="line">  -v /usr/local/maven:/usr/local/maven \</span><br><span class="line">  -v /usr/local/jdk:/usr/local/jdk \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  -e TZ=Asia/Shanghai \</span><br><span class="line">  -e JAVA_OPTS=&quot;-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true&quot; \</span><br><span class="line">  --restart=always \</span><br><span class="line">  jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>参数详解：</p>
 <ul>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="简介 vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等） 软件安装 vagrant下载与安装 VirtualBox下载与安装   存储位置设置 box镜像位置(vagrant管理)：设置变量VAGRANT_HOME 虚拟机位置(vi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-15T15:06:10.592Z">
+<meta property="og:updated_time" content="2020-12-31T03:56:42.355Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="虚拟机管理-vagrant">
 <meta name="twitter:description" content="简介 vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等） 软件安装 vagrant下载与安装 VirtualBox下载与安装   存储位置设置 box镜像位置(vagrant管理)：设置变量VAGRANT_HOME 虚拟机位置(vi">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-15T23:06:10+08:00">
-                2020-07-15
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-31T11:56:42+08:00">
+                2020-12-31
               </time>
             
           </span>
@@ -464,8 +464,9 @@
 </li>
 </ul>
 <h1 id="Vagrantfile"><a href="#Vagrantfile" class="headerlink" title="Vagrantfile"></a>Vagrantfile</h1><h2 id="网络设置"><a href="#网络设置" class="headerlink" title="网络设置"></a>网络设置</h2><ul>
-<li>端口转发（宿主机4567映射虚拟机80）：config.vm.network :forwarded_port, guest: 80, host: 4567</li>
-<li>设置公网ip(与宿主机同一个网络)：config.vm.network :public_network, ip: “10.150.20.180”</li>
+<li>端口转发（宿主机4567映射虚拟机80）：<code>config.vm.network :forwarded_port, guest: 80, host: 4567</code></li>
+<li>设置公网ip（桥接模式）：<code>config.vm.network :public_network, ip: &quot;10.150.20.180&quot;</code></li>
+<li>设置私有ip（host-only模式）：<code>config.vm.network &quot;private_network&quot;, ip: &quot;192.168.31.150&quot;</code></li>
 </ul>
 <h2 id="目录映射"><a href="#目录映射" class="headerlink" title="目录映射"></a>目录映射</h2><ul>
 <li>设置：config.vm.synced_folder “src/“, “/srv/website”【src为宿主机目录，website为虚拟机目录】</li>

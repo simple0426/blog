@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 2G /swapfile  dd if=/dev/zero of=/swapfile bs=4096 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/home/swapfi">
+<meta name="description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 4G /home/swapfile  dd if=/dev/zero of=/home/swapfile bs=8192 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/h">
 <meta name="keywords" content="swap,ubuntu,全互联">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux使用技巧">
 <meta property="og:url" content="http://blog.unlazy.cn/2019/07/02/系统管理/系统基础/linux使用技巧/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 2G /swapfile  dd if=/dev/zero of=/swapfile bs=4096 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/home/swapfi">
+<meta property="og:description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 4G /home/swapfile  dd if=/dev/zero of=/home/swapfile bs=8192 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/h">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.435Z">
+<meta property="og:updated_time" content="2020-12-07T06:01:12.607Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux使用技巧">
-<meta name="twitter:description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 2G /swapfile  dd if=/dev/zero of=/swapfile bs=4096 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/home/swapfi">
+<meta name="twitter:description" content="文件swap创建空文件 fallocate -l 4G /home/swapfile  truncate -s 4G /home/swapfile  dd if=/dev/zero of=/home/swapfile bs=8192 count=512k    格式化与挂载12345chmod 600 /home/swapfilemkswap /home/swapfileecho &amp;quot;/h">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-07T14:01:12+08:00">
+                2020-12-07
               </time>
             
           </span>
@@ -388,8 +388,8 @@
       
         <h1 id="文件swap"><a href="#文件swap" class="headerlink" title="文件swap"></a>文件swap</h1><h2 id="创建空文件"><a href="#创建空文件" class="headerlink" title="创建空文件"></a>创建空文件</h2><ul>
 <li>fallocate -l 4G /home/swapfile </li>
-<li>truncate -s 2G /swapfile </li>
-<li>dd if=/dev/zero of=/swapfile bs=4096 count=512k  </li>
+<li>truncate -s 4G /home/swapfile </li>
+<li>dd if=/dev/zero of=/home/swapfile bs=8192 count=512k  </li>
 </ul>
 <h2 id="格式化与挂载"><a href="#格式化与挂载" class="headerlink" title="格式化与挂载"></a>格式化与挂载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 /home/swapfile</span><br><span class="line">mkswap /home/swapfile</span><br><span class="line">echo &quot;/home/swapfile none swap    sw              0       0&quot; &gt;&gt; /etc/fstab</span><br><span class="line">swapon -a</span><br><span class="line">free -m</span><br></pre></td></tr></table></figure>
 <h1 id="ubuntu初始化"><a href="#ubuntu初始化" class="headerlink" title="ubuntu初始化"></a>ubuntu初始化</h1><ul>
