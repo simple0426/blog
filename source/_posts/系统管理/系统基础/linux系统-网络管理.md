@@ -26,6 +26,7 @@ date: 2019-07-17 17:18:07
 * arp：地址解析协议
 * [curl](#curl)
 * [iptables](#iptables)
+* [firewalld](#firewalld)
 * [tcp_wrapper](#tcp-wrapper)
 * netstat：显示网络链接
     - -a：显示所有链接状态
@@ -81,23 +82,23 @@ date: 2019-07-17 17:18:07
 * -X, --request 指定请求方法【默认get】
 
 * -d/--data 指定post请求数据
-    
+  
     - curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python
     
 * -H/--header 指定要发送的header信息
-    
+  
     - curl -H "Content-Type: application/json" -X POST  --data '{"userID":10001}' http://localhost:8085/GetUserInfo
     
 * -A 指定user-agent信息
-    
+  
     - curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -o page.html  https://www.linuxidc.com
     
 * -b, --cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串
-    
+  
     - curl -b 'a=1;b=2' https://www.linuxidc.com
     
 * -e, --referer指定上次访问的页面【可用于盗链】
-    
+  
     - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
     
 * -x, --proxy [protocol://]host[:port] 使用代理服务器：--proxy http://127.0.0.1:10809
@@ -296,7 +297,56 @@ iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o eth1 -j MASQUERADE
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 #iptables -t nat -A PREROUTING -d 192.168.1.50 -p tcp --dport 80 -j DNAT --to-destination 192.168.100.2:80
 ```
+#  firewalld
+
+* firewalld为centos7提供的防火墙服务
+*  firewall-cmd命令需要firewalld进程处于运行状态
+* 修改配置后可通过重启服务【 systemctl restart firewalld 】或重载配置【 `firewall-cmd --reload` 】使配置生效
+* 服务启动后默认开放ssh服务【默认22端口】
+* `--permanent`（--permanent永久生效，没有此参数重启后失效）
+
+## 守护进程
+
+systemctl status/start/stop/restart firewalld 
+
+## 端口与服务开放
+
+ 可以通过两种方式控制端口的开放，一种是指定端口号另一种是指定服务名。虽然开放http服务就是开放了80端口，但是还是不能通过端口号来关闭，也就是说通过指定服务名开放的就要通过指定服务名关闭；通过指定端口号开放的就要通过指定端口号关闭。还有一个要注意的就是指定端口的时候一定要指定是什么协议，tcp还是udp。
+
+```
+firewall-cmd --get-services  # 查看可以开放的服务
+firewall-cmd --add-service=mysql # 开放mysql端口
+firewall-cmd --remove-service=http # 阻止http端口
+firewall-cmd --list-services # 查看开放的服务
+firewall-cmd --add-port=3306/tcp # 开放通过tcp访问3306
+firewall-cmd --remove-port=80/tcp # 阻止通过tcp访问80
+firewall-cmd --add-port=233/udp # 开放通过udp访问233
+firewall-cmd --list-ports # 查看开放的端口 
+```
+
+# 端口转发
+
+* 开启ip与端口伪装【访问信息与目标信息转换】
+
+  ```
+  firewall-cmd --query-masquerade # 检查是否允许伪装IP
+  firewall-cmd --add-masquerade # 允许防火墙伪装IP
+  firewall-cmd --remove-masquerade# 禁止防火墙伪装IP
+  ```
+
+* 端口转发设置
+
+  ```
+  # 将80端口的流量转发至8080
+  firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8080 
+  # 将80端口的流量转发至192.168.0.1的8080端口
+  firewall-cmd --add-forward-port=port=80:proto=tcp:toaddr=192.168.0.1:toport=8080
+  ```
+
+* 重载配置：`firewall-cmd --reload`
+
 # tcp-wrapper
+
 ## 简介
 * [tcp_wrapper](https://www.cnblogs.com/long-cnblogs/p/10716091.html)是一个类似于iptables的实现访问控制工具；但是，iptables是工作在内核中的，所以只要是一个网络服务经由内核中的TCP/IP协议栈就能够受到netfilter的控制
 * tcp_wrapper是基于库调用来实现其功能的。这就意味着只有那些在开发时调用了tcp_wrapper相关库（这个库叫libwrap）的应用，tcp_wrapper的控制才能生效。
