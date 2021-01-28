@@ -70,44 +70,27 @@ date: 2019-07-17 17:18:07
 * -o filename：下载文件并另存为
 * -O 下载文件并保持文件名
 * -L, --location 跟踪重定向
-* -c --cookie-jar FILE将服务器发送的cookie保存到文件中
-    - curl -c cookie.txt -s https://www.linuxidc.com
-* -I 只显示header信息
-    - curl -s -I http://www.baidu.com
+* -c --cookie-jar FILE将服务器发送的cookie保存到文件中：`curl -c cookie.txt -s https://www.linuxidc.com`
+* -I 只显示header信息：`curl -s -I http://www.baidu.com`
 * -s --silent静默输出
-* -w 显示特定变量的信息【变量参考`man curl`】
-    - curl -o /dev/null -s -w "%{http_code}" www.baidu.com
+* -w 显示特定变量的信息【变量参考`man curl`】：`curl -o /dev/null -s -w "%{http_code}" www.baidu.com`
 
 ## 请求
 * -X, --request 指定请求方法【默认get】
 
-* -d/--data 指定post请求数据
+* -d/--data 指定post请求数据：`curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python`
   
-    - curl -X POST --data '{"message": "01", "pageIndex": "1"}' http://127.0.0.1:5000/python
-    
-* -H/--header 指定要发送的header信息
+* -H/--header 指定要发送的header信息：`curl -H "Content-Type: application/json" -X POST  --data '{"userID":10001}' http://localhost:8085/GetUserInfo`
   
-    - curl -H "Content-Type: application/json" -X POST  --data '{"userID":10001}' http://localhost:8085/GetUserInfo
-    
-* -A 指定user-agent信息
+* -A 指定user-agent信息：`curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -o page.html  https://www.linuxidc.com`
   
-    - curl -A "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" -o page.html  https://www.linuxidc.com
-    
-* -b, --cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串
+* -b, --cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串：`curl -b 'a=1;b=2' https://www.linuxidc.com`
   
-    - curl -b 'a=1;b=2' https://www.linuxidc.com
-    
-* -e, --referer指定上次访问的页面【可用于盗链】
+* -e, --referer指定上次访问的页面【可用于盗链】:`curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg`
   
-    - curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg
-    
-* -x, --proxy [protocol://]host[:port] 使用代理服务器：--proxy http://127.0.0.1:10809
+* -x, --proxy [protocol://]host[:port] 使用代理服务器：`--proxy http://127.0.0.1:10809`
 
-* -g, --globoff 允许在URL中使用`[] {}`表示范围
-
-    ```
-    curl -g "localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&pretty"
-    ```
+* -g, --globoff 允许在URL中使用`[] {}`表示范围：`curl -g "localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&pretty"`
 
 # nc
 netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具
@@ -167,7 +150,7 @@ EOF
 * --proxy-user=user/--proxy-password=password：proxy选项设置
 
 ## 范例
-* wget -b -c --limit-rate=300K https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64 -O docker-compose.box
+`wget -b -c --limit-rate=300K https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64 -O docker-compose.box`
 
 # iptables
 * iptables是一个用于ipv4/ipv6包过滤和地址转换的管理工具

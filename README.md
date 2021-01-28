@@ -1,7 +1,7 @@
 # 本地使用前提
-* 安装nodejs
+* 安装nodejs【[v8.9.0](https://npm.taobao.org/mirrors/node/v8.9.0/)】
 * 安装hexo
-    - npm install -g hexo-cli
+    - npm install -g hexo-cli@3.1.0
 * 安装hexo插件【进入blog目录】
     - npm install
 
