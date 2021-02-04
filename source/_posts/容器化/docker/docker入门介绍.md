@@ -84,13 +84,12 @@ date: 2019-11-19 23:24:32
 
   ```
    sudo yum install -y yum-utils
-   sudo yum-config-manager \
-      --add-repo \
+   sudo yum-config-manager --add-repo \
       https://download.docker.com/linux/centos/docker-ce.repo
    sudo yum install docker-ce docker-ce-cli containerd.io
    sudo systemctl start docker
   ```
-
+  
 * [阿里云镜像](https://developer.aliyun.com/mirror/docker-ce)
 
   ```
