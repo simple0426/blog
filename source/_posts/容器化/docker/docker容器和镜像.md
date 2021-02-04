@@ -18,23 +18,23 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 
 * -d：让容器以后台方式运行
 
-* -e key=value：在容器内设置环境变量
+* -e key=value：在容器内设置环境变量、设置多个变量时使用多个-e
 
 * --name：给运行的容器绑定一个名称
 
 * -h：配置容器主机名
 
-* --rm：容器存在就删除【运行一次性容器，运行后立即删除】
+* --rm：容器存在就删除【运行一次性容器，运行结束后立即删除】
 
 * -v ：映射宿主机目录或数据卷到容器
 
-* -m 100m：设置容器内存为100m
+* -m, --memory 100m：设置容器内存为100m
 
 * --memory-swap=100m：设置容器内存和swap总和是100m
 
 * --oom-kill-disable：关闭系统oom，避免系统内存不足时杀死容器
 
-* --cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）
+* --cpus 0.5：设置容器可以使用的cpu数量（最大值为cpu的最大核心数，最小值为0.1，可以是小数）
   
     - --cpu-shares int：设置多个容器使用cpu的相对权重
     
@@ -99,7 +99,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     docker container update --restart=on-failure jenkins
     ```
 
-* stats：查看容器资源使用情况
+* stats：查看容器资源使用情况，--no-stream【一次性输出，非数据流】
 
 * top：查看容器进程列表
 
@@ -121,7 +121,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     - 作用：此时建立的数据卷不随容器的销毁而消失
     - 建立数据卷：docker volume create hello
     - 查看数据卷列表：docker volume ls
-    - 使用数据卷(使用未创建的数据卷时docker会自动创建)：docker run -d -v hello:/world busybox ls /world
+    - 使用数据卷(docker会自动创建不存在的数据卷)：docker run -d -v hello:/world busybox ls /world
     - 删除数据卷：docker volume rm hello
 
 # 镜像管理
@@ -146,7 +146,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
         + since：此镜像之后
 * 导出tar包
     - 从容器导出tar包：docker export adb102099609 > adb102099609.tar
-    - 从镜像导出tar包：docker save -o ubuntu-ruby.tar ubuntu:ruby 
+    - 从镜像导出tar包：docker save ubuntu:ruby > ubuntu-ruby.tar 
 * 导入tar包创建镜像
     - load方式：docker load < ubuntu-ruby.tar 
     - import方式：cat adb102099609.tar |sudo docker import - ubuntu:temp

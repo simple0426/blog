@@ -79,9 +79,33 @@ date: 2019-11-19 23:24:32
 * swarm：docker默认支持的容器编排工具
 
 # docker安装与配置
-## 软件安装
+## 软件安装-CentOS
 * [官方(较慢)](https://docs.docker.com/engine/install/centos/#install-using-the-repository)
+
+  ```
+   sudo yum install -y yum-utils
+   sudo yum-config-manager \
+      --add-repo \
+      https://download.docker.com/linux/centos/docker-ce.repo
+   sudo yum install docker-ce docker-ce-cli containerd.io
+   sudo systemctl start docker
+  ```
+
 * [阿里云镜像](https://developer.aliyun.com/mirror/docker-ce)
+
+  ```
+  # step 1: 安装必要的一些系统工具
+  sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+  # Step 2: 添加软件源信息
+  sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+  # Step 3
+  sudo sed -i 's+download.docker.com+mirrors.aliyun.com/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+  # Step 4: 更新并安装Docker-CE
+  sudo yum makecache fast
+  sudo yum -y install docker-ce
+  # Step 4: 开启Docker服务
+  sudo service docker start
+  ```
 
 ## engine配置
 >/etc/docker/daemon.json
