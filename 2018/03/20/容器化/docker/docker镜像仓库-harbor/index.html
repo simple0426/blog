@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 docker-engine 17.06.0-ce+ or higher docker-com">
+<meta name="description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 2核CPU/4GB内存/40GB磁盘 docker-engine 17.06.0-ce+ o">
 <meta name="keywords" content="harbor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker镜像仓库-harbor">
 <meta property="og:url" content="http://blog.unlazy.cn/2018/03/20/容器化/docker/docker镜像仓库-harbor/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 docker-engine 17.06.0-ce+ or higher docker-com">
+<meta property="og:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 2核CPU/4GB内存/40GB磁盘 docker-engine 17.06.0-ce+ o">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-30T11:25:18.466Z">
+<meta property="og:updated_time" content="2021-02-05T17:39:15.295Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker镜像仓库-harbor">
-<meta name="twitter:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 docker-engine 17.06.0-ce+ or higher docker-com">
+<meta name="twitter:description" content="harbor介绍 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能 harbor镜像的复制是通过docker registry 的API去拷贝  安装 安装前置条件 2核CPU/4GB内存/40GB磁盘 docker-engine 17.06.0-ce+ o">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-30T19:25:18+08:00">
-                2020-07-30
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-06T01:39:15+08:00">
+                2021-02-06
               </time>
             
           </span>
@@ -392,6 +392,7 @@
 </ul>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a><a href="https://goharbor.io/docs/2.0.0/install-config/" target="_blank" rel="noopener">安装</a></h1><ul>
 <li>安装前置条件<ul>
+<li>2核CPU/4GB内存/40GB磁盘</li>
 <li>docker-engine 17.06.0-ce+ or higher</li>
 <li>docker-compose 1.18.0 or higher</li>
 </ul>
@@ -439,7 +440,6 @@
 <li>ca.crt为根证书且名称必须是这样</li>
 </ul>
 </li>
-<li>重启docker服务</li>
 </ul>
 </li>
 </ul>
@@ -482,11 +482,7 @@
 <li>docker push harbor.zj-hf.cn/mytest/IMAGE[:TAG]</li>
 </ul>
 </li>
-<li>下载镜像<ul>
-<li>docker login</li>
-<li>docker pull harbor.zj-hf.cn/mytest/registry:latest</li>
-</ul>
-</li>
+<li>下载镜像：docker pull harbor.zj-hf.cn/mytest/registry:latest</li>
 <li>删除镜像<ul>
 <li>web界面删除镜像</li>
 <li>设置垃圾清理（Garbage Collection）：删除文件系统上的数据</li>

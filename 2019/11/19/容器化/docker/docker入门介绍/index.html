@@ -79,22 +79,22 @@
 
 
 
-<meta name="description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
+<meta name="description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩】">
 <meta name="keywords" content="虚拟化,容器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker入门介绍">
 <meta property="og:url" content="http://blog.unlazy.cn/2019/11/19/容器化/docker/docker入门介绍/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
+<meta property="og:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩】">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg">
 <meta property="og:image" content="https://docs.docker.com/engine/images/architecture.svg">
-<meta property="og:updated_time" content="2020-07-01T07:17:41.004Z">
+<meta property="og:updated_time" content="2021-02-04T17:24:05.711Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker入门介绍">
-<meta name="twitter:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩">
+<meta name="twitter:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩】">
 <meta name="twitter:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/devops-demo.jpg">
 
 
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T15:17:41+08:00">
-                2020-07-01
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T01:24:05+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -394,7 +394,7 @@
         <h1 id="docker引入"><a href="#docker引入" class="headerlink" title="docker引入"></a>docker引入</h1><h2 id="传统IT面临问题"><a href="#传统IT面临问题" class="headerlink" title="传统IT面临问题"></a>传统IT面临问题</h2><ul>
 <li>部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求)</li>
 <li>环境不一致：开发、测试、生产环境不一致</li>
-<li>资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足</li>
+<li>资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足</li>
 </ul>
 <h2 id="容器优势"><a href="#容器优势" class="headerlink" title="容器优势"></a>容器优势</h2><ul>
 <li>更快且保持一致性的交付应用程序【保持多阶段环境的一致性】</li>
@@ -462,9 +462,15 @@
 </li>
 <li>swarm：docker默认支持的容器编排工具</li>
 </ul>
-<h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><ul>
-<li><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></li>
-<li><a href="https://developer.aliyun.com/mirror/docker-ce" target="_blank" rel="noopener">阿里云镜像</a></li>
+<h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装-CentOS"><a href="#软件安装-CentOS" class="headerlink" title="软件安装-CentOS"></a>软件安装-CentOS</h2><ul>
+<li><p><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><a href="https://developer.aliyun.com/mirror/docker-ce" target="_blank" rel="noopener">阿里云镜像</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># step 1: 安装必要的一些系统工具</span><br><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"># Step 2: 添加软件源信息</span><br><span class="line">sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line"># Step 3</span><br><span class="line">sudo sed -i &apos;s+download.docker.com+mirrors.aliyun.com/docker-ce+&apos; /etc/yum.repos.d/docker-ce.repo</span><br><span class="line"># Step 4: 更新并安装Docker-CE</span><br><span class="line">sudo yum makecache fast</span><br><span class="line">sudo yum -y install docker-ce</span><br><span class="line"># Step 4: 开启Docker服务</span><br><span class="line">sudo service docker start</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 <h2 id="engine配置"><a href="#engine配置" class="headerlink" title="engine配置"></a>engine配置</h2><blockquote>
 <p>/etc/docker/daemon.json</p>
@@ -723,7 +729,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker引入"><span class="nav-number">1.</span> <span class="nav-text">docker引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统IT面临问题"><span class="nav-number">1.1.</span> <span class="nav-text">传统IT面临问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器优势"><span class="nav-number">1.2.</span> <span class="nav-text">容器优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化devops"><span class="nav-number">1.3.</span> <span class="nav-text">容器化devops</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">1.4.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker介绍"><span class="nav-number">2.</span> <span class="nav-text">docker介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker架构"><span class="nav-number">2.1.</span> <span class="nav-text">docker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker对象"><span class="nav-number">2.2.</span> <span class="nav-text">docker对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">2.3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker产品"><span class="nav-number">2.4.</span> <span class="nav-text">docker产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过时的工具集"><span class="nav-number">2.5.</span> <span class="nav-text">过时的工具集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装与配置"><span class="nav-number">3.</span> <span class="nav-text">docker安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装"><span class="nav-number">3.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.2.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.3.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.3.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.3.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.3.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">4.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">4.1.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据采集"><span class="nav-number">4.2.</span> <span class="nav-text">数据采集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控报警"><span class="nav-number">4.3.</span> <span class="nav-text">监控报警</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#度量分析和可视化系统"><span class="nav-number">4.4.</span> <span class="nav-text">度量分析和可视化系统</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker引入"><span class="nav-number">1.</span> <span class="nav-text">docker引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传统IT面临问题"><span class="nav-number">1.1.</span> <span class="nav-text">传统IT面临问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器优势"><span class="nav-number">1.2.</span> <span class="nav-text">容器优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化devops"><span class="nav-number">1.3.</span> <span class="nav-text">容器化devops</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与虚拟机"><span class="nav-number">1.4.</span> <span class="nav-text">容器与虚拟机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker介绍"><span class="nav-number">2.</span> <span class="nav-text">docker介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker架构"><span class="nav-number">2.1.</span> <span class="nav-text">docker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker对象"><span class="nav-number">2.2.</span> <span class="nav-text">docker对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心技术"><span class="nav-number">2.3.</span> <span class="nav-text">核心技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker产品"><span class="nav-number">2.4.</span> <span class="nav-text">docker产品</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过时的工具集"><span class="nav-number">2.5.</span> <span class="nav-text">过时的工具集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装与配置"><span class="nav-number">3.</span> <span class="nav-text">docker安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件安装-CentOS"><span class="nav-number">3.1.</span> <span class="nav-text">软件安装-CentOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine配置"><span class="nav-number">3.2.</span> <span class="nav-text">engine配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">3.3.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">3.3.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">3.3.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">3.3.3.</span> <span class="nav-text">问题3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运维管理"><span class="nav-number">4.</span> <span class="nav-text">运维管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图形化"><span class="nav-number">4.1.</span> <span class="nav-text">图形化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据采集"><span class="nav-number">4.2.</span> <span class="nav-text">数据采集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控报警"><span class="nav-number">4.3.</span> <span class="nav-text">监控报警</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#度量分析和可视化系统"><span class="nav-number">4.4.</span> <span class="nav-text">度量分析和可视化系统</span></a></li></ol></li></ol></div>
             
 
           </div>

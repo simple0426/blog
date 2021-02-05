@@ -3998,7 +3998,7 @@ $name：值为$type.$id。
 <li>hosts：如果hosts字段不为空，则需要指定使用该证书的IP或域名列表</li>
 </ul>
 <h2 id="生成CA证书和私钥"><a href="#生成CA证书和私钥" class="headerlink" title="生成CA证书和私钥"></a>生成CA证书和私钥</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cfssl gencert -initca ca-csr.json | cfssljson -bare ca -</span><br><span class="line">ls ca*.pem</span><br><span class="line"># 证书信息查看</span><br><span class="line">cfssl-certinfo -cert ca.pem</span><br></pre></td></tr></table></figure>
-<h1 id="CA签发普通证书"><a href="#CA签发普通证书" class="headerlink" title="CA签发普通证书"></a>CA签发普通证书</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &gt; nginx.myapp.com-csr.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;CN&quot;: &quot;nginx.myapp.com&quot;,</span><br><span class="line">  &quot;hosts&quot;: [],</span><br><span class="line">  &quot;key&quot;: &#123;</span><br><span class="line">    &quot;algo&quot;: &quot;rsa&quot;,</span><br><span class="line">    &quot;size&quot;: 2048</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;names&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;C&quot;: &quot;CN&quot;,</span><br><span class="line">      &quot;L&quot;: &quot;BeiJing&quot;,</span><br><span class="line">      &quot;ST&quot;: &quot;BeiJing&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes nginx.myapp.com-csr.json | cfssljson -bare ngi</span><br><span class="line">nx.myapp.com</span><br></pre></td></tr></table></figure>
+<h1 id="CA签发普通证书"><a href="#CA签发普通证书" class="headerlink" title="CA签发普通证书"></a>CA签发普通证书</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &gt; nginx.myapp.com-csr.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;CN&quot;: &quot;nginx.myapp.com&quot;,</span><br><span class="line">  &quot;hosts&quot;: [],</span><br><span class="line">  &quot;key&quot;: &#123;</span><br><span class="line">    &quot;algo&quot;: &quot;rsa&quot;,</span><br><span class="line">    &quot;size&quot;: 2048</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;names&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;C&quot;: &quot;CN&quot;,</span><br><span class="line">      &quot;L&quot;: &quot;BeiJing&quot;,</span><br><span class="line">      &quot;ST&quot;: &quot;BeiJing&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes nginx.myapp.com-csr.json | cfssljson -bare nginx.myapp.com</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>skill</category>
@@ -9994,7 +9994,7 @@ $name：值为$type.$id。
     <content><![CDATA[<h1 id="docker引入"><a href="#docker引入" class="headerlink" title="docker引入"></a>docker引入</h1><h2 id="传统IT面临问题"><a href="#传统IT面临问题" class="headerlink" title="传统IT面临问题"></a>传统IT面临问题</h2><ul>
 <li>部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求)</li>
 <li>环境不一致：开发、测试、生产环境不一致</li>
-<li>资源浪费：硬件需要预采购，成本很高；但是会面临cpu、内存等资源使用不足</li>
+<li>资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足</li>
 </ul>
 <h2 id="容器优势"><a href="#容器优势" class="headerlink" title="容器优势"></a>容器优势</h2><ul>
 <li>更快且保持一致性的交付应用程序【保持多阶段环境的一致性】</li>
@@ -10062,9 +10062,15 @@ $name：值为$type.$id。
 </li>
 <li>swarm：docker默认支持的容器编排工具</li>
 </ul>
-<h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><ul>
-<li><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></li>
-<li><a href="https://developer.aliyun.com/mirror/docker-ce" target="_blank" rel="noopener">阿里云镜像</a></li>
+<h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装-CentOS"><a href="#软件安装-CentOS" class="headerlink" title="软件安装-CentOS"></a>软件安装-CentOS</h2><ul>
+<li><p><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><a href="https://developer.aliyun.com/mirror/docker-ce" target="_blank" rel="noopener">阿里云镜像</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># step 1: 安装必要的一些系统工具</span><br><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"># Step 2: 添加软件源信息</span><br><span class="line">sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line"># Step 3</span><br><span class="line">sudo sed -i &apos;s+download.docker.com+mirrors.aliyun.com/docker-ce+&apos; /etc/yum.repos.d/docker-ce.repo</span><br><span class="line"># Step 4: 更新并安装Docker-CE</span><br><span class="line">sudo yum makecache fast</span><br><span class="line">sudo yum -y install docker-ce</span><br><span class="line"># Step 4: 开启Docker服务</span><br><span class="line">sudo service docker start</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 <h2 id="engine配置"><a href="#engine配置" class="headerlink" title="engine配置"></a>engine配置</h2><blockquote>
 <p>/etc/docker/daemon.json</p>
@@ -10149,6 +10155,7 @@ $name：值为$type.$id。
 </ul>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a><a href="https://goharbor.io/docs/2.0.0/install-config/" target="_blank" rel="noopener">安装</a></h1><ul>
 <li>安装前置条件<ul>
+<li>2核CPU/4GB内存/40GB磁盘</li>
 <li>docker-engine 17.06.0-ce+ or higher</li>
 <li>docker-compose 1.18.0 or higher</li>
 </ul>
@@ -10196,7 +10203,6 @@ $name：值为$type.$id。
 <li>ca.crt为根证书且名称必须是这样</li>
 </ul>
 </li>
-<li>重启docker服务</li>
 </ul>
 </li>
 </ul>
@@ -10239,11 +10245,7 @@ $name：值为$type.$id。
 <li>docker push harbor.zj-hf.cn/mytest/IMAGE[:TAG]</li>
 </ul>
 </li>
-<li>下载镜像<ul>
-<li>docker login</li>
-<li>docker pull harbor.zj-hf.cn/mytest/registry:latest</li>
-</ul>
-</li>
+<li>下载镜像：docker pull harbor.zj-hf.cn/mytest/registry:latest</li>
 <li>删除镜像<ul>
 <li>web界面删除镜像</li>
 <li>设置垃圾清理（Garbage Collection）：删除文件系统上的数据</li>
@@ -10269,23 +10271,23 @@ $name：值为$type.$id。
 </li>
 <li><p>-d：让容器以后台方式运行</p>
 </li>
-<li><p>-e key=value：在容器内设置环境变量</p>
+<li><p>-e key=value：在容器内设置环境变量、设置多个变量时使用多个-e</p>
 </li>
 <li><p>–name：给运行的容器绑定一个名称</p>
 </li>
 <li><p>-h：配置容器主机名</p>
 </li>
-<li><p>–rm：容器存在就删除【运行一次性容器，运行后立即删除】</p>
+<li><p>–rm：容器存在就删除【运行一次性容器，运行结束后立即删除】</p>
 </li>
 <li><p>-v ：映射宿主机目录或数据卷到容器</p>
 </li>
-<li><p>-m 100m：设置容器内存为100m</p>
+<li><p>-m, –memory 100m：设置容器内存为100m</p>
 </li>
 <li><p>–memory-swap=100m：设置容器内存和swap总和是100m</p>
 </li>
 <li><p>–oom-kill-disable：关闭系统oom，避免系统内存不足时杀死容器</p>
 </li>
-<li><p>–cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）</p>
+<li><p>–cpus 0.5：设置容器可以使用的cpu数量（最大值为cpu的最大核心数，最小值为0.1，可以是小数）</p>
 <ul>
 <li>–cpu-shares int：设置多个容器使用cpu的相对权重</li>
 </ul>
@@ -10349,7 +10351,7 @@ $name：值为$type.$id。
 <li><p>container update：修改容器run参数</p>
   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker container update --restart=on-failure jenkins</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>stats：查看容器资源使用情况</p>
+<li><p>stats：查看容器资源使用情况，–no-stream【一次性输出，非数据流】</p>
 </li>
 <li><p>top：查看容器进程列表</p>
 </li>
@@ -10375,7 +10377,7 @@ $name：值为$type.$id。
 <li>作用：此时建立的数据卷不随容器的销毁而消失</li>
 <li>建立数据卷：docker volume create hello</li>
 <li>查看数据卷列表：docker volume ls</li>
-<li>使用数据卷(使用未创建的数据卷时docker会自动创建)：docker run -d -v hello:/world busybox ls /world</li>
+<li>使用数据卷(docker会自动创建不存在的数据卷)：docker run -d -v hello:/world busybox ls /world</li>
 <li>删除数据卷：docker volume rm hello</li>
 </ul>
 </li>
@@ -10408,7 +10410,7 @@ $name：值为$type.$id。
 </li>
 <li>导出tar包<ul>
 <li>从容器导出tar包：docker export adb102099609 &gt; adb102099609.tar</li>
-<li>从镜像导出tar包：docker save -o ubuntu-ruby.tar ubuntu:ruby </li>
+<li>从镜像导出tar包：docker save ubuntu:ruby &gt; ubuntu-ruby.tar </li>
 </ul>
 </li>
 <li>导入tar包创建镜像<ul>
@@ -10479,7 +10481,7 @@ $name：值为$type.$id。
 <h2 id="build构建镜像"><a href="#build构建镜像" class="headerlink" title="build构建镜像"></a>build构建镜像</h2><ul>
 <li>范例：<code>docker build -t=&quot;ubuntu:ruby&quot; .</code></li>
 <li>参数：<ul>
-<li>-t 仓库名:标签</li>
+<li>-t 镜像名:标签</li>
 <li>-f 指定dockerfile文件名称，默认文件名称Dockerfile</li>
 <li>. 注明dockerfile的文件位置</li>
 </ul>
@@ -10492,7 +10494,7 @@ $name：值为$type.$id。
 <li>过长的行使用反斜线续行</li>
 </ul>
 </li>
-<li><p>优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</p>
+<li><p>优化镜像大小：一次RUN形成新的一层，如果没有在同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</p>
 </li>
 <li><p>减少网络传输事件：使用软件包、maven仓库等</p>
 </li>
@@ -10504,8 +10506,8 @@ $name：值为$type.$id。
   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">    echo &quot;Asia/shanghai&quot; &gt; /etc/timezone</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a>Dockerfile范例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
-<h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a>多阶段构建范例</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>
+<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a><a href="https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile" target="_blank" rel="noopener">Dockerfile范例</a></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
+<h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a><a href="https://github.com/simple0426/tomcat-java-demo" target="_blank" rel="noopener">多阶段构建范例</a></h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>
 <h1 id="应用运行"><a href="#应用运行" class="headerlink" title="应用运行"></a>应用运行</h1><h2 id="镜像内固定运行参数"><a href="#镜像内固定运行参数" class="headerlink" title="镜像内固定运行参数"></a>镜像内固定运行参数</h2><ul>
 <li><p>Dockerfile</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM python:2.7</span><br><span class="line">LABEL maintainer=&quot;istyle.simple@gmail.com&quot;</span><br><span class="line">RUN pip install flask</span><br><span class="line">COPY app.py /app/</span><br><span class="line">WORKDIR /app</span><br><span class="line">EXPOSE 5000</span><br><span class="line">CMD [&quot;python&quot;, &quot;app.py&quot;]</span><br></pre></td></tr></table></figure>
@@ -10835,8 +10837,8 @@ $name：值为$type.$id。
 <h3 id="建立并使用overlay网络"><a href="#建立并使用overlay网络" class="headerlink" title="建立并使用overlay网络"></a>建立并使用overlay网络</h3><ul>
 <li>创建网络：docker network create -d overlay demo</li>
 <li>查看网络：docker network ls</li>
-<li>在两台宿主机使用此网络启动：docker run -d –name test2 –network demo busybox sh -c “while true;do sleep 3600;done”</li>
-<li>在两个容器内ping测试：docker exec -it test1 /bin/sh</li>
+<li>在两台宿主机使用此网络启动：docker run -d –name test2/test1 –network demo busybox sh -c “while true;do sleep 3600;done”</li>
+<li>在两个容器内ping测试：docker exec -it test1/test2 /bin/sh</li>
 <li>在etcd中查看网络信息：etcdctl ls /docker</li>
 </ul>
 <h1 id="网桥管理工具-brctl"><a href="#网桥管理工具-brctl" class="headerlink" title="网桥管理工具-brctl"></a>网桥管理工具-brctl</h1><ul>
@@ -22189,52 +22191,27 @@ $name：值为$type.$id。
 <li>-o filename：下载文件并另存为</li>
 <li>-O 下载文件并保持文件名</li>
 <li>-L, –location 跟踪重定向</li>
-<li>-c –cookie-jar FILE将服务器发送的cookie保存到文件中<ul>
-<li>curl -c cookie.txt -s <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
-</ul>
-</li>
-<li>-I 只显示header信息<ul>
-<li>curl -s -I <a href="http://www.baidu.com" target="_blank" rel="noopener">http://www.baidu.com</a></li>
-</ul>
-</li>
+<li>-c –cookie-jar FILE将服务器发送的cookie保存到文件中：<code>curl -c cookie.txt -s https://www.linuxidc.com</code></li>
+<li>-I 只显示header信息：<code>curl -s -I http://www.baidu.com</code></li>
 <li>-s –silent静默输出</li>
-<li>-w 显示特定变量的信息【变量参考<code>man curl</code>】<ul>
-<li>curl -o /dev/null -s -w “%{http_code}” <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></li>
-</ul>
-</li>
+<li>-w 显示特定变量的信息【变量参考<code>man curl</code>】：<code>curl -o /dev/null -s -w &quot;%{http_code}&quot; www.baidu.com</code></li>
 </ul>
 <h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><ul>
 <li><p>-X, –request 指定请求方法【默认get】</p>
 </li>
-<li><p>-d/–data 指定post请求数据</p>
-<ul>
-<li>curl -X POST –data ‘{“message”: “01”, “pageIndex”: “1”}’ <a href="http://127.0.0.1:5000/python" target="_blank" rel="noopener">http://127.0.0.1:5000/python</a></li>
-</ul>
+<li><p>-d/–data 指定post请求数据：<code>curl -X POST --data &#39;{&quot;message&quot;: &quot;01&quot;, &quot;pageIndex&quot;: &quot;1&quot;}&#39; http://127.0.0.1:5000/python</code></p>
 </li>
-<li><p>-H/–header 指定要发送的header信息</p>
-<ul>
-<li>curl -H “Content-Type: application/json” -X POST  –data ‘{“userID”:10001}’ <a href="http://localhost:8085/GetUserInfo" target="_blank" rel="noopener">http://localhost:8085/GetUserInfo</a></li>
-</ul>
+<li><p>-H/–header 指定要发送的header信息：<code>curl -H &quot;Content-Type: application/json&quot; -X POST  --data &#39;{&quot;userID&quot;:10001}&#39; http://localhost:8085/GetUserInfo</code></p>
 </li>
-<li><p>-A 指定user-agent信息</p>
-<ul>
-<li>curl -A “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)” -o page.html  <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
-</ul>
+<li><p>-A 指定user-agent信息：<code>curl -A &quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)&quot; -o page.html  https://www.linuxidc.com</code></p>
 </li>
-<li><p>-b, –cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串</p>
-<ul>
-<li>curl -b ‘a=1;b=2’ <a href="https://www.linuxidc.com" target="_blank" rel="noopener">https://www.linuxidc.com</a></li>
-</ul>
+<li><p>-b, –cookie STRING/FILE 指定发送请求时要发送的cookie文件或字符串：<code>curl -b &#39;a=1;b=2&#39; https://www.linuxidc.com</code></p>
 </li>
-<li><p>-e, –referer指定上次访问的页面【可用于盗链】</p>
-<ul>
-<li>curl -o test.jpg -e <a href="http://oldboy.blog.51cto.com/2561410/1009292" target="_blank" rel="noopener">http://oldboy.blog.51cto.com/2561410/1009292</a> <a href="http://img1.51cto.com/attachment/201209/155625967.jpg" target="_blank" rel="noopener">http://img1.51cto.com/attachment/201209/155625967.jpg</a></li>
-</ul>
+<li><p>-e, –referer指定上次访问的页面【可用于盗链】:<code>curl -o test.jpg -e http://oldboy.blog.51cto.com/2561410/1009292 http://img1.51cto.com/attachment/201209/155625967.jpg</code></p>
 </li>
-<li><p>-x, –proxy [protocol://]host[:port] 使用代理服务器：–proxy <a href="http://127.0.0.1:10809" target="_blank" rel="noopener">http://127.0.0.1:10809</a></p>
+<li><p>-x, –proxy [protocol://]host[:port] 使用代理服务器：<code>--proxy http://127.0.0.1:10809</code></p>
 </li>
-<li><p>-g, –globoff 允许在URL中使用<code>[] {}</code>表示范围</p>
-  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -g &quot;localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&amp;pretty&quot;</span><br></pre></td></tr></table></figure>
+<li><p>-g, –globoff 允许在URL中使用<code>[] {}</code>表示范围：<code>curl -g &quot;localhost:9200/bank/_search?q=age:%20[22%20TO%2025]&amp;pretty&quot;</code></p>
 </li>
 </ul>
 <h1 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h1><p>netcat是一个用于TCP/UDP连接和监听的工具,nc是开源版本的netcat工具</p>
@@ -22279,9 +22256,7 @@ $name：值为$type.$id。
 <li>–http-user/–http-password：http下载选项</li>
 <li>–proxy-user=user/–proxy-password=password：proxy选项设置</li>
 </ul>
-<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><ul>
-<li>wget -b -c –limit-rate=300K <a href="https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64" target="_blank" rel="noopener">https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64</a> -O docker-compose.box</li>
-</ul>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><p><code>wget -b -c --limit-rate=300K https://mirrors.aliyun.com/docker-toolbox/linux/compose/1.10.0/docker-compose-Linux-x86_64 -O docker-compose.box</code></p>
 <h1 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a>iptables</h1><ul>
 <li>iptables是一个用于ipv4/ipv6包过滤和地址转换的管理工具</li>
 <li>iptables语法主要由路由表、规则链、匹配规则、执行动作构成</li>

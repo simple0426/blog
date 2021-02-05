@@ -88,7 +88,7 @@
 <meta property="og:description" content="docker网络实现 网络命名空间(netns(net namespace))：linux在网络栈中引入网络名称空间，将独立的网络协议栈隔离到不同的名称空间中，彼此无法通信；docker利用linux的这一特性，实现了容器的网络隔离 veth(virtual ethernet)：虚拟以太网卡，和物理网卡类似，用于不同命名空间的网络通信(例如，利用veth连接容器和宿主机) 网桥：网桥是一个二层网络">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/docekr-bridge.jpg">
-<meta property="og:updated_time" content="2020-08-25T07:54:12.701Z">
+<meta property="og:updated_time" content="2021-02-05T06:04:06.662Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker网络">
 <meta name="twitter:description" content="docker网络实现 网络命名空间(netns(net namespace))：linux在网络栈中引入网络名称空间，将独立的网络协议栈隔离到不同的名称空间中，彼此无法通信；docker利用linux的这一特性，实现了容器的网络隔离 veth(virtual ethernet)：虚拟以太网卡，和物理网卡类似，用于不同命名空间的网络通信(例如，利用veth连接容器和宿主机) 网桥：网桥是一个二层网络">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-08-25T15:54:12+08:00">
-                2020-08-25
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T14:04:06+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -482,8 +482,8 @@
 <h3 id="建立并使用overlay网络"><a href="#建立并使用overlay网络" class="headerlink" title="建立并使用overlay网络"></a>建立并使用overlay网络</h3><ul>
 <li>创建网络：docker network create -d overlay demo</li>
 <li>查看网络：docker network ls</li>
-<li>在两台宿主机使用此网络启动：docker run -d –name test2 –network demo busybox sh -c “while true;do sleep 3600;done”</li>
-<li>在两个容器内ping测试：docker exec -it test1 /bin/sh</li>
+<li>在两台宿主机使用此网络启动：docker run -d –name test2/test1 –network demo busybox sh -c “while true;do sleep 3600;done”</li>
+<li>在两个容器内ping测试：docker exec -it test1/test2 /bin/sh</li>
 <li>在etcd中查看网络信息：etcdctl ls /docker</li>
 </ul>
 <h1 id="网桥管理工具-brctl"><a href="#网桥管理工具-brctl" class="headerlink" title="网桥管理工具-brctl"></a>网桥管理工具-brctl</h1><ul>

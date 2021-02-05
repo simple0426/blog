@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量  –nam">
+<meta name="description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
 <meta name="keywords" content="容器,镜像">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker容器和镜像">
 <meta property="og:url" content="http://blog.unlazy.cn/2019/11/11/容器化/docker/docker容器和镜像/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量  –nam">
+<meta property="og:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-16T08:44:29.575Z">
+<meta property="og:updated_time" content="2021-02-05T14:27:08.308Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker容器和镜像">
-<meta name="twitter:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量  –nam">
+<meta name="twitter:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
 
 
 
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-16T16:44:29+08:00">
-                2020-12-16
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T22:27:08+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -394,23 +394,23 @@
 </li>
 <li><p>-d：让容器以后台方式运行</p>
 </li>
-<li><p>-e key=value：在容器内设置环境变量</p>
+<li><p>-e key=value：在容器内设置环境变量、设置多个变量时使用多个-e</p>
 </li>
 <li><p>–name：给运行的容器绑定一个名称</p>
 </li>
 <li><p>-h：配置容器主机名</p>
 </li>
-<li><p>–rm：容器存在就删除【运行一次性容器，运行后立即删除】</p>
+<li><p>–rm：容器存在就删除【运行一次性容器，运行结束后立即删除】</p>
 </li>
 <li><p>-v ：映射宿主机目录或数据卷到容器</p>
 </li>
-<li><p>-m 100m：设置容器内存为100m</p>
+<li><p>-m, –memory 100m：设置容器内存为100m</p>
 </li>
 <li><p>–memory-swap=100m：设置容器内存和swap总和是100m</p>
 </li>
 <li><p>–oom-kill-disable：关闭系统oom，避免系统内存不足时杀死容器</p>
 </li>
-<li><p>–cpus 0.5：设置容器可以使用的cpu百分比（最大值为cpu的核心数，最小值为0.1，可以是小数）</p>
+<li><p>–cpus 0.5：设置容器可以使用的cpu数量（最大值为cpu的最大核心数，最小值为0.1，可以是小数）</p>
 <ul>
 <li>–cpu-shares int：设置多个容器使用cpu的相对权重</li>
 </ul>
@@ -474,7 +474,7 @@
 <li><p>container update：修改容器run参数</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container update --restart=on-failure jenkins</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>stats：查看容器资源使用情况</p>
+<li><p>stats：查看容器资源使用情况，–no-stream【一次性输出，非数据流】</p>
 </li>
 <li><p>top：查看容器进程列表</p>
 </li>
@@ -500,7 +500,7 @@
 <li>作用：此时建立的数据卷不随容器的销毁而消失</li>
 <li>建立数据卷：docker volume create hello</li>
 <li>查看数据卷列表：docker volume ls</li>
-<li>使用数据卷(使用未创建的数据卷时docker会自动创建)：docker run -d -v hello:/world busybox ls /world</li>
+<li>使用数据卷(docker会自动创建不存在的数据卷)：docker run -d -v hello:/world busybox ls /world</li>
 <li>删除数据卷：docker volume rm hello</li>
 </ul>
 </li>
@@ -533,7 +533,7 @@
 </li>
 <li>导出tar包<ul>
 <li>从容器导出tar包：docker export adb102099609 &gt; adb102099609.tar</li>
-<li>从镜像导出tar包：docker save -o ubuntu-ruby.tar ubuntu:ruby </li>
+<li>从镜像导出tar包：docker save ubuntu:ruby &gt; ubuntu-ruby.tar </li>
 </ul>
 </li>
 <li>导入tar包创建镜像<ul>
@@ -604,7 +604,7 @@
 <h2 id="build构建镜像"><a href="#build构建镜像" class="headerlink" title="build构建镜像"></a>build构建镜像</h2><ul>
 <li>范例：<code>docker build -t=&quot;ubuntu:ruby&quot; .</code></li>
 <li>参数：<ul>
-<li>-t 仓库名:标签</li>
+<li>-t 镜像名:标签</li>
 <li>-f 指定dockerfile文件名称，默认文件名称Dockerfile</li>
 <li>. 注明dockerfile的文件位置</li>
 </ul>
@@ -617,7 +617,7 @@
 <li>过长的行使用反斜线续行</li>
 </ul>
 </li>
-<li><p>优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</p>
+<li><p>优化镜像大小：一次RUN形成新的一层，如果没有在同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小</p>
 </li>
 <li><p>减少网络传输事件：使用软件包、maven仓库等</p>
 </li>
@@ -629,8 +629,8 @@
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">    echo &quot;Asia/shanghai&quot; &gt; /etc/timezone</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a>Dockerfile范例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
-<h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a>多阶段构建范例</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>
+<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a><a href="https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile" target="_blank" rel="noopener">Dockerfile范例</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
+<h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a><a href="https://github.com/simple0426/tomcat-java-demo" target="_blank" rel="noopener">多阶段构建范例</a></h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>
 <h1 id="应用运行"><a href="#应用运行" class="headerlink" title="应用运行"></a>应用运行</h1><h2 id="镜像内固定运行参数"><a href="#镜像内固定运行参数" class="headerlink" title="镜像内固定运行参数"></a>镜像内固定运行参数</h2><ul>
 <li><p>Dockerfile</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM python:2.7</span><br><span class="line">LABEL maintainer=&quot;istyle.simple@gmail.com&quot;</span><br><span class="line">RUN pip install flask</span><br><span class="line">COPY app.py /app/</span><br><span class="line">WORKDIR /app</span><br><span class="line">EXPOSE 5000</span><br><span class="line">CMD [&quot;python&quot;, &quot;app.py&quot;]</span><br></pre></td></tr></table></figure>
