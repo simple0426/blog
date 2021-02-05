@@ -123,7 +123,6 @@ cat > nginx.myapp.com-csr.json <<EOF
 }
 EOF
 
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes nginx.myapp.com-csr.json | cfssljson -bare ngi
-nx.myapp.com
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes nginx.myapp.com-csr.json | cfssljson -bare nginx.myapp.com
 ```
 

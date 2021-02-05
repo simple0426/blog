@@ -10,8 +10,9 @@ categories: ['docker']
 
 # [安装][6]
 * 安装前置条件
-    - docker-engine 17.06.0-ce+ or higher
-    - docker-compose 1.18.0 or higher
+    * 2核CPU/4GB内存/40GB磁盘
+    * docker-engine 17.06.0-ce+ or higher
+    * docker-compose 1.18.0 or higher
 * [下载离线安装包][3]
 * 参数配置(harbor.yml)
     - hostname: 对外发布的主机名
@@ -41,7 +42,6 @@ categories: ['docker']
     - 如果使用自签名证书，将ca根证书放入如下位置：/etc/docker/certs.d/myregistry:5000/ca.crt
         + myregistry为harbor主机的ip地址或域名，如果使用非443端口则要添加端口信息
         + ca.crt为根证书且名称必须是这样
-    - 重启docker服务
 
 ## 重新设置
 
@@ -86,9 +86,7 @@ docker-compose up -d
 * 上传镜像
     - docker tag SOURCE_IMAGE[:TAG] harbor.zj-hf.cn/mytest/IMAGE[:TAG]
     - docker push harbor.zj-hf.cn/mytest/IMAGE[:TAG]
-* 下载镜像
-    - docker login
-    - docker pull harbor.zj-hf.cn/mytest/registry:latest
+* 下载镜像：docker pull harbor.zj-hf.cn/mytest/registry:latest
 * 删除镜像
     - web界面删除镜像
     - 设置垃圾清理（Garbage Collection）：删除文件系统上的数据
