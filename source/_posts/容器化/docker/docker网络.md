@@ -129,7 +129,6 @@ date: 2019-12-02 23:51:37
   * 集群状态查看：ETCDCTL_API=3 etcdctl --endpoints=192.168.2.151:2379,192.168.2.152:2379 endpoint status/health
   ```
 
-  
 
 ### docker-engine配置调整
 
@@ -145,8 +144,8 @@ date: 2019-12-02 23:51:37
 
 * 创建网络：docker network create -d overlay demo
 * 查看网络：docker network ls
-* 在两台宿主机使用此网络启动：docker run -d --name test2 --network demo busybox sh -c "while true;do sleep 3600;done"
-* 在两个容器内ping测试：docker exec -it test1 /bin/sh
+* 在两台宿主机使用此网络启动：docker run -d --name test2/test1 --network demo busybox sh -c "while true;do sleep 3600;done"
+* 在两个容器内ping测试：docker exec -it test1/test2 /bin/sh
 * 在etcd中查看网络信息：etcdctl ls /docker
 
 # 网桥管理工具-brctl
