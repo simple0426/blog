@@ -196,7 +196,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 ## build构建镜像
 * 范例：`docker build -t="ubuntu:ruby" .`
 * 参数：
-    - -t 仓库名:标签
+    - -t 镜像名:标签
     - -f 指定dockerfile文件名称，默认文件名称Dockerfile
     - . 注明dockerfile的文件位置
 
@@ -205,7 +205,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     - 使用&&连接多个命令
     - 过长的行使用反斜线续行
     
-* 优化镜像大小：一次RUN形成新的一层，如果没有字同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小
+* 优化镜像大小：一次RUN形成新的一层，如果没有在同一层删除，无论文件最后是否删除，都会带到下一层，所以要在每一层清理对应的残留数据，减小镜像大小
 
 * 减少网络传输事件：使用软件包、maven仓库等
 
@@ -220,7 +220,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
         echo "Asia/shanghai" > /etc/timezone
     ```
 
-## Dockerfile范例
+## [Dockerfile范例](https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile)
 ```
 FROM ubuntu:14.04
 LABEL maintainer hejingqi@zj-inv.cn
@@ -247,7 +247,7 @@ EXPOSE 22
 CMD /usr/sbin/sshd -D
 ```
 
-## 多阶段构建范例
+## [多阶段构建范例](https://github.com/simple0426/tomcat-java-demo)
 
 ```yaml
 # stage build
