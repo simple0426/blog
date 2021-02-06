@@ -182,18 +182,21 @@ docker run \
 * 服务启动：`docker run --name prometheus -d -p 9090:9090 prom/prometheus`
 * 添加cadvisor数据【重启prometheus】：/etc/prometheus/prometheus.yml
 ```
-  - job_name: 'cadvisor'                 
-                                
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-                                 
+scrape_configs:
+  - job_name: 'cadvisor'
     static_configs:     
     - targets: ['172.17.8.51:8080','172.17.8.52:8080']
 ```
 
-## 度量分析和可视化系统
+* web界面：http://ip:9090
+
+## 监控可视化
+
 * 使用软件：[grafana][2]
 * 服务启动：`docker run -d -p 3000:3000 --name grafana grafana/grafana`
+* web登陆：
+  * web界面：http://ip:3000
+  * 用户名密码：admin/admin
 * 添加数据源-prometheus
 * 添加docker监控模板【ID：193】
 
