@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-02-04T16:56:30.692Z">
+<meta property="og:updated_time" content="2021-02-07T11:00:53.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s实施-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
-                2021-02-05
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-07T19:00:53+08:00">
+                2021-02-07
               </time>
             
           </span>
@@ -386,7 +386,7 @@
       
 
       
-        <h1 id="kubeadm介绍"><a href="#kubeadm介绍" class="headerlink" title="kubeadm介绍"></a>kubeadm介绍</h1><p>kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除<br>kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署  </p>
+        <h1 id="kubeadm介绍"><a href="#kubeadm介绍" class="headerlink" title="kubeadm介绍"></a><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener">kubeadm介绍</a></h1><p>kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除<br>kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署  </p>
 <ul>
 <li>kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-controller-manager/kube-scheduler)</li>
 <li>kubeadm join：将节点加入集群</li>
@@ -420,29 +420,29 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">EOF</span><br><span class="line">sudo sysctl --system</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><blockquote>
-<p>master、node都操作</p>
-</blockquote>
-<ul>
-<li>根据kubeadm要求配置启动参数</li>
-<li>配置镜像加速地址<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],</span><br><span class="line">  &quot;registry-mirrors&quot; : [&quot;https://2x97hcl1.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;log-driver&quot;: &quot;json-file&quot;,</span><br><span class="line">  &quot;log-opts&quot;: &#123;</span><br><span class="line">    &quot;max-size&quot;: &quot;100m&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;overlay2&quot;,</span><br><span class="line">  &quot;storage-opts&quot;: [</span><br><span class="line">    &quot;overlay2.override_kernel_check=true&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+<h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><ul>
+<li>master、node都操作</li>
+<li><p>为保证兼容性，使用<a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker" target="_blank" rel="noopener">k8s推荐docker版本</a></p>
+</li>
+<li><p>根据kubeadm要求配置启动参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],</span><br><span class="line">  &quot;registry-mirrors&quot; : [&quot;https://2x97hcl1.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;log-driver&quot;: &quot;json-file&quot;,</span><br><span class="line">  &quot;log-opts&quot;: &#123;</span><br><span class="line">    &quot;max-size&quot;: &quot;100m&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;overlay2&quot;,</span><br><span class="line">  &quot;storage-opts&quot;: [</span><br><span class="line">    &quot;overlay2.override_kernel_check=true&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="安装kubelet、kubeadm、kubectl"><a href="#安装kubelet、kubeadm、kubectl" class="headerlink" title="安装kubelet、kubeadm、kubectl"></a><a href="https://developer.aliyun.com/mirror/kubernetes" target="_blank" rel="noopener">安装kubelet、kubeadm、kubectl</a></h2><ul>
-<li><p>master node、workernode都操作</p>
+<h2 id="安装kubelet-kubeadm-kubectl"><a href="#安装kubelet-kubeadm-kubectl" class="headerlink" title="安装kubelet/kubeadm/kubectl"></a><a href="https://developer.aliyun.com/mirror/kubernetes" target="_blank" rel="noopener">安装kubelet/kubeadm/kubectl</a></h2><ul>
+<li><p>master node、worker node都操作</p>
 </li>
 <li><p>此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致；由于阿里镜像源滞后，所以需要测试镜像源是否包含指定版本</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.8</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.19.6</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>指定版本安装：<code>yum install kubelet-1.18.8 kubeadm-1.18.8 kubectl-1.18.8 -y</code></p>
+<li><p>指定版本安装：<code>yum install kubelet-1.19.6 kubeadm-1.19.6 kubectl-1.19.6 -y</code></p>
 </li>
-<li><p>kubelet开启启动：<code>systemctl enable kubelet</code></p>
+<li><p>kubelet开机启动：<code>systemctl enable kubelet</code></p>
 </li>
 </ul>
 <h2 id="集群初始化"><a href="#集群初始化" class="headerlink" title="集群初始化"></a>集群初始化</h2><blockquote>
 <p>master操作</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --kubernetes-version=v1.18.8 \</span><br><span class="line">--pod-network-cidr=10.244.0.0/16 \</span><br><span class="line">--service-cidr=10.96.0.0/12 \</span><br><span class="line">--apiserver-advertise-address=192.168.31.201 \</span><br><span class="line">--image-repository=registry.aliyuncs.com/google_containers \</span><br><span class="line">--ignore-preflight-errors=NumCPU</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --kubernetes-version=v1.19.6 \</span><br><span class="line">--pod-network-cidr=10.244.0.0/16 \</span><br><span class="line">--service-cidr=10.96.0.0/12 \</span><br><span class="line">--apiserver-advertise-address=192.168.31.201 \</span><br><span class="line">--image-repository=registry.aliyuncs.com/google_containers \</span><br><span class="line">--ignore-preflight-errors=NumCPU</span><br></pre></td></tr></table></figure>
 <h2 id="根据init结果提示操作"><a href="#根据init结果提示操作" class="headerlink" title="根据init结果提示操作"></a>根据init结果提示操作</h2><ul>
 <li><p>配置kubectl【master】</p>
 </li>
@@ -508,9 +508,10 @@
 </ul>
 </li>
 <li><p><a href="https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md" target="_blank" rel="noopener">建立管理员</a></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  name: admin-user</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">---</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: admin-user</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: admin-user</span><br><span class="line">  namespace: kubernetes-dashboard</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>登录token获取</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk &apos;&#123;print $1&#125;&apos;)</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath=&quot;&#123;.secrets[0].name&#125;&quot;) -o go-template=&quot;&#123;&#123;.data.token | base64decode&#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>web访问：<a href="https://192.168.31.202:8443/" target="_blank" rel="noopener">https://192.168.31.202:8443/</a></p>
 </li>
@@ -522,7 +523,7 @@
 <li><p>pod及service修改配置</p>
 <ul>
 <li>ingress部署在node02上：nodeSelector–》<code>kubernetes.io/hostname: &quot;node02&quot;</code></li>
-<li>修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.35.0</li>
+<li>修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.44.0</li>
 <li>将ingress的访问端口暴露在宿主机上：Service–》nodePort：30080/30443</li>
 </ul>
 </li>
@@ -717,7 +718,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm介绍"><span class="nav-number">1.</span> <span class="nav-text">kubeadm介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署要求"><span class="nav-number">2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署步骤"><span class="nav-number">3.</span> <span class="nav-text">部署步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">3.1.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装kubelet、kubeadm、kubectl"><span class="nav-number">3.2.</span> <span class="nav-text">安装kubelet、kubeadm、kubectl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群初始化"><span class="nav-number">3.3.</span> <span class="nav-text">集群初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据init结果提示操作"><span class="nav-number">3.4.</span> <span class="nav-text">根据init结果提示操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm管理"><span class="nav-number">4.</span> <span class="nav-text">kubeadm管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#移除节点"><span class="nav-number">4.1.</span> <span class="nav-text">移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join认证信息"><span class="nav-number">4.2.</span> <span class="nav-text">join认证信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书管理"><span class="nav-number">4.3.</span> <span class="nav-text">证书管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附加组件部署"><span class="nav-number">5.</span> <span class="nav-text">附加组件部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dashboard"><span class="nav-number">5.1.</span> <span class="nav-text">dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-nginx"><span class="nav-number">5.2.</span> <span class="nav-text">ingress-nginx</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm介绍"><span class="nav-number">1.</span> <span class="nav-text">kubeadm介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署要求"><span class="nav-number">2.</span> <span class="nav-text">部署要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署步骤"><span class="nav-number">3.</span> <span class="nav-text">部署步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker"><span class="nav-number">3.1.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装kubelet-kubeadm-kubectl"><span class="nav-number">3.2.</span> <span class="nav-text">安装kubelet/kubeadm/kubectl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群初始化"><span class="nav-number">3.3.</span> <span class="nav-text">集群初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据init结果提示操作"><span class="nav-number">3.4.</span> <span class="nav-text">根据init结果提示操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubeadm管理"><span class="nav-number">4.</span> <span class="nav-text">kubeadm管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#移除节点"><span class="nav-number">4.1.</span> <span class="nav-text">移除节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join认证信息"><span class="nav-number">4.2.</span> <span class="nav-text">join认证信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书管理"><span class="nav-number">4.3.</span> <span class="nav-text">证书管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附加组件部署"><span class="nav-number">5.</span> <span class="nav-text">附加组件部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dashboard"><span class="nav-number">5.1.</span> <span class="nav-text">dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress-nginx"><span class="nav-number">5.2.</span> <span class="nav-text">ingress-nginx</span></a></li></ol></li></ol></div>
             
 
           </div>
