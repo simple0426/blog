@@ -9,9 +9,10 @@ categories:
 date: 2020-03-21 00:20:49
 ---
 
-# 管理实现方式-API
+# 管理方式-API
 kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，  
 用于查询和修改集群的状态，并将结果存储于etcd中。
+
 ## API设计模式
 * 声明式
     - 天然记录了状态
@@ -34,11 +35,11 @@ kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful�
 * 使系统自动化和无人值守成为可能
 * 便于扩展(自定义资源和控制器)
 
-## 查看api资源
+## 查看API资源
 * 支持的api接口版本：kubectl api-versions
 * 支持的api资源信息：kubectl api-resources
 
-## 自定义api资源
+## 自定义API资源
 * 修改kubernetes源码自定义类型
 * 创建自定义API server，并将其聚合至集群中
 * 使用自定义资源CRD
@@ -49,7 +50,6 @@ kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful�
     - 启动代理网关：kubectl proxy --port 8080
     - 访问接口：curl localhost:8080/api/v1/namespaces/
 * web界面：kubernetes dashboard
-* 自动化配置管理(kube-applier)：用户将配置推送到git仓库中，配置工具自动将配置同步到集群中
 
 # 资源对象
 ## 资源对象分类
@@ -76,9 +76,9 @@ metadata:
 spec: 
   containers:
   - name: nginx
-     image: nginx
-     ports:
-     - containerPort: 80
+    image: nginx
+    ports:
+    - containerPort: 80
 ```
 
 * kind：资源类型
@@ -97,18 +97,18 @@ spec:
 * uid(集群自动生成)：当前对象的唯一标识符
 
 ### 可选字段
-* labels:设定用于标识当前对象的键值对，常用作筛选条件
+* labels：用于标识当前对象的键值对，常用作筛选条件
 * annotations：非标识性键值对，用于labels的补充
 
 # 标签和标签选择器
 标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上
-## 标签定义
+## 标签定义语法
 * 键由键前缀和健名组成
     - 健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点
     - 键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或第三方组件为用户添加的键必须使用键前缀；“kubernetes.io"是系统核心组件使用的
 * 键值：和健名规则相同
 
-## 常用标签
+## 常用标签范例
 * 版本标签：release：stable，release：canary，release：beta
 * 环境标签：environment：dev，environment：qa，environment：prod
 * 应用标签：app：ui，app：as，app：pc，app：sc
@@ -116,7 +116,7 @@ spec:
 * 分区标签：partition：customerA，partition：customerB
 * 品控级别标签：track：daily，track：weekly
 
-## 创建时添加标签
+## 资源文件定义标签
 ```
 kind: Pod
 apiVersion: v1
@@ -131,7 +131,7 @@ spec:
     image: ikubernetes/myapp:v1
 ```
 
-## 动态修改标签
+## 命令行修改标签
 * 修改已存在标签：kubectl label pods/pod-label env=prod --overwrite
 * 添加新标签：kubectl label pods/pod-label release=alpha
 * 删除标签：kubectl label pods/pod-label release-
@@ -141,22 +141,30 @@ spec:
 * 显示特定键标签：kubectl get pod -L env,tier
 
 ## 标签选择器
-* 标签选择器逻辑
-    - 多个选择器之间为逻辑“与”关系
-    - 空值的标签选择器意味着所有对象都被选中
-    - 空标签选择器意味着没有对象被选中
-* 选择器种类
-    - 等值关系，操作符：“=”，“==”，“！=”
-    - 集合关系，操作符：in，notin，exists(key-存在，!key-不存在)
-* 命令行使用：
-    - 相等型：kubectl get deployment --show-labels -l env=test,env!=prod
-    - 集合型：kubectl get deployment --show-labels -l "Env in (test,gray)，Tie notin (front,back)，release，!release"
-* selector使用【deployment、service、replicaset等使用】：
-    - matchLabels：相等型关系匹配
-    - matchExpressions：集合型关系匹配
-        + key：key_name
-        + operator：In、NotIn、Exists、DoesNotExist
-        + values：\[values1,values2...\]
+### 处理逻辑
+
+- 多个选择器之间为逻辑“与”关系
+- 空值的标签选择器意味着所有对象都被选中
+- 空标签选择器意味着没有对象被选中
+
+### 选择器种类
+
+- 等值关系，操作符：“=”，“==”，“！=”
+- 集合关系，操作符：in，notin，exists(key-存在，!key-不存在)
+
+### 命令行使用
+
+- 相等型：kubectl get deployment --show-labels -l env=test,env!=prod
+- 集合型：kubectl get deployment --show-labels -l "Env in (test,gray)，Tie notin (front,back)，release，!release"
+
+### 资源文件使用
+
+- matchLabels：相等型关系匹配
+- matchExpressions：集合型关系匹配
+    + key：key_name
+    + operator：In、NotIn、Exists、DoesNotExist
+    + values：\[values1,values2...\]
+
 ```
 selector:
   matchLables:
@@ -182,7 +190,7 @@ selector:
 * describe：kubectl describe pod storage-provisioner -n kube-system
 * get -o yaml：`kubectl get pod storage-provisioner -n kube-system -o yaml`
 
-## 手动添加注解
+## 命令行添加注解
 kubectl annotate pods pod-label ilinux.io/created-by="cluster admin"
 
 # kubectl命令
@@ -299,4 +307,5 @@ kubectl sub_command resource_type resource_name cmd_option
 ## 镜像升级和回滚
 * 查看当前版本：kubectl get deploy -o wide
 * 更新镜像：kubectl set image deploy/nginx-deployment nginx=nginx:1.13
+* 查看版本更新状况：kubectl rollout status deploy nginx-deployment
 * 回滚到上个版本：kubectl rollout undo deploy nginx-deployment
