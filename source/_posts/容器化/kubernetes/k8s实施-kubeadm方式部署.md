@@ -6,7 +6,7 @@ categories:
   - kubernetes
 date: 2020-03-11 17:04:08
 ---
-# kubeadm介绍
+# [kubeadm介绍](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除  
 kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署  
 
@@ -67,10 +67,10 @@ sudo sysctl --system
 
 # 部署步骤
 ## 安装docker
->master、node都操作
+* master、node都操作
+* 为保证兼容性，使用[k8s推荐docker版本](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)
 
 * 根据kubeadm要求配置启动参数
-* 配置镜像加速地址
 ```
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -91,7 +91,7 @@ systemctl enable docker
 systemctl restart docker
 ```
 
-## [安装kubelet、kubeadm、kubectl](https://developer.aliyun.com/mirror/kubernetes)
+## [安装kubelet/kubeadm/kubectl](https://developer.aliyun.com/mirror/kubernetes)
 * master node、worker node都操作
 
 * 此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致；由于阿里镜像源滞后，所以需要测试镜像源是否包含指定版本
@@ -102,7 +102,7 @@ systemctl restart docker
 
 * 指定版本安装：`yum install kubelet-1.19.6 kubeadm-1.19.6 kubectl-1.19.6 -y`
 
-* kubelet开启启动：`systemctl enable kubelet`
+* kubelet开机启动：`systemctl enable kubelet`
 
 ## 集群初始化
 >master操作
