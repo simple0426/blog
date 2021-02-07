@@ -92,15 +92,15 @@ systemctl restart docker
 ```
 
 ## [安装kubelet、kubeadm、kubectl](https://developer.aliyun.com/mirror/kubernetes)
-* master node、workernode都操作
+* master node、worker node都操作
 
 * 此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致；由于阿里镜像源滞后，所以需要测试镜像源是否包含指定版本
 
   ```
-  docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.8
+  docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.19.6
   ```
 
-* 指定版本安装：`yum install kubelet-1.18.8 kubeadm-1.18.8 kubectl-1.18.8 -y`
+* 指定版本安装：`yum install kubelet-1.19.6 kubeadm-1.19.6 kubectl-1.19.6 -y`
 
 * kubelet开启启动：`systemctl enable kubelet`
 
@@ -108,7 +108,7 @@ systemctl restart docker
 >master操作
 
 ```
-kubeadm init --kubernetes-version=v1.18.8 \
+kubeadm init --kubernetes-version=v1.19.6 \
 --pod-network-cidr=10.244.0.0/16 \
 --service-cidr=10.96.0.0/12 \
 --apiserver-advertise-address=192.168.31.201 \
@@ -188,10 +188,31 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
     
 - [建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
 
+    ```
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: admin-user
+      namespace: kubernetes-dashboard
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: admin-user
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: cluster-admin
+    subjects:
+    - kind: ServiceAccount
+      name: admin-user
+      namespace: kubernetes-dashboard
+    ```
+
 - 登录token获取
 
     ```
-    kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+    kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
     ```
 
 - web访问：https://192.168.31.202:8443/
@@ -205,7 +226,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 
 - pod及service修改配置
     + ingress部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
-    + 修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.35.0
+    + 修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.44.0
     + 将ingress的访问端口暴露在宿主机上：Service--》nodePort：30080/30443
 
 
