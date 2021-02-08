@@ -32,7 +32,6 @@ date: 2020-02-24 19:46:38
         + 会发生直接的文件交互
         + 使用localhost或socket进行本地通信
         + 会发生频繁的RPC调用
-        + 会共享某些namespace
 
 ## pod实现
 ### 网络实现
@@ -76,14 +75,14 @@ spec:
 #### 应用场景
 * 日志收集(log)
 * Debug应用(debug)
-* 容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互
+* 容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互，比如envoy
 * 适配器(adapter)：单独写一个应用用来处理URL变更、数据格式变更的操作，以完成对现有业务的兼容
 
-#### 应用范例-war包
-* 可选方式
-    - 将war包和tomcat都打包进镜像中，但是代码和tomcat的更新都需要更新镜像
-    - 制作单独的tomcat镜像，在容器运行时将war包挂载到容器内，此时则需要单独维护war包和一个分布式文件系统
-* sidecar方式-initContainer
+#### 应用范例-war包部署
+* 其他部署方式
+    - 【__常用__】使用环境镜像(tomcat镜像)，将war包打包进镜像中制作成项目镜像
+    - 【_不常用、实验_】使用环境镜像(tomcat镜像)，在容器运行时将war包挂载到容器内；__但，此时则需要单独维护war包和一个分布式文件系统__
+* sidecar方式【_不常用、实验_】-initContainer
     - 先启动一个initContainer，将war包拷贝到共享目录
     - 再启动container，这个容器启动tomcat(共享目录webapps中包含war包)
 
