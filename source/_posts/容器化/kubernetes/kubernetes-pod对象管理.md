@@ -286,7 +286,7 @@ spec:
 * pod停留在pending状态：pending表示调度器没有介入，使用【kubectl describe pod】命令查看事件排查，通常和资源使用有关
 * pod停留在waiting状态：pod拉取镜像失败
 * pod不断被拉起且可以看到crashing：pod已被调度，但是启动失败；通常是由于配置、权限造成，需要查看pod日志【kubectl logs pod】
-* pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，恶意通过校验部署来排查【kubectl apply --validate -f pod.yml】
+* pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，可以通过校验部署来排查【kubectl apply --validate -f pod.yml】
 * service无法正常工作：在排除网络插件自身的问题外，最有可能是label配置有问题，可以通过查看endpoint的方式进行查看
 
 ## 重启策略-restartPolicy
@@ -339,7 +339,7 @@ spec:
     - preStop：容器终止前执行的功能，此操作完成前阻塞删除容器的操作
 * 实现方式：
     - exec：执行用户定义的命令
-    - http：向执行url发起http请求
+    - http：向指定url发起http请求
 
 ### 范例
 ```
@@ -443,10 +443,8 @@ spec:
 ```
 
 # 资源需求和限制
-* cpu：单位：millicore(1core=1000millicore)
-    - 500m相当于0.5个核心
-* memory:单位：Bytes，与日常使用单位相同
-    - 300M
+* cpu：单位：millicore(1core=1000millicore)；例如：500m相当于0.5个核心
+* memory：单位：Bytes，与日常使用单位相同；例如：300M
 * ephemeral(临时存储)：单位：Byte
 * 自定义资源：配置时必须为整数
 * 范例
