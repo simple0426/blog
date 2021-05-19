@@ -5958,6 +5958,7 @@ $name：值为$type.$id。
     <title>nginx基础学习</title>
     <url>/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/" target="_blank" rel="noopener">淘宝nginx文档</a></p>
+<p><a href="http://nginx.org/en/docs/" target="_blank" rel="noopener">官方nginx文档</a></p>
 <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
 <li>占用资源少</li>
 <li>支持高并发</li>
@@ -6105,6 +6106,7 @@ $name：值为$type.$id。
     <title>nginx进阶学习</title>
     <url>/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/" target="_blank" rel="noopener">淘宝nginx文档</a></p>
+<p><a href="http://nginx.org/en/docs/" target="_blank" rel="noopener">官方nginx文档</a></p>
 <h1 id="proxy设置"><a href="#proxy设置" class="headerlink" title="proxy设置"></a>proxy设置</h1><h2 id="proxy相关变量"><a href="#proxy相关变量" class="headerlink" title="proxy相关变量"></a>proxy相关变量</h2><ul>
 <li>$remote_addr：客户端地址【距离服务器最近的客户端ip，有代理时为代理的ip】</li>
 <li>$http_x_real_ip：<ul>
@@ -6881,10 +6883,22 @@ $name：值为$type.$id。
 <li>方式4(mysqladmin)：mysqladmin -u user_name -h host_name password “new_password”</li>
 </ul>
 <h2 id="忘记密码"><a href="#忘记密码" class="headerlink" title="忘记密码"></a>忘记密码</h2><ul>
-<li>跳过授权表启动：mysqld_safe –defaults-file=my.cnf –skip-grant-tables &amp;</li>
-<li><a href="#变更密码">变更密码</a></li>
-<li>刷新权限：flush privileges;</li>
-<li>退出安全启动模式，以正常方式启动</li>
+<li><p>跳过授权表启动：mysqld_safe –defaults-file=my.cnf –skip-grant-tables &amp;</p>
+</li>
+<li><p><a href="#变更密码">变更密码</a></p>
+<ul>
+<li><p>错误</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ERROR 1290 (HY000): The MariaDB server is running with the --skip-grant-tables option so it cannot execute this statement</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解决</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt;flush privileges;</span><br><span class="line">mysql&gt;alter user ‘root’@‘XX.XX.XX.XX’ identified by ‘PASSWORD’;</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>刷新权限：flush privileges;</p>
+</li>
+<li><p>退出安全启动模式，以正常方式启动</p>
+</li>
 </ul>
 ]]></content>
       <categories>
@@ -12048,7 +12062,6 @@ $name：值为$type.$id。
 <li>会发生直接的文件交互</li>
 <li>使用localhost或socket进行本地通信</li>
 <li>会发生频繁的RPC调用</li>
-<li>会共享某些namespace</li>
 </ul>
 </li>
 </ul>
@@ -12068,16 +12081,16 @@ $name：值为$type.$id。
 <h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><ul>
 <li>日志收集(log)</li>
 <li>Debug应用(debug)</li>
-<li>容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互</li>
+<li>容器代理(proxy)：单独写一个proxy用来处理对外部集群的交互，比如envoy</li>
 <li>适配器(adapter)：单独写一个应用用来处理URL变更、数据格式变更的操作，以完成对现有业务的兼容</li>
 </ul>
-<h4 id="应用范例-war包"><a href="#应用范例-war包" class="headerlink" title="应用范例-war包"></a>应用范例-war包</h4><ul>
-<li>可选方式<ul>
-<li>将war包和tomcat都打包进镜像中，但是代码和tomcat的更新都需要更新镜像</li>
-<li>制作单独的tomcat镜像，在容器运行时将war包挂载到容器内，此时则需要单独维护war包和一个分布式文件系统</li>
+<h4 id="应用范例-war包部署"><a href="#应用范例-war包部署" class="headerlink" title="应用范例-war包部署"></a>应用范例-war包部署</h4><ul>
+<li>其他部署方式<ul>
+<li>【<strong>常用</strong>】使用环境镜像(tomcat镜像)，将war包打包进镜像中制作成项目镜像</li>
+<li>【<em>不常用、实验</em>】使用环境镜像(tomcat镜像)，在容器运行时将war包挂载到容器内；<strong>但，此时则需要单独维护war包和一个分布式文件系统</strong></li>
 </ul>
 </li>
-<li>sidecar方式-initContainer<ul>
+<li>sidecar方式【<em>不常用、实验</em>】-initContainer<ul>
 <li>先启动一个initContainer，将war包拷贝到共享目录</li>
 <li>再启动container，这个容器启动tomcat(共享目录webapps中包含war包)</li>
 </ul>
@@ -12205,7 +12218,7 @@ $name：值为$type.$id。
 <li>pod停留在pending状态：pending表示调度器没有介入，使用【kubectl describe pod】命令查看事件排查，通常和资源使用有关</li>
 <li>pod停留在waiting状态：pod拉取镜像失败</li>
 <li>pod不断被拉起且可以看到crashing：pod已被调度，但是启动失败；通常是由于配置、权限造成，需要查看pod日志【kubectl logs pod】</li>
-<li>pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，恶意通过校验部署来排查【kubectl apply –validate -f pod.yml】</li>
+<li>pod处于running但是没有正常工作：通常时由于部分字段拼写错误造成的，可以通过校验部署来排查【kubectl apply –validate -f pod.yml】</li>
 <li>service无法正常工作：在排除网络插件自身的问题外，最有可能是label配置有问题，可以通过查看endpoint的方式进行查看</li>
 </ul>
 <h2 id="重启策略-restartPolicy"><a href="#重启策略-restartPolicy" class="headerlink" title="重启策略-restartPolicy"></a>重启策略-restartPolicy</h2><blockquote>
@@ -12240,7 +12253,7 @@ $name：值为$type.$id。
 </li>
 <li>实现方式：<ul>
 <li>exec：执行用户定义的命令</li>
-<li>http：向执行url发起http请求</li>
+<li>http：向指定url发起http请求</li>
 </ul>
 </li>
 </ul>
@@ -12298,14 +12311,8 @@ $name：值为$type.$id。
 </li>
 </ul>
 <h1 id="资源需求和限制"><a href="#资源需求和限制" class="headerlink" title="资源需求和限制"></a>资源需求和限制</h1><ul>
-<li>cpu：单位：millicore(1core=1000millicore)<ul>
-<li>500m相当于0.5个核心</li>
-</ul>
-</li>
-<li>memory:单位：Bytes，与日常使用单位相同<ul>
-<li>300M</li>
-</ul>
-</li>
+<li>cpu：单位：millicore(1core=1000millicore)；例如：500m相当于0.5个核心</li>
+<li>memory：单位：Bytes，与日常使用单位相同；例如：300M</li>
 <li>ephemeral(临时存储)：单位：Byte</li>
 <li>自定义资源：配置时必须为整数</li>
 <li>范例<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: wp</span><br><span class="line">    image: wordpress</span><br><span class="line">    resources:</span><br><span class="line">      requests: #请求的资源</span><br><span class="line">        memory: 64Mi</span><br><span class="line">        cpu: 250m</span><br><span class="line">        ephemeral-storage: 2Gi</span><br><span class="line">      limits: # 最多可以使用的资源</span><br><span class="line">        memory: 128Mi</span><br><span class="line">        cpu: 500m</span><br><span class="line">        ephemeral-storage: 4Gi</span><br></pre></td></tr></table></figure>
@@ -15102,7 +15109,7 @@ $name：值为$type.$id。
   <entry>
     <title>kubernetes-资源管理</title>
     <url>/2020/03/21/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86/</url>
-    <content><![CDATA[<h1 id="管理实现方式-API"><a href="#管理实现方式-API" class="headerlink" title="管理实现方式-API"></a>管理实现方式-API</h1><p>kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，<br>用于查询和修改集群的状态，并将结果存储于etcd中。</p>
+    <content><![CDATA[<h1 id="管理方式-API"><a href="#管理方式-API" class="headerlink" title="管理方式-API"></a>管理方式-API</h1><p>kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，<br>用于查询和修改集群的状态，并将结果存储于etcd中。</p>
 <h2 id="API设计模式"><a href="#API设计模式" class="headerlink" title="API设计模式"></a>API设计模式</h2><ul>
 <li>声明式<ul>
 <li>天然记录了状态</li>
@@ -15129,11 +15136,11 @@ $name：值为$type.$id。
 <li>使系统自动化和无人值守成为可能</li>
 <li>便于扩展(自定义资源和控制器)</li>
 </ul>
-<h2 id="查看api资源"><a href="#查看api资源" class="headerlink" title="查看api资源"></a>查看api资源</h2><ul>
+<h2 id="查看API资源"><a href="#查看API资源" class="headerlink" title="查看API资源"></a>查看API资源</h2><ul>
 <li>支持的api接口版本：kubectl api-versions</li>
 <li>支持的api资源信息：kubectl api-resources</li>
 </ul>
-<h2 id="自定义api资源"><a href="#自定义api资源" class="headerlink" title="自定义api资源"></a>自定义api资源</h2><ul>
+<h2 id="自定义API资源"><a href="#自定义API资源" class="headerlink" title="自定义API资源"></a>自定义API资源</h2><ul>
 <li>修改kubernetes源码自定义类型</li>
 <li>创建自定义API server，并将其聚合至集群中</li>
 <li>使用自定义资源CRD</li>
@@ -15146,7 +15153,6 @@ $name：值为$type.$id。
 </ul>
 </li>
 <li>web界面：kubernetes dashboard</li>
-<li>自动化配置管理(kube-applier)：用户将配置推送到git仓库中，配置工具自动将配置同步到集群中</li>
 </ul>
 <h1 id="资源对象"><a href="#资源对象" class="headerlink" title="资源对象"></a>资源对象</h1><h2 id="资源对象分类"><a href="#资源对象分类" class="headerlink" title="资源对象分类"></a>资源对象分类</h2><ul>
 <li>工作负载（workload）：replicaset、job、deployment、statefulset、daemonset</li>
@@ -15163,7 +15169,7 @@ $name：值为$type.$id。
 </li>
 <li>元数据（metadata）：HPA(自动弹性伸缩)、pod模板、LimitRange(限制pod的资源使用)</li>
 </ul>
-<h2 id="资源对象格式"><a href="#资源对象格式" class="headerlink" title="资源对象格式"></a>资源对象格式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx</span><br><span class="line">  lables:</span><br><span class="line">    name: nginx</span><br><span class="line">spec: </span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx</span><br><span class="line">     image: nginx</span><br><span class="line">     ports:</span><br><span class="line">     - containerPort: 80</span><br></pre></td></tr></table></figure>
+<h2 id="资源对象格式"><a href="#资源对象格式" class="headerlink" title="资源对象格式"></a>资源对象格式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx</span><br><span class="line">  lables:</span><br><span class="line">    name: nginx</span><br><span class="line">spec: </span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx</span><br><span class="line">    image: nginx</span><br><span class="line">    ports:</span><br><span class="line">    - containerPort: 80</span><br></pre></td></tr></table></figure>
 <ul>
 <li>kind：资源类型</li>
 <li>apiVersion：API群组及相关的版本</li>
@@ -15180,11 +15186,11 @@ $name：值为$type.$id。
 <li>uid(集群自动生成)：当前对象的唯一标识符</li>
 </ul>
 <h3 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h3><ul>
-<li>labels:设定用于标识当前对象的键值对，常用作筛选条件</li>
+<li>labels：用于标识当前对象的键值对，常用作筛选条件</li>
 <li>annotations：非标识性键值对，用于labels的补充</li>
 </ul>
 <h1 id="标签和标签选择器"><a href="#标签和标签选择器" class="headerlink" title="标签和标签选择器"></a>标签和标签选择器</h1><p>标识型的key:value元数据；可以在创建时指定，也可以通过命令随时添加到活动对象上</p>
-<h2 id="标签定义"><a href="#标签定义" class="headerlink" title="标签定义"></a>标签定义</h2><ul>
+<h2 id="标签定义语法"><a href="#标签定义语法" class="headerlink" title="标签定义语法"></a>标签定义语法</h2><ul>
 <li>键由键前缀和健名组成<ul>
 <li>健名最多63个字符，只能以字母和数字开头及结尾，包含字母、数字、连词符、下划线、点</li>
 <li>键前缀是dns子域名格式，且不能超过253字符；省略前缀，键将被视为用户私有数据；由kubernetes系统组件或第三方组件为用户添加的键必须使用键前缀；“kubernetes.io”是系统核心组件使用的</li>
@@ -15192,7 +15198,7 @@ $name：值为$type.$id。
 </li>
 <li>键值：和健名规则相同</li>
 </ul>
-<h2 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h2><ul>
+<h2 id="常用标签范例"><a href="#常用标签范例" class="headerlink" title="常用标签范例"></a>常用标签范例</h2><ul>
 <li>版本标签：release：stable，release：canary，release：beta</li>
 <li>环境标签：environment：dev，environment：qa，environment：prod</li>
 <li>应用标签：app：ui，app：as，app：pc，app：sc</li>
@@ -15200,8 +15206,8 @@ $name：值为$type.$id。
 <li>分区标签：partition：customerA，partition：customerB</li>
 <li>品控级别标签：track：daily，track：weekly</li>
 </ul>
-<h2 id="创建时添加标签"><a href="#创建时添加标签" class="headerlink" title="创建时添加标签"></a>创建时添加标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-label</span><br><span class="line">  labels:</span><br><span class="line">    env: qa</span><br><span class="line">    tier: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
-<h2 id="动态修改标签"><a href="#动态修改标签" class="headerlink" title="动态修改标签"></a>动态修改标签</h2><ul>
+<h2 id="资源文件定义标签"><a href="#资源文件定义标签" class="headerlink" title="资源文件定义标签"></a>资源文件定义标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: pod-label</span><br><span class="line">  labels:</span><br><span class="line">    env: qa</span><br><span class="line">    tier: frontend</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br></pre></td></tr></table></figure>
+<h2 id="命令行修改标签"><a href="#命令行修改标签" class="headerlink" title="命令行修改标签"></a>命令行修改标签</h2><ul>
 <li>修改已存在标签：kubectl label pods/pod-label env=prod –overwrite</li>
 <li>添加新标签：kubectl label pods/pod-label release=alpha</li>
 <li>删除标签：kubectl label pods/pod-label release-</li>
@@ -15210,35 +15216,29 @@ $name：值为$type.$id。
 <li>显示所有标签：kubectl get pod –show-labels</li>
 <li>显示特定键标签：kubectl get pod -L env,tier</li>
 </ul>
-<h2 id="标签选择器"><a href="#标签选择器" class="headerlink" title="标签选择器"></a>标签选择器</h2><ul>
-<li>标签选择器逻辑<ul>
+<h2 id="标签选择器"><a href="#标签选择器" class="headerlink" title="标签选择器"></a>标签选择器</h2><h3 id="处理逻辑"><a href="#处理逻辑" class="headerlink" title="处理逻辑"></a>处理逻辑</h3><ul>
 <li>多个选择器之间为逻辑“与”关系</li>
 <li>空值的标签选择器意味着所有对象都被选中</li>
 <li>空标签选择器意味着没有对象被选中</li>
 </ul>
-</li>
-<li>选择器种类<ul>
+<h3 id="选择器种类"><a href="#选择器种类" class="headerlink" title="选择器种类"></a>选择器种类</h3><ul>
 <li>等值关系，操作符：“=”，“==”，“！=”</li>
 <li>集合关系，操作符：in，notin，exists(key-存在，!key-不存在)</li>
 </ul>
-</li>
-<li>命令行使用：<ul>
+<h3 id="命令行使用"><a href="#命令行使用" class="headerlink" title="命令行使用"></a>命令行使用</h3><ul>
 <li>相等型：kubectl get deployment –show-labels -l env=test,env!=prod</li>
 <li>集合型：kubectl get deployment –show-labels -l “Env in (test,gray)，Tie notin (front,back)，release，!release”</li>
 </ul>
-</li>
-<li>selector使用【deployment、service、replicaset等使用】：<ul>
+<h3 id="资源文件使用"><a href="#资源文件使用" class="headerlink" title="资源文件使用"></a>资源文件使用</h3><ul>
 <li>matchLabels：相等型关系匹配</li>
 <li>matchExpressions：集合型关系匹配<ul>
 <li>key：key_name</li>
 <li>operator：In、NotIn、Exists、DoesNotExist</li>
-<li>values：[values1,values2…]<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">selector:</span><br><span class="line">  matchLables:</span><br><span class="line">    component: redis</span><br><span class="line">  matchExpressions:</span><br><span class="line">    - key: tier</span><br><span class="line">      operator: In</span><br><span class="line">      values: [cache]</span><br><span class="line">    - key: environment</span><br><span class="line">      operator: Exists</span><br><span class="line">      values:</span><br></pre></td></tr></table></figure>
-</li>
+<li>values：[values1,values2…]</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">selector:</span><br><span class="line">  matchLables:</span><br><span class="line">    component: redis</span><br><span class="line">  matchExpressions:</span><br><span class="line">    - key: tier</span><br><span class="line">      operator: In</span><br><span class="line">      values: [cache]</span><br><span class="line">    - key: environment</span><br><span class="line">      operator: Exists</span><br><span class="line">      values:</span><br></pre></td></tr></table></figure>
 <h1 id="注解-annotations"><a href="#注解-annotations" class="headerlink" title="注解-annotations"></a>注解-annotations</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>它也是标识型的键值对信息，但不能用于标签及对象选择，仅用于为资源提供元数据<br>注解中的数据不受字符数量、特殊字符限制，可以是结构化(如json)也可以是非结构化数据  </p>
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>在为某资源引入新字段时，先以注解的方式提供；确定支持使用后，在资源中添加新字段，同时删除相关注解</li>
@@ -15248,7 +15248,7 @@ $name：值为$type.$id。
 <li>describe：kubectl describe pod storage-provisioner -n kube-system</li>
 <li>get -o yaml：<code>kubectl get pod storage-provisioner -n kube-system -o yaml</code></li>
 </ul>
-<h2 id="手动添加注解"><a href="#手动添加注解" class="headerlink" title="手动添加注解"></a>手动添加注解</h2><p>kubectl annotate pods pod-label ilinux.io/created-by=”cluster admin”</p>
+<h2 id="命令行添加注解"><a href="#命令行添加注解" class="headerlink" title="命令行添加注解"></a>命令行添加注解</h2><p>kubectl annotate pods pod-label ilinux.io/created-by=”cluster admin”</p>
 <h1 id="kubectl命令"><a href="#kubectl命令" class="headerlink" title="kubectl命令"></a>kubectl命令</h1><h2 id="语法格式"><a href="#语法格式" class="headerlink" title="语法格式"></a>语法格式</h2><p>kubectl sub_command resource_type resource_name cmd_option</p>
 <h2 id="子命令"><a href="#子命令" class="headerlink" title="子命令"></a>子命令</h2><ul>
 <li>基础命令-初级<ul>
@@ -15383,6 +15383,7 @@ $name：值为$type.$id。
 <h2 id="镜像升级和回滚"><a href="#镜像升级和回滚" class="headerlink" title="镜像升级和回滚"></a>镜像升级和回滚</h2><ul>
 <li>查看当前版本：kubectl get deploy -o wide</li>
 <li>更新镜像：kubectl set image deploy/nginx-deployment nginx=nginx:1.13</li>
+<li>查看版本更新状况：kubectl rollout status deploy nginx-deployment</li>
 <li>回滚到上个版本：kubectl rollout undo deploy nginx-deployment</li>
 </ul>
 ]]></content>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="所有权限 ALL：全局或者全数据库对象级别的所有权限 ALTER：修改表结构的权限，但必须要求有create和insert权 限配合。如果是rename表名，则要求有alter和drop原表，create和 insert新表 ALTER ROUTINE：修改或者删除存储过程、函数 CREATE：创建存储过程、函数 CREATE ROUTINE：创建存储过程和函数 CREATE TABLESPACE">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.390Z">
+<meta property="og:updated_time" content="2021-05-19T15:00:56.170Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql用户和权限">
 <meta name="twitter:description" content="所有权限 ALL：全局或者全数据库对象级别的所有权限 ALTER：修改表结构的权限，但必须要求有create和insert权 限配合。如果是rename表名，则要求有alter和drop原表，create和 insert新表 ALTER ROUTINE：修改或者删除存储过程、函数 CREATE：创建存储过程、函数 CREATE ROUTINE：创建存储过程和函数 CREATE TABLESPACE">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-05-19T23:00:56+08:00">
+                2021-05-19
               </time>
             
           </span>
@@ -470,10 +470,22 @@
 <li>方式4(mysqladmin)：mysqladmin -u user_name -h host_name password “new_password”</li>
 </ul>
 <h2 id="忘记密码"><a href="#忘记密码" class="headerlink" title="忘记密码"></a>忘记密码</h2><ul>
-<li>跳过授权表启动：mysqld_safe –defaults-file=my.cnf –skip-grant-tables &amp;</li>
-<li><a href="#变更密码">变更密码</a></li>
-<li>刷新权限：flush privileges;</li>
-<li>退出安全启动模式，以正常方式启动</li>
+<li><p>跳过授权表启动：mysqld_safe –defaults-file=my.cnf –skip-grant-tables &amp;</p>
+</li>
+<li><p><a href="#变更密码">变更密码</a></p>
+<ul>
+<li><p>错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1290 (HY000): The MariaDB server is running with the --skip-grant-tables option so it cannot execute this statement</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解决</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;flush privileges;</span><br><span class="line">mysql&gt;alter user ‘root’@‘XX.XX.XX.XX’ identified by ‘PASSWORD’;</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>刷新权限：flush privileges;</p>
+</li>
+<li><p>退出安全启动模式，以正常方式启动</p>
+</li>
 </ul>
 
       
