@@ -11,6 +11,9 @@ date: 2019-06-11 18:07:53
 
 # 介绍
 [淘宝nginx文档](http://tengine.taobao.org/nginx_docs/cn/docs/)
+
+[官方nginx文档](http://nginx.org/en/docs/)
+
 ## 特点
 * 占用资源少
 * 支持高并发

@@ -86,6 +86,23 @@ DROP USER 'jeffrey'@'localhost';
 
 ## 忘记密码
 * 跳过授权表启动：mysqld_safe --defaults-file=my.cnf --skip-grant-tables &
+
 * [变更密码](#变更密码)
+
+  * 错误
+
+    ```
+    ERROR 1290 (HY000): The MariaDB server is running with the --skip-grant-tables option so it cannot execute this statement
+    ```
+
+  * 解决
+
+    ```
+    mysql>flush privileges;
+    mysql>alter user ‘root’@‘XX.XX.XX.XX’ identified by ‘PASSWORD’;
+    mysql>flush privileges;
+    ```
+
 * 刷新权限：flush privileges;
+
 * 退出安全启动模式，以正常方式启动
