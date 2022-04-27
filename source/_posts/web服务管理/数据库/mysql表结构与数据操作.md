@@ -174,15 +174,15 @@ create table b2g(
 
 # 数据操作
 ## 增加
-* 单行数据：insert into tb1(name,age,gender) values('hejingqi',30,'0');
-* 多行数据：insert into tb1(name,age,gender) values('yuanshuo', 24, '1'),('yangxiaomeng', 29, '1');
+* 单行数据：`insert into tb1(name,age,gender) values('hejingqi',30,'0');`
+* 多行数据：`insert into tb1(name,age,gender) values('yuanshuo', 24, '1'),('yangxiaomeng', 29, '1');`
 
 ## 删除
-* 精确删除：delete from tb1 where name='hejingqi';
+* 精确删除：`delete from tb1 where name='hejingqi';`
 
 ## 修改
-* 单字段修改：update tb1 set age=18 where id=1;
-* 多字段修改：update tb1 set id=2,age=30 where name='yangxiaomeng'; 
+* 单字段修改：`update tb1 set age=18 where id=1;`
+* 多字段修改：`update tb1 set id=2,age=30 where name='yangxiaomeng';` 
 
 # 数据查询
 ## 排序（order by）
