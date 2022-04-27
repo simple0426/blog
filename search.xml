@@ -7282,7 +7282,7 @@ $name：值为$type.$id。
 <ul>
 <li>server-id=2</li>
 </ul>
-<h2 id="建立复制账号【主】"><a href="#建立复制账号【主】" class="headerlink" title="建立复制账号【主】"></a>建立复制账号【主】</h2><p>grant replication slave on <em>.</em> to ‘repl‘@’172.16.0.215’ identified by ‘repl20190926’;</p>
+<h2 id="建立复制账号【主】"><a href="#建立复制账号【主】" class="headerlink" title="建立复制账号【主】"></a>建立复制账号【主】</h2><p><code>grant replication slave on *.* to &#39;repl&#39;@&#39;172.16.0.215&#39; identified by &#39;repl20190926&#39;;</code></p>
 <h2 id="导出数据【主】"><a href="#导出数据【主】" class="headerlink" title="导出数据【主】"></a>导出数据【主】</h2><ul>
 <li>为了保证数据一致性，在导出过程中需要锁表</li>
 <li>在mysql的终端会话中锁表，退出该会话会导致锁表失效；因此需要，在一个会话终端中锁表，在另一个会话终端中导出数据</li>
@@ -7296,10 +7296,10 @@ $name：值为$type.$id。
 <h3 id="逻辑导出-一键方式"><a href="#逻辑导出-一键方式" class="headerlink" title="逻辑导出-一键方式"></a>逻辑导出-一键方式</h3><blockquote>
 <p>mysqldump使用–master-data参数时，会自动处理锁表解锁、显示同步信息（导出的sql文件中）等</p>
 </blockquote>
-<p>mysqldump –all-databases –master-data &gt; dbdump.db</p>
+<p><code>mysqldump --all-databases --master-data &gt; dbdump.db</code></p>
 <h3 id="物理导出"><a href="#物理导出" class="headerlink" title="物理导出"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-howto-rawdata.html" target="_blank" rel="noopener">物理导出</a></h3><p>适用于数据量较多的数据库</p>
 <h2 id="导入数据【从】"><a href="#导入数据【从】" class="headerlink" title="导入数据【从】"></a>导入数据【从】</h2><blockquote>
-<p>从库已有同步时，则使用–skip-slave-start启动server，或stop slave停止同步</p>
+<p>从库已有同步时，则使用<code>--skip-slave-start</code>启动server，或stop slave停止同步</p>
 </blockquote>
 <ul>
 <li>将导出的数据传送到从库所在主机</li>
@@ -7362,7 +7362,7 @@ $name：值为$type.$id。
 </li>
 <li>slave2、slave3【其他从机】<ul>
 <li>STOP SLAVE</li>
-<li>CHANGE MASTER TO MASTER_HOST=’Slave1’【user, password, port】</li>
+<li><code>CHANGE MASTER TO MASTER_HOST=&#39;Slave1&#39;</code>【user, password, port】</li>
 <li>START SLAVE </li>
 </ul>
 </li>
