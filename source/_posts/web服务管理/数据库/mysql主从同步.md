@@ -103,7 +103,7 @@ date: 2019-09-29 16:28:50
 * server-id=2
 
 ## 建立复制账号【主】
-grant replication slave on *.* to 'repl'@'172.16.0.215' identified by 'repl20190926';
+`grant replication slave on *.* to 'repl'@'172.16.0.215' identified by 'repl20190926';`
 
 ## 导出数据【主】
 * 为了保证数据一致性，在导出过程中需要锁表
@@ -118,13 +118,13 @@ grant replication slave on *.* to 'repl'@'172.16.0.215' identified by 'repl20190
 ### 逻辑导出-一键方式
 >mysqldump使用--master-data参数时，会自动处理锁表解锁、显示同步信息（导出的sql文件中）等
 
-mysqldump --all-databases --master-data > dbdump.db
+`mysqldump --all-databases --master-data > dbdump.db`
 
 ### [物理导出][replication-howto-rawdata]
 适用于数据量较多的数据库
 
 ## 导入数据【从】
->从库已有同步时，则使用--skip-slave-start启动server，或stop slave停止同步
+>从库已有同步时，则使用`--skip-slave-start`启动server，或stop slave停止同步
 
 * 将导出的数据传送到从库所在主机
 * 从库导入数据：mysql < all.sql 
@@ -182,7 +182,7 @@ mysql> CHANGE MASTER TO
     - RESET MASTER
 * slave2、slave3【其他从机】
     - STOP SLAVE
-    - CHANGE MASTER TO MASTER_HOST='Slave1'【user, password, port】
+    - `CHANGE MASTER TO MASTER_HOST='Slave1'`【user, password, port】
     - START SLAVE 
 
 # 故障处理
