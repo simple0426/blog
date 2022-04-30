@@ -7,7 +7,6 @@ date: 2019-06-24 21:54:01
 * 微软镜像charts仓库【适合国内】
   * stable：`http://mirror.azure.cn/kubernetes/charts/`
   * incubator：`http://mirror.azure.cn/kubernetes/charts-incubator/`
-* 阿里云：`https://apphub.aliyuncs.com`
 
 # docker常用镜像
 
@@ -62,7 +61,7 @@ trusted-host=mirrors.aliyun.com
 ```
 
 # npm淘宝
-- 命令行临时设置：--registry=https://registry.npm.taobao.org
-- 永久设置：npm config set registry https://registry.npm.taobao.org
+- 命令行临时设置：--registry=https://registry.npmmirror.com/
+- 永久设置：npm config set registry https://registry.npmmirror.com/
     + 验证：npm config get registry
 
