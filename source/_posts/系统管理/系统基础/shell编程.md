@@ -278,10 +278,10 @@ done < $1
 * &会将命令放入后台执行
 * 以“;”分隔的命令会顺序执行，shell等待每个命令执行完成
 * cmd1&&cmd2 逻辑“与”连接两个命令，cmd1执行成功后才执行cmd2
-* cmd2||&&cmd2 逻辑“或”连接两个命令，cmd2执行不成功才执行cmd2
+* cmd1||cmd2 逻辑“或”连接两个命令，cmd1执行不成功才执行cmd2
 
 # 应用范例
-其他范例参考：https://github.com/simple0426/sysadm/tree/master/shell
+其他范例参考：https://gitee.com/simple0426/sysadm/tree/master/shell
 ## 菜单制作
 ```
 #!/bin/bash
@@ -339,5 +339,4 @@ do
     done
 done
 ```
-
 
