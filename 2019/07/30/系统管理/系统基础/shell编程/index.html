@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="变量变量定义 当变量值为数字或路径时，可以不适用引号 等号两边不能有空格 变量名的开头必须是字母  引用机制 是用于删除shell中某些特殊的字符或单词   反斜杠：转移符，保留字面含义【当行尾有反斜杠时表示续行】 特殊转义序列：\t \n   单引号：保留字符字面含义 双引号：可以解析变量及使用转移符  位置参数 $n表示shell脚本或shell函数的位置参数【n&amp;gt;=1】 当数字n大于9">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-18T04:43:03.450Z">
+<meta property="og:updated_time" content="2022-05-01T13:09:44.774Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell编程">
 <meta name="twitter:description" content="变量变量定义 当变量值为数字或路径时，可以不适用引号 等号两边不能有空格 变量名的开头必须是字母  引用机制 是用于删除shell中某些特殊的字符或单词   反斜杠：转移符，保留字面含义【当行尾有反斜杠时表示续行】 特殊转义序列：\t \n   单引号：保留字符字面含义 双引号：可以解析变量及使用转移符  位置参数 $n表示shell脚本或shell函数的位置参数【n&amp;gt;=1】 当数字n大于9">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2022-05-01T21:09:44+08:00">
+                2022-05-01
               </time>
             
           </span>
@@ -611,9 +611,9 @@
 <li>&amp;会将命令放入后台执行</li>
 <li>以“;”分隔的命令会顺序执行，shell等待每个命令执行完成</li>
 <li>cmd1&amp;&amp;cmd2 逻辑“与”连接两个命令，cmd1执行成功后才执行cmd2</li>
-<li>cmd2||&amp;&amp;cmd2 逻辑“或”连接两个命令，cmd2执行不成功才执行cmd2</li>
+<li>cmd1||cmd2 逻辑“或”连接两个命令，cmd1执行不成功才执行cmd2</li>
 </ul>
-<h1 id="应用范例"><a href="#应用范例" class="headerlink" title="应用范例"></a>应用范例</h1><p>其他范例参考：<a href="https://github.com/simple0426/sysadm/tree/master/shell" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/shell</a></p>
+<h1 id="应用范例"><a href="#应用范例" class="headerlink" title="应用范例"></a>应用范例</h1><p>其他范例参考：<a href="https://gitee.com/simple0426/sysadm/tree/master/shell" target="_blank" rel="noopener">https://gitee.com/simple0426/sysadm/tree/master/shell</a></p>
 <h2 id="菜单制作"><a href="#菜单制作" class="headerlink" title="菜单制作"></a>菜单制作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">menu_1 () &#123;</span><br><span class="line">    echo -e &quot;</span><br><span class="line">    ====================</span><br><span class="line">    1.\033[32minstall lamp\033[0m</span><br><span class="line">    2.\033[32minstall lnmp\033[0m</span><br><span class="line">    3.\033[31mexit\033[0m</span><br><span class="line">    please install your choice:</span><br><span class="line">    &quot;</span><br><span class="line">&#125;</span><br><span class="line">menu_1</span><br><span class="line">read num1</span><br><span class="line">echo $num1</span><br></pre></td></tr></table></figure>
 <h2 id="产生随机数"><a href="#产生随机数" class="headerlink" title="产生随机数"></a>产生随机数</h2><blockquote>
 <p>输入英文单词，产生1-100之间的随机数</p>

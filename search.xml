@@ -17619,9 +17619,9 @@ $name：值为$type.$id。
 <li>&amp;会将命令放入后台执行</li>
 <li>以“;”分隔的命令会顺序执行，shell等待每个命令执行完成</li>
 <li>cmd1&amp;&amp;cmd2 逻辑“与”连接两个命令，cmd1执行成功后才执行cmd2</li>
-<li>cmd2||&amp;&amp;cmd2 逻辑“或”连接两个命令，cmd2执行不成功才执行cmd2</li>
+<li>cmd1||cmd2 逻辑“或”连接两个命令，cmd1执行不成功才执行cmd2</li>
 </ul>
-<h1 id="应用范例"><a href="#应用范例" class="headerlink" title="应用范例"></a>应用范例</h1><p>其他范例参考：<a href="https://github.com/simple0426/sysadm/tree/master/shell" target="_blank" rel="noopener">https://github.com/simple0426/sysadm/tree/master/shell</a></p>
+<h1 id="应用范例"><a href="#应用范例" class="headerlink" title="应用范例"></a>应用范例</h1><p>其他范例参考：<a href="https://gitee.com/simple0426/sysadm/tree/master/shell" target="_blank" rel="noopener">https://gitee.com/simple0426/sysadm/tree/master/shell</a></p>
 <h2 id="菜单制作"><a href="#菜单制作" class="headerlink" title="菜单制作"></a>菜单制作</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">menu_1 () &#123;</span><br><span class="line">    echo -e &quot;</span><br><span class="line">    ====================</span><br><span class="line">    1.\033[32minstall lamp\033[0m</span><br><span class="line">    2.\033[32minstall lnmp\033[0m</span><br><span class="line">    3.\033[31mexit\033[0m</span><br><span class="line">    please install your choice:</span><br><span class="line">    &quot;</span><br><span class="line">&#125;</span><br><span class="line">menu_1</span><br><span class="line">read num1</span><br><span class="line">echo $num1</span><br></pre></td></tr></table></figure>
 <h2 id="产生随机数"><a href="#产生随机数" class="headerlink" title="产生随机数"></a>产生随机数</h2><blockquote>
 <p>输入英文单词，产生1-100之间的随机数</p>
