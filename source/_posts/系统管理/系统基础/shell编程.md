@@ -9,17 +9,15 @@ date: 2019-07-30 18:05:31
 
 # 变量
 ## 变量定义
-* 当变量值为数字或路径时，可以不适用引号
+* 当变量值为字符串时，尽量使用单或双引号，避免字符串中有空格或特殊字符；如果变量值时数字或操作系统路径时，可以不使用引号
 * 等号两边不能有空格
 * 变量名的开头必须是字母
 
 ## 引用机制
->是用于删除shell中某些特殊的字符或单词
-
-* 反斜杠：转移符，保留字面含义【当行尾有反斜杠时表示续行】
+* 反斜杠：转义符，保留字面含义【当行尾有反斜杠时表示续行】
     - 特殊转义序列：`\t \n`
 * 单引号：保留字符字面含义
-* 双引号：可以解析变量及使用转移符
+* 双引号：可以解析变量及使用转义符
 
 ## 位置参数
 * $n表示shell脚本或shell函数的位置参数【n>=1】
@@ -27,18 +25,18 @@ date: 2019-07-30 18:05:31
 
 ## 特殊变量
 * `$* $@`：所有的位置参数
-    - `$*`：相当于“$1空格$2空格$3...”，即空格分隔多个位置参数同时整体作为一个字符串
-    - `$@`：相当于"$1" "$2"...，即空格分隔多个位置参数并作为多个独立的字符串
+    - `$*`：相当于“$1空格$2空格$3...”，即【空格分隔多个位置参数，同时整体作为一个字符串】
+    - `$@`：相当于"$1" "$2"...，即【空格分隔多个位置参数，并作为多个独立的字符串】
 * `$#`：位置参数个数
-* `$?`：上一个shell命令执行状态
-* `$$`：当前shell的pid
+* `$?`：上一个shell命令执行状态【返回码，0表示执行成功，非0表示执行失败】
+* `$$`：当前shell的pid【进程id】
 * `$!`：上一个放入后台执行的命令的pid
 * $0：shell脚本的名字
 * 波浪线(~)：表示当前用户家目录
 
 ## 数组
 ### 定义数据
-* 定义整个数组：name=(value1 ... valuen)
+* 定义整个数组：name=(value1 ... valueN)
     - arry=(128 string http html)
 * 定义数组的某个值：`name[subscript]=value`
     - `arry[4]="ceshi"`
@@ -50,7 +48,7 @@ date: 2019-07-30 18:05:31
 * 查看数组元素个数：{% raw %}${#arry[*]}{% endraw %}
 * 数组元素替换：`${arry[*]/string/jing}`
 * 删除数组某个元素：`unset arry[0]`
-* 删除数组整体：`unset arry`
+* 删除整个数组：`unset arry`
 
 ### 范例
 * 统计并发连接：`netstat -ant|awk -F '[ :]+' '$1 !~ /^Active|^Proto/ && $6 !~ /0.0.0.0|^172.16/{if($5==443)++ip[$6]}END{for(i in ip)print i,ip[i]}'|sort -rn -k2`
@@ -80,12 +78,22 @@ date: 2019-07-30 18:05:31
     + 匹配括号内任意字符
     + 包含横杆【-】时表示匹配字符范围内的字符
     + 首字符是`!`或`^`表示不匹配括号内字符
-- 复合模式【由多个匹配模式构成】
-    + ?(pattern-list)：匹配0或1个给定的模式
-    + *(pattern-list)：匹配0或多个给定的模式
-    + +(pattern-list)：匹配1或多个给定的模式
-    + @(pattern-list)：匹配1个给定的模式
-    + !(pattern-list)：不匹配模式列表中任何项
+
+```
+[python@simple test]$ touch abc.txt  ab.txt  ac.txt  ad.txt  bc.txt
+[python@simple test]$ ls
+abc.txt  ab.txt  ac.txt  ad.txt  bc.txt
+[python@simple test]$ ls a*.txt
+abc.txt  ab.txt  ac.txt  ad.txt
+[python@simple test]$ ls a?.txt
+ab.txt  ac.txt  ad.txt
+[python@simple test]$ ls a[b-d].txt
+ab.txt  ac.txt  ad.txt
+[python@simple test]$ ls a[bd].txt 
+ab.txt  ad.txt
+[python@simple test]$ ls a[^bd].txt
+ac.txt
+```
 
 # 函数
 ## 定义
@@ -97,11 +105,11 @@ date: 2019-07-30 18:05:31
 func_name
 ## 范例
 ```
-定义：
+# 定义：
 usage (){
     echo "usage: $0 <git branch name>"
 }
-调用：
+# 调用：
 usage
 ```
 
@@ -112,11 +120,25 @@ usage
 
 # 重定向
 * 重定向标准输入：`<word`
+
+    ```
+    # 1.txt
+    echo tianyu > 1.txt
+    # 2.sh
+    read -p 'input your name:' name
+    echo Hello $name
+    # shell
+    sh 2.sh < 1.txt
+    ```
+
 * 重定向输出：
     - 标准输出：>word
     - 错误输出：2>word
+    
 * 追加重定向输出：`[n]`>>word
+
 * 同时重定向标准输出和错误输出：`&>word`或`>word 2>&1` 
+
 * 追加重定向标准输出和错误输出：`&>>word`或`>>word 2>&1`
 
 ## 重定向多行输入
