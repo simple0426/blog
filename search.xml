@@ -17523,8 +17523,19 @@ $name：值为$type.$id。
 </li>
 </ul>
 <h1 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h1><ul>
-<li>for列表循环：<code>for name [ [ in [ word ... ] ] ; ] do list ; done</code>：循环列表中的内容</li>
-<li>for自增循环：<code>for((expr1;expr2;expr3))</code>：条件循环；expr1为初始条件，expr2为终止条件，expr为循环条件。<ul>
+<li><p>for列表循环：<code>for name [ [ in [ word ... ] ] ; ] do list ; done</code>：</p>
+<ul>
+<li><p>用法1：循环列表中的内容</p>
+<p>  <code>for name in a b c;do echo $name;sleep 0.5;done</code></p>
+</li>
+<li><p>用法2：如果in word省略相当于循环位置参数(见范例)</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># for_1与for_2函数等价</span><br><span class="line">for_1()&#123;</span><br><span class="line">  for var</span><br><span class="line">  do</span><br><span class="line">    echo $var</span><br><span class="line">  done</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for_2()&#123;</span><br><span class="line">  for var in &quot;$@&quot;</span><br><span class="line">  do</span><br><span class="line">    echo $var</span><br><span class="line">  done</span><br><span class="line">&#125;</span><br><span class="line">for_1 1 2 3</span><br><span class="line">for_2 a b c</span><br></pre></td></tr></table></figure>
+<ul>
+<li>for自增循环：<code>for((expr1;expr2;expr3))</code>：条件循环；expr1为初始条件，expr2为终止条件，expr为循环条件<ul>
 <li>范例：for((a=50;a&gt;=0;a–));do echo $a;done</li>
 </ul>
 </li>
@@ -17543,7 +17554,7 @@ $name：值为$type.$id。
 <li>while循环：<code>while list-1; do list-2; done</code>：list-1满足条件则执行list-2</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">declare -i i=0</span><br><span class="line">while ((i&lt;=10));</span><br><span class="line">do</span><br><span class="line">    echo $i</span><br><span class="line">    i=i+1</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 读取文件方式1</span><br><span class="line">exec &lt; FILE</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    cmd</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">2. 读取文件方式2</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    cmd</span><br><span class="line">done&lt;FILE</span><br><span class="line"></span><br><span class="line"># 范例</span><br><span class="line">while read line</span><br><span class="line">do </span><br><span class="line">    echo $line</span><br><span class="line">    sleep 1</span><br><span class="line">done &lt; $1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 读取文件方式1</span><br><span class="line">exec &lt; FILE</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    CMD</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">2. 读取文件方式2</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    CMD</span><br><span class="line">done&lt;FILE</span><br><span class="line"></span><br><span class="line"># 范例</span><br><span class="line">while read line</span><br><span class="line">do </span><br><span class="line">    echo $line</span><br><span class="line">    sleep 1</span><br><span class="line">done &lt; $1 #$1是命令行的的第一个参数（文件名）</span><br></pre></td></tr></table></figure>
 <ul>
 <li>break和continue<ul>
 <li>只能用于for、while、until、select循环</li>
@@ -17551,7 +17562,7 @@ $name：值为$type.$id。
 <li>双循环中：break跳出内循环，执行外循环语句；break 2直接跳出外循环。continue跳出内循环中的本次循环，继续下次内循环；continue 2跳出内循环，继续下次外循环。</li>
 </ul>
 </li>
-<li>exit <code>[n]</code>：以n退出脚本</li>
+<li>exit <code>[n]</code>：以n作为返回值退出脚本</li>
 <li>return <code>[n]</code>：以n作为返回值退出函数</li>
 </ul>
 <h1 id="数学运算"><a href="#数学运算" class="headerlink" title="数学运算"></a>数学运算</h1><h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><ul>
@@ -17585,7 +17596,7 @@ $name：值为$type.$id。
 </ul>
 <h1 id="内置命令"><a href="#内置命令" class="headerlink" title="内置命令"></a>内置命令</h1><ul>
 <li><code>:</code>：冒号表示空语句，什么也不做</li>
-<li>./source：在当前shell环境执行脚本，变量值可以回传给shell</li>
+<li>./script.sh：在当前shell环境执行脚本，变量值可以回传给shell</li>
 <li>sh/bash：开启子shell执行脚本，变量值不能回传给父shell</li>
 <li>declare：声明变量<ul>
 <li>declare -r variable=value     声明只读变量.</li>
