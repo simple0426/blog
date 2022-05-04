@@ -169,8 +169,35 @@ EOF
     - 逗号分隔的扩展：{1,5,a}
 
 # 流程控制
-* for列表循环：`for name [ [ in [ word ... ] ] ; ] do list ; done`：循环列表中的内容
-* for自增循环：`for((expr1;expr2;expr3))`：条件循环；expr1为初始条件，expr2为终止条件，expr为循环条件。
+* for列表循环：`for name [ [ in [ word ... ] ] ; ] do list ; done`：
+
+    * 用法1：循环列表中的内容
+
+        `for name in a b c;do echo $name;sleep 0.5;done`
+
+    * 用法2：如果in word省略相当于循环位置参数(见范例)
+
+
+```
+# for_1与for_2函数等价
+for_1(){
+  for var
+  do
+    echo $var
+  done
+}
+
+for_2(){
+  for var in "$@"
+  do
+    echo $var
+  done
+}
+for_1 1 2 3
+for_2 a b c
+```
+
+* for自增循环：`for((expr1;expr2;expr3))`：条件循环；expr1为初始条件，expr2为终止条件，expr为循环条件
     - 范例：for((a=50;a>=0;a--));do echo $a;done
 * select循环：`select name [in word];do list;done`：交互式选择列表中的项目
     - 范例：`select name in a b c;do echo $name;done `
@@ -220,13 +247,13 @@ done
 exec < FILE
 while read line
 do
-    cmd
+    CMD
 done
 
 2. 读取文件方式2
 while read line
 do
-    cmd
+    CMD
 done<FILE
 
 # 范例
@@ -234,14 +261,14 @@ while read line
 do 
     echo $line
     sleep 1
-done < $1
+done < $1 #$1是命令行的的第一个参数（文件名）
 ```
 
 * break和continue
     - 只能用于for、while、until、select循环
     - 单循环中：break终止循环；continue终止本次循环(不执行循环后语句)，继续下次循环
     - 双循环中：break跳出内循环，执行外循环语句；break 2直接跳出外循环。continue跳出内循环中的本次循环，继续下次内循环；continue 2跳出内循环，继续下次外循环。
-* exit `[n]`：以n退出脚本
+* exit `[n]`：以n作为返回值退出脚本
 * return `[n]`：以n作为返回值退出函数
 
 # 数学运算
@@ -275,7 +302,7 @@ done < $1
 
 # 内置命令
 * `:`：冒号表示空语句，什么也不做
-* ./source：在当前shell环境执行脚本，变量值可以回传给shell
+* ./script.sh：在当前shell环境执行脚本，变量值可以回传给shell
 * sh/bash：开启子shell执行脚本，变量值不能回传给父shell
 * declare：声明变量
     - declare -r variable=value     声明只读变量.
