@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/04/18/通用知识/TCP连接/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/18/容器化/分布式存储-glusterfs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/18/通用知识/TCP连接/" itemprop="url">TCP连接</a></h1>
+                <a class="post-title-link" href="/2020/03/18/容器化/分布式存储-glusterfs/" itemprop="url">分布式存储-glusterfs</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-18T11:01:51+08:00">
-                2018-04-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-18T23:58:06+08:00">
+                2020-03-18
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -389,26 +389,27 @@
       
         
           
-          建立连接
-三次握手
+          简介在实践kubernetes的statefulset及各种需要持久存储的功能时，通常需要用到PV的动态供给功能，而glusterfs就是这样一种可以提供动态供给功能的存储系统  
+部署架构
 
 
-释放连接
-四次挥手
+主机名
+ip地址
+角色
 
 
-状态迁移客户端状态迁移
-CLOSED   连接关闭
-SYN_SENT   主动发送连接请求【SYN】，等待确认
-ESTABLISHED  socket已经处于链接状态，可以进行数据交互
-一般认为一个established就是一个服务的并发连接
 
 
-FI
+node1
+172.17.8.101
+glusterfs
+
+
+node2
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/04/18/通用知识/TCP连接/#more" rel="contents">
+            <a class="btn" href="/2020/03/18/容器化/分布式存储-glusterfs/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -459,7 +460,7 @@ FI
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/06/运维开发/web开发/web开发之js学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -478,7 +479,7 @@ FI
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/06/运维开发/web开发/web开发之js学习/" itemprop="url">web开发之js学习</a></h1>
+                <a class="post-title-link" href="/2020/09/11/容器化/分布式存储-ceph/" itemprop="url">分布式存储-ceph</a></h1>
         
 
         <div class="post-meta">
@@ -490,8 +491,8 @@ FI
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-06T15:47:25+08:00">
-                2018-06-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-11T01:08:25+08:00">
+                2020-09-11
               </time>
             
 
@@ -506,8 +507,8 @@ FI
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -525,8 +526,8 @@ FI
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -564,17 +565,16 @@ FI
       
         
           
-          引入方式head标签下导入js文件
-1&lt;script type=&quot;text/javascript&quot; src=&quot;test.js&quot;&gt;&lt;/script&gt;
-组成部分
-ECMAScript：js语法规范
-变量定义
-基本数据类型
-数据对象（引用数据
+          Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统
+特点高性能
+
+摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。
+考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。
+能够支持上千个存储节点的规模
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/06/运维开发/web开发/web开发之js学习/#more" rel="contents">
+            <a class="btn" href="/2020/09/11/容器化/分布式存储-ceph/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -625,7 +625,7 @@ ECMAScript：js语法规范
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/08/运维开发/web开发/web开发之jquery学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-配置管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -644,7 +644,7 @@ ECMAScript：js语法规范
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/运维开发/web开发/web开发之jquery学习/" itemprop="url">web开发之jquery学习</a></h1>
+                <a class="post-title-link" href="/2020/02/24/容器化/kubernetes/kubernetes-配置管理/" itemprop="url">kubernetes-配置管理</a></h1>
         
 
         <div class="post-meta">
@@ -656,8 +656,8 @@ ECMAScript：js语法规范
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T15:25:02+08:00">
-                2018-06-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-24T19:40:31+08:00">
+                2020-02-24
               </time>
             
 
@@ -672,8 +672,8 @@ ECMAScript：js语法规范
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -691,8 +691,8 @@ ECMAScript：js语法规范
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -730,18 +730,15 @@ ECMAScript：js语法规范
       
         
           
-          介绍
-jquery是一个快速、简洁的JavaScript框架，
-它封装了JavaScript是常用的功能模块，提供了一种简便的JavaScript设计模式，优化HTML文档操作、事件处理、动画设计和Ajax交互
-下载地址
+          ConfigMap使用场景
+主要管理容器运行所需的配置文件、环境变量、命令行参数等可变配置
+用于解耦容器镜像和可变配置，从而保证工作负载(pod)的可移植性
 
-语法
-语法：$(selector).action()
-导入方式：&lt;sc
+创建configMap清单文件方式123456789101112131415161718192021apiVersion: v1kind: 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/08/运维开发/web开发/web开发之jquery学习/#more" rel="contents">
+            <a class="btn" href="/2020/02/24/容器化/kubernetes/kubernetes-配置管理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -792,7 +789,7 @@ jquery是一个快速、简洁的JavaScript框架，
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/03/运维开发/web开发/web开发之html学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -811,7 +808,7 @@ jquery是一个快速、简洁的JavaScript框架，
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/03/运维开发/web开发/web开发之html学习/" itemprop="url">web开发之html学习</a></h1>
+                <a class="post-title-link" href="/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/" itemprop="url">kubernetes-认证授权和准入控制</a></h1>
         
 
         <div class="post-meta">
@@ -823,8 +820,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-03T22:08:16+08:00">
-                2018-06-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-30T01:21:12+08:00">
+                2020-03-30
               </time>
             
 
@@ -839,8 +836,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -858,8 +855,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -897,12 +894,15 @@ jquery是一个快速、简洁的JavaScript框架，
       
         
           
-          范例12345678&lt;html&gt; html文档的开始和结束标签&lt;head&gt; 文档头部&lt;title&gt; 网页标题&lt;/title&gt; &lt;/head&gt;&lt;body&gt; 网页内容&lt;/body&gt;&lt;/html&gt;
-标签格式标签
+          访问控制对kubernetes安全的保护主要通过如下方式实现：
+
+认证（authentication）：验证访问者的身份(即访问对象)
+授权（authorization）：确定认证用户的权限和可以执行的操作，如增删改查指定的资源对象
+准入控制（admission control）：验证操作是否符合规
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/03/运维开发/web开发/web开发之html学习/#more" rel="contents">
+            <a class="btn" href="/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -953,7 +953,7 @@ jquery是一个快速、简洁的JavaScript框架，
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/04/运维开发/web开发/web开发之css学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -972,7 +972,7 @@ jquery是一个快速、简洁的JavaScript框架，
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/04/运维开发/web开发/web开发之css学习/" itemprop="url">web开发之css学习</a></h1>
+                <a class="post-title-link" href="/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/" itemprop="url">kubernetes-网络模型和策略控制</a></h1>
         
 
         <div class="post-meta">
@@ -984,8 +984,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-04T18:10:34+08:00">
-                2018-06-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T23:54:17+08:00">
+                2020-03-03
               </time>
             
 
@@ -1000,8 +1000,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1019,8 +1019,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1058,14 +1058,18 @@ jquery是一个快速、简洁的JavaScript框架，
       
         
           
-          语法1234567选择器selector &#123;    属性：值；    property: value;    property1: value1;    property2: value2&#125;
-引入方式行内式
-定义：在标签的style属性中设置
-范例：&lt;p style=&qu
+          kubernetes网络模型kubernetes要求所有的网络插件必须满足以下要求
+
+一个pod一个ip
+所有pod可以和任意其他pod通信，无需使用NAT映射
+所有节点可以与所有pod直接通信，无需使用NAT映射
+pod内部获取到的IP地址和与其他pod或节点通信时使用的IP地址相同
+
+k8s网络
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/06/04/运维开发/web开发/web开发之css学习/#more" rel="contents">
+            <a class="btn" href="/2020/03/03/容器化/kubernetes/kubernetes-网络模型和策略控制/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1116,7 +1120,7 @@ jquery是一个快速、简洁的JavaScript框架，
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/03/02/运维开发/python开发/python网络编程之进程/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1135,7 +1139,7 @@ jquery是一个快速、简洁的JavaScript框架，
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/02/运维开发/python开发/python网络编程之进程/" itemprop="url">python网络编程之进程</a></h1>
+                <a class="post-title-link" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/" itemprop="url">kubernetes-弹性伸缩</a></h1>
         
 
         <div class="post-meta">
@@ -1147,8 +1151,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T14:25:00+08:00">
-                2018-03-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-12T18:28:41+08:00">
+                2020-08-12
               </time>
             
 
@@ -1163,8 +1167,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1182,8 +1186,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1221,15 +1225,20 @@ jquery是一个快速、简洁的JavaScript框架，
       
         
           
-          进程与线程概念
-进程是资源集合，至少包含一个线程；线程是程序运行的最小单位
-一个进程的多个线程共享内存空间
-无论多进程或多线程，数量增加到一定程度，任务开销就会急剧上升，效率就会下降
-计算密集型任务，更多使用cpu，注重代码的执行效率，更适合使用C语言开发；而如web应用等io密集型【磁盘和网络】，
+          弹性伸缩集群的容量能够及时响应业务的负载需求
+业务负载类型
+在线负载类：微服务、API、网站
+离线业务：离线计算、大数据、机器学习
+定时任务：定时批量任务
+
+在线负载类对弹性伸缩的弹出时间敏感；离线业务对价格敏感；定时任务对调度敏感
+本章中的弹性伸缩主要针对在线负载类业务。
+弹性伸缩维度
+CA(cl
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/03/02/运维开发/python开发/python网络编程之进程/#more" rel="contents">
+            <a class="btn" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1280,7 +1289,7 @@ jquery是一个快速、简洁的JavaScript框架，
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/03/12/运维开发/python开发/python网络编程之socket/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1299,7 +1308,7 @@ jquery是一个快速、简洁的JavaScript框架，
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/12/运维开发/python开发/python网络编程之socket/" itemprop="url">python网络编程之socket</a></h1>
+                <a class="post-title-link" href="/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/" itemprop="url">kubernetes-存储和持久化</a></h1>
         
 
         <div class="post-meta">
@@ -1311,8 +1320,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T11:47:40+08:00">
-                2018-03-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-24T19:36:53+08:00">
+                2020-02-24
               </time>
             
 
@@ -1327,8 +1336,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1346,8 +1355,8 @@ jquery是一个快速、简洁的JavaScript框架，
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1385,29 +1394,20 @@ jquery是一个快速、简洁的JavaScript框架，
       
         
           
-          数据流处理服务端
-绑定端口
-监听端口【udp无】
-接受tcp连接【udp无】
-处理连接
-接收客户端数据
-处理数据
-向客户端返回数据
+          持久化设置
+pod级别设置卷类型(volumes类型)：spec.volumes
+容器级别使用卷：spec.containers.volumeMounts
+
+volumes类型内置存储类
+可以直接在pod的volumes中引用
 
 
-关闭连接【udp无】
-
-客户端
-建立连接【udp无】
-发送数据
-接收数据
-关闭连接【udp无】
-
-tcp编程服务端1234567891011121314151617
+本地存储：emptyDir、hostpath、local
+网络存储：
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/03/12/运维开发/python开发/python网络编程之socket/#more" rel="contents">
+            <a class="btn" href="/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1458,7 +1458,7 @@ tcp编程服务端1234567891011121314151617
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/07/运维开发/python开发/python类/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/08/容器化/kubernetes/kubernetes-包管理器helm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1477,7 +1477,7 @@ tcp编程服务端1234567891011121314151617
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/07/运维开发/python开发/python类/" itemprop="url">python类</a></h1>
+                <a class="post-title-link" href="/2020/03/08/容器化/kubernetes/kubernetes-包管理器helm/" itemprop="url">kubernetes-包管理器helm</a></h1>
         
 
         <div class="post-meta">
@@ -1489,8 +1489,8 @@ tcp编程服务端1234567891011121314151617
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-07T15:08:57+08:00">
-                2018-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-08T12:21:44+08:00">
+                2020-03-08
               </time>
             
 
@@ -1505,8 +1505,8 @@ tcp编程服务端1234567891011121314151617
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1524,8 +1524,8 @@ tcp编程服务端1234567891011121314151617
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1563,14 +1563,21 @@ tcp编程服务端1234567891011121314151617
       
         
           
-          概念面向对象
-面向过程：面向过程的程序设计把计算机程序视为一系列的命令集合，即一组函数的顺序执行
-面向对象：面向对象的程序设计把计算机程序视为一组对象的集合，而每个对象都可以接收并处理其他对象发送的消息，程序的执行即为一系列消息在各个对象之间的传递
-在python中一切皆为对象，对象包括数据（属性）
+          helm简介
+优点
+
+能够管理复杂的程序结构，将各种配置文件(service/deployment/configmap)作为整体管理
+使用模板后，资源文件可以复用、分享
+可以支持应用级别的版本管理：更新、回滚
+
+
+核心概念
+
+helm：helm二进制管理工具，主要用于k8s应用的创建、打包、发布、管
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/05/07/运维开发/python开发/python类/#more" rel="contents">
+            <a class="btn" href="/2020/03/08/容器化/kubernetes/kubernetes-包管理器helm/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1621,7 +1628,7 @@ tcp编程服务端1234567891011121314151617
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/30/运维开发/python开发/python环境管理/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/18/容器化/kubernetes/kubernetes-statefulset控制器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1640,7 +1647,7 @@ tcp编程服务端1234567891011121314151617
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/30/运维开发/python开发/python环境管理/" itemprop="url">python环境管理</a></h1>
+                <a class="post-title-link" href="/2020/03/18/容器化/kubernetes/kubernetes-statefulset控制器/" itemprop="url">kubernetes-statefulset控制器</a></h1>
         
 
         <div class="post-meta">
@@ -1652,8 +1659,8 @@ tcp编程服务端1234567891011121314151617
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-30T17:10:00+08:00">
-                2018-05-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-18T23:57:38+08:00">
+                2020-03-18
               </time>
             
 
@@ -1668,8 +1675,8 @@ tcp编程服务端1234567891011121314151617
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1687,8 +1694,8 @@ tcp编程服务端1234567891011121314151617
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1726,18 +1733,18 @@ tcp编程服务端1234567891011121314151617
       
         
           
-          virtualenv创建一个隔离的python运行环境
-安装pip3 install virtualenv
-创建独立环境
-–no-site-packages 不复制系统已存在的软件包
--p指定解释器，否则使用默认解释器
+          有无状态
+分类标准：应用程序在和其他用户、设备、程序通信时，根据是否需要记录相关状态信息以用于下次通信，可以将程序分类如下：
+有状态应用(stateful)：需要记录信息
+无状态应用(stateless)：无需记录
 
-virtualenv -p /usr/bin/python3 venv
-进入虚
+
+控制器
+无状态控制器：replicaset，多个pod使用共享的存储卷(Read
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/05/30/运维开发/python开发/python环境管理/#more" rel="contents">
+            <a class="btn" href="/2020/03/18/容器化/kubernetes/kubernetes-statefulset控制器/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1788,7 +1795,7 @@ virtualenv -p /usr/bin/python3 venv
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/08/运维开发/python开发/python流程控制/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/06/容器化/kubernetes/kubernetes-service和ingress/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1807,7 +1814,7 @@ virtualenv -p /usr/bin/python3 venv
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/08/运维开发/python开发/python流程控制/" itemprop="url">python流程控制</a></h1>
+                <a class="post-title-link" href="/2020/03/06/容器化/kubernetes/kubernetes-service和ingress/" itemprop="url">kubernetes-service和ingress</a></h1>
         
 
         <div class="post-meta">
@@ -1819,8 +1826,8 @@ virtualenv -p /usr/bin/python3 venv
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-08T17:44:47+08:00">
-                2018-05-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-06T02:12:36+08:00">
+                2020-03-06
               </time>
             
 
@@ -1835,8 +1842,8 @@ virtualenv -p /usr/bin/python3 venv
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1854,8 +1861,8 @@ virtualenv -p /usr/bin/python3 venv
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1893,11 +1900,17 @@ virtualenv -p /usr/bin/python3 venv
       
         
           
-          流程语句if-else123456789name = input('input names:').strip()if name == 'oldboy':    print('superadmin')elif name == 'alex':    print('admin')elif name == 
+          service实现目标
+服务发现：在pod的弹性伸缩变化过程中，保持外部访问入口不变
+负载均衡：定义访问pod资源的策略
+
+实现方式
+服务发现：service定义一个访问入口(service_name、clusterIP)，并基于标签选择器选择一组pod
+负载均衡：kube-proxy根据servi
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/05/08/运维开发/python开发/python流程控制/#more" rel="contents">
+            <a class="btn" href="/2020/03/06/容器化/kubernetes/kubernetes-service和ingress/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1985,7 +1998,7 @@ virtualenv -p /usr/bin/python3 venv
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

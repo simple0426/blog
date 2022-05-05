@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/30/ELK/kibana学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/11/运维开发/python开发/python文件操作/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/10/30/ELK/kibana学习/" itemprop="url">kibana学习</a></h1>
+                <a class="post-title-link" href="/2018/05/11/运维开发/python开发/python文件操作/" itemprop="url">python文件操作</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-30T13:24:27+08:00">
-                2020-10-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-11T16:49:14+08:00">
+                2018-05-11
               </time>
             
 
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -389,17 +389,18 @@
       
         
           
-          服务启动1yum install filebeat -y
-配置选项
+          open函数with使用
+上下文管理
 
-server.port: 5601
-server.host: “192.168.31.222”
-elasticsearch.url: “http://192.168.31.221:9200&quot;
-kibana.index: 
+
+可以一次打开多个文件进行操作
+不用自己处理文件关闭操作
+
+123with open('test.txt', encoding='utf-8') as f1,open('b.txt', mode='w', encoding='utf-8') as f2:   
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/10/30/ELK/kibana学习/#more" rel="contents">
+            <a class="btn" href="/2018/05/11/运维开发/python开发/python文件操作/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -450,7 +451,7 @@ kibana.index:
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/29/ELK/logstash学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/02/运维开发/python开发/python数据类型之字符串/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -469,7 +470,7 @@ kibana.index:
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/10/29/ELK/logstash学习/" itemprop="url">logstash学习</a></h1>
+                <a class="post-title-link" href="/2018/05/02/运维开发/python开发/python数据类型之字符串/" itemprop="url">python数据类型之字符串</a></h1>
         
 
         <div class="post-meta">
@@ -481,8 +482,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T01:13:38+08:00">
-                2020-10-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-02T18:04:10+08:00">
+                2018-05-02
               </time>
             
 
@@ -516,8 +517,8 @@ kibana.index:
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -555,26 +556,185 @@ kibana.index:
       
         
           
-          配置文件语法基础语法
-区块标识 {}
-变量赋值 nginx =&gt; 5
-变量引用 [nginx]
-双引号下引用变量 &quot;%{nginx}&quot;
-引用数组 [arry][1]
+          字符串方法
+isdecimal/isdigit/isnumberic：判断是否为数字型字符串
+1234v1 = a.isdecimal() #2v2 = a.isdigit() #2 ②v3 = a.isnumeric() #2 ② 二/贰print(v1, v2, v3)
+
+istitle：判断首
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/02/运维开发/python开发/python数据类型之字符串/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
 
 
+    
+      
 
-变量数据类型
-数字
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/07/运维开发/python开发/python数据类型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="simple0426">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="运维自动化之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/07/运维开发/python开发/python数据类型/" itemprop="url">python数据类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-07T18:02:12+08:00">
+                2018-05-07
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          数据类型基本数据类型
+整数
+小数
+小数之所以称为浮点数，是因为按照科学计数法的表示时，小数点的位置是可变的
+对于很大或很小的浮点数，就必须用科学计数法表示，把10用e替代，1.23x10^9就是1.23e9
+
+
 字符串
-布尔值
-数组【列表】
-
-1match =&gt; [&quot;datet
+使用\转义特殊字符如\t
+使用r’’表示内部字符串不转义
+使用三引号显示多行内容
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/10/29/ELK/logstash学习/#more" rel="contents">
+            <a class="btn" href="/2018/05/07/运维开发/python开发/python数据类型/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -625,7 +785,7 @@ kibana.index:
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/28/运维开发/python开发/python常用模块/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -644,7 +804,7 @@ kibana.index:
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/24/ELK/filebeat学习/" itemprop="url">filebeat学习</a></h1>
+                <a class="post-title-link" href="/2018/02/28/运维开发/python开发/python常用模块/" itemprop="url">python常用模块</a></h1>
         
 
         <div class="post-meta">
@@ -656,8 +816,8 @@ kibana.index:
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
-                2020-09-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T10:35:35+08:00">
+                2018-02-28
               </time>
             
 
@@ -691,8 +851,8 @@ kibana.index:
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -730,15 +890,15 @@ kibana.index:
       
         
           
-          工作原理filebeat由2个组件组成：inputs和harvester 
+          包和模块简介
+在python中，一个py文件就是一个模块
+使用模块还可以避免函数名和变量名冲突，相同的函数和变量完全可以分别存在不同的模块中；我们自己在编写模块时，不必考虑名字与其他模块冲突，但是尽量不要和内置函数名冲突。
+为了避免模块名冲突，python又引入了按目录来组织模块的方法，称之为包。
 
-harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】
-
-inputs：负责管理harvester并查
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/24/ELK/filebeat学习/#more" rel="contents">
+            <a class="btn" href="/2018/02/28/运维开发/python开发/python常用模块/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -789,7 +949,7 @@ inputs：负责管理harvester并查
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/11/01/ELK/elk-安全和访问控制/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/03/02/运维开发/python开发/python函数之迭代器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -808,7 +968,7 @@ inputs：负责管理harvester并查
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/11/01/ELK/elk-安全和访问控制/" itemprop="url">elk-安全和访问控制</a></h1>
+                <a class="post-title-link" href="/2018/03/02/运维开发/python开发/python函数之迭代器/" itemprop="url">python函数之迭代器</a></h1>
         
 
         <div class="post-meta">
@@ -820,8 +980,8 @@ inputs：负责管理harvester并查
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-01T22:10:42+08:00">
-                2020-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T10:18:09+08:00">
+                2018-03-02
               </time>
             
 
@@ -855,8 +1015,8 @@ inputs：负责管理harvester并查
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/elk/" itemprop="url" rel="index">
-                    <span itemprop="name">elk</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -894,13 +1054,14 @@ inputs：负责管理harvester并查
       
         
           
-          本文主要基于通过 TLS 加密和基于角色的访问控制确保 Elasticsearch 的安全完成
-前言从elastic stack 6.8和7.1开始，会在软件分发版本中免费提供多项安全功能，例如elasticsearch之间的TLS加密通信，kibana中基于角色的访问控制(RBAC)等.
-在完成下
+          迭代概念
+迭代：重复的过程称为迭代，每次重复即是一次迭代，但是每次重复的结果都是下一次重复的初始值
+可迭代：每个含有iter()方法的数据类型都是可迭代的，都可以使用for循环获取对象中的每一个元素
+for循环：先执行对象的iter方法得到一个迭代器对象，再执行迭代器对象的next方法从而得到对象的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/11/01/ELK/elk-安全和访问控制/#more" rel="contents">
+            <a class="btn" href="/2018/03/02/运维开发/python开发/python函数之迭代器/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -951,7 +1112,7 @@ inputs：负责管理harvester并查
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/05/09/运维开发/python开发/python函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -970,7 +1131,7 @@ inputs：负责管理harvester并查
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/" itemprop="url">jenkins自动化-gitlab</a></h1>
+                <a class="post-title-link" href="/2018/05/09/运维开发/python开发/python函数/" itemprop="url">python函数</a></h1>
         
 
         <div class="post-meta">
@@ -982,8 +1143,8 @@ inputs：负责管理harvester并查
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T22:07:48+08:00">
-                2020-02-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-09T16:23:13+08:00">
+                2018-05-09
               </time>
             
 
@@ -1017,8 +1178,8 @@ inputs：负责管理harvester并查
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CICD/" itemprop="url" rel="index">
-                    <span itemprop="name">CICD</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -1056,18 +1217,22 @@ inputs：负责管理harvester并查
       
         
           
-          创建项目
-类型：pipeline
-名称：spring-hello-demo
+          函数定义名称空间
+内置名称空间：python解释器自带的名字所在的空间
+全局名称空间：文件级别定义的名字所在的空间
+局部名称空间：函数级别定义的名字所在的空间
 
-触发器设置
-以webhook方式
-设置token信息，如：123456
-webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?token=TOKE
+作用域
+全局作用域：内置名称空间、全局名称空间
+查看全局作用域的名字：globals
+
+
+局部作用域：局部名称空间
+查看局部作用域的名字：
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/#more" rel="contents">
+            <a class="btn" href="/2018/05/09/运维开发/python开发/python函数/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1118,7 +1283,7 @@ webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?t
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/10/CICD/jenkins/jenkins安装与配置/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/10/运维开发/python开发/python-编码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1137,7 +1302,7 @@ webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?t
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/10/CICD/jenkins/jenkins安装与配置/" itemprop="url">jenkins安装与配置</a></h1>
+                <a class="post-title-link" href="/2020/07/10/运维开发/python开发/python-编码/" itemprop="url">python-编码</a></h1>
         
 
         <div class="post-meta">
@@ -1149,8 +1314,8 @@ webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?t
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-10T15:12:23+08:00">
-                2020-02-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-10T22:45:43+08:00">
+                2020-07-10
               </time>
             
 
@@ -1184,8 +1349,8 @@ webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?t
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CICD/" itemprop="url" rel="index">
-                    <span itemprop="name">CICD</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -1223,16 +1388,16 @@ webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?t
       
         
           
-          安装
-需要提前配置java8运行环境
-
-虚拟机方式
-centos安装
-123wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.reporpm --import https://jenkins-
+          通用编码
+ASCII[1个字节] 只支持英文字母和一些常用的符号
+Unicode[2个字节]
+UTF-8 把一个Unicode字符根据不同的数字大小编码成1-6个字节
+常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节
+ASCII编码实际上可以被看成是UTF
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/10/CICD/jenkins/jenkins安装与配置/#more" rel="contents">
+            <a class="btn" href="/2020/07/10/运维开发/python开发/python-编码/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1283,7 +1448,7 @@ centos安装
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/12/运维开发/django开发/django开发之基本设置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1302,7 +1467,7 @@ centos安装
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/" itemprop="url">jenkins之声明式pipeline</a></h1>
+                <a class="post-title-link" href="/2018/06/12/运维开发/django开发/django开发之基本设置/" itemprop="url">django开发之基本设置</a></h1>
         
 
         <div class="post-meta">
@@ -1314,8 +1479,8 @@ centos安装
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-10T15:12:41+08:00">
-                2020-02-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T14:27:26+08:00">
+                2018-06-12
               </time>
             
 
@@ -1349,8 +1514,8 @@ centos安装
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CICD/" itemprop="url" rel="index">
-                    <span itemprop="name">CICD</span>
+                  <a href="/categories/django/" itemprop="url" rel="index">
+                    <span itemprop="name">django</span>
                   </a>
                 </span>
 
@@ -1388,11 +1553,16 @@ centos安装
       
         
           
-          基本结构-stages12345678910111213141516171819202122232425pipeline &#123;   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】   stages &#123;     //构建步骤，至少
+          MTV模型MTV即是通用的web开发模型MVC在django中的实现，  此外django中还有一个URLconf。
+
+M【models】：建立和操作数据库
+T【templates】：建立和渲染html
+V【views】：连接models和templates，进行逻辑操作
+URLconf：匹配相关的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/#more" rel="contents">
+            <a class="btn" href="/2018/06/12/运维开发/django开发/django开发之基本设置/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1443,7 +1613,7 @@ centos安装
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/30/运维开发/django开发/django开发之中间件学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1462,7 +1632,7 @@ centos安装
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/" itemprop="url">源代码管理-gitlab</a></h1>
+                <a class="post-title-link" href="/2018/06/30/运维开发/django开发/django开发之中间件学习/" itemprop="url">django开发之中间件学习</a></h1>
         
 
         <div class="post-meta">
@@ -1474,8 +1644,8 @@ centos安装
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-06T14:48:16+08:00">
-                2020-07-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-30T17:06:14+08:00">
+                2018-06-30
               </time>
             
 
@@ -1509,8 +1679,8 @@ centos安装
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CICD/" itemprop="url" rel="index">
-                    <span itemprop="name">CICD</span>
+                  <a href="/categories/django/" itemprop="url" rel="index">
+                    <span itemprop="name">django</span>
                   </a>
                 </span>
 
@@ -1548,14 +1718,23 @@ centos安装
       
         
           
-          gitlab服务软件安装docker方式
-由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务
+          cookie简单介绍
+保存在浏览器端的键值对
+cookie依附在请求头或响应头中出现
+向网站发送请求时，会自动携带网站的cookie信息
+缺点
+明文传输，容易被劫持和篡改
+不能用于存储敏感信息
+客户端存储，因此cookie可能被拒绝
 
-123456789101112docker run -
+
+
+使用方法
+查看cookie：request.COOKIES、
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/#more" rel="contents">
+            <a class="btn" href="/2018/06/30/运维开发/django开发/django开发之中间件学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1606,7 +1785,7 @@ centos安装
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/18/容器化/虚拟机管理-vagrant/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/06/29/运维开发/django开发/django开发之views学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1625,7 +1804,7 @@ centos安装
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/18/容器化/虚拟机管理-vagrant/" itemprop="url">虚拟机管理-vagrant</a></h1>
+                <a class="post-title-link" href="/2018/06/29/运维开发/django开发/django开发之views学习/" itemprop="url">django开发之views学习</a></h1>
         
 
         <div class="post-meta">
@@ -1637,8 +1816,8 @@ centos安装
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T21:24:01+08:00">
-                2019-11-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-29T12:43:53+08:00">
+                2018-06-29
               </time>
             
 
@@ -1653,8 +1832,8 @@ centos安装
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-31T11:56:42+08:00">
-                2020-12-31
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1672,8 +1851,8 @@ centos安装
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
-                    <span itemprop="name">虚拟化</span>
+                  <a href="/categories/django/" itemprop="url" rel="index">
+                    <span itemprop="name">django</span>
                   </a>
                 </span>
 
@@ -1711,183 +1890,15 @@ centos安装
       
         
           
-          简介
-vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等）
-软件安装
-vagrant下载与安装
-VirtualBox下载与安装
-
-
-存
+          request内容请求路径
+request.path：除域名以外的请求路径，以斜杠开头
+request.get_host()：主机名（比如通常所说的域名）
+request.get_full_path()：请求路径，可能包含查询字符串
+request.is_secure()：请求方法是否是https，
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/18/容器化/虚拟机管理-vagrant/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/02/系统管理/系统基础/linux使用技巧/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/02/系统管理/系统基础/linux使用技巧/" itemprop="url">linux使用技巧</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T14:27:29+08:00">
-                2019-07-02
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-07T14:01:12+08:00">
-                2020-12-07
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          文件swap创建空文件
-fallocate -l 4G /home/swapfile 
-truncate -s 4G /home/swapfile 
-dd if=/dev/zero of=/home/swapfile bs=8192 count=512k  
-
-格式化与挂载12345chmod 60
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/02/系统管理/系统基础/linux使用技巧/#more" rel="contents">
+            <a class="btn" href="/2018/06/29/运维开发/django开发/django开发之views学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1975,7 +1986,7 @@ dd if=/dev/zero of=/home/swapfile bs=8192 count=512k
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

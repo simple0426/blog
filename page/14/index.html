@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/12/01/web服务管理/数据库/mongodb副本集与分片/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/12/01/web服务管理/数据库/mongodb副本集与分片/" itemprop="url">mongodb副本集与分片</a></h1>
+                <a class="post-title-link" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/" itemprop="url">源代码管理-gitlab</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-01T18:55:08+08:00">
-                2019-12-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-06T14:48:16+08:00">
+                2020-07-06
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mongodb/" itemprop="url" rel="index">
-                    <span itemprop="name">mongodb</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -389,21 +389,14 @@
       
         
           
-          副本集部署架构
-主机：172.16.0.201、172.16.0.215、172.16.0.205
-201已建立用户及其权限
-readWriteAnyDatabase
-clusterAdmin
-userAdminAnyDatabase
-dbAdminAnyDatabase
+          gitlab服务软件安装docker方式
+由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务
 
-
-
-配置文件123456
+123456789101112docker run -
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/12/01/web服务管理/数据库/mongodb副本集与分片/#more" rel="contents">
+            <a class="btn" href="/2020/07/06/CICD/gitlab/源代码管理-gitlab/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -454,7 +447,7 @@ dbAdminAnyDatabase
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/21/web服务管理/数据库/mongodb入门与管理/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -473,7 +466,7 @@ dbAdminAnyDatabase
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/21/web服务管理/数据库/mongodb入门与管理/" itemprop="url">mongodb入门与管理</a></h1>
+                <a class="post-title-link" href="/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/" itemprop="url">gitlab之ci-runner使用</a></h1>
         
 
         <div class="post-meta">
@@ -485,8 +478,8 @@ dbAdminAnyDatabase
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-21T20:59:40+08:00">
-                2019-11-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-18T12:10:30+08:00">
+                2020-01-18
               </time>
             
 
@@ -501,8 +494,8 @@ dbAdminAnyDatabase
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -520,8 +513,8 @@ dbAdminAnyDatabase
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mongodb/" itemprop="url" rel="index">
-                    <span itemprop="name">mongodb</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -559,16 +552,14 @@ dbAdminAnyDatabase
       
         
           
-          简介存储引擎
-3.2之后增加存储引擎WiredTiger
-4.2之后移除对MMAPv1引擎的支持
-若要将数据从MMAPv1迁移到WiredTiger，参考官方文档
-数据目录下包含的文件必须和存储引擎匹配，否则无法启动
-WiredTiger存储引擎默认支持document级别锁（类似关系型数据库的行级
+          ci-runner安装与配置gitlab CI服务最好不要部署于gitlab服务器上【因为CI(持续集成)任务会很消耗资源】
+安装dockerdocker是CI(持续集成)任务的基础环境，当然CI(持续集成)任务也可以直接利用CI服务器的shell环境
+安装gitlab-runner
+gitlab-
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/21/web服务管理/数据库/mongodb入门与管理/#more" rel="contents">
+            <a class="btn" href="/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -619,7 +610,7 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/16/web服务管理/代理与高可用/高可用服务-keepalived/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/02/CICD/ansible/ansible之应用实践/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -638,7 +629,7 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/16/web服务管理/代理与高可用/高可用服务-keepalived/" itemprop="url">高可用服务-keepalived</a></h1>
+                <a class="post-title-link" href="/2019/07/02/CICD/ansible/ansible之应用实践/" itemprop="url">ansible之应用实践</a></h1>
         
 
         <div class="post-meta">
@@ -650,8 +641,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-16T11:32:43+08:00">
-                2019-09-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T11:04:24+08:00">
+                2019-07-02
               </time>
             
 
@@ -666,8 +657,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -685,8 +676,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
                   </a>
                 </span>
 
@@ -724,11 +715,14 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
       
         
           
-          简介keepalived起初是专门为lvs设计的，专门用来监控lvs集群系统中各个服务节点的状态，后来又加入了VRRP（Virtual Router Redundancy Protocol）虚拟路由冗余协议。VRRP的出现是为解决静态路由出现的单点故障问题，他能保证网络的不间断、稳定的运行。所以ke
+          异步模式异步等待模式
+ansible在客户端异步执行，在任务执行过程中，无论ssh连接是否中断都不影响任务执行  
+async：任务执行超时时间，如无此关键词，则任务以同步模式执行【ansible默认模式】
+poll：任务轮询时间，大于0的正值，任务异步执行，但在任务出结果之前ansible在前台阻
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/16/web服务管理/代理与高可用/高可用服务-keepalived/#more" rel="contents">
+            <a class="btn" href="/2019/07/02/CICD/ansible/ansible之应用实践/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -779,7 +773,7 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/10/web服务管理/代理与高可用/负载均衡器-haproxy/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/17/CICD/ansible/ansible之基础学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -798,7 +792,7 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/10/web服务管理/代理与高可用/负载均衡器-haproxy/" itemprop="url">负载均衡器-haproxy</a></h1>
+                <a class="post-title-link" href="/2019/05/17/CICD/ansible/ansible之基础学习/" itemprop="url">ansible之基础学习</a></h1>
         
 
         <div class="post-meta">
@@ -810,8 +804,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-10T10:56:44+08:00">
-                2019-09-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T14:30:41+08:00">
+                2019-05-17
               </time>
             
 
@@ -826,8 +820,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -845,8 +839,8 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
                   </a>
                 </span>
 
@@ -884,18 +878,15 @@ WiredTiger存储引擎默认支持document级别锁（类似关系型数据库�
       
         
           
-          软件安装
-yum或apt方式安装
-源码安装
-
-12make TARGET=linux2628 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 make install
-配置主配置haproxy.cfg详细配置，请查看 ！！！
-
-global：全局设置，通常和操作系统相关，如进
+          简介ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet
+软件特性
+基于当前的架构理解，使用简单的语言描述操作过程（playbook编写）
+操作的可重用性及操作过程的可追溯性（playbook的可读性、roles的可重用性）
+任何操作都是基于状态的描述（模块的幂等特
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/10/web服务管理/代理与高可用/负载均衡器-haproxy/#more" rel="contents">
+            <a class="btn" href="/2019/05/17/CICD/ansible/ansible之基础学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -946,7 +937,7 @@ global：全局设置，通常和操作系统相关，如进
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/29/CICD/ansible/ansible之命令行/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -965,7 +956,7 @@ global：全局设置，通常和操作系统相关，如进
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/" itemprop="url">负载均衡器-lvs</a></h1>
+                <a class="post-title-link" href="/2019/05/29/CICD/ansible/ansible之命令行/" itemprop="url">ansible之命令行</a></h1>
         
 
         <div class="post-meta">
@@ -977,8 +968,8 @@ global：全局设置，通常和操作系统相关，如进
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-15T22:50:02+08:00">
-                2019-09-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T15:36:18+08:00">
+                2019-05-29
               </time>
             
 
@@ -993,8 +984,8 @@ global：全局设置，通常和操作系统相关，如进
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1012,8 +1003,8 @@ global：全局设置，通常和操作系统相关，如进
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
                   </a>
                 </span>
 
@@ -1051,13 +1042,17 @@ global：全局设置，通常和操作系统相关，如进
       
         
           
-          原理LVS的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。
-lvs技术实现
-四层负载均衡：网络及传输层实现的IP虚拟服务器软
+          ansible在一个或一组主机下运行单个任务
+语法
+语法：ansible 《pattern》 -m 《module_name》 -a 《arguments》 other_options  
+默认的模块名为command
+
+
+示例：ansible 10.150.20.209 -u db -m apt 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/15/web服务管理/代理与高可用/负载均衡器-LVS/#more" rel="contents">
+            <a class="btn" href="/2019/05/29/CICD/ansible/ansible之命令行/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1108,7 +1103,7 @@ lvs技术实现
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/06/web服务管理/web服务/tomcat配置与优化/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/20/CICD/ansible/ansible之变量与模板/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1127,7 +1122,7 @@ lvs技术实现
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/06/web服务管理/web服务/tomcat配置与优化/" itemprop="url">tomcat配置与优化</a></h1>
+                <a class="post-title-link" href="/2019/06/20/CICD/ansible/ansible之变量与模板/" itemprop="url">ansible之变量与模板</a></h1>
         
 
         <div class="post-meta">
@@ -1139,8 +1134,8 @@ lvs技术实现
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-06T17:26:08+08:00">
-                2019-06-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-20T18:08:10+08:00">
+                2019-06-20
               </time>
             
 
@@ -1155,8 +1150,8 @@ lvs技术实现
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1174,8 +1169,8 @@ lvs技术实现
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
                   </a>
                 </span>
 
@@ -1213,23 +1208,16 @@ lvs技术实现
       
         
           
-          JAVA程序java程序
-java程序设计语言
-java api【库函数】
-java class文件
-jvm：java虚拟机【字节码运行环境】
-JRE：java运行时环境，只能运行class文件；
-JDK：java开发环境，可将java程序编译为class文件；
-
-
-
-
-servlet
-Servle
+          变量变量使用注意
+变量名，应该以字母开头，并且变量名中不含空格、逗点、中横线
+变量内容，如果只包含字母、数字、下划线、中横线等普通字符，可以直接书写，无需使用引号
+使用jinja2模块系统进行变量引用
+对于字典变量，可以使用方括号或点方式引用，但是点方式可能会和python字典的属性或方法冲突
+变量
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/06/web服务管理/web服务/tomcat配置与优化/#more" rel="contents">
+            <a class="btn" href="/2019/06/20/CICD/ansible/ansible之变量与模板/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1280,7 +1268,7 @@ Servle
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/07/web服务管理/web服务/apache下rewrite使用/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/25/CICD/ansible/ansible之playbook学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1299,7 +1287,7 @@ Servle
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/07/web服务管理/web服务/apache下rewrite使用/" itemprop="url">apache下rewrite使用</a></h1>
+                <a class="post-title-link" href="/2019/05/25/CICD/ansible/ansible之playbook学习/" itemprop="url">ansible之playbook学习</a></h1>
         
 
         <div class="post-meta">
@@ -1311,8 +1299,8 @@ Servle
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T17:36:02+08:00">
-                2019-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-25T22:33:05+08:00">
+                2019-05-25
               </time>
             
 
@@ -1327,8 +1315,8 @@ Servle
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1346,8 +1334,8 @@ Servle
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">ansible</span>
                   </a>
                 </span>
 
@@ -1385,178 +1373,18 @@ Servle
       
         
           
-          功能
-rewrite url实现URL的跳转和隐藏真实地址，基于perl语言的正则表达式规范
-主要用途：拟静态、拟目录、域名跳转、防盗链
-开启功能
-去除httpd.conf文件中”#LoadModule rewrite_module modules/mod_rewrite.so”前面的”#”号; 
+          playbook简介playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：
+
+module：实现功能的基本组成单元，类似程序代码
+它应该是幂等效果，即多次执行和一次执行具有同样的效果
+
+
+task：执行module，用以实现特定功能，类似运行代码后的进程
 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/05/07/web服务管理/web服务/apache下rewrite使用/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/15/web服务管理/web服务/angular运行环境/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="simple0426">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="运维自动化之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/15/web服务管理/web服务/angular运行环境/" itemprop="url">angular运行环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T10:46:02+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          使用淘宝npm库npm install -registry=https://registry.npm.taobao.org
-安装nodejs下载地址：https://nodejs.org/en/download/
-node为免安装，解压后bin目录有node和npm，只需将bin目录添加到系统PAT
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/05/15/web服务管理/web服务/angular运行环境/#more" rel="contents">
+            <a class="btn" href="/2019/05/25/CICD/ansible/ansible之playbook学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1644,7 +1472,7 @@ node为免安装，解压后bin目录有node和npm，只需将bin目录添加到
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

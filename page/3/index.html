@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/30/监控报警/prometheus入门/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/05/通用知识/正则表达式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/07/30/监控报警/prometheus入门/" itemprop="url">prometheus入门</a></h1>
+                <a class="post-title-link" href="/2019/08/05/通用知识/正则表达式/" itemprop="url">正则表达式</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-30T21:41:36+08:00">
-                2020-07-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-05T23:32:46+08:00">
+                2019-08-05
               </time>
             
 
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/prometheus/" itemprop="url" rel="index">
-                    <span itemprop="name">prometheus</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -389,16 +389,12 @@
       
         
           
-          主要特点
-一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据
-PromQL，灵活的数据查询语言
-不依赖分布式存储，数据保存在服务器节点上
-通过http的pull模型拉取时间序列数据
-可以通过推送网关(pushgate
+          POSIX正则表达式
+常见的正则表达式记法，其实都源于Perl。实际上，正则表达式从Perl衍生出一个显赫的流派，叫做PCRE（Perl Compatible Regular Expression），\d、\w、\s 之类的记法，就是这个流派的特征。但是在PCRE之外，正则表达式还有其它流派，比如下
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/07/30/监控报警/prometheus入门/#more" rel="contents">
+            <a class="btn" href="/2019/08/05/通用知识/正则表达式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -449,7 +445,7 @@ PromQL，灵活的数据查询语言
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus-server设置/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/07/通用知识/时间格式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -468,7 +464,7 @@ PromQL，灵活的数据查询语言
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus-server设置/" itemprop="url">prometheus-server设置</a></h1>
+                <a class="post-title-link" href="/2019/08/07/通用知识/时间格式/" itemprop="url">时间格式</a></h1>
         
 
         <div class="post-meta">
@@ -480,8 +476,8 @@ PromQL，灵活的数据查询语言
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:47:42+08:00">
-                2020-08-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-07T10:48:03+08:00">
+                2019-08-07
               </time>
             
 
@@ -515,8 +511,8 @@ PromQL，灵活的数据查询语言
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/prometheus/" itemprop="url" rel="index">
-                    <span itemprop="name">prometheus</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -554,15 +550,51 @@ PromQL，灵活的数据查询语言
       
         
           
-          启动参数
-–config.file=/etc/config/prometheus.yml：指定配置文件
-–storage.tsdb.path=/data：指定数据目录
-–web.enable-lifecycle：允许通过http POST方式关闭服务或重载配置
-–storage.tsdb.reten
+          
+
+
+格式符
+含义
+范例
+
+
+
+
+%a
+缩写的星期几
+Sun
+
+
+%A
+完整的星期几
+Sunday
+
+
+%b/%h
+缩写的月份
+Mar
+
+
+%B
+完整的月份
+March
+
+
+%c
+日期和时间表示法
+Sun Aug 19 02:56:02 2012
+
+
+%d
+一月中的第几天（01-31）
+19
+
+
+%
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/05/监控报警/prometheus-server设置/#more" rel="contents">
+            <a class="btn" href="/2019/08/07/通用知识/时间格式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -613,7 +645,7 @@ PromQL，灵活的数据查询语言
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus-altermanager告警/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/博客应用hexo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -632,7 +664,7 @@ PromQL，灵活的数据查询语言
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus-altermanager告警/" itemprop="url">prometheus-altermanager告警</a></h1>
+                <a class="post-title-link" href="/2018/02/26/通用知识/博客应用hexo/" itemprop="url">博客应用hexo</a></h1>
         
 
         <div class="post-meta">
@@ -644,8 +676,8 @@ PromQL，灵活的数据查询语言
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:52:23+08:00">
-                2020-08-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T13:43:05+08:00">
+                2018-02-26
               </time>
             
 
@@ -679,8 +711,8 @@ PromQL，灵活的数据查询语言
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/prometheus/" itemprop="url" rel="index">
-                    <span itemprop="name">prometheus</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -718,19 +750,25 @@ PromQL，灵活的数据查询语言
       
         
           
-          告警状态
+          安装参考
+安装前提
+Node.js
+Git
 
-inactive：当做什么都没发生
-pending：已触发阈值，但是未满足告警持续时间
-firing：触发阈值且满足告警持续时间；告警发给接收者。
+安装命令npm install -g hexo-cli
+建站hexo建站
+hexo init blog
+cd blog
+npm install
 
-告警收敛设置
-分组(group)：将告警名称相同的多个告警合并到一个告警中发送
-抑制(inhibit)：当告警发生后，停止发送和此类警报相
+使用git版本控制
+目录切换：cd blog
+初始化：git init
+关联远程：git remote ad
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/05/监控报警/prometheus-altermanager告警/#more" rel="contents">
+            <a class="btn" href="/2018/02/26/通用知识/博客应用hexo/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -781,7 +819,7 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/27/通用知识/yaml语法学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -800,7 +838,7 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/22/容器化/服务网格-Istio/" itemprop="url">服务网格-Istio</a></h1>
+                <a class="post-title-link" href="/2018/02/27/通用知识/yaml语法学习/" itemprop="url">yaml语法学习</a></h1>
         
 
         <div class="post-meta">
@@ -812,8 +850,8 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-22T20:58:31+08:00">
-                2020-09-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T11:23:11+08:00">
+                2018-02-27
               </time>
             
 
@@ -847,8 +885,8 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -886,12 +924,20 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
       
         
           
-          ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。
-优点服务网格带来了巨大变革并且拥有其强大的技术优势
+          语法
+大小写敏感
+使用缩进表示层级关系
+缩进时只允许使用空格，不允许使用tab
+缩进时的空格数量不重要，重要的是同一层级的元素左侧对齐
+#表示注释
+yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结尾
+
+字典语法：以key: value形式表示字典（冒号后必须跟着一个空格）
+行内式dict:
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/22/容器化/服务网格-Istio/#more" rel="contents">
+            <a class="btn" href="/2018/02/27/通用知识/yaml语法学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -942,7 +988,7 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/18/容器化/分布式存储-glusterfs/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/11/通用知识/windows常用工具/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -961,7 +1007,7 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/03/18/容器化/分布式存储-glusterfs/" itemprop="url">分布式存储-glusterfs</a></h1>
+                <a class="post-title-link" href="/2019/05/11/通用知识/windows常用工具/" itemprop="url">windows常用工具</a></h1>
         
 
         <div class="post-meta">
@@ -973,8 +1019,8 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-18T23:58:06+08:00">
-                2020-03-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-11T12:24:02+08:00">
+                2019-05-11
               </time>
             
 
@@ -1008,8 +1054,8 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1047,27 +1093,17 @@ firing：触发阈值且满足告警持续时间；告警发给接收者。
       
         
           
-          简介在实践kubernetes的statefulset及各种需要持久存储的功能时，通常需要用到PV的动态供给功能，而glusterfs就是这样一种可以提供动态供给功能的存储系统  
-部署架构
-
-
-主机名
-ip地址
-角色
-
-
-
-
-node1
-172.17.8.101
-glusterfs
-
-
-node2
+          软件列表办公类
+beyondCompare：文本比较工具
+git：windows下git工具（一般作为windows下的linux命令行使用）
+pycharm：python集成开发工具
+sublimeText3：文本编辑工具
+xmind8：思维导图工具
+secureCRT：linux系统远程连接工具
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/03/18/容器化/分布式存储-glusterfs/#more" rel="contents">
+            <a class="btn" href="/2019/05/11/通用知识/windows常用工具/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1118,7 +1154,7 @@ node2
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/11/容器化/分布式存储-ceph/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/11/通用知识/web基础知识/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1137,7 +1173,7 @@ node2
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/09/11/容器化/分布式存储-ceph/" itemprop="url">分布式存储-ceph</a></h1>
+                <a class="post-title-link" href="/2019/06/11/通用知识/web基础知识/" itemprop="url">web基础知识</a></h1>
         
 
         <div class="post-meta">
@@ -1149,8 +1185,8 @@ node2
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-11T01:08:25+08:00">
-                2020-09-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-11T18:08:44+08:00">
+                2019-06-11
               </time>
             
 
@@ -1184,8 +1220,8 @@ node2
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1223,16 +1259,21 @@ node2
       
         
           
-          Ceph介绍ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统
-特点高性能
+          http浏览过程
+用户提交域名
+浏览器进行域名解析
+浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】
+本地无缓存时使用本地dns服务器
+本地dns无缓存时向授权dns服务器请求解析
 
-摒弃了传统的集中式存储元数据寻址的方案，采用CRUSH算法，数据分布均衡，并行度高。
-考虑了容灾域的隔离，能够实现各类负载的副本放置规则，例如跨机房、机架感知等。
-能够支持上千个存储节点的规模
+
+有使用CDN时，进入CDN解析循环
+
+访问模式BS模式即browser/ser
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/09/11/容器化/分布式存储-ceph/#more" rel="contents">
+            <a class="btn" href="/2019/06/11/通用知识/web基础知识/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1283,7 +1324,7 @@ node2
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-配置管理/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/15/通用知识/windows常用命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1302,7 +1343,7 @@ node2
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/24/容器化/kubernetes/kubernetes-配置管理/" itemprop="url">kubernetes-配置管理</a></h1>
+                <a class="post-title-link" href="/2019/05/15/通用知识/windows常用命令/" itemprop="url">windows常用命令</a></h1>
         
 
         <div class="post-meta">
@@ -1314,8 +1355,8 @@ node2
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-24T19:40:31+08:00">
-                2020-02-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T09:25:35+08:00">
+                2019-05-15
               </time>
             
 
@@ -1349,8 +1390,8 @@ node2
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1388,15 +1429,20 @@ node2
       
         
           
-          ConfigMap使用场景
-主要管理容器运行所需的配置文件、环境变量、命令行参数等可变配置
-用于解耦容器镜像和可变配置，从而保证工作负载(pod)的可移植性
+          启停windows服务
+停止：net stop gitblit
+启动：net start gitblit
 
-创建configMap清单文件方式123456789101112131415161718192021apiVersion: v1kind: 
+sleep实现发起30个ping包耗时30s：ping -n 30 127.0.0.1 &gt; null
+grep实现
+findstr
+
+
+netstat -ant|findstr :80$
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/24/容器化/kubernetes/kubernetes-配置管理/#more" rel="contents">
+            <a class="btn" href="/2019/05/15/通用知识/windows常用命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1447,7 +1493,7 @@ node2
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/markdown学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1466,7 +1512,7 @@ node2
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/" itemprop="url">kubernetes-认证授权和准入控制</a></h1>
+                <a class="post-title-link" href="/2018/02/26/通用知识/markdown学习/" itemprop="url">markdown学习</a></h1>
         
 
         <div class="post-meta">
@@ -1478,8 +1524,8 @@ node2
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-30T01:21:12+08:00">
-                2020-03-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T11:12:43+08:00">
+                2018-02-26
               </time>
             
 
@@ -1513,8 +1559,8 @@ node2
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1552,15 +1598,15 @@ node2
       
         
           
-          访问控制对kubernetes安全的保护主要通过如下方式实现：
-
-认证（authentication）：验证访问者的身份(即访问对象)
-授权（authorization）：确定认证用户的权限和可以执行的操作，如增删改查指定的资源对象
-准入控制（admission control）：验证操作是否符合规
+          段落段落是由一个或多个的文本行组成，段落前后必须包含一个或多个空行段落内的换行方式：两个空格+回车
+标题1234# 级别一## 级别二###### 级别六末尾可以加#，但只起美观作用，且#的数量可以任意
+区块引用在段落的开始使用任意数量的&gt;符号划分缩进层级
+列表无序列表展示
+使用*或+或-，然
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/03/30/容器化/kubernetes/kubernetes-认证授权和准入控制/#more" rel="contents">
+            <a class="btn" href="/2018/02/26/通用知识/markdown学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1611,7 +1657,7 @@ node2
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/gitbook简单使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1630,7 +1676,7 @@ node2
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/" itemprop="url">kubernetes-弹性伸缩</a></h1>
+                <a class="post-title-link" href="/2018/02/26/通用知识/gitbook简单使用/" itemprop="url">gitbook简单使用</a></h1>
         
 
         <div class="post-meta">
@@ -1642,8 +1688,8 @@ node2
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-12T18:28:41+08:00">
-                2020-08-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T15:52:05+08:00">
+                2018-02-26
               </time>
             
 
@@ -1677,8 +1723,8 @@ node2
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1716,20 +1762,22 @@ node2
       
         
           
-          弹性伸缩集群的容量能够及时响应业务的负载需求
-业务负载类型
-在线负载类：微服务、API、网站
-离线业务：离线计算、大数据、机器学习
-定时任务：定时批量任务
+          介绍
+范例参考
+可以将markdown书写的文章转换为html文档直接在网页上浏览
+可以将markdown书写的文章导出为电子书
+可以搭配github做文章版本管理
 
-在线负载类对弹性伸缩的弹出时间敏感；离线业务对价格敏感；定时任务对调度敏感
-本章中的弹性伸缩主要针对在线负载类业务。
-弹性伸缩维度
-CA(cl
+安装
+安装nodejs
+使用nmp安装gitbook-clinpm install gitbook-cli -g
+
+目录设置
+创建电
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/08/12/容器化/kubernetes/kubernetes-弹性伸缩/#more" rel="contents">
+            <a class="btn" href="/2018/02/26/通用知识/gitbook简单使用/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1780,7 +1828,7 @@ CA(cl
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/04/18/通用知识/TCP连接/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1799,7 +1847,7 @@ CA(cl
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/" itemprop="url">kubernetes-存储和持久化</a></h1>
+                <a class="post-title-link" href="/2018/04/18/通用知识/TCP连接/" itemprop="url">TCP连接</a></h1>
         
 
         <div class="post-meta">
@@ -1811,8 +1859,8 @@ CA(cl
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-24T19:36:53+08:00">
-                2020-02-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-18T11:01:51+08:00">
+                2018-04-18
               </time>
             
 
@@ -1846,8 +1894,8 @@ CA(cl
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
-                    <span itemprop="name">kubernetes</span>
+                  <a href="/categories/skill/" itemprop="url" rel="index">
+                    <span itemprop="name">skill</span>
                   </a>
                 </span>
 
@@ -1885,20 +1933,26 @@ CA(cl
       
         
           
-          持久化设置
-pod级别设置卷类型(volumes类型)：spec.volumes
-容器级别使用卷：spec.containers.volumeMounts
-
-volumes类型内置存储类
-可以直接在pod的volumes中引用
+          建立连接
+三次握手
 
 
-本地存储：emptyDir、hostpath、local
-网络存储：
+释放连接
+四次挥手
+
+
+状态迁移客户端状态迁移
+CLOSED   连接关闭
+SYN_SENT   主动发送连接请求【SYN】，等待确认
+ESTABLISHED  socket已经处于链接状态，可以进行数据交互
+一般认为一个established就是一个服务的并发连接
+
+
+FI
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/02/24/容器化/kubernetes/kubernetes-存储和持久化/#more" rel="contents">
+            <a class="btn" href="/2018/04/18/通用知识/TCP连接/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1986,7 +2040,7 @@ volumes类型内置存储类
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

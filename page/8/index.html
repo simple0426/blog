@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/24/系统管理/辅助开发/版本库管理-svn/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/27/系统管理/系统基础/linux系统-文件管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/24/系统管理/辅助开发/版本库管理-svn/" itemprop="url">版本库管理-svn</a></h1>
+                <a class="post-title-link" href="/2019/08/27/系统管理/系统基础/linux系统-文件管理/" itemprop="url">linux系统-文件管理</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-24T09:43:20+08:00">
-                2019-06-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-27T15:39:33+08:00">
+                2019-08-27
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-06T14:50:32+08:00">
-                2020-07-06
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -389,18 +389,27 @@
       
         
           
-          安装与部署基础配置
-authz
+          
+cat：显示文件内容
+-n：显示行号
+-b：忽略空白行，显示行号
+-A：显示所有非打印字符【比如tab、换行符等】
 
-1234[groups]member = xianing,chengle,liuzuowei[repos:/]@member = rw
 
-passwd
+ls：显示目录内容
+ln：在文件之间建立链接
+无参数时建立硬链接
+-s：建立软连接
 
-1234[users]xianing = svn1234chengle = svn1234liuzuowei =
+
+pwd：显示当前绝对路径
+cd：切换目录
+mv：移动或重命名文件/目录
+rm：删除文件或目
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/24/系统管理/辅助开发/版本库管理-svn/#more" rel="contents">
+            <a class="btn" href="/2019/08/27/系统管理/系统基础/linux系统-文件管理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -451,7 +460,7 @@ passwd
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/30/系统管理/系统基础/linux命令-查找替换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -470,7 +479,7 @@ passwd
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/" itemprop="url">gitlab之ci-runner使用</a></h1>
+                <a class="post-title-link" href="/2019/06/30/系统管理/系统基础/linux命令-查找替换/" itemprop="url">linux命令-查找替换</a></h1>
         
 
         <div class="post-meta">
@@ -482,8 +491,8 @@ passwd
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-18T12:10:30+08:00">
-                2020-01-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-30T10:40:22+08:00">
+                2019-06-30
               </time>
             
 
@@ -498,8 +507,8 @@ passwd
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T15:00:11+08:00">
-                2020-07-01
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -517,8 +526,8 @@ passwd
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CICD/" itemprop="url" rel="index">
-                    <span itemprop="name">CICD</span>
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
                   </a>
                 </span>
 
@@ -556,14 +565,24 @@ passwd
       
         
           
-          ci-runner安装与配置gitlab CI服务最好不要部署于gitlab服务器上【因为CI(持续集成)任务会很消耗资源】
-安装dockerdocker是CI(持续集成)任务的基础环境，当然CI(持续集成)任务也可以直接利用CI服务器的shell环境
-安装gitlab-runner
-gitlab-
+          命令列表
+sed
+grep
+find
+wc：统计字节数、字符数、单词数、行数
+sort
+
+sort默认以空白(空格、制表符等)为分隔符，默认以第一个字段的第一个字符排序，其他参数如下
+
+-u：删除重复的行
+-f：忽略大小写
+-b：忽略数据开始的空格部分
+-r：反向排序【默认以字母从前往后排序】
+-o
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/01/18/CICD/gitlab/gitlab之ci-runner使用/#more" rel="contents">
+            <a class="btn" href="/2019/06/30/系统管理/系统基础/linux命令-查找替换/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -614,7 +633,7 @@ gitlab-
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/11/通用知识/windows常用工具/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/07/02/系统管理/系统基础/linux使用技巧/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -633,7 +652,7 @@ gitlab-
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/11/通用知识/windows常用工具/" itemprop="url">windows常用工具</a></h1>
+                <a class="post-title-link" href="/2019/07/02/系统管理/系统基础/linux使用技巧/" itemprop="url">linux使用技巧</a></h1>
         
 
         <div class="post-meta">
@@ -645,8 +664,8 @@ gitlab-
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-11T12:24:02+08:00">
-                2019-05-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T14:27:29+08:00">
+                2019-07-02
               </time>
             
 
@@ -661,8 +680,8 @@ gitlab-
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-06-22T16:01:44+08:00">
-                2020-06-22
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -680,8 +699,8 @@ gitlab-
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
                   </a>
                 </span>
 
@@ -719,17 +738,16 @@ gitlab-
       
         
           
-          软件列表办公类
-beyondCompare：文本比较工具
-git：windows下git工具（一般作为windows下的linux命令行使用）
-pycharm：python集成开发工具
-sublimeText3：文本编辑工具
-xmind8：思维导图工具
-secureCRT：linux系统远程连接工具
+          文件swap创建空文件
+fallocate -l 4G /home/swapfile 
+truncate -s 4G /home/swapfile 
+dd if=/dev/zero of=/home/swapfile bs=8192 count=512k  
+
+格式化与挂载12345chmod 60
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/05/11/通用知识/windows常用工具/#more" rel="contents">
+            <a class="btn" href="/2019/07/02/系统管理/系统基础/linux使用技巧/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -780,7 +798,7 @@ secureCRT：linux系统远程连接工具
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/12/通用知识/编程基础/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus高可用架构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -799,7 +817,7 @@ secureCRT：linux系统远程连接工具
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/12/通用知识/编程基础/" itemprop="url">编程基础</a></h1>
+                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus高可用架构/" itemprop="url">prometheus高可用架构</a></h1>
         
 
         <div class="post-meta">
@@ -811,8 +829,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T15:32:46+08:00">
-                2019-11-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:41:33+08:00">
+                2020-08-05
               </time>
             
 
@@ -827,8 +845,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -846,8 +864,8 @@ secureCRT：linux系统远程连接工具
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
                   </a>
                 </span>
 
@@ -885,14 +903,12 @@ secureCRT：linux系统远程连接工具
       
         
           
-          同步与异步
-同步和异步的区别就在于是否等待IO执行的结果
-好比你去麦当劳餐厅点餐，你说“来个汉堡”，服务员告诉你，对不起汉堡要现做，需要等待5分钟，于是你就站在收银台前等了5分钟，拿着汉堡取逛商场，这是同步IO
-你说“来个汉堡”，服务员告诉你，汉堡需要等待5分钟，你可以先去逛商场，等做好了，我们再通
+          prometheus高可用联邦功能prometheus原生支持联邦架构，能够实现从别的prometheus抓取符合特定条件的数据
+1234567891011scrape_configs:- job_name: &apos;federate&apos;    scrape_interval: 15s 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/12/通用知识/编程基础/#more" rel="contents">
+            <a class="btn" href="/2020/08/05/监控报警/prometheus高可用架构/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -943,7 +959,7 @@ secureCRT：linux系统远程连接工具
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/08/05/通用知识/正则表达式/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/30/监控报警/prometheus入门/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -962,7 +978,7 @@ secureCRT：linux系统远程连接工具
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/08/05/通用知识/正则表达式/" itemprop="url">正则表达式</a></h1>
+                <a class="post-title-link" href="/2020/07/30/监控报警/prometheus入门/" itemprop="url">prometheus入门</a></h1>
         
 
         <div class="post-meta">
@@ -974,8 +990,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-05T23:32:46+08:00">
-                2019-08-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-30T21:41:36+08:00">
+                2020-07-30
               </time>
             
 
@@ -990,8 +1006,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1009,8 +1025,8 @@ secureCRT：linux系统远程连接工具
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
                   </a>
                 </span>
 
@@ -1048,12 +1064,16 @@ secureCRT：linux系统远程连接工具
       
         
           
-          POSIX正则表达式
-常见的正则表达式记法，其实都源于Perl。实际上，正则表达式从Perl衍生出一个显赫的流派，叫做PCRE（Perl Compatible Regular Expression），\d、\w、\s 之类的记法，就是这个流派的特征。但是在PCRE之外，正则表达式还有其它流派，比如下
+          主要特点
+一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据
+PromQL，灵活的数据查询语言
+不依赖分布式存储，数据保存在服务器节点上
+通过http的pull模型拉取时间序列数据
+可以通过推送网关(pushgate
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/08/05/通用知识/正则表达式/#more" rel="contents">
+            <a class="btn" href="/2020/07/30/监控报警/prometheus入门/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1104,7 +1124,7 @@ secureCRT：linux系统远程连接工具
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/27/通用知识/yaml语法学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus-server设置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1123,7 +1143,7 @@ secureCRT：linux系统远程连接工具
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/27/通用知识/yaml语法学习/" itemprop="url">yaml语法学习</a></h1>
+                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus-server设置/" itemprop="url">prometheus-server设置</a></h1>
         
 
         <div class="post-meta">
@@ -1135,8 +1155,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T11:23:11+08:00">
-                2018-02-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:47:42+08:00">
+                2020-08-05
               </time>
             
 
@@ -1151,8 +1171,8 @@ secureCRT：linux系统远程连接工具
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1170,8 +1190,8 @@ secureCRT：linux系统远程连接工具
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
                   </a>
                 </span>
 
@@ -1209,20 +1229,15 @@ secureCRT：linux系统远程连接工具
       
         
           
-          语法
-大小写敏感
-使用缩进表示层级关系
-缩进时只允许使用空格，不允许使用tab
-缩进时的空格数量不重要，重要的是同一层级的元素左侧对齐
-#表示注释
-yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结尾
-
-字典语法：以key: value形式表示字典（冒号后必须跟着一个空格）
-行内式dict:
+          启动参数
+–config.file=/etc/config/prometheus.yml：指定配置文件
+–storage.tsdb.path=/data：指定数据目录
+–web.enable-lifecycle：允许通过http POST方式关闭服务或重载配置
+–storage.tsdb.reten
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/27/通用知识/yaml语法学习/#more" rel="contents">
+            <a class="btn" href="/2020/08/05/监控报警/prometheus-server设置/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1273,7 +1288,7 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/15/通用知识/windows常用命令/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/05/监控报警/prometheus-altermanager告警/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1292,7 +1307,7 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/15/通用知识/windows常用命令/" itemprop="url">windows常用命令</a></h1>
+                <a class="post-title-link" href="/2020/08/05/监控报警/prometheus-altermanager告警/" itemprop="url">prometheus-altermanager告警</a></h1>
         
 
         <div class="post-meta">
@@ -1304,8 +1319,8 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T09:25:35+08:00">
-                2019-05-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T01:52:23+08:00">
+                2020-08-05
               </time>
             
 
@@ -1320,8 +1335,8 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1339,8 +1354,8 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
                   </a>
                 </span>
 
@@ -1378,20 +1393,19 @@ yaml文件应当以’—‘【三横杠】开头，以’…’【三点】结�
       
         
           
-          启停windows服务
-停止：net stop gitblit
-启动：net start gitblit
+          告警状态
 
-sleep实现发起30个ping包耗时30s：ping -n 30 127.0.0.1 &gt; null
-grep实现
-findstr
+inactive：当做什么都没发生
+pending：已触发阈值，但是未满足告警持续时间
+firing：触发阈值且满足告警持续时间；告警发给接收者。
 
-
-netstat -ant|findstr :80$
+告警收敛设置
+分组(group)：将告警名称相同的多个告警合并到一个告警中发送
+抑制(inhibit)：当告警发生后，停止发送和此类警报相
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/05/15/通用知识/windows常用命令/#more" rel="contents">
+            <a class="btn" href="/2020/08/05/监控报警/prometheus-altermanager告警/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1442,7 +1456,7 @@ netstat -ant|findstr :80$
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/06/11/通用知识/web基础知识/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/23/架构与安全/架构设计/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1461,7 +1475,7 @@ netstat -ant|findstr :80$
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/11/通用知识/web基础知识/" itemprop="url">web基础知识</a></h1>
+                <a class="post-title-link" href="/2019/10/23/架构与安全/架构设计/" itemprop="url">架构设计</a></h1>
         
 
         <div class="post-meta">
@@ -1473,8 +1487,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-11T18:08:44+08:00">
-                2019-06-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-23T22:34:11+08:00">
+                2019-10-23
               </time>
             
 
@@ -1489,8 +1503,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1508,8 +1522,8 @@ netstat -ant|findstr :80$
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/架构/" itemprop="url" rel="index">
+                    <span itemprop="name">架构</span>
                   </a>
                 </span>
 
@@ -1547,21 +1561,17 @@ netstat -ant|findstr :80$
       
         
           
-          http浏览过程
-用户提交域名
-浏览器进行域名解析
-浏览器使用本地缓存进行域名解析【刷新dns缓存：ipconfig/flushdns】
-本地无缓存时使用本地dns服务器
-本地dns无缓存时向授权dns服务器请求解析
+          架构设计目标
+可伸缩性（Scalability），当服务的负载增长时，系统能被扩展来满足需求，且不降低服务质量。
+负载均衡技术是实现网站架构伸缩性的主要手段
 
 
-有使用CDN时，进入CDN解析循环
-
-访问模式BS模式即browser/ser
+高可用性（Availability），尽管部分硬件和软件会发生故障，整个系统的服务必须是每天24小时每星期7天可用的。
+可管理性（Mana
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/11/通用知识/web基础知识/#more" rel="contents">
+            <a class="btn" href="/2019/10/23/架构与安全/架构设计/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1612,7 +1622,7 @@ netstat -ant|findstr :80$
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/markdown学习/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/11/18/容器化/虚拟机管理-vagrant/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1631,7 +1641,7 @@ netstat -ant|findstr :80$
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/26/通用知识/markdown学习/" itemprop="url">markdown学习</a></h1>
+                <a class="post-title-link" href="/2019/11/18/容器化/虚拟机管理-vagrant/" itemprop="url">虚拟机管理-vagrant</a></h1>
         
 
         <div class="post-meta">
@@ -1643,8 +1653,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T11:12:43+08:00">
-                2018-02-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T21:24:01+08:00">
+                2019-11-18
               </time>
             
 
@@ -1659,8 +1669,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1678,8 +1688,8 @@ netstat -ant|findstr :80$
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
                   </a>
                 </span>
 
@@ -1717,15 +1727,18 @@ netstat -ant|findstr :80$
       
         
           
-          段落段落是由一个或多个的文本行组成，段落前后必须包含一个或多个空行段落内的换行方式：两个空格+回车
-标题1234# 级别一## 级别二###### 级别六末尾可以加#，但只起美观作用，且#的数量可以任意
-区块引用在段落的开始使用任意数量的&gt;符号划分缩进层级
-列表无序列表展示
-使用*或+或-，然
+          简介
+vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等）
+软件安装
+vagrant下载与安装
+VirtualBox下载与安装
+
+
+存
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/26/通用知识/markdown学习/#more" rel="contents">
+            <a class="btn" href="/2019/11/18/容器化/虚拟机管理-vagrant/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1776,7 +1789,7 @@ netstat -ant|findstr :80$
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/26/通用知识/gitbook简单使用/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/22/容器化/服务网格-Istio/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1795,7 +1808,7 @@ netstat -ant|findstr :80$
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/26/通用知识/gitbook简单使用/" itemprop="url">gitbook简单使用</a></h1>
+                <a class="post-title-link" href="/2020/09/22/容器化/服务网格-Istio/" itemprop="url">服务网格-Istio</a></h1>
         
 
         <div class="post-meta">
@@ -1807,8 +1820,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T15:52:05+08:00">
-                2018-02-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-22T20:58:31+08:00">
+                2020-09-22
               </time>
             
 
@@ -1823,8 +1836,8 @@ netstat -ant|findstr :80$
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1842,8 +1855,8 @@ netstat -ant|findstr :80$
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/skill/" itemprop="url" rel="index">
-                    <span itemprop="name">skill</span>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">kubernetes</span>
                   </a>
                 </span>
 
@@ -1881,22 +1894,12 @@ netstat -ant|findstr :80$
       
         
           
-          介绍
-范例参考
-可以将markdown书写的文章转换为html文档直接在网页上浏览
-可以将markdown书写的文章导出为电子书
-可以搭配github做文章版本管理
-
-安装
-安装nodejs
-使用nmp安装gitbook-clinpm install gitbook-cli -g
-
-目录设置
-创建电
+          ServiceMeshService Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间通信的基础设施层，它负责为构建复杂的云原生应用传递可靠的网络请求。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，并且对应用服务透明。
+优点服务网格带来了巨大变革并且拥有其强大的技术优势
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/26/通用知识/gitbook简单使用/#more" rel="contents">
+            <a class="btn" href="/2020/09/22/容器化/服务网格-Istio/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1984,7 +1987,7 @@ netstat -ant|findstr :80$
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

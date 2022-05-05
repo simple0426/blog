@@ -284,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/22/web服务管理/缓存与nosql/redis客户端redis-cli/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/07/web服务管理/web服务/apache下rewrite使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -303,7 +303,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/22/web服务管理/缓存与nosql/redis客户端redis-cli/" itemprop="url">redis客户端redis-cli</a></h1>
+                <a class="post-title-link" href="/2019/05/07/web服务管理/web服务/apache下rewrite使用/" itemprop="url">apache下rewrite使用</a></h1>
         
 
         <div class="post-meta">
@@ -315,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-22T21:27:30+08:00">
-                2019-10-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T17:36:02+08:00">
+                2019-05-07
               </time>
             
 
@@ -331,8 +331,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -350,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/redis/" itemprop="url" rel="index">
-                    <span itemprop="name">redis</span>
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
                   </a>
                 </span>
 
@@ -389,16 +389,16 @@
       
         
           
-          非交互模式
-命令行使用：redis-cli incr mycounter
-重定向输出：redis-cli incr mycounter &gt; /tmp/output.txt
-额外信息控制：
-–raw：只显示命令结果
-–no-raw：显示操作的数据类型及操作结果【这是默认模式，但是客户端也会判断如
+          功能
+rewrite url实现URL的跳转和隐藏真实地址，基于perl语言的正则表达式规范
+主要用途：拟静态、拟目录、域名跳转、防盗链
+开启功能
+去除httpd.conf文件中”#LoadModule rewrite_module modules/mod_rewrite.so”前面的”#”号; 
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/22/web服务管理/缓存与nosql/redis客户端redis-cli/#more" rel="contents">
+            <a class="btn" href="/2019/05/07/web服务管理/web服务/apache下rewrite使用/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -449,7 +449,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2018/02/28/web服务管理/消息中间件/进程间通信/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/05/15/web服务管理/web服务/angular运行环境/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -468,7 +468,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/28/web服务管理/消息中间件/进程间通信/" itemprop="url">进程间通信</a></h1>
+                <a class="post-title-link" href="/2019/05/15/web服务管理/web服务/angular运行环境/" itemprop="url">angular运行环境</a></h1>
         
 
         <div class="post-meta">
@@ -480,8 +480,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T13:54:15+08:00">
-                2018-02-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T10:46:02+08:00">
+                2019-05-15
               </time>
             
 
@@ -496,8 +496,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -515,8 +515,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/消息队列/" itemprop="url" rel="index">
-                    <span itemprop="name">消息队列</span>
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
                   </a>
                 </span>
 
@@ -554,14 +554,13 @@
       
         
           
-          进程间通信what进程间的通讯IPC (Inter-process communication))：指至少两个进程或线程间传送数据或信号的一些技术或方法。
-why
-数据传输：一个进程需要将它的数据发送给另一个进程，发送的数据量在一个字节到几M字节之间
-共享数据：多个进程想要操作共享数据，一个进程对共
+          使用淘宝npm库npm install -registry=https://registry.npm.taobao.org
+安装nodejs下载地址：https://nodejs.org/en/download/
+node为免安装，解压后bin目录有node和npm，只需将bin目录添加到系统PAT
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/02/28/web服务管理/消息中间件/进程间通信/#more" rel="contents">
+            <a class="btn" href="/2019/05/15/web服务管理/web服务/angular运行环境/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -612,7 +611,7 @@ why
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/29/ELK/logstash学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -631,7 +630,7 @@ why
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/" itemprop="url">pgsql-归档和流复制</a></h1>
+                <a class="post-title-link" href="/2020/10/29/ELK/logstash学习/" itemprop="url">logstash学习</a></h1>
         
 
         <div class="post-meta">
@@ -643,8 +642,8 @@ why
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:45:14+08:00">
-                2019-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T01:13:38+08:00">
+                2020-10-29
               </time>
             
 
@@ -659,8 +658,8 @@ why
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -678,8 +677,8 @@ why
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/pgsql/" itemprop="url" rel="index">
-                    <span itemprop="name">pgsql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -717,16 +716,26 @@ why
       
         
           
-          文件级别备份限制条件
-在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】
-无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复
+          配置文件语法基础语法
+区块标识 {}
+变量赋值 nginx =&gt; 5
+变量引用 [nginx]
+双引号下引用变量 &quot;%{nginx}&quot;
+引用数组 [arry][1]
 
-不停机处理
-获
+
+
+变量数据类型
+数字
+字符串
+布尔值
+数组【列表】
+
+1match =&gt; [&quot;datet
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/13/web服务管理/数据库/pgsql-归档和流复制/#more" rel="contents">
+            <a class="btn" href="/2020/10/29/ELK/logstash学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -777,7 +786,7 @@ why
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-安装与介绍/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/10/30/ELK/kibana学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -796,7 +805,7 @@ why
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/13/web服务管理/数据库/pgsql-安装与介绍/" itemprop="url">pgsql-安装与介绍</a></h1>
+                <a class="post-title-link" href="/2020/10/30/ELK/kibana学习/" itemprop="url">kibana学习</a></h1>
         
 
         <div class="post-meta">
@@ -808,8 +817,8 @@ why
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T16:52:13+08:00">
-                2019-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-30T13:24:27+08:00">
+                2020-10-30
               </time>
             
 
@@ -824,8 +833,8 @@ why
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -843,8 +852,8 @@ why
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/pgsql/" itemprop="url" rel="index">
-                    <span itemprop="name">pgsql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -882,19 +891,17 @@ why
       
         
           
-          依赖安装
-示例为ubuntu16.04下的软件包
+          服务启动1yum install filebeat -y
+配置选项
 
-
-make
-gcc
-readline：libreadline6 libreadline6-dev【用于sql命令行提示】
-zlib：zlib1g zlib1g-dev【备份和恢复时压缩】
-libpython2.7 libpython2.7-dev 
+server.port: 5601
+server.host: “192.168.31.222”
+elasticsearch.url: “http://192.168.31.221:9200&quot;
+kibana.index: 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/13/web服务管理/数据库/pgsql-安装与介绍/#more" rel="contents">
+            <a class="btn" href="/2020/10/30/ELK/kibana学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -945,7 +952,7 @@ libpython2.7 libpython2.7-dev
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-sql操作/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/09/24/ELK/filebeat学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -964,7 +971,7 @@ libpython2.7 libpython2.7-dev
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/13/web服务管理/数据库/pgsql-sql操作/" itemprop="url">pgsql-sql操作</a></h1>
+                <a class="post-title-link" href="/2020/09/24/ELK/filebeat学习/" itemprop="url">filebeat学习</a></h1>
         
 
         <div class="post-meta">
@@ -976,8 +983,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:19:38+08:00">
-                2019-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T01:54:54+08:00">
+                2020-09-24
               </time>
             
 
@@ -992,8 +999,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1011,8 +1018,8 @@ libpython2.7 libpython2.7-dev
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/pgsql/" itemprop="url" rel="index">
-                    <span itemprop="name">pgsql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1050,17 +1057,15 @@ libpython2.7 libpython2.7-dev
       
         
           
-          系统管理会话管理
-查看当前会话连接：select * from pg_stat_activity;
-取消一个查询：pg_cancel_backend(pid int)
-终止一个会话：pg_terminate_backend(pidint)
+          工作原理filebeat由2个组件组成：inputs和harvester 
 
-变量
-查询：select current_setting(
+harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】
+
+inputs：负责管理harvester并查
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/13/web服务管理/数据库/pgsql-sql操作/#more" rel="contents">
+            <a class="btn" href="/2020/09/24/ELK/filebeat学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1111,7 +1116,7 @@ libpython2.7 libpython2.7-dev
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/11/01/ELK/elk-安全和访问控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1130,7 +1135,7 @@ libpython2.7 libpython2.7-dev
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/" itemprop="url">pgsql-pgpool使用</a></h1>
+                <a class="post-title-link" href="/2020/11/01/ELK/elk-安全和访问控制/" itemprop="url">elk-安全和访问控制</a></h1>
         
 
         <div class="post-meta">
@@ -1142,8 +1147,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-13T17:58:10+08:00">
-                2019-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-01T22:10:42+08:00">
+                2020-11-01
               </time>
             
 
@@ -1158,8 +1163,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1177,8 +1182,8 @@ libpython2.7 libpython2.7-dev
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/pgsql/" itemprop="url" rel="index">
-                    <span itemprop="name">pgsql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1216,17 +1221,13 @@ libpython2.7 libpython2.7-dev
       
         
           
-          pgpool简介pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：
-
-连接池
-复制功能：可以实时的把数据备份到单独的磁盘
-负载均衡：将查询语句拆分到多台后端数据库
-限制过量的连接：将超过限制的连接排队，但不直接返回错误
-看门狗功能：同时在两个节点部署pgpool，通过vip偏
+          本文主要基于通过 TLS 加密和基于角色的访问控制确保 Elasticsearch 的安全完成
+前言从elastic stack 6.8和7.1开始，会在软件分发版本中免费提供多项安全功能，例如elasticsearch之间的TLS加密通信，kibana中基于角色的访问控制(RBAC)等.
+在完成下
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/10/13/web服务管理/数据库/pgsql-pgpool使用/#more" rel="contents">
+            <a class="btn" href="/2020/11/01/ELK/elk-安全和访问控制/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1277,7 +1278,7 @@ libpython2.7 libpython2.7-dev
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/30/web服务管理/数据库/mysql管理/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/14/ELK/elk-stack安装/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1296,7 +1297,7 @@ libpython2.7 libpython2.7-dev
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/30/web服务管理/数据库/mysql管理/" itemprop="url">mysql管理</a></h1>
+                <a class="post-title-link" href="/2020/08/14/ELK/elk-stack安装/" itemprop="url">elk-stack安装</a></h1>
         
 
         <div class="post-meta">
@@ -1308,8 +1309,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-30T16:52:53+08:00">
-                2019-09-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-14T17:49:46+08:00">
+                2020-08-14
               </time>
             
 
@@ -1324,8 +1325,8 @@ libpython2.7 libpython2.7-dev
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1343,8 +1344,8 @@ libpython2.7 libpython2.7-dev
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1382,17 +1383,16 @@ libpython2.7 libpython2.7-dev
       
         
           
-          管理命令mysqladminshell命令行下服务端mysqld的管理工具，帮助信息：mysqladmin –help
-mysql内建命令
-system：调用系统命令
-help：帮助信息
-show [full]processlist;：进程列表
-show variables;：变量信息
-show [
+          组件介绍
+elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储
+logstash：日志收集、过滤、转换
+kibana：数据可视化
+kafka：数据缓冲队列；提高系统扩展性，可以使关键组件顶住峰值访问压力
+filebeat：使用go编写的收集文件数据的轻量级客户端；隶属于
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/30/web服务管理/数据库/mysql管理/#more" rel="contents">
+            <a class="btn" href="/2020/08/14/ELK/elk-stack安装/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1443,7 +1443,7 @@ show [
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/24/web服务管理/数据库/mysql安装与配置/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/08/25/ELK/elasticsearch介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1462,7 +1462,7 @@ show [
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/24/web服务管理/数据库/mysql安装与配置/" itemprop="url">mysql安装与配置</a></h1>
+                <a class="post-title-link" href="/2020/08/25/ELK/elasticsearch介绍/" itemprop="url">elasticsearch介绍</a></h1>
         
 
         <div class="post-meta">
@@ -1474,8 +1474,8 @@ show [
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-24T16:39:59+08:00">
-                2019-09-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-25T11:09:25+08:00">
+                2020-08-25
               </time>
             
 
@@ -1490,8 +1490,8 @@ show [
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1509,8 +1509,8 @@ show [
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
+                  <a href="/categories/elk/" itemprop="url" rel="index">
+                    <span itemprop="name">elk</span>
                   </a>
                 </span>
 
@@ -1548,21 +1548,16 @@ show [
       
         
           
-          官方参考参考手册：https://dev.mysql.com/doc/refman/5.6/en/
-源码安装依赖安装
-cmake
-make OR gmake
-GCC 4.2.1 or later
-centos系列使用gcc*
+          引言数据分类和搜索
+结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索
+非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】
 
-
-SSL library
-ncurses
-ubuntu16：libncu
+索引分类
+索引：对于关系型数据库，一般是针对字段名称建立索引，然后索引指
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/24/web服务管理/数据库/mysql安装与配置/#more" rel="contents">
+            <a class="btn" href="/2020/08/25/ELK/elasticsearch介绍/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1613,7 +1608,7 @@ ubuntu16：libncu
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/25/web服务管理/数据库/mysql备份与恢复/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1632,7 +1627,7 @@ ubuntu16：libncu
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/25/web服务管理/数据库/mysql备份与恢复/" itemprop="url">mysql备份与恢复</a></h1>
+                <a class="post-title-link" href="/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/" itemprop="url">jenkins自动化-gitlab</a></h1>
         
 
         <div class="post-meta">
@@ -1644,8 +1639,8 @@ ubuntu16：libncu
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-25T17:52:05+08:00">
-                2019-09-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T22:07:48+08:00">
+                2020-02-11
               </time>
             
 
@@ -1660,8 +1655,8 @@ ubuntu16：libncu
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1679,8 +1674,8 @@ ubuntu16：libncu
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -1718,20 +1713,18 @@ ubuntu16：libncu
       
         
           
-          备份命令mysqldump
--u 用户名
--p 密码
--h 主机
--P 端口
--S 指定链接mysql的socket
-–default-character-set  设置导出的字符集
--F, –flush-logs  在每个数据库备份前，刷新binlog日志
-–compact 去除注释部分
-–mas
+          创建项目
+类型：pipeline
+名称：spring-hello-demo
+
+触发器设置
+以webhook方式
+设置token信息，如：123456
+webhook触发的URL(gitlab中设置)：JENKINS_URL/job/spring-hello-demo/build?token=TOKE
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/25/web服务管理/数据库/mysql备份与恢复/#more" rel="contents">
+            <a class="btn" href="/2020/02/11/CICD/jenkins/jenkins自动化-gitlab/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1782,7 +1775,7 @@ ubuntu16：libncu
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2019/09/19/web服务管理/数据库/mysql介绍/">
+    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -1801,7 +1794,7 @@ ubuntu16：libncu
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/19/web服务管理/数据库/mysql介绍/" itemprop="url">mysql介绍</a></h1>
+                <a class="post-title-link" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/" itemprop="url">jenkins之声明式pipeline</a></h1>
         
 
         <div class="post-meta">
@@ -1813,8 +1806,8 @@ ubuntu16：libncu
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-19T18:06:50+08:00">
-                2019-09-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-10T15:12:41+08:00">
+                2020-02-10
               </time>
             
 
@@ -1829,8 +1822,8 @@ ubuntu16：libncu
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-18T12:43:03+08:00">
-                2020-01-18
+              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
+                2021-02-05
               </time>
             
           </span>
@@ -1848,8 +1841,8 @@ ubuntu16：libncu
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
+                  <a href="/categories/CICD/" itemprop="url" rel="index">
+                    <span itemprop="name">CICD</span>
                   </a>
                 </span>
 
@@ -1887,20 +1880,11 @@ ubuntu16：libncu
       
         
           
-          版本
-mysql-5.5
-mysql-5.6【牧客，测试环境版本：5.6.43】
-mysql-5.7【中冀汇通，全环境版本：5.7.17】
-mariadb
-mysql-8.0
-
-下载地址
-mysql相关资源下载目录：https://www.mysql.com/products/community/
-
+          基本结构-stages12345678910111213141516171819202122232425pipeline &#123;   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】   stages &#123;     //构建步骤，至少
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/09/19/web服务管理/数据库/mysql介绍/#more" rel="contents">
+            <a class="btn" href="/2020/02/10/CICD/jenkins/jenkins之声明式pipeline/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1988,7 +1972,7 @@ mysql相关资源下载目录：https://www.mysql.com/products/community/
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">138</span>
+                  <span class="site-state-item-count">137</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
