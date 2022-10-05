@@ -105,7 +105,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 
 * commit：将当前运行的容器制作为镜像【被称为黑箱镜像，由于不确定镜像的具体操作，不利于镜像的传播使用】
 
-# volume管理
+# 存储管理(volume)
 ## 使用原因
 * docker存储引擎device mapper、aufs等实现的copy on write机制，在高频写操作下性能不高；使用volume，可以直接写磁盘
 * 可以实现数据持久化
@@ -114,10 +114,10 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * 可以实现宿主机与容器、容器之间的数据共享
 
 ## 使用方式
-* 映射宿主机目录到容器（bind Mounts）
+* 直接映射宿主机目录到容器（bind Mounts）
     - 作用：可以实现宿主机和容器相关目录内容的同步更新，方便开发环境的实时调试
     - 范例：docker run -idt --name test1 -v ~/nginx:/webapps ubuntu /bin/bash
-* 数据卷使用（data volume）
+* 数据卷方式（data volume）
     - 作用：此时建立的数据卷不随容器的销毁而消失
     - 建立数据卷：docker volume create hello
     - 查看数据卷列表：docker volume ls

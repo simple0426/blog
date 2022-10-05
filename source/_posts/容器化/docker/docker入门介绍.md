@@ -66,18 +66,6 @@ date: 2019-11-19 23:24:32
 * [docker desktop](https://docs.docker.com/desktop/)：适用于Mac或Windows环境的易于安装的应用程序，可让您构建和共享容器化的应用程序和微服务；
 * [docker hub](https://hub.docker.com/repositories)：公共镜像仓库
 
-## 过时的工具集
-* [machine](https://docs.docker.com/machine/overview/)：将docker安装在指定主机，比如虚拟机、本地、远端云主机
-* [kitematic](https://docs.docker.com/kitematic/userguide/)：桌面版的docker客户端
-* [toolbox](https://docs.docker.com/toolbox/overview/)：将docker安装在mac和windows下的传统方式，安装包含如下
-    - docker machine
-    - docker engine【docker command】
-    - docker compose
-    - kitematic
-    - shell command-line
-    - Oracle VirtualBox
-* swarm：docker默认支持的容器编排工具
-
 # docker安装与配置
 ## 软件安装-CentOS
 * [官方(较慢)](https://docs.docker.com/engine/install/centos/#install-using-the-repository)
@@ -86,7 +74,7 @@ date: 2019-11-19 23:24:32
    sudo yum install -y yum-utils
    sudo yum-config-manager --add-repo \
       https://download.docker.com/linux/centos/docker-ce.repo
-   sudo yum install docker-ce docker-ce-cli containerd.io
+   sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
    sudo systemctl start docker
   ```
   
@@ -112,7 +100,7 @@ date: 2019-11-19 23:24:32
 ```
 {
   "registry-mirrors": ["https://2x97hcl1.mirror.aliyuncs.com"],
-  "insecure-registries": ["reg.cnabke.com"],
+  "insecure-registries": ["reg.abc.com"],
   "data-root": "/data/docker-data",
   "bridge": "bridge0",
   "storage-driver": "devicemapper",
