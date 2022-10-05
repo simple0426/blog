@@ -10096,23 +10096,9 @@ $name：值为$type.$id。
 <li><a href="https://docs.docker.com/desktop/" target="_blank" rel="noopener">docker desktop</a>：适用于Mac或Windows环境的易于安装的应用程序，可让您构建和共享容器化的应用程序和微服务；</li>
 <li><a href="https://hub.docker.com/repositories" target="_blank" rel="noopener">docker hub</a>：公共镜像仓库</li>
 </ul>
-<h2 id="过时的工具集"><a href="#过时的工具集" class="headerlink" title="过时的工具集"></a>过时的工具集</h2><ul>
-<li><a href="https://docs.docker.com/machine/overview/" target="_blank" rel="noopener">machine</a>：将docker安装在指定主机，比如虚拟机、本地、远端云主机</li>
-<li><a href="https://docs.docker.com/kitematic/userguide/" target="_blank" rel="noopener">kitematic</a>：桌面版的docker客户端</li>
-<li><a href="https://docs.docker.com/toolbox/overview/" target="_blank" rel="noopener">toolbox</a>：将docker安装在mac和windows下的传统方式，安装包含如下<ul>
-<li>docker machine</li>
-<li>docker engine【docker command】</li>
-<li>docker compose</li>
-<li>kitematic</li>
-<li>shell command-line</li>
-<li>Oracle VirtualBox</li>
-</ul>
-</li>
-<li>swarm：docker默认支持的容器编排工具</li>
-</ul>
 <h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装-CentOS"><a href="#软件安装-CentOS" class="headerlink" title="软件安装-CentOS"></a>软件安装-CentOS</h2><ul>
 <li><p><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin</span><br><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <ul>
@@ -10123,7 +10109,7 @@ $name：值为$type.$id。
 <h2 id="engine配置"><a href="#engine配置" class="headerlink" title="engine配置"></a>engine配置</h2><blockquote>
 <p>/etc/docker/daemon.json</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://2x97hcl1.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;insecure-registries&quot;: [&quot;reg.cnabke.com&quot;],</span><br><span class="line">  &quot;data-root&quot;: &quot;/data/docker-data&quot;,</span><br><span class="line">  &quot;bridge&quot;: &quot;bridge0&quot;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;devicemapper&quot;,</span><br><span class="line">  &quot;debug&quot;: true,</span><br><span class="line">  &quot;storage-opts&quot; : [</span><br><span class="line">    &quot;dm.basesize=5G&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://2x97hcl1.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;insecure-registries&quot;: [&quot;reg.abc.com&quot;],</span><br><span class="line">  &quot;data-root&quot;: &quot;/data/docker-data&quot;,</span><br><span class="line">  &quot;bridge&quot;: &quot;bridge0&quot;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;devicemapper&quot;,</span><br><span class="line">  &quot;debug&quot;: true,</span><br><span class="line">  &quot;storage-opts&quot; : [</span><br><span class="line">    &quot;dm.basesize=5G&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>registry-mirrors：公有registry或加速器地址</li>
 <li>insecure-registries：私有registry地址</li>
@@ -10391,7 +10377,7 @@ $name：值为$type.$id。
 <li><p>commit：将当前运行的容器制作为镜像【被称为黑箱镜像，由于不确定镜像的具体操作，不利于镜像的传播使用】</p>
 </li>
 </ul>
-<h1 id="volume管理"><a href="#volume管理" class="headerlink" title="volume管理"></a>volume管理</h1><h2 id="使用原因"><a href="#使用原因" class="headerlink" title="使用原因"></a>使用原因</h2><ul>
+<h1 id="存储管理-volume"><a href="#存储管理-volume" class="headerlink" title="存储管理(volume)"></a>存储管理(volume)</h1><h2 id="使用原因"><a href="#使用原因" class="headerlink" title="使用原因"></a>使用原因</h2><ul>
 <li>docker存储引擎device mapper、aufs等实现的copy on write机制，在高频写操作下性能不高；使用volume，可以直接写磁盘</li>
 <li>可以实现数据持久化<ul>
 <li>启动时需要初始化数据，例如配置文件</li>
@@ -10401,12 +10387,12 @@ $name：值为$type.$id。
 <li>可以实现宿主机与容器、容器之间的数据共享</li>
 </ul>
 <h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
-<li>映射宿主机目录到容器（bind Mounts）<ul>
+<li>直接映射宿主机目录到容器（bind Mounts）<ul>
 <li>作用：可以实现宿主机和容器相关目录内容的同步更新，方便开发环境的实时调试</li>
 <li>范例：docker run -idt –name test1 -v ~/nginx:/webapps ubuntu /bin/bash</li>
 </ul>
 </li>
-<li>数据卷使用（data volume）<ul>
+<li>数据卷方式（data volume）<ul>
 <li>作用：此时建立的数据卷不随容器的销毁而消失</li>
 <li>建立数据卷：docker volume create hello</li>
 <li>查看数据卷列表：docker volume ls</li>
