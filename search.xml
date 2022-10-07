@@ -10457,12 +10457,12 @@ $name：值为$type.$id。
 <li>ENV key value：设置环境变量，它会被后续RUN命令使用，并在容器运行时保持</li>
 <li>WORKDIR /path：为后续的RUN、CMD指定工作目录(建议使用绝对目录)，没有则创建</li>
 <li>RUN command param1 param2：在创建镜像的过程中执行的命令<ul>
-<li>有shell、exec两种执行方式，示例为shell方式</li>
+<li>有shell、exec两种执行方式，以上为shell方式</li>
 <li>Dockerfile中可以写多条RUN指令，但是为了避免一次RUN增加一层文件层，应当将多条命令合并到一行中执行</li>
 </ul>
 </li>
 <li>CMD command param1 param2：指定容器启动时执行的命令<ul>
-<li>有shell、exec两种执行方式，示例为shell方式</li>
+<li>有shell、exec两种执行方式，以上为shell方式</li>
 <li>定义了多个命令时，只有最后一条被执行</li>
 <li>如果docker run指定了其他命令，CMD命令被忽略</li>
 </ul>
@@ -10470,7 +10470,7 @@ $name：值为$type.$id。
 <li>ENTRYPOINT [‘excutable’, ‘param1’, ‘param2’]：容器启动后运行的服务<ul>
 <li>有shell、exec两种执行方式，示例为exec方式</li>
 <li>让容器以应用程序或者服务的形式运行，只可添加一条</li>
-<li>此命令默认不被docker run提供命令的覆盖</li>
+<li>此命令默认不被docker run提供的命令覆盖</li>
 </ul>
 </li>
 <li>ENTRYPOINT和CMD<ul>
@@ -10482,7 +10482,7 @@ $name：值为$type.$id。
 </li>
 </ul>
 </li>
-<li>COPY src dest：复制本地主机的src到容器的dest，</li>
+<li>COPY src dest：复制宿主机的src到容器的dest，</li>
 <li>ADD src dest：<ul>
 <li>add和copy功能类似(复制指定的src到容器的dest)，优先使用copy</li>
 <li>额外功能：解压src到dest【但必须是gzip, bzip2 or xz格式的tar包】</li>
@@ -10525,7 +10525,10 @@ $name：值为$type.$id。
   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">    echo &quot;Asia/shanghai&quot; &gt; /etc/timezone</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a><a href="https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile" target="_blank" rel="noopener">Dockerfile范例</a></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">truedeb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">truedeb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">true&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">truerm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">trueapt-get update &amp;&amp; \</span><br><span class="line">trueapt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">truemkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">truesed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">trueecho &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">trueln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">truerm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
+<h2 id="Dockerfile范例"><a href="#Dockerfile范例" class="headerlink" title="Dockerfile范例"></a><a href="https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile" target="_blank" rel="noopener">Dockerfile范例</a></h2><blockquote>
+<p>包含多个Dockerfile范例的git仓库：<a href="https://github.com/simple0426/dockerfile-hub.git" target="_blank" rel="noopener">https://github.com/simple0426/dockerfile-hub.git</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">LABEL maintainer hejingqi@zj-inv.cn</span><br><span class="line">ENV LANG C.UTF-8</span><br><span class="line">RUN echo &apos;deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n&apos;\</span><br><span class="line">&gt; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">rm -rf /etc/apt/sources.list.d/* &amp;&amp; \</span><br><span class="line">apt-get update &amp;&amp; \</span><br><span class="line">apt-get install -y openssh-server vim iputils-ping net-tools lrzsz &amp;&amp; \</span><br><span class="line">mkdir -p /var/run/sshd &amp;&amp; \</span><br><span class="line">sed -i &apos;/^PermitRootLogin/s/without-password/yes/&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">sed -i &apos;/^#PasswordAuthentication/s/#//&apos; /etc/ssh/sshd_config &amp;&amp; \</span><br><span class="line">echo &quot;root:zjht4321&quot;|chpasswd &amp;&amp; \</span><br><span class="line">ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span><br><span class="line">rm -rf /var/cache/apt/*</span><br><span class="line">EXPOSE 22</span><br><span class="line">CMD /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
 <h2 id="多阶段构建范例"><a href="#多阶段构建范例" class="headerlink" title="多阶段构建范例"></a><a href="https://github.com/simple0426/tomcat-java-demo" target="_blank" rel="noopener">多阶段构建范例</a></h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># stage build</span></span><br><span class="line"><span class="comment"># 使用as为多阶段构建中的某一阶段命名</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">maven:3.6.3-jdk-8</span> <span class="string">as</span> <span class="string">build</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">sed</span> <span class="string">-i</span> <span class="string">'/&lt;mirrors&gt;/a\ \</span></span><br><span class="line"><span class="string">&lt;mirror&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;id&gt;nexus-aliyun&lt;/id&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;name&gt;Nexus aliyun&lt;/name&gt; \n\</span></span><br><span class="line"><span class="string">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;\n\</span></span><br><span class="line"><span class="string">&lt;/mirror&gt;'</span> <span class="string">/usr/share/maven/conf/settings.xml</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">.</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/tomcat-java-demo</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">mvn</span> <span class="string">clean</span> <span class="string">package</span> <span class="string">-Dmaven.test.skip=true</span></span><br><span class="line"><span class="comment"># stage prod</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">tomcat:8.5.47</span> <span class="string">as</span> <span class="string">prod</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/usr/local/tomcat/webapps/*</span></span><br><span class="line"><span class="comment"># 从构建的某一阶段复制文件</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">--from=build</span> <span class="string">/tomcat-java-demo/target/*.war</span> <span class="string">/usr/local/tomcat/webapps/ROOT.war</span></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/tomcat/bin</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">8080</span></span><br><span class="line"><span class="string">CMD</span> <span class="string">["catalina.sh",</span> <span class="string">"run"</span><span class="string">]</span></span><br></pre></td></tr></table></figure>
 <h1 id="应用运行"><a href="#应用运行" class="headerlink" title="应用运行"></a>应用运行</h1><h2 id="镜像内固定运行参数"><a href="#镜像内固定运行参数" class="headerlink" title="镜像内固定运行参数"></a>镜像内固定运行参数</h2><ul>
 <li><p>Dockerfile</p>
@@ -10742,7 +10745,7 @@ $name：值为$type.$id。
 <li>查看ip地址：ip netns exec test2 ip addr</li>
 <li>网络测试(test1中ping test2)：ip netns exec test1 ping 192.168.100.2</li>
 </ul>
-<h1 id="docker网络管理-docker-network"><a href="#docker网络管理-docker-network" class="headerlink" title="docker网络管理-docker network"></a>docker网络管理-docker network</h1><ul>
+<h1 id="docker网络管理-network命令"><a href="#docker网络管理-network命令" class="headerlink" title="docker网络管理-network命令"></a>docker网络管理-network命令</h1><ul>
 <li>查看docker管理的网络列表(网卡)：docker network ls</li>
 <li>查看网卡详情(容器、veth对等)：docker network inspect 4c44ab01e956</li>
 </ul>

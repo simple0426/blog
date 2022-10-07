@@ -88,7 +88,7 @@
 <meta property="og:description" content="docker网络实现 网络命名空间(netns(net namespace))：linux在网络栈中引入网络名称空间，将独立的网络协议栈隔离到不同的名称空间中，彼此无法通信；docker利用linux的这一特性，实现了容器的网络隔离 veth(virtual ethernet)：虚拟以太网卡，和物理网卡类似，用于不同命名空间的网络通信(例如，利用veth连接容器和宿主机) 网桥：网桥是一个二层网络">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/docekr-bridge.jpg">
-<meta property="og:updated_time" content="2021-02-05T06:04:06.662Z">
+<meta property="og:updated_time" content="2022-10-06T06:21:31.810Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker网络">
 <meta name="twitter:description" content="docker网络实现 网络命名空间(netns(net namespace))：linux在网络栈中引入网络名称空间，将独立的网络协议栈隔离到不同的名称空间中，彼此无法通信；docker利用linux的这一特性，实现了容器的网络隔离 veth(virtual ethernet)：虚拟以太网卡，和物理网卡类似，用于不同命名空间的网络通信(例如，利用veth连接容器和宿主机) 网桥：网桥是一个二层网络">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T14:04:06+08:00">
-                2021-02-05
+              <time title="更新于" itemprop="dateModified" datetime="2022-10-06T14:21:31+08:00">
+                2022-10-06
               </time>
             
           </span>
@@ -446,7 +446,7 @@
 <li>查看ip地址：ip netns exec test2 ip addr</li>
 <li>网络测试(test1中ping test2)：ip netns exec test1 ping 192.168.100.2</li>
 </ul>
-<h1 id="docker网络管理-docker-network"><a href="#docker网络管理-docker-network" class="headerlink" title="docker网络管理-docker network"></a>docker网络管理-docker network</h1><ul>
+<h1 id="docker网络管理-network命令"><a href="#docker网络管理-network命令" class="headerlink" title="docker网络管理-network命令"></a>docker网络管理-network命令</h1><ul>
 <li>查看docker管理的网络列表(网卡)：docker network ls</li>
 <li>查看网卡详情(容器、veth对等)：docker network inspect 4c44ab01e956</li>
 </ul>
@@ -692,7 +692,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker网络实现"><span class="nav-number">1.</span> <span class="nav-text">docker网络实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">1.1.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker网络类型"><span class="nav-number">1.2.</span> <span class="nav-text">docker网络类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨主机容器互联"><span class="nav-number">1.3.</span> <span class="nav-text">跨主机容器互联</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux网络命名空间"><span class="nav-number">2.</span> <span class="nav-text">linux网络命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间管理"><span class="nav-number">2.1.</span> <span class="nav-text">命名空间管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络接口配置"><span class="nav-number">2.2.</span> <span class="nav-text">网络接口配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态查询"><span class="nav-number">2.3.</span> <span class="nav-text">状态查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker网络管理-docker-network"><span class="nav-number">3.</span> <span class="nav-text">docker网络管理-docker network</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bridge类型"><span class="nav-number">3.1.</span> <span class="nav-text">bridge类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overlay类型"><span class="nav-number">3.2.</span> <span class="nav-text">overlay类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">3.2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装并配置etcd"><span class="nav-number">3.2.2.</span> <span class="nav-text">安装并配置etcd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-engine配置调整"><span class="nav-number">3.2.3.</span> <span class="nav-text">docker-engine配置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立并使用overlay网络"><span class="nav-number">3.2.4.</span> <span class="nav-text">建立并使用overlay网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网桥管理工具-brctl"><span class="nav-number">4.</span> <span class="nav-text">网桥管理工具-brctl</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker网络实现"><span class="nav-number">1.</span> <span class="nav-text">docker网络实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">1.1.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker网络类型"><span class="nav-number">1.2.</span> <span class="nav-text">docker网络类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨主机容器互联"><span class="nav-number">1.3.</span> <span class="nav-text">跨主机容器互联</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux网络命名空间"><span class="nav-number">2.</span> <span class="nav-text">linux网络命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间管理"><span class="nav-number">2.1.</span> <span class="nav-text">命名空间管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络接口配置"><span class="nav-number">2.2.</span> <span class="nav-text">网络接口配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态查询"><span class="nav-number">2.3.</span> <span class="nav-text">状态查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker网络管理-network命令"><span class="nav-number">3.</span> <span class="nav-text">docker网络管理-network命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bridge类型"><span class="nav-number">3.1.</span> <span class="nav-text">bridge类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overlay类型"><span class="nav-number">3.2.</span> <span class="nav-text">overlay类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">3.2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装并配置etcd"><span class="nav-number">3.2.2.</span> <span class="nav-text">安装并配置etcd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-engine配置调整"><span class="nav-number">3.2.3.</span> <span class="nav-text">docker-engine配置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立并使用overlay网络"><span class="nav-number">3.2.4.</span> <span class="nav-text">建立并使用overlay网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网桥管理工具-brctl"><span class="nav-number">4.</span> <span class="nav-text">网桥管理工具-brctl</span></a></li></ol></div>
             
 
           </div>
