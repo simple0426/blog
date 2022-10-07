@@ -167,22 +167,22 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
 * ENV key value：设置环境变量，它会被后续RUN命令使用，并在容器运行时保持
 * WORKDIR /path：为后续的RUN、CMD指定工作目录(建议使用绝对目录)，没有则创建
 * RUN command param1 param2：在创建镜像的过程中执行的命令
-    - 有shell、exec两种执行方式，示例为shell方式
+    - 有shell、exec两种执行方式，以上为shell方式
     - Dockerfile中可以写多条RUN指令，但是为了避免一次RUN增加一层文件层，应当将多条命令合并到一行中执行
 * CMD command param1 param2：指定容器启动时执行的命令
-    - 有shell、exec两种执行方式，示例为shell方式
+    - 有shell、exec两种执行方式，以上为shell方式
     - 定义了多个命令时，只有最后一条被执行
     - 如果docker run指定了其他命令，CMD命令被忽略
 * ENTRYPOINT ['excutable', 'param1', 'param2']：容器启动后运行的服务
     - 有shell、exec两种执行方式，示例为exec方式
     - 让容器以应用程序或者服务的形式运行，只可添加一条
-    - 此命令默认不被docker run提供命令的覆盖
+    - 此命令默认不被docker run提供的命令覆盖
 * ENTRYPOINT和CMD
     - ENTRYPOINT和CMD都可以单独使用
     - ENTRYPOINT和CMD联合使用时
         + ENTRYPOINT提供可执行程序和默认参数
         + CMD提供可选参数
-* COPY src dest：复制本地主机的src到容器的dest，
+* COPY src dest：复制宿主机的src到容器的dest，
 * ADD src dest：
     - add和copy功能类似(复制指定的src到容器的dest)，优先使用copy
     - 额外功能：解压src到dest【但必须是gzip, bzip2 or xz格式的tar包】
@@ -221,28 +221,31 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     ```
 
 ## [Dockerfile范例](https://github.com/simple0426/dockerfile-hub/blob/master/ubuntu_sshd/Dockerfile)
+
+> 包含多个Dockerfile范例的git仓库：https://github.com/simple0426/dockerfile-hub.git
+
 ```
 FROM ubuntu:14.04
 LABEL maintainer hejingqi@zj-inv.cn
 ENV LANG C.UTF-8
 RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\
-	deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\
-	deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
-	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
-	deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
-	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
-	deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\
-	deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n'\
-	> /etc/apt/sources.list && \
-	rm -rf /etc/apt/sources.list.d/* && \
-	apt-get update && \
-	apt-get install -y openssh-server vim iputils-ping net-tools lrzsz && \
-	mkdir -p /var/run/sshd && \
-	sed -i '/^PermitRootLogin/s/without-password/yes/' /etc/ssh/sshd_config && \
-	sed -i '/^#PasswordAuthentication/s/#//' /etc/ssh/sshd_config && \
-	echo "root:zjht4321"|chpasswd && \
-	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-	rm -rf /var/cache/apt/*
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse\n\
+deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse\n\
+deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse\n\
+deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse\n'\
+> /etc/apt/sources.list && \
+rm -rf /etc/apt/sources.list.d/* && \
+apt-get update && \
+apt-get install -y openssh-server vim iputils-ping net-tools lrzsz && \
+mkdir -p /var/run/sshd && \
+sed -i '/^PermitRootLogin/s/without-password/yes/' /etc/ssh/sshd_config && \
+sed -i '/^#PasswordAuthentication/s/#//' /etc/ssh/sshd_config && \
+echo "root:zjht4321"|chpasswd && \
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+rm -rf /var/cache/apt/*
 EXPOSE 22
 CMD /usr/sbin/sshd -D
 ```

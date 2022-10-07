@@ -73,7 +73,7 @@ date: 2019-12-02 23:51:37
 * 查看ip地址：ip netns exec test2 ip addr
 * 网络测试(test1中ping test2)：ip netns exec test1 ping 192.168.100.2
 
-# docker网络管理-docker network
+# docker网络管理-network命令
 
 * 查看docker管理的网络列表(网卡)：docker network ls
 * 查看网卡详情(容器、veth对等)：docker network inspect 4c44ab01e956
