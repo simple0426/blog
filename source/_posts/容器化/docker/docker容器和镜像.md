@@ -324,8 +324,8 @@ deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
 deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
 ```
 * 容器运行
-    - 前台：docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s
-    - 后台：docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose
+    - 前台：`docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s`
+    - 后台：`docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose`
 
 # 公有仓库镜像自动化构建
 

@@ -5,7 +5,7 @@ tags: ['harbor']
 categories: ['docker']
 ---
 # harbor介绍
-* 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能
+* 镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者云存储都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能
 * harbor镜像的复制是通过docker registry 的API去拷贝
 
 # [安装][6]
@@ -19,8 +19,8 @@ categories: ['docker']
     - harbor_admin_password：web管理界面的密码【默认：admin/Harbor12345】
     - database：本地数据库密码
         + password: root123
-    - data_volume: 镜像等数据的存储位置，默认/data
-    - log.location：日志位置，默认/var/log/harbor
+    - data_volume: 镜像等数据的在宿主机上的位置，默认/data
+    - log.location：日志在宿主机上的位置，默认/var/log/harbor
 * hostname配置要点
     - 当配置hostname为内网地址时，虽然登陆地址可以通过地址映射使用外网地址；但是认证时，服务端回传客户端的认证地址，依然是内网地址造成无法登陆认证。
     - 当配置hostname为外网地址时，由于外网带宽限制，内网服务器不能高速的进行镜像传输
@@ -29,7 +29,9 @@ categories: ['docker']
     - 包装命令：sudo ./install.sh
 * web访问：http://ip:80
 
-## https设置
+## [https设置](https://goharbor.io/docs/2.0.0/install-config/configure-https/)
+> 参考官方配置，暂时不要使用cfssl工具（无法兼容X509 v3 extension特性）
+
 * 使用公有证书或自签名证书
 * harbor.yml中设置
     - hostname：设置域名或ip地址
