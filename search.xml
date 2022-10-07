@@ -10547,8 +10547,8 @@ $name：值为$type.$id。
 </li>
 <li><p>容器运行</p>
 <ul>
-<li>前台：docker run -it ubuntu_stress:latest -m 1 –verbose -t 10s</li>
-<li>后台：docker run -itd –name stress ubuntu_stress:latest -m 1 –verbose</li>
+<li>前台：<code>docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s</code></li>
+<li>后台：<code>docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose</code></li>
 </ul>
 </li>
 </ul>
@@ -10574,7 +10574,7 @@ $name：值为$type.$id。
     <title>docker镜像仓库-harbor</title>
     <url>/2018/03/20/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93-harbor/</url>
     <content><![CDATA[<h1 id="harbor介绍"><a href="#harbor介绍" class="headerlink" title="harbor介绍"></a>harbor介绍</h1><ul>
-<li>镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者s3都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能</li>
+<li>镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者云存储都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能</li>
 <li>harbor镜像的复制是通过docker registry 的API去拷贝</li>
 </ul>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a><a href="https://goharbor.io/docs/2.0.0/install-config/" target="_blank" rel="noopener">安装</a></h1><ul>
@@ -10592,8 +10592,8 @@ $name：值为$type.$id。
 <li>password: root123</li>
 </ul>
 </li>
-<li>data_volume: 镜像等数据的存储位置，默认/data</li>
-<li>log.location：日志位置，默认/var/log/harbor</li>
+<li>data_volume: 镜像等数据的在宿主机上的位置，默认/data</li>
+<li>log.location：日志在宿主机上的位置，默认/var/log/harbor</li>
 </ul>
 </li>
 <li>hostname配置要点<ul>
@@ -10608,7 +10608,10 @@ $name：值为$type.$id。
 </li>
 <li>web访问：<a href="http://ip:80" target="_blank" rel="noopener">http://ip:80</a></li>
 </ul>
-<h2 id="https设置"><a href="#https设置" class="headerlink" title="https设置"></a>https设置</h2><ul>
+<h2 id="https设置"><a href="#https设置" class="headerlink" title="https设置"></a><a href="https://goharbor.io/docs/2.0.0/install-config/configure-https/" target="_blank" rel="noopener">https设置</a></h2><blockquote>
+<p>参考官方配置，暂时不要使用cfssl工具（无法兼容X509 v3 extension特性）</p>
+</blockquote>
+<ul>
 <li>使用公有证书或自签名证书</li>
 <li>harbor.yml中设置<ul>
 <li>hostname：设置域名或ip地址</li>

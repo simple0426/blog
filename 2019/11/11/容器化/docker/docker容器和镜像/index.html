@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-10-06T08:19:44.526Z">
+<meta property="og:updated_time" content="2022-10-07T04:02:38.456Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker容器和镜像">
 <meta name="twitter:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2022-10-06T16:19:44+08:00">
-                2022-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2022-10-07T12:02:38+08:00">
+                2022-10-07
               </time>
             
           </span>
@@ -651,8 +651,8 @@
 </li>
 <li><p>容器运行</p>
 <ul>
-<li>前台：docker run -it ubuntu_stress:latest -m 1 –verbose -t 10s</li>
-<li>后台：docker run -itd –name stress ubuntu_stress:latest -m 1 –verbose</li>
+<li>前台：<code>docker run -it ubuntu_stress:latest -m 1 --verbose -t 10s</code></li>
+<li>后台：<code>docker run -itd --name stress ubuntu_stress:latest -m 1 --verbose</code></li>
 </ul>
 </li>
 </ul>
