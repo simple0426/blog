@@ -55,7 +55,7 @@ docker run --name jenkins \
     - --name：设置容器名称
     - -u：以root启动，防止出现权限问题
     - -d：后台运行
-    - -p 7005:8080：映射服务端口【宿主机7005-》容器8080】
+    - -p 80:8080：映射服务端口【宿主机80-》容器8080】
     - -p 50000:50000：agent连接master的端口
     - -v /data/jenkins/:/var/jenkins_home：jenkins主目录持久化存储
     - -v /var/run/docker.sock:/var/run/docker.sock：确保jenkins容器内可以操作宿主机的docker

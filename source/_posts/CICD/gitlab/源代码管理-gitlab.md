@@ -8,9 +8,12 @@ categories:
 ---
 # gitlab服务
 ## [软件安装][gitlab-repo]
+
+> 初始密码（用户root）：cat /etc/*gitlab*/initial_root_password
+
 ### [docker方式](https://docs.gitlab.com/omnibus/docker/)
 >由于gitlab的访问端口由external_url中决定，如下配置中  
->容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务
+>容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/ 【172.17.8.53为宿主机ip】访问gitlab的web服务
 
 ```
 docker run -d \
