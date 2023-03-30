@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="gitlab服务软件安装docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务  123456789101112docker run -d \  --name gitlab \  -p 8443:443 \  -p 9999:80 \">
+<meta name="description" content="gitlab服务软件安装 初始密码（用户root）：cat /etc/gitlab/initial_root_password  docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/ 【172.17.8.53为宿主机ip】访问gitlab的web服务  1234">
 <meta name="keywords" content="gitlab">
 <meta property="og:type" content="article">
 <meta property="og:title" content="源代码管理-gitlab">
-<meta property="og:url" content="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/index.html">
+<meta property="og:url" content="http://blog.sunking.top/2020/07/06/CICD/gitlab/源代码管理-gitlab/index.html">
 <meta property="og:site_name" content="运维自动化之路">
-<meta property="og:description" content="gitlab服务软件安装docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务  123456789101112docker run -d \  --name gitlab \  -p 8443:443 \  -p 9999:80 \">
+<meta property="og:description" content="gitlab服务软件安装 初始密码（用户root）：cat /etc/gitlab/initial_root_password  docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/ 【172.17.8.53为宿主机ip】访问gitlab的web服务  1234">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-02-04T16:56:30.638Z">
+<meta property="og:updated_time" content="2022-10-10T06:22:54.214Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="源代码管理-gitlab">
-<meta name="twitter:description" content="gitlab服务软件安装docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/访问gitlab的web服务  123456789101112docker run -d \  --name gitlab \  -p 8443:443 \  -p 9999:80 \">
+<meta name="twitter:description" content="gitlab服务软件安装 初始密码（用户root）：cat /etc/gitlab/initial_root_password  docker方式 由于gitlab的访问端口由external_url中决定，如下配置中容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/ 【172.17.8.53为宿主机ip】访问gitlab的web服务  1234">
 
 
 
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
+  <link rel="canonical" href="http://blog.sunking.top/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
 
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.unlazy.cn/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
+    <link itemprop="mainEntityOfPage" href="http://blog.sunking.top/2020/07/06/CICD/gitlab/源代码管理-gitlab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="simple0426">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-02-05T00:56:30+08:00">
-                2021-02-05
+              <time title="更新于" itemprop="dateModified" datetime="2022-10-10T14:22:54+08:00">
+                2022-10-10
               </time>
             
           </span>
@@ -386,8 +386,11 @@
       
 
       
-        <h1 id="gitlab服务"><a href="#gitlab服务" class="headerlink" title="gitlab服务"></a>gitlab服务</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a><a href="https://mirrors.tuna.tsinghua.edu.cn/help/gitlab-ce/" target="_blank" rel="noopener">软件安装</a></h2><h3 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a><a href="https://docs.gitlab.com/omnibus/docker/" target="_blank" rel="noopener">docker方式</a></h3><blockquote>
-<p>由于gitlab的访问端口由external_url中决定，如下配置中<br>容器中的gitlab服务暴露在80端口，宿主机以外通过<a href="http://172.17.8.53:9999/访问gitlab的web服务" target="_blank" rel="noopener">http://172.17.8.53:9999/访问gitlab的web服务</a></p>
+        <h1 id="gitlab服务"><a href="#gitlab服务" class="headerlink" title="gitlab服务"></a>gitlab服务</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a><a href="https://mirrors.tuna.tsinghua.edu.cn/help/gitlab-ce/" target="_blank" rel="noopener">软件安装</a></h2><blockquote>
+<p>初始密码（用户root）：cat /etc/<em>gitlab</em>/initial_root_password</p>
+</blockquote>
+<h3 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a><a href="https://docs.gitlab.com/omnibus/docker/" target="_blank" rel="noopener">docker方式</a></h3><blockquote>
+<p>由于gitlab的访问端口由external_url中决定，如下配置中<br>容器中的gitlab服务暴露在80端口，宿主机以外通过<a href="http://172.17.8.53:9999/" target="_blank" rel="noopener">http://172.17.8.53:9999/</a> 【172.17.8.53为宿主机ip】访问gitlab的web服务</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  -p 8443:443 \</span><br><span class="line">  -p 9999:80 \</span><br><span class="line">  -p 9998:22 \</span><br><span class="line">  -v $PWD/config:/etc/gitlab \</span><br><span class="line">  -v $PWD/logs:/var/log/gitlab \</span><br><span class="line">  -v $PWD/data:/var/opt/gitlab \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://172.17.8.53/&apos;;gitlab_rails[&apos;gitlab_shell_ssh_port&apos;] = 9998&quot; \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
 <h3 id="ubuntu16-04"><a href="#ubuntu16-04" class="headerlink" title="ubuntu16.04"></a>ubuntu16.04</h3><ul>
@@ -670,7 +673,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2022</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
