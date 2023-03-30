@@ -12,7 +12,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://blog.unlazy.cn/
+url: http://blog.sunking.top/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -77,9 +77,9 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
+#- type: git
+#  repository: git@gitee.com:simple0426/simple0426.git
+#  branch: gh-pages
 - type: git
-  repository: git@gitee.com:simple0426/simple0426.git
+  repository: git@github.com:simple0426/blog.git
   branch: gh-pages
-# - type: git
-#   repository: git@github.com:simple0426/blog.git
-#   branch: gh-pages
