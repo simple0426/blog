@@ -740,10 +740,10 @@
   <entry>
     <title>云原生技术简介</title>
     <url>/2019/10/23/%E5%AE%B9%E5%99%A8%E5%8C%96/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><h2 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h2><p>以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行</p>
-<h2 id="官方支持"><a href="#官方支持" class="headerlink" title="官方支持"></a>官方支持</h2><p>CNCF：<a href="https://www.cncf.io/" target="_blank" rel="noopener">云原生基金会</a></p>
-<h2 id="云原生技术生态"><a href="#云原生技术生态" class="headerlink" title="云原生技术生态"></a><a href="https://landscape.cncf.io/" target="_blank" rel="noopener">云原生技术生态</a></h2><p><img src="https://landscape.cncf.io/images/landscape.png" alt></p>
-<h2 id="云原生实现流程"><a href="#云原生实现流程" class="headerlink" title="云原生实现流程"></a>云原生实现流程</h2><blockquote>
+    <content><![CDATA[<h1 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h1><p>以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行</p>
+<h1 id="官方支持"><a href="#官方支持" class="headerlink" title="官方支持"></a>官方支持</h1><p>CNCF：<a href="https://www.cncf.io/" target="_blank" rel="noopener">云原生基金会</a></p>
+<h1 id="云原生技术生态"><a href="#云原生技术生态" class="headerlink" title="云原生技术生态"></a><a href="https://landscape.cncf.io/" target="_blank" rel="noopener">云原生技术生态</a></h1><p><img src="https://landscape.cncf.io/images/landscape.png" alt></p>
+<h1 id="云原生实现流程"><a href="#云原生实现流程" class="headerlink" title="云原生实现流程"></a>云原生实现流程</h1><blockquote>
 <p>即CNCF路线图Trail map</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/cncf/trailmap/master/CNCF_TrailMap_latest.png" alt></p>
@@ -796,60 +796,51 @@
 <li>不可变基础设施：即容器镜像；</li>
 <li>应用编排理论：即容器设计模式，当前为kubernetes的内容</li>
 </ul>
-<h1 id="核心技术"><a href="#核心技术" class="headerlink" title="核心技术"></a>核心技术</h1><ul>
-<li>容器技术：<ul>
+<h1 id="核心技术"><a href="#核心技术" class="headerlink" title="核心技术"></a>核心技术</h1><h2 id="容器技术"><a href="#容器技术" class="headerlink" title="容器技术"></a>容器技术</h2><ul>
 <li>cgroups：google早期的容器技术</li>
 <li>docker：当前容器事实标准；docker是应用运行的最小单位，不依赖任何paas</li>
 </ul>
-</li>
-<li>容器编排技术<ul>
+<h2 id="容器编排技术"><a href="#容器编排技术" class="headerlink" title="容器编排技术"></a>容器编排技术</h2><ul>
 <li>swarm，docker维护的项目，偏重生态；2017年，docker公司核心产品内置kubernetes服务，swarm项目停止维护</li>
 <li>mesos：技术较强</li>
 <li>kubernetes：兼顾生态和技术，在swarm停止维护后，从三者【swarm、mesos、k8s】竞争中胜出，是容器编排的事实标准</li>
 </ul>
-</li>
-</ul>
-<h1 id="技术范畴"><a href="#技术范畴" class="headerlink" title="技术范畴"></a>技术范畴</h1><ul>
-<li>应用定义和开发流程<ul>
+<h1 id="技术范畴"><a href="#技术范畴" class="headerlink" title="技术范畴"></a>技术范畴</h1><h2 id="应用定义和开发流程"><a href="#应用定义和开发流程" class="headerlink" title="应用定义和开发流程"></a>应用定义和开发流程</h2><ul>
 <li>应用定义与镜像制作</li>
 <li>CI/CD</li>
 <li>消息和流</li>
 <li>数据库</li>
 </ul>
-</li>
-<li>应用编排和管理【kubernetes关注的部分】<ul>
+<h2 id="应用编排和管理"><a href="#应用编排和管理" class="headerlink" title="应用编排和管理"></a>应用编排和管理</h2><blockquote>
+<p>kubernetes关注的部分</p>
+</blockquote>
+<ul>
 <li>应用编排和调度</li>
 <li>服务发现治理</li>
 <li>远程调用</li>
 <li>API网关</li>
 <li>service mesh</li>
 </ul>
-</li>
-<li>监控和分析<ul>
+<h2 id="监控和分析"><a href="#监控和分析" class="headerlink" title="监控和分析"></a>监控和分析</h2><ul>
 <li>监控</li>
 <li>日志收集</li>
 <li>tracing</li>
 <li>破坏性测试【即混沌工程】</li>
 </ul>
-</li>
-<li>底层技术：运行、存储、网络<ul>
+<h2 id="底层技术：运行-存储-网络"><a href="#底层技术：运行-存储-网络" class="headerlink" title="底层技术：运行/存储/网络"></a>底层技术：运行/存储/网络</h2><ul>
 <li>容器运行时</li>
 <li>存储</li>
 <li>网络</li>
 </ul>
-</li>
-<li>工具集<ul>
+<h2 id="工具集"><a href="#工具集" class="headerlink" title="工具集"></a>工具集</h2><ul>
 <li>流程自动化与配置管理</li>
 <li>镜像仓库</li>
 <li>安全技术</li>
 <li>云端密码管理</li>
 </ul>
-</li>
-<li>serverless<ul>
+<h2 id="Serverless"><a href="#Serverless" class="headerlink" title="Serverless"></a>Serverless</h2><ul>
 <li>paas的特殊形态，是一种应用编写方式，包含faas和baas</li>
 <li>典型特点就是按实际使用计费</li>
-</ul>
-</li>
 </ul>
 ]]></content>
       <categories>
@@ -2112,7 +2103,7 @@ $name：值为$type.$id。
   <entry>
     <title>分布式存储-glusterfs</title>
     <url>/2020/03/18/%E5%AE%B9%E5%99%A8%E5%8C%96/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8-glusterfs/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在实践kubernetes的statefulset及各种需要持久存储的功能时，<br>通常需要用到PV的动态供给功能，而glusterfs就是这样一种可以提供动态供给功能的存储系统  </p>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在实践kubernetes的statefulset及各种需要持久存储的功能时，通常需要用到PV的动态供给功能，而glusterfs就是这样一种可以提供动态供给功能的存储系统  </p>
 <h2 id="部署架构"><a href="#部署架构" class="headerlink" title="部署架构"></a>部署架构</h2><table>
 <thead>
 <tr>
