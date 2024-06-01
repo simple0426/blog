@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>elk-安全和访问控制</title>
-    <url>/2020/11/01/ELK/elk-%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/</url>
+    <url>/blog/2020/11/01/ELK/elk-%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<p>本文主要基于<a href="https://www.elastic.co/cn/blog/getting-started-with-elasticsearch-security" target="_blank" rel="noopener">通过 TLS 加密和基于角色的访问控制确保 Elasticsearch 的安全</a>完成</p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>从elastic stack 6.8和7.1开始，会在软件分发版本中免费提供多项安全功能，例如elasticsearch之间的TLS加密通信，kibana中基于角色的访问控制(RBAC)等.</p>
 <p>在完成下列操作前，应当完成以下操作：</p>
@@ -80,7 +80,7 @@
   </entry>
   <entry>
     <title>elk-stack安装</title>
-    <url>/2020/08/14/ELK/elk-stack%E5%AE%89%E8%A3%85/</url>
+    <url>/blog/2020/08/14/ELK/elk-stack%E5%AE%89%E8%A3%85/</url>
     <content><![CDATA[<h1 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h1><ul>
 <li>elasticsearch：基于Lucene的搜索服务器，用于数据收集、分析、存储</li>
 <li>logstash：日志收集、过滤、转换</li>
@@ -362,7 +362,7 @@
   </entry>
   <entry>
     <title>filebeat学习</title>
-    <url>/2020/09/24/ELK/filebeat%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2020/09/24/ELK/filebeat%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h1><p>filebeat由2个组件组成：inputs和harvester </p>
 <ul>
 <li><p>harvester：负责单个文件的读取；如果文件在读取时被删除或重命名，filebeat依然可以读取文件【harvester运行时占用一个文件描述符保证相关的文件依然被保留】</p>
@@ -530,7 +530,7 @@
   </entry>
   <entry>
     <title>logstash学习</title>
-    <url>/2020/10/29/ELK/logstash%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2020/10/29/ELK/logstash%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="配置文件语法"><a href="#配置文件语法" class="headerlink" title="配置文件语法"></a><a href="https://www.elastic.co/guide/en/logstash/6.8/configuration.html" target="_blank" rel="noopener">配置文件语法</a></h1><h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ul>
 <li>区块标识 <code>{}</code></li>
 <li>变量赋值 <code>nginx =&gt; 5</code></li>
@@ -679,7 +679,7 @@
   </entry>
   <entry>
     <title>kibana学习</title>
-    <url>/2020/10/30/ELK/kibana%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2020/10/30/ELK/kibana%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="服务启动"><a href="#服务启动" class="headerlink" title="服务启动"></a>服务启动</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install filebeat -y</span><br></pre></td></tr></table></figure>
 <p>配置选项</p>
 <ul>
@@ -739,7 +739,7 @@
   </entry>
   <entry>
     <title>云原生技术简介</title>
-    <url>/2019/10/23/%E5%AE%B9%E5%99%A8%E5%8C%96/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF%E7%AE%80%E4%BB%8B/</url>
+    <url>/blog/2019/10/23/%E5%AE%B9%E5%99%A8%E5%8C%96/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF%E7%AE%80%E4%BB%8B/</url>
     <content><![CDATA[<h1 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h1><p>以”云”为基础的软件架构设计的思想，应用从设计到部署都在云上进行</p>
 <h1 id="官方支持"><a href="#官方支持" class="headerlink" title="官方支持"></a>官方支持</h1><p>CNCF：<a href="https://www.cncf.io/" target="_blank" rel="noopener">云原生基金会</a></p>
 <h1 id="云原生技术生态"><a href="#云原生技术生态" class="headerlink" title="云原生技术生态"></a><a href="https://landscape.cncf.io/" target="_blank" rel="noopener">云原生技术生态</a></h1><p><img src="https://landscape.cncf.io/images/landscape.png" alt></p>
@@ -852,7 +852,7 @@
   </entry>
   <entry>
     <title>elasticsearch介绍</title>
-    <url>/2020/08/25/ELK/elasticsearch%E4%BB%8B%E7%BB%8D/</url>
+    <url>/blog/2020/08/25/ELK/elasticsearch%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><h2 id="数据分类和搜索"><a href="#数据分类和搜索" class="headerlink" title="数据分类和搜索"></a>数据分类和搜索</h2><ul>
 <li>结构化数据：数据有固定格式和长度，在数据存储前定义表结构；通过对常用的字段建立索引进行搜索</li>
 <li>非结构化数据：没有预定义的结构化特征(比如：文章、网页、邮件等)；需要对全文数据建立倒排索引进行搜索【全文搜索】</li>
@@ -1424,7 +1424,7 @@
   </entry>
   <entry>
     <title>分布式存储-ceph</title>
-    <url>/2020/09/11/%E5%AE%B9%E5%99%A8%E5%8C%96/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8-ceph/</url>
+    <url>/blog/2020/09/11/%E5%AE%B9%E5%99%A8%E5%8C%96/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8-ceph/</url>
     <content><![CDATA[<h1 id="Ceph介绍"><a href="#Ceph介绍" class="headerlink" title="Ceph介绍"></a>Ceph介绍</h1><p>ceph是一个可以同时提供对象存储、块存储、文件存储三种服务能力的分布式存储系统</p>
 <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p><strong>高性能</strong></p>
 <ul>
@@ -2102,7 +2102,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>分布式存储-glusterfs</title>
-    <url>/2020/03/18/%E5%AE%B9%E5%99%A8%E5%8C%96/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8-glusterfs/</url>
+    <url>/blog/2020/03/18/%E5%AE%B9%E5%99%A8%E5%8C%96/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8-glusterfs/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在实践kubernetes的statefulset及各种需要持久存储的功能时，通常需要用到PV的动态供给功能，而glusterfs就是这样一种可以提供动态供给功能的存储系统  </p>
 <h2 id="部署架构"><a href="#部署架构" class="headerlink" title="部署架构"></a>部署架构</h2><table>
 <thead>
@@ -2189,7 +2189,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>虚拟机管理-vagrant</title>
-    <url>/2019/11/18/%E5%AE%B9%E5%99%A8%E5%8C%96/%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AE%A1%E7%90%86-vagrant/</url>
+    <url>/blog/2019/11/18/%E5%AE%B9%E5%99%A8%E5%8C%96/%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AE%A1%E7%90%86-vagrant/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a><a href="https://www.vagrantup.com/docs/" target="_blank" rel="noopener">简介</a></h1><ul>
 <li>vagrant是一个命令行下的虚拟机管理程序，默认使用virtualbox(内置于vagrant)作为后台虚拟化技术，但也可以使用其他虚拟化技术（比如VirtualBox、Docker、Vmware、Hyper-V等）</li>
 <li>软件安装<ul>
@@ -2360,7 +2360,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>服务网格-Istio</title>
-    <url>/2020/09/22/%E5%AE%B9%E5%99%A8%E5%8C%96/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC-Istio/</url>
+    <url>/blog/2020/09/22/%E5%AE%B9%E5%99%A8%E5%8C%96/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC-Istio/</url>
     <content><![CDATA[<h1 id="ServiceMesh"><a href="#ServiceMesh" class="headerlink" title="ServiceMesh"></a>ServiceMesh</h1><p>Service Mesh 的中文译为 “服务网格” ，是一个用于处理服务与服务之间<strong>通信的基础设施层</strong>，它负责为构建复杂的云原生应用<strong>传递可靠的网络请求</strong>。在实践中，它是一组和应用服务部署在一起的轻量级的<strong>网络代理</strong>，并且对应用服务<strong>透明</strong>。</p>
 <h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>服务网格带来了巨大变革并且拥有其强大的技术优势，被称为第二代“微服务架构”。</p>
 <p>第一，微服务治理与业务逻辑的解耦。服务网格把 SDK 中的<strong>大部分</strong>能力从应用中剥离出来，拆解为独立进程，以 sidecar的模式进行部署。服务网格通过将服务通信及相关管控功能从业务程序中分离并下沉到基础设施层，使其和业务系统完全解耦，使开发人员更加专注于业务本身。</p>
@@ -2592,7 +2592,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>架构设计</title>
-    <url>/2019/10/23/%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%89%E5%85%A8/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</url>
+    <url>/blog/2019/10/23/%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%89%E5%85%A8/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</url>
     <content><![CDATA[<h1 id="架构设计目标"><a href="#架构设计目标" class="headerlink" title="架构设计目标"></a>架构设计目标</h1><ul>
 <li>可伸缩性（Scalability），当服务的负载增长时，系统能被扩展来满足需求，且不降低服务质量。<ul>
 <li>负载均衡技术是实现网站架构伸缩性的主要手段</li>
@@ -2684,7 +2684,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>prometheus-altermanager告警</title>
-    <url>/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus-altermanager%E5%91%8A%E8%AD%A6/</url>
+    <url>/blog/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus-altermanager%E5%91%8A%E8%AD%A6/</url>
     <content><![CDATA[<h1 id="告警状态"><a href="#告警状态" class="headerlink" title="告警状态"></a>告警状态</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/alter-status.jpg" alt></p>
 <ul>
 <li>inactive：当做什么都没发生</li>
@@ -2723,7 +2723,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>prometheus入门</title>
-    <url>/2020/07/30/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus%E5%85%A5%E9%97%A8/</url>
+    <url>/blog/2020/07/30/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<h1 id="主要特点"><a href="#主要特点" class="headerlink" title="主要特点"></a>主要特点</h1><ul>
 <li>一个多维数据模型(data model)，其中包含通过度量名称(metric name)和标签(key/value)定义的时间序列数据</li>
 <li>PromQL，灵活的数据查询语言</li>
@@ -2860,7 +2860,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>prometheus-server设置</title>
-    <url>/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus-server%E8%AE%BE%E7%BD%AE/</url>
+    <url>/blog/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus-server%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="启动参数"><a href="#启动参数" class="headerlink" title="启动参数"></a>启动参数</h1><ul>
 <li>–config.file=/etc/config/prometheus.yml：指定配置文件</li>
 <li>–storage.tsdb.path=/data：指定数据目录</li>
@@ -2917,7 +2917,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>prometheus高可用架构</title>
-    <url>/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/</url>
+    <url>/blog/2020/08/05/%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6/prometheus%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/</url>
     <content><![CDATA[<h1 id="prometheus高可用"><a href="#prometheus高可用" class="headerlink" title="prometheus高可用"></a>prometheus高可用</h1><h2 id="联邦功能"><a href="#联邦功能" class="headerlink" title="联邦功能"></a>联邦功能</h2><p>prometheus原生支持联邦架构，能够实现从别的prometheus抓取符合特定条件的数据</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">scrape_configs:</span><br><span class="line">- job_name: &apos;federate&apos;</span><br><span class="line">    scrape_interval: 15s</span><br><span class="line">    honor_labels: true</span><br><span class="line">    metrics_path: &apos;/federate&apos;</span><br><span class="line">    params:</span><br><span class="line">      &apos;match[]&apos;:</span><br><span class="line">        - &apos;&#123;job=~&quot;kubernetes.*&quot;&#125;&apos; #抓取目标prometheus中job为kubernetes开头的监控项</span><br><span class="line">    static_configs:</span><br><span class="line">      - targets:</span><br><span class="line">        - &apos;192.168.31.201:30090&apos;</span><br></pre></td></tr></table></figure>
 <h2 id="高可用方案"><a href="#高可用方案" class="headerlink" title="高可用方案"></a>高可用方案</h2><ul>
@@ -3007,7 +3007,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>windows常用命令</title>
-    <url>/2019/05/15/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/windows%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <url>/blog/2019/05/15/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/windows%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
     <content><![CDATA[<h1 id="启停windows服务"><a href="#启停windows服务" class="headerlink" title="启停windows服务"></a>启停windows服务</h1><ul>
 <li>停止：net stop gitblit</li>
 <li>启动：net start gitblit</li>
@@ -3041,7 +3041,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>gitbook简单使用</title>
-    <url>/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/gitbook%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</url>
+    <url>/blog/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/gitbook%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><ul>
 <li><a href="http://gitbook.zhangjikai.com" target="_blank" rel="noopener">范例参考</a></li>
 <li>可以将markdown书写的文章转换为html文档直接在网页上浏览</li>
@@ -3089,7 +3089,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>TCP连接</title>
-    <url>/2018/04/18/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/TCP%E8%BF%9E%E6%8E%A5/</url>
+    <url>/blog/2018/04/18/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/TCP%E8%BF%9E%E6%8E%A5/</url>
     <content><![CDATA[<h1 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h1><blockquote>
 <p>三次握手</p>
 </blockquote>
@@ -3193,7 +3193,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>markdown学习</title>
-    <url>/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/markdown%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/markdown%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h1><p>段落是由一个或多个的文本行组成，段落前后必须包含一个或多个空行<br>段落内的换行方式：两个空格+回车</p>
 <h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 级别一</span><br><span class="line">## 级别二</span><br><span class="line">###### 级别六</span><br><span class="line">末尾可以加#，但只起美观作用，且#的数量可以任意</span><br></pre></td></tr></table></figure>
 <h1 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h1><p>在段落的开始使用任意数量的&gt;符号划分缩进层级</p>
@@ -3241,7 +3241,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>web基础知识</title>
-    <url>/2019/06/11/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/web%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <url>/blog/2019/06/11/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/web%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<h1 id="http浏览过程"><a href="#http浏览过程" class="headerlink" title="http浏览过程"></a>http浏览过程</h1><ol>
 <li>用户提交域名</li>
 <li>浏览器进行域名解析<ol>
@@ -3419,7 +3419,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>yaml语法学习</title>
-    <url>/2018/02/27/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/yaml%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/02/27/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/yaml%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><ul>
 <li>大小写敏感</li>
 <li>使用缩进表示层级关系</li>
@@ -3469,7 +3469,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>windows常用工具</title>
-    <url>/2019/05/11/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/windows%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/</url>
+    <url>/blog/2019/05/11/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/windows%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/</url>
     <content><![CDATA[<h1 id="软件列表"><a href="#软件列表" class="headerlink" title="软件列表"></a>软件列表</h1><h2 id="办公类"><a href="#办公类" class="headerlink" title="办公类"></a>办公类</h2><ul>
 <li>beyondCompare：文本比较工具</li>
 <li><a href="#git">git</a>：windows下git工具（一般作为windows下的linux命令行使用）</li>
@@ -3557,7 +3557,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>博客应用hexo</title>
-    <url>/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E5%8D%9A%E5%AE%A2%E5%BA%94%E7%94%A8hexo/</url>
+    <url>/blog/2018/02/26/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E5%8D%9A%E5%AE%A2%E5%BA%94%E7%94%A8hexo/</url>
     <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p><a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">参考</a></p>
 <h2 id="安装前提"><a href="#安装前提" class="headerlink" title="安装前提"></a>安装前提</h2><ul>
 <li>Node.js</li>
@@ -3685,7 +3685,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>时间格式</title>
-    <url>/2019/08/07/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F/</url>
+    <url>/blog/2019/08/07/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F/</url>
     <content><![CDATA[<table>
 <thead>
 <tr>
@@ -3852,7 +3852,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>正则表达式</title>
-    <url>/2019/08/05/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <url>/blog/2019/08/05/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="POSIX正则表达式"><a href="#POSIX正则表达式" class="headerlink" title="POSIX正则表达式"></a>POSIX正则表达式</h1><ul>
 <li>常见的正则表达式记法，其实都源于Perl。实际上，正则表达式从Perl衍生出一个显赫的流派，叫做PCRE（Perl Compatible Regular Expression），\d、\w、\s 之类的记法，就是这个流派的特征。但是在PCRE之外，正则表达式还有其它流派，比如下面要介绍的POSIX规范的正则表达式。</li>
 <li>POSIX表示可移植操作系统接口（Portable Operating System Interface of UNIX，缩写为 POSIX ），主要定义了unix系统的接口规范；相应的，POSIX正则表达式定义了类unix系统下的正则表达式规范</li>
@@ -3982,7 +3982,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>证书生成工具cfssl</title>
-    <url>/2020/07/15/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E8%AF%81%E4%B9%A6%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7cfssl/</url>
+    <url>/blog/2020/07/15/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E8%AF%81%E4%B9%A6%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7cfssl/</url>
     <content><![CDATA[<h1 id="下载cfssl工具"><a href="#下载cfssl工具" class="headerlink" title="下载cfssl工具"></a>下载cfssl工具</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64</span><br><span class="line">wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64</span><br><span class="line">wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64</span><br><span class="line">chmod +x cfssl*</span><br><span class="line">mv cfssl_linux-amd64 /usr/bin/cfssl</span><br><span class="line">mv cfssljson_linux-amd64 /usr/bin/cfssljson</span><br><span class="line">mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo</span><br></pre></td></tr></table></figure>
 <h1 id="创建CA"><a href="#创建CA" class="headerlink" title="创建CA"></a>创建CA</h1><h2 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置"></a>初始化配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># config</span><br><span class="line">cfssl print-defaults config &gt; ca-config.json</span><br><span class="line"># csr</span><br><span class="line">cfssl print-defaults csr &gt; ca-csr.json</span><br></pre></td></tr></table></figure>
 <h2 id="CA配置文件-范例"><a href="#CA配置文件-范例" class="headerlink" title="CA配置文件-范例"></a>CA配置文件-范例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &gt; ca-config.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;signing&quot;: &#123;</span><br><span class="line">    &quot;default&quot;: &#123;</span><br><span class="line">      &quot;expiry&quot;: &quot;87600h&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;profiles&quot;: &#123;</span><br><span class="line">      &quot;kubernetes&quot;: &#123;</span><br><span class="line">         &quot;expiry&quot;: &quot;87600h&quot;,</span><br><span class="line">         &quot;usages&quot;: [</span><br><span class="line">            &quot;signing&quot;,</span><br><span class="line">            &quot;key encipherment&quot;,</span><br><span class="line">            &quot;server auth&quot;,</span><br><span class="line">            &quot;client auth&quot;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
@@ -4014,7 +4014,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>编程基础</title>
-    <url>/2019/11/12/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/</url>
+    <url>/blog/2019/11/12/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h1 id="同步与异步"><a href="#同步与异步" class="headerlink" title="同步与异步"></a>同步与异步</h1><ul>
 <li>同步和异步的区别就在于是否等待IO执行的结果</li>
 <li>好比你去麦当劳餐厅点餐，你说“来个汉堡”，服务员告诉你，对不起汉堡要现做，需要等待5分钟，于是你就站在收银台前等了5分钟，拿着汉堡取逛商场，这是同步IO</li>
@@ -4050,7 +4050,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>gitlab之ci-runner使用</title>
-    <url>/2020/01/18/CICD/gitlab/gitlab%E4%B9%8Bci-runner%E4%BD%BF%E7%94%A8/</url>
+    <url>/blog/2020/01/18/CICD/gitlab/gitlab%E4%B9%8Bci-runner%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h1 id="ci-runner安装与配置"><a href="#ci-runner安装与配置" class="headerlink" title="ci-runner安装与配置"></a>ci-runner安装与配置</h1><p>gitlab CI服务最好不要部署于gitlab服务器上【因为CI(持续集成)任务会很消耗资源】</p>
 <h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><p>docker是CI(持续集成)任务的基础环境，当然CI(持续集成)任务也可以直接利用CI服务器的shell环境</p>
 <h2 id="安装gitlab-runner"><a href="#安装gitlab-runner" class="headerlink" title="安装gitlab-runner"></a><a href="https://docs.gitlab.com/runner/install/linux-repository.html" target="_blank" rel="noopener">安装gitlab-runner</a></h2><blockquote>
@@ -4101,7 +4101,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>源代码管理-gitlab</title>
-    <url>/2020/07/06/CICD/gitlab/%E6%BA%90%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86-gitlab/</url>
+    <url>/blog/2020/07/06/CICD/gitlab/%E6%BA%90%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86-gitlab/</url>
     <content><![CDATA[<h1 id="gitlab服务"><a href="#gitlab服务" class="headerlink" title="gitlab服务"></a>gitlab服务</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a><a href="https://mirrors.tuna.tsinghua.edu.cn/help/gitlab-ce/" target="_blank" rel="noopener">软件安装</a></h2><blockquote>
 <p>初始密码（用户root）：cat /etc/<em>gitlab</em>/initial_root_password</p>
 </blockquote>
@@ -4189,7 +4189,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>ansible之playbook学习</title>
-    <url>/2019/05/25/CICD/ansible/ansible%E4%B9%8Bplaybook%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2019/05/25/CICD/ansible/ansible%E4%B9%8Bplaybook%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="playbook简介"><a href="#playbook简介" class="headerlink" title="playbook简介"></a>playbook简介</h1><p>playbook是以目录文件结构的形式组织ansible语法，用以实现复杂功能，它的主要概念如下：</p>
 <ul>
 <li>module：实现功能的基本组成单元，类似程序代码<ul>
@@ -4352,7 +4352,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>ansible之命令行</title>
-    <url>/2019/05/29/CICD/ansible/ansible%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C/</url>
+    <url>/blog/2019/05/29/CICD/ansible/ansible%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="ansible"><a href="#ansible" class="headerlink" title="ansible"></a>ansible</h1><p>在一个或一组主机下运行单个任务</p>
 <h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
 <li>语法：ansible 《pattern》 -m 《module_name》 -a 《arguments》 other_options  <ul>
@@ -4609,7 +4609,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>ansible之变量与模板</title>
-    <url>/2019/06/20/CICD/ansible/ansible%E4%B9%8B%E5%8F%98%E9%87%8F%E4%B8%8E%E6%A8%A1%E6%9D%BF/</url>
+    <url>/blog/2019/06/20/CICD/ansible/ansible%E4%B9%8B%E5%8F%98%E9%87%8F%E4%B8%8E%E6%A8%A1%E6%9D%BF/</url>
     <content><![CDATA[<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="变量使用注意"><a href="#变量使用注意" class="headerlink" title="变量使用注意"></a>变量使用注意</h2><ul>
 <li>变量名，应该以字母开头，并且变量名中不含空格、逗点、中横线</li>
 <li>变量内容，如果只包含字母、数字、下划线、中横线等普通字符，可以直接书写，无需使用引号</li>
@@ -4853,7 +4853,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>ansible之基础学习</title>
-    <url>/2019/05/17/CICD/ansible/ansible%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2019/05/17/CICD/ansible/ansible%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>ansible是用于远程系统管理、软件部署的工具，类似工具有fabric、puppet</p>
 <h2 id="软件特性"><a href="#软件特性" class="headerlink" title="软件特性"></a>软件特性</h2><ul>
 <li>基于当前的架构理解，使用简单的语言描述操作过程（playbook编写）</li>
@@ -5180,7 +5180,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>jenkins安装与配置</title>
-    <url>/2020/02/10/CICD/jenkins/jenkins%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</url>
+    <url>/blog/2020/02/10/CICD/jenkins/jenkins%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><blockquote>
 <p>需要提前配置java8运行环境</p>
 </blockquote>
@@ -5354,7 +5354,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>ansible之应用实践</title>
-    <url>/2019/07/02/CICD/ansible/ansible%E4%B9%8B%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/</url>
+    <url>/blog/2019/07/02/CICD/ansible/ansible%E4%B9%8B%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<h1 id="异步模式"><a href="#异步模式" class="headerlink" title="异步模式"></a>异步模式</h1><h2 id="异步等待模式"><a href="#异步等待模式" class="headerlink" title="异步等待模式"></a>异步等待模式</h2><ul>
 <li>ansible在客户端异步执行，在任务执行过程中，无论ssh连接是否中断都不影响任务执行  </li>
 <li>async：任务执行超时时间，如无此关键词，则任务以同步模式执行【ansible默认模式】</li>
@@ -5437,7 +5437,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>负载均衡器-lvs</title>
-    <url>/2019/09/15/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8-LVS/</url>
+    <url>/blog/2019/09/15/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8-LVS/</url>
     <content><![CDATA[<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p><a href="http://www.linuxvirtualserver.org/zh/index.html" target="_blank" rel="noopener">LVS</a>的全称是Linux virtual server，即Linux虚拟服务器。之所以是虚拟服务器，是因为LVS自身是个负载均衡器(director)，不直接处理请求，而是将请求转发至位于它后端真正的服务器realserver上。</p>
 <h2 id="lvs技术实现"><a href="#lvs技术实现" class="headerlink" title="lvs技术实现"></a>lvs技术实现</h2><ul>
 <li>四层负载均衡：网络及传输层实现的IP虚拟服务器软件IPVS；ipvs是集成在内核中的框架，可以通过用户空间的程序ipvsadm工具来管理，该工具可以定义一些规则来管理内核中的ipvs，就像iptables和netfilter的关系一样。这也是本文介绍的功能。</li>
@@ -5645,7 +5645,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>jenkins自动化-gitlab</title>
-    <url>/2020/02/11/CICD/jenkins/jenkins%E8%87%AA%E5%8A%A8%E5%8C%96-gitlab/</url>
+    <url>/blog/2020/02/11/CICD/jenkins/jenkins%E8%87%AA%E5%8A%A8%E5%8C%96-gitlab/</url>
     <content><![CDATA[<h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><ul>
 <li>类型：pipeline</li>
 <li>名称：spring-hello-demo</li>
@@ -5710,7 +5710,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>负载均衡器-haproxy</title>
-    <url>/2019/09/10/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8-haproxy/</url>
+    <url>/blog/2019/09/10/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8-haproxy/</url>
     <content><![CDATA[<h1 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h1><ul>
 <li>yum或apt方式安装</li>
 <li>源码安装</li>
@@ -5760,7 +5760,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>高可用服务-keepalived</title>
-    <url>/2019/09/16/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%8D%E5%8A%A1-keepalived/</url>
+    <url>/blog/2019/09/16/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%90%86%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%8D%E5%8A%A1-keepalived/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>keepalived起初是专门为lvs设计的，专门用来监控lvs集群系统中各个服务节点的状态，后来又加入了VRRP（Virtual Router Redundancy Protocol）虚拟路由冗余协议。VRRP的出现是为解决静态路由出现的单点故障问题，他能保证网络的不间断、稳定的运行。所以keepalived有两个功能：</p>
 <ul>
 <li>对lvs集群节点的健康检查【healthcheck】</li>
@@ -5818,7 +5818,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>angular运行环境</title>
-    <url>/2019/05/15/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/angular%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/</url>
+    <url>/blog/2019/05/15/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/angular%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/</url>
     <content><![CDATA[<h1 id="使用淘宝npm库"><a href="#使用淘宝npm库" class="headerlink" title="使用淘宝npm库"></a>使用淘宝npm库</h1><p>npm install -registry=<a href="https://registry.npm.taobao.org" target="_blank" rel="noopener">https://registry.npm.taobao.org</a></p>
 <h1 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h1><p>下载地址：<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">https://nodejs.org/en/download/</a></p>
 <p>node为免安装，解压后bin目录有node和npm，只需将bin目录添加到系统PATH下即可</p>
@@ -5853,7 +5853,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>apache下rewrite使用</title>
-    <url>/2019/05/07/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/apache%E4%B8%8Brewrite%E4%BD%BF%E7%94%A8/</url>
+    <url>/blog/2019/05/07/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/apache%E4%B8%8Brewrite%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h1 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h1><ul>
 <li>rewrite url实现URL的跳转和隐藏真实地址，基于perl语言的正则表达式规范</li>
 <li>主要用途：拟静态、拟目录、域名跳转、防盗链</li>
@@ -5931,7 +5931,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mongodb入门与管理</title>
-    <url>/2019/11/21/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%85%A5%E9%97%A8%E4%B8%8E%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/11/21/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%85%A5%E9%97%A8%E4%B8%8E%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><ul>
 <li>3.2之后增加存储引擎WiredTiger</li>
 <li>4.2之后移除对MMAPv1引擎的支持</li>
@@ -6213,7 +6213,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>jenkins之声明式pipeline</title>
-    <url>/2020/02/10/CICD/jenkins/jenkins%E4%B9%8B%E5%A3%B0%E6%98%8E%E5%BC%8Fpipeline/</url>
+    <url>/blog/2020/02/10/CICD/jenkins/jenkins%E4%B9%8B%E5%A3%B0%E6%98%8E%E5%BC%8Fpipeline/</url>
     <content><![CDATA[<h1 id="基本结构-stages"><a href="#基本结构-stages" class="headerlink" title="基本结构-stages"></a>基本结构-stages</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">   agent any    //指定构建环境【例如什么类型(物理机、虚拟机、docker)的哪个节点】</span><br><span class="line"></span><br><span class="line">   stages &#123;     //构建步骤，至少包含一个stage</span><br><span class="line">      stage(&apos;build&apos;) &#123;</span><br><span class="line">        parallel&#123;   //指定多个stage并行构建</span><br><span class="line">            stage(&apos;build-1&apos;)&#123; </span><br><span class="line">                steps&#123;    //在一个stage构建中的详细步骤，有且只有一个steps</span><br><span class="line">                    echo &apos;build stage 1&apos;</span><br><span class="line">                &#125;        </span><br><span class="line">            &#125;</span><br><span class="line">            stage(&apos;build-2&apos;)&#123;</span><br><span class="line">                steps&#123;</span><br><span class="line">                    echo &apos;build stage 2&apos;</span><br><span class="line">                &#125;        </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      stage(&apos;test&apos;) &#123;</span><br><span class="line">         steps &#123;</span><br><span class="line">            echo &apos;test stage&apos;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="steps内部指令"><a href="#steps内部指令" class="headerlink" title="steps内部指令"></a>steps内部指令</h1><ul>
 <li><p>sh：执行shell命令</p>
@@ -6420,7 +6420,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>nginx基础学习</title>
-    <url>/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/" target="_blank" rel="noopener">淘宝nginx文档</a></p>
 <p><a href="http://nginx.org/en/docs/" target="_blank" rel="noopener">官方nginx文档</a></p>
 <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
@@ -6568,7 +6568,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>nginx进阶学习</title>
-    <url>/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2019/06/11/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/nginx%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="http://tengine.taobao.org/nginx_docs/cn/docs/" target="_blank" rel="noopener">淘宝nginx文档</a></p>
 <p><a href="http://nginx.org/en/docs/" target="_blank" rel="noopener">官方nginx文档</a></p>
 <h1 id="proxy设置"><a href="#proxy设置" class="headerlink" title="proxy设置"></a>proxy设置</h1><h2 id="proxy相关变量"><a href="#proxy相关变量" class="headerlink" title="proxy相关变量"></a>proxy相关变量</h2><ul>
@@ -6826,7 +6826,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>tomcat配置与优化</title>
-    <url>/2019/06/06/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/tomcat%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BC%98%E5%8C%96/</url>
+    <url>/blog/2019/06/06/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/web%E6%9C%8D%E5%8A%A1/tomcat%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BC%98%E5%8C%96/</url>
     <content><![CDATA[<h1 id="JAVA程序"><a href="#JAVA程序" class="headerlink" title="JAVA程序"></a>JAVA程序</h1><h2 id="java程序"><a href="#java程序" class="headerlink" title="java程序"></a>java程序</h2><ul>
 <li>java程序设计语言</li>
 <li>java api【库函数】</li>
@@ -6996,7 +6996,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mongodb副本集与分片</title>
-    <url>/2019/12/01/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%89%AF%E6%9C%AC%E9%9B%86%E4%B8%8E%E5%88%86%E7%89%87/</url>
+    <url>/blog/2019/12/01/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%89%AF%E6%9C%AC%E9%9B%86%E4%B8%8E%E5%88%86%E7%89%87/</url>
     <content><![CDATA[<h1 id="副本集部署"><a href="#副本集部署" class="headerlink" title="副本集部署"></a>副本集部署</h1><h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
 <li>主机：172.16.0.201、172.16.0.215、172.16.0.205</li>
 <li>201已建立用户及其权限<ul>
@@ -7122,7 +7122,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql主从同步</title>
-    <url>/2019/09/29/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/</url>
+    <url>/blog/2019/09/29/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/</url>
     <content><![CDATA[<h1 id="复制简介"><a href="#复制简介" class="headerlink" title="复制简介"></a>复制简介</h1><h2 id="复制功能优势"><a href="#复制功能优势" class="headerlink" title="复制功能优势"></a>复制功能优势</h2><ul>
 <li>横向扩展解决方案：更新和写操作在主库，读操作在从库</li>
 <li>数据安全性：从库可以停止同步、延迟同步、执行数据备份</li>
@@ -7324,7 +7324,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql安装与配置</title>
-    <url>/2019/09/24/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</url>
+    <url>/blog/2019/09/24/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="官方参考"><a href="#官方参考" class="headerlink" title="官方参考"></a>官方参考</h1><p>参考手册：<a href="https://dev.mysql.com/doc/refman/5.6/en/" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.6/en/</a></p>
 <h1 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h1><h2 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a><a href="https://dev.mysql.com/doc/refman/5.6/en/source-installation-prerequisites.html" target="_blank" rel="noopener">依赖安装</a></h2><ul>
 <li>cmake</li>
@@ -7445,7 +7445,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql备份与恢复</title>
-    <url>/2019/09/25/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</url>
+    <url>/blog/2019/09/25/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</url>
     <content><![CDATA[<h1 id="备份命令mysqldump"><a href="#备份命令mysqldump" class="headerlink" title="备份命令mysqldump"></a>备份命令mysqldump</h1><ul>
 <li>-u 用户名</li>
 <li>-p 密码</li>
@@ -7627,7 +7627,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql介绍</title>
-    <url>/2019/09/19/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E4%BB%8B%E7%BB%8D/</url>
+    <url>/blog/2019/09/19/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<h1 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h1><ul>
 <li>mysql-5.5</li>
 <li>mysql-5.6【牧客，测试环境版本：5.6.43】</li>
@@ -7941,7 +7941,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql用户和权限</title>
-    <url>/2019/08/23/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/</url>
+    <url>/blog/2019/08/23/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/</url>
     <content><![CDATA[<h1 id="所有权限"><a href="#所有权限" class="headerlink" title="所有权限"></a>所有权限</h1><ul>
 <li>ALL：全局或者全数据库对象级别的所有权限</li>
 <li>ALTER：修改表结构的权限，但必须要求有create和insert权 限配合。如果是rename表名，则要求有alter和drop原表，create和 insert新表</li>
@@ -8053,7 +8053,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql管理</title>
-    <url>/2019/09/30/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/09/30/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="管理命令"><a href="#管理命令" class="headerlink" title="管理命令"></a>管理命令</h1><h2 id="mysqladmin"><a href="#mysqladmin" class="headerlink" title="mysqladmin"></a>mysqladmin</h2><p>shell命令行下服务端mysqld的管理工具，帮助信息：mysqladmin –help</p>
 <h2 id="mysql内建命令"><a href="#mysql内建命令" class="headerlink" title="mysql内建命令"></a>mysql内建命令</h2><ul>
 <li>system：调用系统命令</li>
@@ -8134,7 +8134,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>pgsql-sql操作</title>
-    <url>/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-sql%E6%93%8D%E4%BD%9C/</url>
+    <url>/blog/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-sql%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><h2 id="会话管理"><a href="#会话管理" class="headerlink" title="会话管理"></a>会话管理</h2><ul>
 <li>查看当前会话连接：select * from pg_stat_activity;</li>
 <li>取消一个查询：pg_cancel_backend(pid int)</li>
@@ -8308,7 +8308,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>pgsql-pgpool使用</title>
-    <url>/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-pgpool%E4%BD%BF%E7%94%A8/</url>
+    <url>/blog/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-pgpool%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h1 id="pgpool简介"><a href="#pgpool简介" class="headerlink" title="pgpool简介"></a>pgpool简介</h1><p>pgpool是一个位于数据库服务端和客户端之间的中间件，可以实现如下功能：</p>
 <ul>
 <li>连接池</li>
@@ -8369,7 +8369,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>pgsql-安装与介绍</title>
-    <url>/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BB%8B%E7%BB%8D/</url>
+    <url>/blog/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<h1 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a>依赖安装</h1><blockquote>
 <p>示例为ubuntu16.04下的软件包</p>
 </blockquote>
@@ -8472,7 +8472,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>mysql表结构与数据操作</title>
-    <url>/2018/05/14/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E8%A1%A8%E7%BB%93%E6%9E%84%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C/</url>
+    <url>/blog/2018/05/14/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E8%A1%A8%E7%BB%93%E6%9E%84%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<h1 id="库操作"><a href="#库操作" class="headerlink" title="库操作"></a>库操作</h1><ul>
 <li>查看存在的库：show databases;</li>
 <li>建数据库：create database olgboy_utf8 default character set utf8 collate utf8_general_ci;<ul>
@@ -8704,7 +8704,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>进程间通信</title>
-    <url>/2018/02/28/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</url>
+    <url>/blog/2018/02/28/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</url>
     <content><![CDATA[<h1 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h1><h2 id="what"><a href="#what" class="headerlink" title="what"></a>what</h2><p>进程间的通讯IPC (Inter-process communication))：指至少两个进程或线程间传送数据或信号的一些技术或方法。</p>
 <h2 id="why"><a href="#why" class="headerlink" title="why"></a>why</h2><ul>
 <li>数据传输：一个进程需要将它的数据发送给另一个进程，发送的数据量在一个字节到几M字节之间</li>
@@ -8780,7 +8780,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>pgsql-归档和流复制</title>
-    <url>/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-%E5%BD%92%E6%A1%A3%E5%92%8C%E6%B5%81%E5%A4%8D%E5%88%B6/</url>
+    <url>/blog/2019/10/13/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%95%B0%E6%8D%AE%E5%BA%93/pgsql-%E5%BD%92%E6%A1%A3%E5%92%8C%E6%B5%81%E5%A4%8D%E5%88%B6/</url>
     <content><![CDATA[<h1 id="文件级别备份"><a href="#文件级别备份" class="headerlink" title="文件级别备份"></a>文件级别备份</h1><h2 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h2><ul>
 <li>在开始备份或恢复前，需要关闭服务【只是停止对外服务是不可行的，因为无法产生原子快照或服务的内部缓冲机制】</li>
 <li>无法单独恢复表【表文件和事务数据单独存储，只使用表文件和事务状态日志(pg_clog)则会造成其他表不可用】，文件级别备份只能用于完整备份和集群级别的恢复</li>
@@ -9010,7 +9010,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>消息队列RabbitMQ</title>
-    <url>/2019/11/01/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97RabbitMQ/</url>
+    <url>/blog/2019/11/01/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97RabbitMQ/</url>
     <content><![CDATA[<h1 id="使用对比"><a href="#使用对比" class="headerlink" title="使用对比"></a>使用对比</h1><h2 id="与python中的queue"><a href="#与python中的queue" class="headerlink" title="与python中的queue"></a>与python中的queue</h2><ul>
 <li>线程queue：同一个进程下不同线程间的交互</li>
 <li>进程Queue：父子进程交互，或同属于一个进程下的多个子进程间交互</li>
@@ -9186,7 +9186,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis主从高可用-sentinel</title>
-    <url>/2020/09/29/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E4%B8%BB%E4%BB%8E%E9%AB%98%E5%8F%AF%E7%94%A8-sentinel/</url>
+    <url>/blog/2020/09/29/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E4%B8%BB%E4%BB%8E%E9%AB%98%E5%8F%AF%E7%94%A8-sentinel/</url>
     <content><![CDATA[<h1 id="sentinel功能"><a href="#sentinel功能" class="headerlink" title="sentinel功能"></a><a href="https://redis.io/topics/sentinel" target="_blank" rel="noopener">sentinel功能</a></h1><ul>
 <li>监控：持续监控master和slave是否处于工作状态</li>
 <li>通知：通过API通知系统管理员或程序某个redis实例故障</li>
@@ -9309,7 +9309,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis客户端redis-cli</title>
-    <url>/2019/10/22/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E5%AE%A2%E6%88%B7%E7%AB%AFredis-cli/</url>
+    <url>/blog/2019/10/22/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E5%AE%A2%E6%88%B7%E7%AB%AFredis-cli/</url>
     <content><![CDATA[<h1 id="非交互模式"><a href="#非交互模式" class="headerlink" title="非交互模式"></a>非交互模式</h1><ul>
 <li>命令行使用：redis-cli incr mycounter<ul>
 <li>重定向输出：redis-cli incr mycounter &gt; /tmp/output.txt</li>
@@ -9431,7 +9431,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis数据操作</title>
-    <url>/2019/10/30/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C/</url>
+    <url>/blog/2019/10/30/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<h1 id="数据类型及抽象"><a href="#数据类型及抽象" class="headerlink" title="数据类型及抽象"></a><a href="https://redis.io/topics/data-types-intro" target="_blank" rel="noopener">数据类型及抽象</a></h1><h2 id="key定义"><a href="#key定义" class="headerlink" title="key定义"></a>key定义</h2><ul>
 <li>不建议使用非常长的key，因为在查找比较时需要消耗更多的资源；如果确实需要存储较长的key，可以存储key的hash值</li>
 <li>也不建议使用较短的key，较短的key可读写太差</li>
@@ -9594,7 +9594,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis简介与管理</title>
-    <url>/2019/10/25/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E7%AE%80%E4%BB%8B%E4%B8%8E%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/10/25/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E7%AE%80%E4%BB%8B%E4%B8%8E%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a><a href="https://redis.io/topics/introduction" target="_blank" rel="noopener">简介</a></h1><ul>
 <li>redis是一个开源的、基于内存的数据结构存储，但也可以根据需要开启持久化存储（rdb、aof）</li>
 <li>可以被当做数据库、缓存、消息代理使用</li>
@@ -9786,7 +9786,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis集群</title>
-    <url>/2019/10/26/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E9%9B%86%E7%BE%A4/</url>
+    <url>/blog/2019/10/26/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E9%9B%86%E7%BE%A4/</url>
     <content><![CDATA[<h1 id="集群介绍"><a href="#集群介绍" class="headerlink" title="集群介绍"></a><a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">集群介绍</a></h1><ul>
 <li>redis3.0之后提供集群模式</li>
 <li>集群功能<ul>
@@ -9989,7 +9989,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>redis服务端配置</title>
-    <url>/2019/10/22/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE/</url>
+    <url>/blog/2019/10/22/web%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E7%BC%93%E5%AD%98%E4%B8%8Enosql/redis%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="服务端配置方法"><a href="#服务端配置方法" class="headerlink" title="服务端配置方法"></a>服务端配置方法</h1><ul>
 <li>文件指令格式：keyword argument1 argument2 … argumentN<ul>
 <li>使用引号处理包含的空格：requirepass “hello world”</li>
@@ -10032,7 +10032,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>docker入门介绍</title>
-    <url>/2019/11/19/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/</url>
+    <url>/blog/2019/11/19/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<h1 id="docker引入"><a href="#docker引入" class="headerlink" title="docker引入"></a>docker引入</h1><h2 id="传统IT面临问题"><a href="#传统IT面临问题" class="headerlink" title="传统IT面临问题"></a>传统IT面临问题</h2><ul>
 <li>部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求)</li>
 <li>环境不一致：开发、测试、生产环境不一致</li>
@@ -10184,7 +10184,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>docker-compose学习</title>
-    <url>/2019/12/10/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker-compose%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2019/12/10/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker-compose%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>docker compose是一个用于定义和管理多容器的docker工具，<br>可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），<br>并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。</p>
 <h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><ul>
 <li>services：定义了一个应用包含的多个服务(服务的载体即是容器)；容器的镜像可以来自镜像仓库，也可以由本地的Dockerfile构建出来</li>
@@ -10275,7 +10275,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>docker容器和镜像</title>
-    <url>/2019/11/11/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E5%AE%B9%E5%99%A8%E5%92%8C%E9%95%9C%E5%83%8F/</url>
+    <url>/blog/2019/11/11/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E5%AE%B9%E5%99%A8%E5%92%8C%E9%95%9C%E5%83%8F/</url>
     <content><![CDATA[<h1 id="容器运行-run"><a href="#容器运行-run" class="headerlink" title="容器运行(run)"></a>容器运行(run)</h1><h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><p>docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd</p>
 <h2 id="运行参数"><a href="#运行参数" class="headerlink" title="运行参数"></a>运行参数</h2><ul>
 <li><p>-t：分配一个伪终端tty</p>
@@ -10566,7 +10566,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>docker镜像仓库-harbor</title>
-    <url>/2018/03/20/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93-harbor/</url>
+    <url>/blog/2018/03/20/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93-harbor/</url>
     <content><![CDATA[<h1 id="harbor介绍"><a href="#harbor介绍" class="headerlink" title="harbor介绍"></a>harbor介绍</h1><ul>
 <li>镜像的存储harbor使用的是官方的docker registry服务去完成；至于registry是用本地存储或者云存储都是可以的，harbor的功能是在此之上提供用户权限管理、镜像复制等功能</li>
 <li>harbor镜像的复制是通过docker registry 的API去拷贝</li>
@@ -10683,7 +10683,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>docker网络</title>
-    <url>/2019/12/02/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E7%BD%91%E7%BB%9C/</url>
+    <url>/blog/2019/12/02/%E5%AE%B9%E5%99%A8%E5%8C%96/docker/docker%E7%BD%91%E7%BB%9C/</url>
     <content><![CDATA[<h1 id="docker网络实现"><a href="#docker网络实现" class="headerlink" title="docker网络实现"></a>docker网络实现</h1><ul>
 <li>网络命名空间(netns(net namespace))：linux在网络栈中引入网络名称空间，将独立的网络协议栈隔离到不同的名称空间中，彼此无法通信；docker利用linux的这一特性，实现了容器的网络隔离</li>
 <li>veth(virtual ethernet)：虚拟以太网卡，和物理网卡类似，用于不同命名空间的网络通信(例如，利用veth连接容器和宿主机)</li>
@@ -10805,7 +10805,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-kubeadm方式部署</title>
-    <url>/2020/03/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-kubeadm%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/</url>
+    <url>/blog/2020/03/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-kubeadm%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<h1 id="kubeadm介绍"><a href="#kubeadm介绍" class="headerlink" title="kubeadm介绍"></a><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener">kubeadm介绍</a></h1><p>kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除<br>kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署  </p>
 <ul>
 <li>kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-controller-manager/kube-scheduler)</li>
@@ -10958,7 +10958,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-二进制方式部署</title>
-    <url>/2020/07/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/</url>
+    <url>/blog/2020/07/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%B9%E5%BC%8F%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<h1 id="重度参考"><a href="#重度参考" class="headerlink" title="重度参考"></a>重度参考</h1><ul>
 <li><a href="https://mp.weixin.qq.com/s/VYtyTU9_Dw9M5oHtvRfseA" target="_blank" rel="noopener">部署一套完整的Kubernetes高可用集群（上）</a></li>
 <li><a href="https://mp.weixin.qq.com/s/F9BC6GALHiWBK5dmUnqepA" target="_blank" rel="noopener">​部署一套完整的Kubernetes高可用集群（下）</a></li>
@@ -11401,7 +11401,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-容器技术落地方案</title>
-    <url>/2020/08/06/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E8%90%BD%E5%9C%B0%E6%96%B9%E6%A1%88/</url>
+    <url>/blog/2020/08/06/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E8%90%BD%E5%9C%B0%E6%96%B9%E6%A1%88/</url>
     <content><![CDATA[<h1 id="容器平台分层架构"><a href="#容器平台分层架构" class="headerlink" title="容器平台分层架构"></a>容器平台分层架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg" alt></p>
 <ul>
 <li>基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库</li>
@@ -11644,7 +11644,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-微服务与SpringCloud容器化</title>
-    <url>/2020/09/16/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B8%8ESpringCloud%E5%AE%B9%E5%99%A8%E5%8C%96/</url>
+    <url>/blog/2020/09/16/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B8%8ESpringCloud%E5%AE%B9%E5%99%A8%E5%8C%96/</url>
     <content><![CDATA[<h1 id="运维角度看微服务"><a href="#运维角度看微服务" class="headerlink" title="运维角度看微服务"></a>运维角度看微服务</h1><h2 id="单体应用vs微服务"><a href="#单体应用vs微服务" class="headerlink" title="单体应用vs微服务"></a>单体应用vs微服务</h2><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/microservice.png" alt></p>
 <p><strong>单体应用</strong>：将全部的功能在一个应用中实现，优缺点如下：</p>
 <ul>
@@ -11856,7 +11856,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-项目部署流程.md</title>
-    <url>/2020/07/29/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/</url>
+    <url>/blog/2020/07/29/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="运维架构"><a href="#运维架构" class="headerlink" title="运维架构"></a>运维架构</h1><p>传统部署方式</p>
 <p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/deploy-os.jpg" alt></p>
 <p>k8s部署方式</p>
@@ -11941,7 +11941,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>k8s实施-构建基于jenkins的发布平台</title>
-    <url>/2020/08/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ejenkins%E7%9A%84%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0/</url>
+    <url>/blog/2020/08/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/k8s%E5%AE%9E%E6%96%BD-%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ejenkins%E7%9A%84%E5%8F%91%E5%B8%83%E5%B9%B3%E5%8F%B0/</url>
     <content><![CDATA[<h1 id="发布流程设计"><a href="#发布流程设计" class="headerlink" title="发布流程设计"></a>发布流程设计</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-cicd.png" alt></p>
 <ol>
 <li>开发人员从镜像仓库harbor中拉取基础镜像，对应用进行容器化开发</li>
@@ -12066,7 +12066,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubelet认证-TLS-Bootstrapping</title>
-    <url>/2020/08/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubelet%E8%AE%A4%E8%AF%81-TLS-Bootstrapping/</url>
+    <url>/blog/2020/08/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubelet%E8%AE%A4%E8%AF%81-TLS-Bootstrapping/</url>
     <content><![CDATA[<h1 id="TLS-Bootstrapping简介"><a href="#TLS-Bootstrapping简介" class="headerlink" title="TLS-Bootstrapping简介"></a><a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/" target="_blank" rel="noopener">TLS-Bootstrapping</a>简介</h1><p>新的工作节点加入集群时需要配置相关的私钥和证书，可以由管理员手动配置，也可以让kubelet自行生成相关的私钥和证书<br>但是集群规模扩大后，手动配置会增加管理员工作量，kubelet自动配置则会降低PKI本身的优势<br>结合这两种方式，kubernetes提出了新方案(TLS Bootstrapping)：由kubelet自行生成私钥和证书签名请求<br>然后向集群的证书签署进程(CA)发起请求，获取的证书和已有的私钥文件共同存储于kubelet客户端以用于后续的通信<br>但是，这样一来就认证和非认证的kubelet客户端都会发起证书签名请求，为了控制仅那些认证的客户端可以发起请求，就需要使用令牌机制(bootstrap token)来确认认证的客户端<br>APIserver使用基于认证令牌对“system:bootstrappers”组内用户完成认证<br>controller-manager会用到这个组的默认审批控制器来决定是否颁发证书，它依赖于由管理员将此token绑定于合适的RBAC策略，以限制其仅用于签证操作  </p>
 <h1 id="apiserver"><a href="#apiserver" class="headerlink" title="apiserver"></a>apiserver</h1><ul>
 <li><p>配置项 </p>
@@ -12155,7 +12155,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-pod控制器</title>
-    <url>/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
+    <url>/blog/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
     <content><![CDATA[<h1 id="pod控制器"><a href="#pod控制器" class="headerlink" title="pod控制器"></a>pod控制器</h1><h2 id="需求来源"><a href="#需求来源" class="headerlink" title="需求来源"></a>需求来源</h2><ul>
 <li>自主式pod被调度到节点后，由kubelet负责容器的存活性；<ul>
 <li>容器主进程崩溃后，kubelet自动重启相应的容器；</li>
@@ -12281,7 +12281,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-pod资源调度</title>
-    <url>/2020/03/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6/</url>
+    <url>/blog/2020/03/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6/</url>
     <content><![CDATA[<h1 id="创建pod流程"><a href="#创建pod流程" class="headerlink" title="创建pod流程"></a>创建pod流程</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-module-interact.jpg" alt></p>
 <ul>
 <li>用户通过UI或CLI提交一个pod给API Server进行部署</li>
@@ -12428,7 +12428,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-pod对象管理</title>
-    <url>/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E5%AF%B9%E8%B1%A1%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-pod%E5%AF%B9%E8%B1%A1%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="容器与pod"><a href="#容器与pod" class="headerlink" title="容器与pod"></a>容器与pod</h1><h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><ul>
 <li>容器的本质是一个进程，是一个视图被隔离、资源受限制的进程</li>
 <li>容器里pid=1的进程就是应用本身</li>
@@ -12734,7 +12734,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-service和ingress</title>
-    <url>/2020/03/06/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-service%E5%92%8Cingress/</url>
+    <url>/blog/2020/03/06/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-service%E5%92%8Cingress/</url>
     <content><![CDATA[<h1 id="service"><a href="#service" class="headerlink" title="service"></a>service</h1><h2 id="实现目标"><a href="#实现目标" class="headerlink" title="实现目标"></a>实现目标</h2><ul>
 <li>服务发现：在pod的弹性伸缩变化过程中，保持外部访问入口不变</li>
 <li>负载均衡：定义访问pod资源的策略</li>
@@ -12858,7 +12858,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-入门基础</title>
-    <url>/2018/04/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
+    <url>/blog/2018/04/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h1 id="容器平台分层架构"><a href="#容器平台分层架构" class="headerlink" title="容器平台分层架构"></a>容器平台分层架构</h1><p><img src="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containers-scheme.jpg" alt></p>
 <ul>
 <li>基础设施层-IaaS(openstack/公有云)：服务器、网络、存储、数据库</li>
@@ -12995,7 +12995,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-statefulset控制器</title>
-    <url>/2020/03/18/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-statefulset%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
+    <url>/blog/2020/03/18/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-statefulset%E6%8E%A7%E5%88%B6%E5%99%A8/</url>
     <content><![CDATA[<h1 id="有无状态"><a href="#有无状态" class="headerlink" title="有无状态"></a>有无状态</h1><ul>
 <li>分类标准：应用程序在和其他用户、设备、程序通信时，根据是否需要记录相关状态信息以用于下次通信，可以将程序分类如下：<ul>
 <li>有状态应用(stateful)：需要记录信息</li>
@@ -13079,7 +13079,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-弹性伸缩</title>
-    <url>/2020/08/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%BC%B9%E6%80%A7%E4%BC%B8%E7%BC%A9/</url>
+    <url>/blog/2020/08/12/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%BC%B9%E6%80%A7%E4%BC%B8%E7%BC%A9/</url>
     <content><![CDATA[<h1 id="弹性伸缩"><a href="#弹性伸缩" class="headerlink" title="弹性伸缩"></a>弹性伸缩</h1><p>集群的容量能够及时响应业务的负载需求</p>
 <h2 id="业务负载类型"><a href="#业务负载类型" class="headerlink" title="业务负载类型"></a>业务负载类型</h2><ul>
 <li>在线负载类：微服务、API、网站</li>
@@ -13258,7 +13258,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-包管理器helm</title>
-    <url>/2020/03/08/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8helm/</url>
+    <url>/blog/2020/03/08/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8helm/</url>
     <content><![CDATA[<h1 id="helm简介"><a href="#helm简介" class="headerlink" title="helm简介"></a><a href="https://helm.sh/" target="_blank" rel="noopener">helm简介</a></h1><ul>
 <li><p>优点</p>
 <ul>
@@ -13623,7 +13623,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-网络模型和策略控制</title>
-    <url>/2020/03/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%AD%96%E7%95%A5%E6%8E%A7%E5%88%B6/</url>
+    <url>/blog/2020/03/03/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%AD%96%E7%95%A5%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<h1 id="kubernetes网络模型"><a href="#kubernetes网络模型" class="headerlink" title="kubernetes网络模型"></a>kubernetes网络模型</h1><p>kubernetes要求所有的网络插件必须满足以下要求</p>
 <ul>
 <li>一个pod一个ip</li>
@@ -14101,7 +14101,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-存储和持久化</title>
-    <url>/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%AD%98%E5%82%A8%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96/</url>
+    <url>/blog/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%AD%98%E5%82%A8%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96/</url>
     <content><![CDATA[<h1 id="持久化设置"><a href="#持久化设置" class="headerlink" title="持久化设置"></a>持久化设置</h1><ul>
 <li>pod级别设置卷类型(volumes类型)：spec.volumes</li>
 <li>容器级别使用卷：spec.containers.volumeMounts</li>
@@ -14276,7 +14276,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-认证授权和准入控制</title>
-    <url>/2020/03/30/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%92%8C%E5%87%86%E5%85%A5%E6%8E%A7%E5%88%B6/</url>
+    <url>/blog/2020/03/30/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%92%8C%E5%87%86%E5%85%A5%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<h1 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h1><p>对kubernetes安全的保护主要通过如下方式实现：</p>
 <ul>
 <li>认证（authentication）：验证访问者的身份(即访问对象)</li>
@@ -14682,7 +14682,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-监控和日志</title>
-    <url>/2020/03/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E7%9B%91%E6%8E%A7%E5%92%8C%E6%97%A5%E5%BF%97/</url>
+    <url>/blog/2020/03/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E7%9B%91%E6%8E%A7%E5%92%8C%E6%97%A5%E5%BF%97/</url>
     <content><![CDATA[<h1 id="k8s监控指标"><a href="#k8s监控指标" class="headerlink" title="k8s监控指标"></a>k8s监控指标</h1><ul>
 <li>节点对象：系统指标、CPU内存及网络流量</li>
 <li>k8s资源对象：k8s事件</li>
@@ -14878,7 +14878,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-资源管理</title>
-    <url>/2020/03/21/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2020/03/21/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="管理方式-API"><a href="#管理方式-API" class="headerlink" title="管理方式-API"></a>管理方式-API</h1><p>kubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，<br>用于查询和修改集群的状态，并将结果存储于etcd中。</p>
 <h2 id="API设计模式"><a href="#API设计模式" class="headerlink" title="API设计模式"></a>API设计模式</h2><ul>
 <li>声明式<ul>
@@ -15168,7 +15168,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>kubernetes-配置管理</title>
-    <url>/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h1><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>主要管理容器运行所需的配置文件、环境变量、命令行参数等可变配置</li>
 <li>用于解耦容器镜像和可变配置，从而保证工作负载(pod)的可移植性</li>
@@ -15245,7 +15245,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux使用技巧</title>
-    <url>/2019/07/02/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/</url>
+    <url>/blog/2019/07/02/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<h1 id="文件swap"><a href="#文件swap" class="headerlink" title="文件swap"></a>文件swap</h1><h2 id="创建空文件"><a href="#创建空文件" class="headerlink" title="创建空文件"></a>创建空文件</h2><ul>
 <li>fallocate -l 4G /home/swapfile </li>
 <li>truncate -s 4G /home/swapfile </li>
@@ -15306,7 +15306,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux命令-查找替换</title>
-    <url>/2019/06/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E5%91%BD%E4%BB%A4-%E6%9F%A5%E6%89%BE%E6%9B%BF%E6%8D%A2/</url>
+    <url>/blog/2019/06/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E5%91%BD%E4%BB%A4-%E6%9F%A5%E6%89%BE%E6%9B%BF%E6%8D%A2/</url>
     <content><![CDATA[<h1 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h1><ul>
 <li><a href="#sed">sed</a></li>
 <li><a href="#grep">grep</a></li>
@@ -15561,7 +15561,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux系统-文件管理</title>
-    <url>/2019/08/27/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/08/27/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<ul>
 <li>cat：显示文件内容<ul>
 <li>-n：显示行号</li>
@@ -15885,7 +15885,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux系统-进程管理</title>
-    <url>/2019/08/06/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/08/06/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="命令目录"><a href="#命令目录" class="headerlink" title="命令目录"></a>命令目录</h1><ul>
 <li><a href="#kill">kill</a>：向进程发送信号</li>
 <li>pkill、killall、pgrep：根据进程名称过滤进程id或杀死进程【可能有误、不建议使用】</li>
@@ -16065,7 +16065,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux系统-网络管理</title>
-    <url>/2019/07/17/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/07/17/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h1><ul>
 <li>tcpdump<ul>
 <li>-i eth0：指定监听的网络接口</li>
@@ -16411,7 +16411,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux系统-权限管理</title>
-    <url>/2019/08/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2019/08/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F-%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><ul>
 <li><a href="#useradd">useradd</a>：添加用户</li>
 <li><a href="#usermod">usermod</a>：更改用户信息</li>
@@ -16770,7 +16770,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>shell编程</title>
-    <url>/2019/07/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/shell%E7%BC%96%E7%A8%8B/</url>
+    <url>/blog/2019/07/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/shell%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h2><ul>
 <li>当变量值为字符串时，尽量使用单或双引号，避免字符串中有空格或特殊字符；如果变量值时数字或操作系统路径时，可以不使用引号</li>
 <li>等号两边不能有空格</li>
@@ -17022,7 +17022,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux远程连接工具-ssh</title>
-    <url>/2019/08/07/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7-ssh/</url>
+    <url>/blog/2019/08/07/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7-ssh/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><blockquote>
 <p>Secure shell protocol：安全的shell协议</p>
 </blockquote>
@@ -17096,7 +17096,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>守护进程工具supervisor</title>
-    <url>/2018/05/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E5%B7%A5%E5%85%B7supervisor/</url>
+    <url>/blog/2018/05/30/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E5%B7%A5%E5%85%B7supervisor/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>supervisor用于管理非daemon进程</p>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><ul>
 <li>可使用系统安装apt-get install supervisor</li>
@@ -17130,7 +17130,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>linux系统原理-文件系统</title>
-    <url>/2019/09/03/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</url>
+    <url>/blog/2019/09/03/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/linux%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</url>
     <content><![CDATA[<h1 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h1><p>实质：组织和存储数据的一种机制</p>
 <h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><blockquote>
 <p>以ls -l命令的输出的第一个符号为区别标志，其中字符设备、块设备、FIFO文件可使用mknod命令创建</p>
@@ -17448,7 +17448,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>shell命令行</title>
-    <url>/2019/08/27/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/shell%E5%91%BD%E4%BB%A4%E8%A1%8C/</url>
+    <url>/blog/2019/08/27/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/shell%E5%91%BD%E4%BB%A4%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><ul>
 <li><a href="#crontab">crontab</a>：设置周期性任务</li>
 <li>at：一次性任务（使用较少）</li>
@@ -17764,7 +17764,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>文件系统监控inotify</title>
-    <url>/2019/05/05/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7inotify/</url>
+    <url>/blog/2019/05/05/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7inotify/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>inotify是一个细粒度的异步文件监控系统，可以监控文件发生的一切变化，如：</p>
 <ul>
 <li>访问属性</li>
@@ -17899,7 +17899,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>文件同步rsync</title>
-    <url>/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E4%BB%B6%E5%90%8C%E6%AD%A5rsync/</url>
+    <url>/blog/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E4%BB%B6%E5%90%8C%E6%AD%A5rsync/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><ul>
 <li>远程同步：remote synchronization</li>
 <li>是一个快速的、全能的远程或本地的文件复制工具</li>
@@ -18028,7 +18028,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>文本处理语言-awk</title>
-    <url>/2019/07/06/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E8%AF%AD%E8%A8%80-awk/</url>
+    <url>/blog/2019/07/06/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E8%AF%AD%E8%A8%80-awk/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><ul>
 <li>awk是用于文本检索和处理的语言</li>
 <li>awk程序是由一系列的pattern-action以及可选的函数定义组成</li>
@@ -18369,7 +18369,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>文本编辑器-vim</title>
-    <url>/2019/07/15/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8-vim/</url>
+    <url>/blog/2019/07/15/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8-vim/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="学习方式"><a href="#学习方式" class="headerlink" title="学习方式"></a>学习方式</h2><p>vimtutor命令</p>
 <h2 id="主要文件"><a href="#主要文件" class="headerlink" title="主要文件"></a>主要文件</h2><ul>
 <li>历史记录文件：~/.viminfo</li>
@@ -18522,7 +18522,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>类unix终端显示控制</title>
-    <url>/2018/05/28/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%B1%BBunix%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA%E6%8E%A7%E5%88%B6/</url>
+    <url>/blog/2018/05/28/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%B1%BBunix%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<h1 id="ANSI转义序列"><a href="#ANSI转义序列" class="headerlink" title="ANSI转义序列"></a>ANSI转义序列</h1><blockquote>
 <p><a href="https://www.cnblogs.com/crabxx/p/4046498.html" target="_blank" rel="noopener">参考</a></p>
 </blockquote>
@@ -18661,7 +18661,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>版本库命令-git</title>
-    <url>/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E7%89%88%E6%9C%AC%E5%BA%93%E5%91%BD%E4%BB%A4-git/</url>
+    <url>/blog/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E7%89%88%E6%9C%AC%E5%BA%93%E5%91%BD%E4%BB%A4-git/</url>
     <content><![CDATA[<h1 id="状态迁移"><a href="#状态迁移" class="headerlink" title="状态迁移"></a>状态迁移</h1><p>版本库=》工作区=》暂存区=》版本库</p>
 <h1 id="clean"><a href="#clean" class="headerlink" title="clean"></a>clean</h1><blockquote>
 <p>从工作区中清理未追踪的文件或目录</p>
@@ -18849,7 +18849,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>日志切割工具logrotate</title>
-    <url>/2019/06/13/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2%E5%B7%A5%E5%85%B7logrotate/</url>
+    <url>/blog/2019/06/13/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2%E5%B7%A5%E5%85%B7logrotate/</url>
     <content><![CDATA[<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/home/haproxy/log/*.log &#123;</span><br><span class="line">rotate 15</span><br><span class="line">daily</span><br><span class="line">dateext</span><br><span class="line">missingok</span><br><span class="line">notifempty</span><br><span class="line">compress</span><br><span class="line">delaycompress</span><br><span class="line">copytruncate</span><br><span class="line">size 50M</span><br><span class="line"># create 0640 user group</span><br><span class="line"># olddir oldlog</span><br><span class="line"># sharedscripts</span><br><span class="line"># postrotate</span><br><span class="line">#  reload rsyslog &gt;/dev/null 2&gt;&amp;1 || true</span><br><span class="line"># endscript</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a><a href="https://linux.die.net/man/8/logrotate" target="_blank" rel="noopener">介绍</a></h1><ul>
 <li>功能<ul>
@@ -18924,7 +18924,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>部署工具fabric</title>
-    <url>/2018/04/20/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7fabric/</url>
+    <url>/blog/2018/04/20/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7fabric/</url>
     <content><![CDATA[<h1 id="命令行选项"><a href="#命令行选项" class="headerlink" title="命令行选项"></a>命令行选项</h1><ul>
 <li>-l 显示任务名称</li>
 <li>-f 指定fab入口文件，默认为fabfile.py</li>
@@ -19022,7 +19022,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>文件共享samba</title>
-    <url>/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%ABsamba/</url>
+    <url>/blog/2018/02/26/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%ABsamba/</url>
     <content><![CDATA[<h1 id="安装samba软件"><a href="#安装samba软件" class="headerlink" title="安装samba软件"></a>安装samba软件</h1><h1 id="用户设置"><a href="#用户设置" class="headerlink" title="用户设置"></a>用户设置</h1><h2 id="创建系统用户组"><a href="#创建系统用户组" class="headerlink" title="创建系统用户组"></a>创建系统用户组</h2><p>groupadd marketop</p>
 <h2 id="创建系统用户"><a href="#创建系统用户" class="headerlink" title="创建系统用户"></a>创建系统用户</h2><ul>
 <li>useradd -g marketop -s /usr/sbin/nologin -M ceshi1</li>
@@ -19073,7 +19073,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>域名解析服务-bind9</title>
-    <url>/2019/09/09/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-bind9/</url>
+    <url>/blog/2019/09/09/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-bind9/</url>
     <content><![CDATA[<h1 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h1><p><code>sudo apt-get install bind9 -y</code></p>
 <h1 id="配置修改"><a href="#配置修改" class="headerlink" title="配置修改"></a>配置修改</h1><ul>
 <li>named.conf.options</li>
@@ -19125,7 +19125,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>版本库管理-svn</title>
-    <url>/2019/06/24/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E7%89%88%E6%9C%AC%E5%BA%93%E7%AE%A1%E7%90%86-svn/</url>
+    <url>/blog/2019/06/24/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91/%E7%89%88%E6%9C%AC%E5%BA%93%E7%AE%A1%E7%90%86-svn/</url>
     <content><![CDATA[<h1 id="安装与部署"><a href="#安装与部署" class="headerlink" title="安装与部署"></a><a href="https://yq.aliyun.com/articles/38802" target="_blank" rel="noopener">安装与部署</a></h1><h1 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h1><ul>
 <li>authz</li>
 </ul>
@@ -19149,7 +19149,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>django开发之templates学习</title>
-    <url>/2018/06/13/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Btemplates%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/13/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Btemplates%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<p><strong>约定</strong><br>为避免模板二次渲染，特在变量{{ }}和流程控制{% %}中添加短横线屏蔽，替换结果如下：</p>
 <ul>
 <li>{{ }} 替换为<code>{-{ }-}</code></li>
@@ -19257,7 +19257,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>django开发之中间件学习</title>
-    <url>/2018/06/30/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8B%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/30/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8B%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h1><h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><ul>
 <li>保存在浏览器端的键值对</li>
 <li>cookie依附在请求头或响应头中出现</li>
@@ -19435,7 +19435,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>django开发之models学习</title>
-    <url>/2018/06/14/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Bmodels%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/14/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Bmodels%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="ORM介绍"><a href="#ORM介绍" class="headerlink" title="ORM介绍"></a>ORM介绍</h1><h2 id="ORM介绍-1"><a href="#ORM介绍-1" class="headerlink" title="ORM介绍"></a>ORM介绍</h2><ul>
 <li>Object Relational Mapping(对象关系映射)：是一种程序技术，用于实现面向对象编程语言里不同类型系统的数据之间进行转换。</li>
 <li>在django中主要实现方式为：在modles文件中定义类，通过映射关系和相关命令转换为对数据库中对应的对象进行操作。</li>
@@ -19630,7 +19630,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python-编码</title>
-    <url>/2020/07/10/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python-%E7%BC%96%E7%A0%81/</url>
+    <url>/blog/2020/07/10/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python-%E7%BC%96%E7%A0%81/</url>
     <content><![CDATA[<h1 id="通用编码"><a href="#通用编码" class="headerlink" title="通用编码"></a>通用编码</h1><ul>
 <li>ASCII[1个字节] 只支持英文字母和一些常用的符号</li>
 <li>Unicode[2个字节]</li>
@@ -19697,7 +19697,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>django开发之views学习</title>
-    <url>/2018/06/29/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Bviews%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/29/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8Bviews%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="request内容"><a href="#request内容" class="headerlink" title="request内容"></a>request内容</h1><h2 id="请求路径"><a href="#请求路径" class="headerlink" title="请求路径"></a>请求路径</h2><ul>
 <li>request.path：除域名以外的请求路径，以斜杠开头</li>
 <li>request.get_host()：主机名（比如通常所说的域名）</li>
@@ -19858,7 +19858,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>django开发之基本设置</title>
-    <url>/2018/06/12/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8B%E5%9F%BA%E6%9C%AC%E8%AE%BE%E7%BD%AE/</url>
+    <url>/blog/2018/06/12/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91/django%E5%BC%80%E5%8F%91%E4%B9%8B%E5%9F%BA%E6%9C%AC%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="MTV模型"><a href="#MTV模型" class="headerlink" title="MTV模型"></a>MTV模型</h1><p>MTV即是通用的web开发模型MVC在django中的实现，  此外django中还有一个URLconf。</p>
 <ul>
 <li>M【models】：建立和操作数据库</li>
@@ -20029,7 +20029,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python函数</title>
-    <url>/2018/05/09/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%87%BD%E6%95%B0/</url>
+    <url>/blog/2018/05/09/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%87%BD%E6%95%B0/</url>
     <content><![CDATA[<h1 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h1><h2 id="名称空间"><a href="#名称空间" class="headerlink" title="名称空间"></a>名称空间</h2><ul>
 <li>内置名称空间：python解释器自带的名字所在的空间</li>
 <li>全局名称空间：文件级别定义的名字所在的空间</li>
@@ -20230,7 +20230,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python函数之迭代器</title>
-    <url>/2018/03/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%87%BD%E6%95%B0%E4%B9%8B%E8%BF%AD%E4%BB%A3%E5%99%A8/</url>
+    <url>/blog/2018/03/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%87%BD%E6%95%B0%E4%B9%8B%E8%BF%AD%E4%BB%A3%E5%99%A8/</url>
     <content><![CDATA[<h1 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
 <li>迭代：重复的过程称为迭代，每次重复即是一次迭代，但是每次重复的结果都是下一次重复的初始值</li>
 <li>可迭代：每个含有<strong>iter</strong>()方法的数据类型都是可迭代的，都可以使用for循环获取对象中的每一个元素</li>
@@ -20318,7 +20318,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python常用模块</title>
-    <url>/2018/02/28/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97/</url>
+    <url>/blog/2018/02/28/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97/</url>
     <content><![CDATA[<h1 id="包和模块"><a href="#包和模块" class="headerlink" title="包和模块"></a>包和模块</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
 <li>在python中，一个py文件就是一个模块</li>
 <li>使用模块还可以避免函数名和变量名冲突，相同的函数和变量完全可以分别存在不同的模块中；我们自己在编写模块时，不必考虑名字与其他模块冲突，但是尽量不要和内置函数名冲突。</li>
@@ -20510,7 +20510,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python数据类型</title>
-    <url>/2018/05/07/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
+    <url>/blog/2018/05/07/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
 <li>整数</li>
 <li>小数<ul>
@@ -20758,7 +20758,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python数据类型之字符串</title>
-    <url>/2018/05/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B9%8B%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <url>/blog/2018/05/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B9%8B%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
     <content><![CDATA[<h1 id="字符串方法"><a href="#字符串方法" class="headerlink" title="字符串方法"></a>字符串方法</h1><ul>
 <li><p>isdecimal/isdigit/isnumberic：判断是否为数字型字符串</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">v1 = a.isdecimal() #2</span><br><span class="line">v2 = a.isdigit() #2 ②</span><br><span class="line">v3 = a.isnumeric() #2 ② 二/贰</span><br><span class="line">print(v1, v2, v3)</span><br></pre></td></tr></table></figure>
@@ -20860,7 +20860,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python流程控制</title>
-    <url>/2018/05/08/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/</url>
+    <url>/blog/2018/05/08/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<h1 id="流程语句"><a href="#流程语句" class="headerlink" title="流程语句"></a>流程语句</h1><h2 id="if-else"><a href="#if-else" class="headerlink" title="if-else"></a>if-else</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">name = input(<span class="string">'input names:'</span>).strip()</span><br><span class="line"><span class="keyword">if</span> name == <span class="string">'oldboy'</span>:</span><br><span class="line">    print(<span class="string">'superadmin'</span>)</span><br><span class="line"><span class="keyword">elif</span> name == <span class="string">'alex'</span>:</span><br><span class="line">    print(<span class="string">'admin'</span>)</span><br><span class="line"><span class="keyword">elif</span> name == <span class="string">'jingqi'</span>:</span><br><span class="line">    print(<span class="string">'man'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'other'</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="while"><a href="#while" class="headerlink" title="while"></a>while</h2><ul>
 <li>当条件为真时永远执行</li>
@@ -20923,7 +20923,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python文件操作</title>
-    <url>/2018/05/11/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
+    <url>/blog/2018/05/11/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<h1 id="open函数"><a href="#open函数" class="headerlink" title="open函数"></a>open函数</h1><h2 id="with使用"><a href="#with使用" class="headerlink" title="with使用"></a>with使用</h2><blockquote>
 <p>上下文管理</p>
 </blockquote>
@@ -21061,7 +21061,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python正则表达式</title>
-    <url>/2018/05/13/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <url>/blog/2018/05/13/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>python re模块使用的是PCER(Perl Compatible Regular Expression)，即：Perl 兼容的正则表达式【可参考linux系统man pcre文档】。<br>我们平时使用的就是这种正则表达式， 各种编程语言如 Java、Python、C#、JavaScript 实现的就是这种正则表达式。</p>
 <h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><table>
 <thead>
@@ -21329,7 +21329,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python环境管理</title>
-    <url>/2018/05/30/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%8E%AF%E5%A2%83%E7%AE%A1%E7%90%86/</url>
+    <url>/blog/2018/05/30/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%8E%AF%E5%A2%83%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h1 id="virtualenv"><a href="#virtualenv" class="headerlink" title="virtualenv"></a>virtualenv</h1><p>创建一个隔离的python运行环境</p>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>pip3 install virtualenv</p>
 <h2 id="创建独立环境"><a href="#创建独立环境" class="headerlink" title="创建独立环境"></a>创建独立环境</h2><ul>
@@ -21368,7 +21368,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python类</title>
-    <url>/2018/05/07/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%B1%BB/</url>
+    <url>/blog/2018/05/07/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%B1%BB/</url>
     <content><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h2><ul>
 <li>面向过程：面向过程的程序设计把计算机程序视为一系列的命令集合，即一组函数的顺序执行</li>
 <li>面向对象：面向对象的程序设计把计算机程序视为一组对象的集合，而每个对象都可以接收并处理其他对象发送的消息，程序的执行即为一系列消息在各个对象之间的传递<ul>
@@ -21537,7 +21537,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python网络编程之socket</title>
-    <url>/2018/03/12/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8Bsocket/</url>
+    <url>/blog/2018/03/12/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8Bsocket/</url>
     <content><![CDATA[<h1 id="数据流处理"><a href="#数据流处理" class="headerlink" title="数据流处理"></a>数据流处理</h1><h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><ol>
 <li>绑定端口</li>
 <li>监听端口【udp无】</li>
@@ -21607,7 +21607,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>python网络编程之进程</title>
-    <url>/2018/03/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/</url>
+    <url>/blog/2018/03/02/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/python%E5%BC%80%E5%8F%91/python%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
 <li>进程是资源集合，至少包含一个线程；线程是程序运行的最小单位</li>
 <li>一个进程的多个线程共享内存空间</li>
@@ -21740,7 +21740,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>web开发之html学习</title>
-    <url>/2018/06/03/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bhtml%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/03/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bhtml%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt; html文档的开始和结束标签</span><br><span class="line">&lt;head&gt; 文档头部</span><br><span class="line">&lt;title&gt; 网页标题</span><br><span class="line">&lt;/title&gt; </span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt; 网页内容</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
 <h1 id="标签格式"><a href="#标签格式" class="headerlink" title="标签格式"></a>标签格式</h1><h2 id="标签语法"><a href="#标签语法" class="headerlink" title="标签语法"></a>标签语法</h2><ul>
 <li>语法：&lt;标签名 属性名=”属性值” 属性名=”属性值”&gt;&lt;/标签名&gt;</li>
@@ -21825,7 +21825,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>web开发之css学习</title>
-    <url>/2018/06/04/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bcss%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/04/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bcss%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">选择器</span><br><span class="line">selector &#123;</span><br><span class="line">    属性：值；</span><br><span class="line">    property: value;</span><br><span class="line">    property1: value1;</span><br><span class="line">    property2: value2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="引入方式"><a href="#引入方式" class="headerlink" title="引入方式"></a>引入方式</h1><h2 id="行内式"><a href="#行内式" class="headerlink" title="行内式"></a>行内式</h2><ul>
 <li>定义：在标签的style属性中设置</li>
@@ -21934,7 +21934,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>web开发之js学习</title>
-    <url>/2018/06/06/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bjs%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/06/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bjs%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="引入方式"><a href="#引入方式" class="headerlink" title="引入方式"></a>引入方式</h1><p>head标签下导入js文件</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;test.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <h1 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h1><ul>
@@ -22220,7 +22220,7 @@ $name：值为$type.$id。
   </entry>
   <entry>
     <title>web开发之jquery学习</title>
-    <url>/2018/06/08/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bjquery%E5%AD%A6%E4%B9%A0/</url>
+    <url>/blog/2018/06/08/%E8%BF%90%E7%BB%B4%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91/web%E5%BC%80%E5%8F%91%E4%B9%8Bjquery%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><ul>
 <li>jquery是一个快速、简洁的JavaScript框架，</li>
 <li>它封装了JavaScript是常用的功能模块，提供了一种简便的JavaScript设计模式，优化HTML文档操作、事件处理、动画设计和Ajax交互</li>
