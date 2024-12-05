@@ -39,7 +39,7 @@ date: 2019-11-19 23:24:32
 * docker client：用户管理docker的入口
 * docker registry：镜像仓库
 
-![](https://docs.docker.com/engine/images/architecture.svg)
+![](https://docs.docker.com/get-started/images/docker-architecture.webp)
 
 ## docker对象
 * 容器：视图隔离、资源可限制、独立文件系统的进程集合
