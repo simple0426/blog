@@ -10058,7 +10058,7 @@ $name：值为$type.$id。
 <li>docker client：用户管理docker的入口</li>
 <li>docker registry：镜像仓库</li>
 </ul>
-<p><img src="https://docs.docker.com/engine/images/architecture.svg" alt></p>
+<p><img src="https://docs.docker.com/get-started/images/docker-architecture.webp" alt></p>
 <h2 id="docker对象"><a href="#docker对象" class="headerlink" title="docker对象"></a>docker对象</h2><ul>
 <li>容器：视图隔离、资源可限制、独立文件系统的进程集合<ul>
 <li>可以把容器看做是一个简易的linux环境和运行在其中的应用程序</li>
