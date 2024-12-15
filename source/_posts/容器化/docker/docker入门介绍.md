@@ -48,8 +48,10 @@ date: 2019-11-19 23:24:32
     - 容器是从镜像创建的运行实例，它可以被开始、停止、删除。
     - 每个容器都是相互隔离的
 * 镜像：容器运行所需的所有文件集合
-    + 它是一个只读模板，用来创建容器
-    + 容器在启动时会创建一个可写层作为多层文件系统的最上层
+    * 不包含linux内核的精简linux系统
+    * 一个镜像可以创建多个容器
+    * 它是一个只读模板，用来创建容器
+    * 容器在启动时会创建一个可写层作为多层文件系统的最上层
 
 ## 核心技术
 * 视图隔离(namespace)：pid、net、ipc、mnt、uts
@@ -74,8 +76,8 @@ date: 2019-11-19 23:24:32
    sudo yum install -y yum-utils
    sudo yum-config-manager --add-repo \
       https://download.docker.com/linux/centos/docker-ce.repo
-   sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-   sudo systemctl start docker
+   sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   sudo systemctl enable --now docker
   ```
   
 * [阿里云镜像](https://developer.aliyun.com/mirror/docker-ce)
@@ -99,7 +101,7 @@ date: 2019-11-19 23:24:32
 
 ```
 {
-  "registry-mirrors": ["https://2x97hcl1.mirror.aliyuncs.com"],
+  "registry-mirrors": ["https://docker.m.daocloud.io"],
   "insecure-registries": ["reg.abc.com"],
   "data-root": "/data/docker-data",
   "bridge": "bridge0",
