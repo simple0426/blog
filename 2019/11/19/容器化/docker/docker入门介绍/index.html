@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/containerVSvm.jpg">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/container%2BVM.jpg">
 <meta property="og:image" content="https://docs.docker.com/get-started/images/docker-architecture.webp">
-<meta property="og:updated_time" content="2024-12-05T12:48:26.798Z">
+<meta property="og:updated_time" content="2024-12-15T14:14:20.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker入门介绍">
 <meta name="twitter:description" content="docker引入传统IT面临问题 部署流程繁琐(采购服务器、安装软件环境)、软件环境臃肿、难于扩展(不利于迅速应对业务高峰对资源需求) 环境不一致：开发、测试、生产环境不一致 资源浪费：硬件需要预采购，成本很高；同时面临cpu、内存等资源使用不足  容器优势 更快且保持一致性的交付应用程序【保持多阶段环境的一致性】 响应式部署和扩展【可以在物理机、虚拟机、云等多种环境部署，并可以根据负载弹性伸缩】">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-12-05T20:48:26+08:00">
-                2024-12-05
+              <time title="更新于" itemprop="dateModified" datetime="2024-12-15T22:14:20+08:00">
+                2024-12-15
               </time>
             
           </span>
@@ -426,6 +426,8 @@
 </ul>
 </li>
 <li>镜像：容器运行所需的所有文件集合<ul>
+<li>不包含linux内核的精简linux系统</li>
+<li>一个镜像可以创建多个容器</li>
 <li>它是一个只读模板，用来创建容器</li>
 <li>容器在启动时会创建一个可写层作为多层文件系统的最上层</li>
 </ul>
@@ -450,7 +452,7 @@
 </ul>
 <h1 id="docker安装与配置"><a href="#docker安装与配置" class="headerlink" title="docker安装与配置"></a>docker安装与配置</h1><h2 id="软件安装-CentOS"><a href="#软件安装-CentOS" class="headerlink" title="软件安装-CentOS"></a>软件安装-CentOS</h2><ul>
 <li><p><a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository" target="_blank" rel="noopener">官方(较慢)</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin</span><br><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager --add-repo \</span><br><span class="line">   https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</span><br><span class="line">sudo systemctl enable --now docker</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <ul>
@@ -461,7 +463,7 @@
 <h2 id="engine配置"><a href="#engine配置" class="headerlink" title="engine配置"></a>engine配置</h2><blockquote>
 <p>/etc/docker/daemon.json</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://2x97hcl1.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;insecure-registries&quot;: [&quot;reg.abc.com&quot;],</span><br><span class="line">  &quot;data-root&quot;: &quot;/data/docker-data&quot;,</span><br><span class="line">  &quot;bridge&quot;: &quot;bridge0&quot;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;devicemapper&quot;,</span><br><span class="line">  &quot;debug&quot;: true,</span><br><span class="line">  &quot;storage-opts&quot; : [</span><br><span class="line">    &quot;dm.basesize=5G&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://docker.m.daocloud.io&quot;],</span><br><span class="line">  &quot;insecure-registries&quot;: [&quot;reg.abc.com&quot;],</span><br><span class="line">  &quot;data-root&quot;: &quot;/data/docker-data&quot;,</span><br><span class="line">  &quot;bridge&quot;: &quot;bridge0&quot;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;devicemapper&quot;,</span><br><span class="line">  &quot;debug&quot;: true,</span><br><span class="line">  &quot;storage-opts&quot; : [</span><br><span class="line">    &quot;dm.basesize=5G&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>registry-mirrors：公有registry或加速器地址</li>
 <li>insecure-registries：私有registry地址</li>
