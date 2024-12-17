@@ -187,7 +187,7 @@ docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m --memory-swap=100m --cpus 0
     - add和copy功能类似(复制指定的src到容器的dest)，优先使用copy
     - 额外功能：解压src到dest【但必须是gzip, bzip2 or xz格式的tar包】
     - 其中src可以是Dockerfile所在目录的相对路径，也可以是一个url 
-* EXPOSE port：告诉宿主机容器暴露的端口
+* EXPOSE port：声明容器运行的服务端口
 * VOLUME ["/data"]：容器运行时，自动创建一个绑定到特定目录的数据卷
     - 这是为了保证某些数据(比如mysql等数据库)不随容器销毁而丢失
     - 可以通过run -v参数覆盖相关目录

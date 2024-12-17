@@ -34,6 +34,8 @@ services:
       - my-bridge
     depends_on:
       - mysql
+    links:
+      - mysql
   mysql:
     image: mysql:5.7
     environment:
@@ -62,6 +64,8 @@ networks:
 * image：定义要使用的image，或在build时给image命名
 
 * depends_on：定义各服务间的依赖关系，比如启动、关闭的先后顺序；依赖的服务会先于此服务启动，后于此服务关闭。
+
+* links：容器间可以通过service名称互相访问（类似ip、主机名）；和docker命令中的links功能类似，给容器名称添加一个别名。
 
 * environment：定义环境变量，可以是列表(- SHOW=true)或字典(SHOW: 'true')
 
