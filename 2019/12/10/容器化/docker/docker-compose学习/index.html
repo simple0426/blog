@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="介绍docker compose是一个用于定义和管理多容器的docker工具，可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。 核心概念 services：定义了一个应用包含的多个服务(服务的载体即是容器)；容器的镜像可以来自镜像仓库，也可以由本地的Dockerfile构建出来 networks">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-02-06T15:13:16.375Z">
+<meta property="og:updated_time" content="2024-12-17T11:17:05.064Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-compose学习">
 <meta name="twitter:description" content="介绍docker compose是一个用于定义和管理多容器的docker工具，可以通过使用yaml格式的compose文件定义多个服务应用（这些应用也就是容器），并通过compose命令管理这些服务的创建、运行、停止、销毁等工作。 核心概念 services：定义了一个应用包含的多个服务(服务的载体即是容器)；容器的镜像可以来自镜像仓库，也可以由本地的Dockerfile构建出来 networks">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-02-06T23:13:16+08:00">
-                2021-02-06
+              <time title="更新于" itemprop="dateModified" datetime="2024-12-17T19:17:05+08:00">
+                2024-12-17
               </time>
             
           </span>
@@ -396,7 +396,7 @@
 <li>默认使用docker-compose.yml作为文件名，命令行下可使用-f参数指定特定compose文件</li>
 <li>默认连接在同一个自定义网络下的多个service（service即容器）可以通过service name实现容器间互连</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3&apos;</span><br><span class="line">services:</span><br><span class="line">  wordpress:</span><br><span class="line">    image: wordpress</span><br><span class="line">    ports:</span><br><span class="line">      - 8080:80</span><br><span class="line">    environment:</span><br><span class="line">      WORDPRESS_DB_HOST: mysql</span><br><span class="line">      WORDPRESS_DB_PASSWORD: root</span><br><span class="line">    networks:</span><br><span class="line">      - my-bridge</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">  mysql:</span><br><span class="line">    image: mysql:5.7</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: root</span><br><span class="line">      MYSQL_DATABASE: wordpress</span><br><span class="line">    volumes:</span><br><span class="line">      - mysql-data:/var/lib/mysql</span><br><span class="line">    networks:</span><br><span class="line">      - my-bridge</span><br><span class="line">volumes:</span><br><span class="line">  mysql-data:</span><br><span class="line">networks:</span><br><span class="line">  my-bridge:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3&apos;</span><br><span class="line">services:</span><br><span class="line">  wordpress:</span><br><span class="line">    image: wordpress</span><br><span class="line">    ports:</span><br><span class="line">      - 8080:80</span><br><span class="line">    environment:</span><br><span class="line">      WORDPRESS_DB_HOST: mysql</span><br><span class="line">      WORDPRESS_DB_PASSWORD: root</span><br><span class="line">    networks:</span><br><span class="line">      - my-bridge</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">    links:</span><br><span class="line">      - mysql</span><br><span class="line">  mysql:</span><br><span class="line">    image: mysql:5.7</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: root</span><br><span class="line">      MYSQL_DATABASE: wordpress</span><br><span class="line">    volumes:</span><br><span class="line">      - mysql-data:/var/lib/mysql</span><br><span class="line">    networks:</span><br><span class="line">      - my-bridge</span><br><span class="line">volumes:</span><br><span class="line">  mysql-data:</span><br><span class="line">networks:</span><br><span class="line">  my-bridge:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
 <h2 id="services定义"><a href="#services定义" class="headerlink" title="services定义"></a>services定义</h2><ul>
 <li>build：构建启动服务所需要的镜像，等同于docker build命令<ul>
 <li>可以直接包含Dockerfile目录位置：【build .】</li>
@@ -409,6 +409,8 @@
 <li><p>image：定义要使用的image，或在build时给image命名</p>
 </li>
 <li><p>depends_on：定义各服务间的依赖关系，比如启动、关闭的先后顺序；依赖的服务会先于此服务启动，后于此服务关闭。</p>
+</li>
+<li><p>links：容器间可以通过service名称互相访问（类似ip、主机名）；和docker命令中的links功能类似，给容器名称添加一个别名。</p>
 </li>
 <li><p>environment：定义环境变量，可以是列表(- SHOW=true)或字典(SHOW: ‘true’)</p>
 </li>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-10-07T04:02:38.456Z">
+<meta property="og:updated_time" content="2024-12-16T09:49:45.950Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker容器和镜像">
 <meta name="twitter:description" content="容器运行(run)范例docker run -idt -v /home/Logs/:/root/Logs:ro -m 100m –memory-swap=100m –cpus 0.5 -p 10086:22 sshd 运行参数 -t：分配一个伪终端tty  -i：保持容器的标准输入一直打开，常与-t结合使用  -d：让容器以后台方式运行  -e key=value：在容器内设置环境变量、设置多个变">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2022-10-07T12:02:38+08:00">
-                2022-10-07
+              <time title="更新于" itemprop="dateModified" datetime="2024-12-16T17:49:45+08:00">
+                2024-12-16
               </time>
             
           </span>
@@ -593,7 +593,7 @@
 <li>其中src可以是Dockerfile所在目录的相对路径，也可以是一个url </li>
 </ul>
 </li>
-<li>EXPOSE port：告诉宿主机容器暴露的端口</li>
+<li>EXPOSE port：声明容器运行的服务端口</li>
 <li>VOLUME [“/data”]：容器运行时，自动创建一个绑定到特定目录的数据卷<ul>
 <li>这是为了保证某些数据(比如mysql等数据库)不随容器销毁而丢失</li>
 <li>可以通过run -v参数覆盖相关目录</li>
