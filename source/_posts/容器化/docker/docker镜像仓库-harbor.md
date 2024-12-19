@@ -35,7 +35,7 @@ categories: ['docker']
 * 使用公有证书或自签名证书
 * harbor.yml中设置
     - hostname：设置域名或ip地址
-    - certificate、private_key：设置证书和秘钥的路径
+    - certificate、private_key：设置证书(.crt)和秘钥(.key)的路径
 * 重新部署harbor
     - 关闭服务：docker-compose down
     - 重新部署：./install.sh

@@ -12,21 +12,40 @@ categories:
 > 初始密码（用户root）：cat /etc/*gitlab*/initial_root_password
 
 ### [docker方式](https://docs.gitlab.com/omnibus/docker/)
->由于gitlab的访问端口由external_url中决定，如下配置中  
->容器中的gitlab服务暴露在80端口，宿主机以外通过http://172.17.8.53:9999/ 【172.17.8.53为宿主机ip】访问gitlab的web服务
+
+* 使用默认的端口
+
+  ```
+  sudo docker run --detach \
+    --hostname gitlab.example.com \
+    --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com'; gitlab_rails['lfs_enabled'] = true;" \
+    --publish 443:443 --publish 80:80 --publish 22:22 \
+    --name gitlab \
+    --restart always \
+    --volume $GITLAB_HOME/config:/etc/gitlab \
+    --volume $GITLAB_HOME/logs:/var/log/gitlab \
+    --volume $GITLAB_HOME/data:/var/opt/gitlab \
+    --shm-size 256m \
+    gitlab/gitlab-ee:<version>-ee.0
+  ```
+
+* 使用自定义端口【非80/443/22】
+
+>容器端口配置：http服务在宿主机和容器都暴露在9999（新版本要求一致） 、 ssh服务在宿主机暴露于9998
+>
+>gitlab配置文件同步：external_url定义http服务地址(192.168.31.160为宿主机ip)，gitlab_shell_ssh_port定义ssh端口信息【此处配置重启可能丢失，需要在配置文件持久化】
 
 ```
 docker run -d \
   --name gitlab \
-  -p 8443:443 \
-  -p 9999:80 \
+  -p 9999:9999 \
   -p 9998:22 \
   -v $PWD/config:/etc/gitlab \
   -v $PWD/logs:/var/log/gitlab \
   -v $PWD/data:/var/opt/gitlab \
   -v /etc/localtime:/etc/localtime \
   --restart=always \
-  -e GITLAB_OMNIBUS_CONFIG="external_url 'http://172.17.8.53/';gitlab_rails['gitlab_shell_ssh_port'] = 9998" \
+  -e GITLAB_OMNIBUS_CONFIG="external_url 'http://192.168.31.160:9999/'; gitlab_rails['gitlab_shell_ssh_port'] = 9998" \
   gitlab/gitlab-ce:latest
 ```
 ### ubuntu16.04
@@ -63,10 +82,16 @@ sudo yum install gitlab-ce
 ## 软件配置
 >/etc/gitlab/gitlab.rb
 
-* 服务器地址配置【在邮件通知中会使用此地址】  
-`external_url 'http://10.10.10.164'`
+* 服务器地址配置【将启动的配置持久化】  
+  `external_url "http://192.168.31.160:9999/"`
+
+* ssh端口配置
+
+  `gitlab_rails['gitlab_shell_ssh_port'] = 9998`
+
 * 备份保留时间配置[以s为单位]  
-`gitlab_rails['backup_keep_time'] = 86400`
+  `gitlab_rails['backup_keep_time'] = 86400`
+
 * 邮箱配置
 
 ```
@@ -99,12 +124,12 @@ gitlab_rails['gitlab_email_from'] = "gitlab@abc.com"
 * 本地配置账号
 
 ```
-git config --global   user.name=simple0426
-git config --global   user.email=perfect_0426@qq.com
+git config --global   user.name simple0426
+git config --global   user.email perfect_0426@qq.com
 ```
 
 * 生产秘钥并上传至gitlab  
-`ssh-keygen -t rsa -C "perfect_0426@qq.com`
+`ssh-keygen -t rsa -C "perfect_0426@qq.com"`
 * 测试连通性  
 `ssh -T git@github.com`
 * 根据gitlab范例创建项目  
@@ -118,7 +143,9 @@ git add README.md
 git commit -m "first commit"
 # 本地库关联远程库
 git remote add origin git@github.com:simple0426/blog-comments.git
-git push -u origin master
+# 兼容新版本master--》main
+git branch -m main
+git push -u origin main
 ```
 # 多仓库设置
 ## 产生密钥对
