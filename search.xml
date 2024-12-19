@@ -4105,10 +4105,18 @@ $name：值为$type.$id。
     <content><![CDATA[<h1 id="gitlab服务"><a href="#gitlab服务" class="headerlink" title="gitlab服务"></a>gitlab服务</h1><h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a><a href="https://mirrors.tuna.tsinghua.edu.cn/help/gitlab-ce/" target="_blank" rel="noopener">软件安装</a></h2><blockquote>
 <p>初始密码（用户root）：cat /etc/<em>gitlab</em>/initial_root_password</p>
 </blockquote>
-<h3 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a><a href="https://docs.gitlab.com/omnibus/docker/" target="_blank" rel="noopener">docker方式</a></h3><blockquote>
-<p>由于gitlab的访问端口由external_url中决定，如下配置中<br>容器中的gitlab服务暴露在80端口，宿主机以外通过<a href="http://172.17.8.53:9999/" target="_blank" rel="noopener">http://172.17.8.53:9999/</a> 【172.17.8.53为宿主机ip】访问gitlab的web服务</p>
+<h3 id="docker方式"><a href="#docker方式" class="headerlink" title="docker方式"></a><a href="https://docs.gitlab.com/omnibus/docker/" target="_blank" rel="noopener">docker方式</a></h3><ul>
+<li><p>使用默认的端口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo docker run --detach \</span><br><span class="line">  --hostname gitlab.example.com \</span><br><span class="line">  --env GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://gitlab.example.com&apos;; gitlab_rails[&apos;lfs_enabled&apos;] = true;&quot; \</span><br><span class="line">  --publish 443:443 --publish 80:80 --publish 22:22 \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  --restart always \</span><br><span class="line">  --volume $GITLAB_HOME/config:/etc/gitlab \</span><br><span class="line">  --volume $GITLAB_HOME/logs:/var/log/gitlab \</span><br><span class="line">  --volume $GITLAB_HOME/data:/var/opt/gitlab \</span><br><span class="line">  --shm-size 256m \</span><br><span class="line">  gitlab/gitlab-ee:&lt;version&gt;-ee.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用自定义端口【非80/443/22】</p>
+</li>
+</ul>
+<blockquote>
+<p>容器端口配置：http服务在宿主机和容器都暴露在9999（新版本要求一致） 、 ssh服务在宿主机暴露于9998</p>
+<p>gitlab配置文件同步：external_url定义http服务地址(192.168.31.160为宿主机ip)，gitlab_shell_ssh_port定义ssh端口信息【此处配置重启可能丢失，需要在配置文件持久化】</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  -p 8443:443 \</span><br><span class="line">  -p 9999:80 \</span><br><span class="line">  -p 9998:22 \</span><br><span class="line">  -v $PWD/config:/etc/gitlab \</span><br><span class="line">  -v $PWD/logs:/var/log/gitlab \</span><br><span class="line">  -v $PWD/data:/var/opt/gitlab \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://172.17.8.53/&apos;;gitlab_rails[&apos;gitlab_shell_ssh_port&apos;] = 9998&quot; \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  -p 9999:9999 \</span><br><span class="line">  -p 9998:22 \</span><br><span class="line">  -v $PWD/config:/etc/gitlab \</span><br><span class="line">  -v $PWD/logs:/var/log/gitlab \</span><br><span class="line">  -v $PWD/data:/var/opt/gitlab \</span><br><span class="line">  -v /etc/localtime:/etc/localtime \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e GITLAB_OMNIBUS_CONFIG=&quot;external_url &apos;http://192.168.31.160:9999/&apos;; gitlab_rails[&apos;gitlab_shell_ssh_port&apos;] = 9998&quot; \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure>
 <h3 id="ubuntu16-04"><a href="#ubuntu16-04" class="headerlink" title="ubuntu16.04"></a>ubuntu16.04</h3><ul>
 <li>软件源</li>
 </ul>
@@ -4129,9 +4137,15 @@ $name：值为$type.$id。
 <p>/etc/gitlab/gitlab.rb</p>
 </blockquote>
 <ul>
-<li>服务器地址配置【在邮件通知中会使用此地址】<br><code>external_url &#39;http://10.10.10.164&#39;</code></li>
-<li>备份保留时间配置[以s为单位]<br><code>gitlab_rails[&#39;backup_keep_time&#39;] = 86400</code></li>
-<li>邮箱配置</li>
+<li><p>服务器地址配置【将启动的配置持久化】<br><code>external_url &quot;http://192.168.31.160:9999/&quot;</code></p>
+</li>
+<li><p>ssh端口配置</p>
+<p><code>gitlab_rails[&#39;gitlab_shell_ssh_port&#39;] = 9998</code></p>
+</li>
+<li><p>备份保留时间配置[以s为单位]<br><code>gitlab_rails[&#39;backup_keep_time&#39;] = 86400</code></p>
+</li>
+<li><p>邮箱配置</p>
+</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gitlab_rails[&apos;smtp_enable&apos;] = true</span><br><span class="line">gitlab_rails[&apos;smtp_address&apos;] = &quot;smtp.exmail.qq.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_port&apos;] = 465</span><br><span class="line">gitlab_rails[&apos;smtp_user_name&apos;] = &quot;gitlab@abc.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_password&apos;] = &quot;Git@abc123&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_domain&apos;] = &quot;exmail.qq.com&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_authentication&apos;] = &quot;login&quot;</span><br><span class="line">gitlab_rails[&apos;smtp_enable_starttls_auto&apos;] = true</span><br><span class="line">gitlab_rails[&apos;smtp_tls&apos;] = true</span><br><span class="line">gitlab_rails[&apos;gitlab_email_from&apos;] = &quot;gitlab@abc.com&quot;</span><br></pre></td></tr></table></figure>
 <ul>
@@ -4152,13 +4166,13 @@ $name：值为$type.$id。
 <li>web界面注册账号</li>
 <li>本地配置账号</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global   user.name=simple0426</span><br><span class="line">git config --global   user.email=perfect_0426@qq.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global   user.name simple0426</span><br><span class="line">git config --global   user.email perfect_0426@qq.com</span><br></pre></td></tr></table></figure>
 <ul>
-<li>生产秘钥并上传至gitlab<br><code>ssh-keygen -t rsa -C &quot;perfect_0426@qq.com</code></li>
+<li>生产秘钥并上传至gitlab<br><code>ssh-keygen -t rsa -C &quot;perfect_0426@qq.com&quot;</code></li>
 <li>测试连通性<br><code>ssh -T git@github.com</code></li>
 <li>根据gitlab范例创建项目  </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir blog-comments</span><br><span class="line">cd blog-comments</span><br><span class="line">git init</span><br><span class="line">echo &quot;# blog-comments&quot; &gt;&gt; README.md</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line"># 本地库关联远程库</span><br><span class="line">git remote add origin git@github.com:simple0426/blog-comments.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir blog-comments</span><br><span class="line">cd blog-comments</span><br><span class="line">git init</span><br><span class="line">echo &quot;# blog-comments&quot; &gt;&gt; README.md</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line"># 本地库关联远程库</span><br><span class="line">git remote add origin git@github.com:simple0426/blog-comments.git</span><br><span class="line"># 兼容新版本master--》main</span><br><span class="line">git branch -m main</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
 <h1 id="多仓库设置"><a href="#多仓库设置" class="headerlink" title="多仓库设置"></a>多仓库设置</h1><h2 id="产生密钥对"><a href="#产生密钥对" class="headerlink" title="产生密钥对"></a>产生密钥对</h2><ul>
 <li>ssh-keygen.exe -t rsa -P “” -f “C:\Users\simple\.ssh\gitee”</li>
 <li>ssh-keygen.exe -t rsa -P “” -f “C:\Users\simple\.ssh\github”</li>
@@ -10613,7 +10627,7 @@ $name：值为$type.$id。
 <li>使用公有证书或自签名证书</li>
 <li>harbor.yml中设置<ul>
 <li>hostname：设置域名或ip地址</li>
-<li>certificate、private_key：设置证书和秘钥的路径</li>
+<li>certificate、private_key：设置证书(.crt)和秘钥(.key)的路径</li>
 </ul>
 </li>
 <li>重新部署harbor<ul>
