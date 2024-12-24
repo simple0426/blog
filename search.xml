@@ -5195,9 +5195,9 @@ $name：值为$type.$id。
   <entry>
     <title>jenkins安装与配置</title>
     <url>/blog/2020/02/10/CICD/jenkins/jenkins%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><blockquote>
-<p>需要提前配置java8运行环境</p>
-</blockquote>
+    <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="配置java运行环境"><a href="#配置java运行环境" class="headerlink" title="配置java运行环境"></a>配置java运行环境</h2><p>需要注意jenkins与java版本的匹配性【由于节点管理的功能，会有主节点的jenkins产生一个jar包在node上运行，如果node上的默认java版本过低，则jar运行报错】</p>
+<p><a href="https://www.jenkins.io/doc/book/platform-information/support-policy-java/" target="_blank" rel="noopener">https://www.jenkins.io/doc/book/platform-information/support-policy-java/</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">tar xzf jdk*.tar.gz</span><br><span class="line">tar xzf apache-maven*.tar.gz</span><br><span class="line">ln -s apache-maven* maven</span><br><span class="line">ln -s jdk* jdk</span><br><span class="line">vim /etc/profile</span><br><span class="line">MAVEN_HOME=/usr/local/maven</span><br><span class="line">JAVA_HOME=/usr/local/jdk</span><br><span class="line">export PATH=$PATH:$MAVEN_HOME/bin:$JAVA_HOME/bin</span><br><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
 <h2 id="虚拟机方式"><a href="#虚拟机方式" class="headerlink" title="虚拟机方式"></a>虚拟机方式</h2><ul>
 <li><p>centos安装</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo</span><br><span class="line">rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key</span><br><span class="line">yum install jenkins -y</span><br></pre></td></tr></table></figure>
@@ -5265,31 +5265,38 @@ $name：值为$type.$id。
 <li><p>重启jenkins：<code>docker restart jenkins</code></p>
 </li>
 </ul>
+<h1 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h1><p>pipeline是jenkins中的工作方式，类似linux中的脚本；</p>
+<p>pipeline可以将运维流程以脚本方式进行标准化、自动化</p>
+<p>需要安装插件：pipeline、pipeline stage view、git</p>
 <h1 id="邮件设置"><a href="#邮件设置" class="headerlink" title="邮件设置"></a>邮件设置</h1><blockquote>
 <p>Mailer插件</p>
 </blockquote>
 <ul>
 <li>系统管理员帐户</li>
-<li>SMTP服务器户</li>
-<li>SMTP认证</li>
+<li>SMTP服务器</li>
+<li>SMTP认证<ul>
 <li>用户名</li>
 <li>密码</li>
-<li>发送测试【如果设置的邮件为163，则收件人和发件人一样；否则会显示为垃圾邮件不能发送】</li>
-<li>测试用户邮箱地址</li>
+</ul>
+</li>
+<li>（临时）收件人邮箱</li>
 </ul>
 <h1 id="节点管理"><a href="#节点管理" class="headerlink" title="节点管理"></a>节点管理</h1><blockquote>
 <p>一般使用ssh连接并控制slave节点，需要<a href="https://plugins.jenkins.io/ssh-slaves" target="_blank" rel="noopener">SSH Build Agents</a>插件</p>
 </blockquote>
 <ul>
 <li>远程工作目录</li>
-<li>设置启动方式（ssh）</li>
+<li>设置启动方式（ssh）<ul>
+<li>Host Key Verification Strategy：None</li>
+</ul>
+</li>
 <li>节点属性<ul>
 <li>环境变量：如JAVA_HOME、MAVEN_HOME</li>
 <li>tools位置：参见工具<a href="#使用注意">使用注意</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="全局工具"><a href="#全局工具" class="headerlink" title="全局工具"></a>全局工具</h1><p>使用工具后，jenkins可以自动下载【可选】并安装maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn</p>
+<h1 id="全局工具"><a href="#全局工具" class="headerlink" title="全局工具"></a>全局工具</h1><p>使用工具后，jenkins可以并安装并配置maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn</p>
 <h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><blockquote>
 <p>Maven Configuration处本意为设置全局的maven settings.xml文件，经过多次试验均无效；所以Maven Configuration保持默认设置；</p>
 </blockquote>
@@ -5309,7 +5316,6 @@ $name：值为$type.$id。
 <p>jdk也有多种安装方式</p>
 <ul>
 <li>在宿主机安装jdk后，在JDK installations处指定JAVA_HOME</li>
-<li>指定install automatically，从java.sun.com安装【需要oracle账号】</li>
 <li>指定install automatically，从指定的url处下载*.zip/*.tar.gz文件；<strong>注意</strong>：必须指定解压子目录，且子目录名称为解压的原始目录，如<ul>
 <li>URL：<a href="https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz" target="_blank" rel="noopener">https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz</a> </li>
 <li>子目录：jdk1.8.0_251</li>
@@ -5334,30 +5340,6 @@ $name：值为$type.$id。
 </li>
 </ul>
 <h2 id="使用范例"><a href="#使用范例" class="headerlink" title="使用范例"></a>使用范例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    tools &#123;</span><br><span class="line">      jdk &apos;jdk-251&apos;</span><br><span class="line">      maven &apos;mvn-3.5&apos;</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&apos;java&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;java -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;maven&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;mvn -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="集成docker"><a href="#集成docker" class="headerlink" title="集成docker"></a>集成docker</h1><ul>
-<li>插件<ul>
-<li>Docker Commons Plugin：给各种docker插件提供基础的API</li>
-<li>docker-build-step：在job中执行docker命令</li>
-</ul>
-</li>
-<li>配置(docker-build-step插件)：系统配置–》Docker Builder–》unix:///var/run/docker.sock【确保jenkinis用户对此socket有读权限】</li>
-<li><p>使用方式-tools：通过在全局工具配置中定义特定版本的docker</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">  agent any</span><br><span class="line">  tools &#123;</span><br><span class="line">    &apos;org.jenkinsci.plugins.docker.commons.tools.DockerTool&apos; &apos;docker1903&apos;</span><br><span class="line">  &#125;</span><br><span class="line">  stages &#123;</span><br><span class="line">    stage(&apos;foo&apos;) &#123;</span><br><span class="line">      steps &#123;</span><br><span class="line">        sh &quot;docker version&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用方式-agent：加载PATH变量下默认的docker</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pipeline&#123;</span><br><span class="line">    agent&#123;</span><br><span class="line">        docker&#123;</span><br><span class="line">            image &apos;maven:3.6.3-jdk-8&apos;</span><br><span class="line">            label &apos;agent01&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    stages&#123;</span><br><span class="line">        stage(&apos;Build&apos;)&#123;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo jdk version...&apos;</span><br><span class="line">                sh &apos;java -version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Test&apos;)&#123;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo maven version...&apos;</span><br><span class="line">                sh &apos;mvn --version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Deploy&apos;)&#123;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo Deploy stage...&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>并行使用多个docker镜像(parallel)</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stage(&apos;Build&apos;)&#123;</span><br><span class="line">    parallel&#123;</span><br><span class="line">        stage(&apos;Front End Build: Angular&apos;)&#123;</span><br><span class="line">            agent&#123;</span><br><span class="line">                docker&#123;</span><br><span class="line">                    image &apos;liumiaocn/angular:8.3.8&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo Front End Build stage...&apos;</span><br><span class="line">                sh &apos;ng --version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Back End build: Marven&apos;)&#123;</span><br><span class="line">            agent&#123;</span><br><span class="line">                docker&#123;</span><br><span class="line">                    image &apos;maven:3.6.3-jdk-8&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps&#123;</span><br><span class="line">                sh &apos;echo Back End Build stage ...&apos;</span><br><span class="line">                sh &apos;mvn --version&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>dockerfile中定义构建环境</p>
-<ul>
-<li>默认，需要在多分支pipeline或SCM-pipeline中使用</li>
-<li>为了手动测试，可以在jenkins宿主机的绝对目录定义dockerfile<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">agent&#123;</span><br><span class="line">    dockerfile&#123;</span><br><span class="line">        filename &apos;Dockerfile&apos;</span><br><span class="line">        dir &apos;/tmp&apos;</span><br><span class="line">        label &apos;agent01&apos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
 ]]></content>
       <categories>
         <category>CICD</category>
