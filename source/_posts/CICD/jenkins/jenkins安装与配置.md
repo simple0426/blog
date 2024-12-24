@@ -7,9 +7,27 @@ categories: ['CICD']
 ---
 
 # 安装
-> 需要提前配置java8运行环境
+##  配置java运行环境
+
+需要注意jenkins与java版本的匹配性【由于节点管理的功能，会有主节点的jenkins产生一个jar包在node上运行，如果node上的默认java版本过低，则jar运行报错】
+
+https://www.jenkins.io/doc/book/platform-information/support-policy-java/
+
+```
+cd /usr/local/
+tar xzf jdk*.tar.gz
+tar xzf apache-maven*.tar.gz
+ln -s apache-maven* maven
+ln -s jdk* jdk
+vim /etc/profile
+MAVEN_HOME=/usr/local/maven
+JAVA_HOME=/usr/local/jdk
+export PATH=$PATH:$MAVEN_HOME/bin:$JAVA_HOME/bin
+source /etc/profile
+```
 
 ## 虚拟机方式
+
 * centos安装
 ```
 wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
@@ -85,17 +103,24 @@ docker run --name jenkins \
     ```
 - 重启jenkins：`docker restart jenkins`
 
+# pipeline
+
+pipeline是jenkins中的工作方式，类似linux中的脚本；
+
+pipeline可以将运维流程以脚本方式进行标准化、自动化
+
+需要安装插件：pipeline、pipeline stage view、git
+
 # 邮件设置
 
 > Mailer插件
 
 - 系统管理员帐户
-- SMTP服务器户
+- SMTP服务器
 - SMTP认证
-- 用户名
-- 密码
-- 发送测试【如果设置的邮件为163，则收件人和发件人一样；否则会显示为垃圾邮件不能发送】
-- 测试用户邮箱地址
+  - 用户名
+  - 密码
+- （临时）收件人邮箱
 
 # 节点管理
 
@@ -103,13 +128,14 @@ docker run --name jenkins \
 
 - 远程工作目录
 - 设置启动方式（ssh）
+  - Host Key Verification Strategy：None
 - 节点属性
   - 环境变量：如JAVA_HOME、MAVEN_HOME
   - tools位置：参见工具[使用注意](#使用注意)
 
 # 全局工具
 
-使用工具后，jenkins可以自动下载【可选】并安装maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn
+使用工具后，jenkins可以并安装并配置maven、jdk等工具，并把相关的环境变量MAVEN_HOME、JAVA_HOME放在执行环境的PATH变量下，这样就可以直接使用相关的命令java、mvn
 
 ## maven
 
@@ -130,7 +156,6 @@ maven有多种安装方式
 jdk也有多种安装方式
 
 * 在宿主机安装jdk后，在JDK installations处指定JAVA_HOME
-* 指定install automatically，从java.sun.com安装【需要oracle账号】
 * 指定install automatically，从指定的url处下载\*.zip/\*.tar.gz文件；__注意__：必须指定解压子目录，且子目录名称为解压的原始目录，如
   * URL：https://d6.injdk.cn/oracle/8/jdk-8u251-linux-x64.tar.gz 
   * 子目录：jdk1.8.0_251
@@ -188,100 +213,6 @@ pipeline {
                 sh 'mvn -version'
             }
         }
-    }
-}
-```
-
-# 集成docker
-
-* 插件
-    - Docker Commons Plugin：给各种docker插件提供基础的API
-    - docker-build-step：在job中执行docker命令
-* 配置(docker-build-step插件)：系统配置--》Docker Builder--》unix:///var/run/docker.sock【确保jenkinis用户对此socket有读权限】
-* 使用方式-tools：通过在全局工具配置中定义特定版本的docker
-```
-pipeline {
-  agent any
-  tools {
-    'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker1903'
-  }
-  stages {
-    stage('foo') {
-      steps {
-        sh "docker version"
-      }
-    }
-  }
-}
-```
-* 使用方式-agent：加载PATH变量下默认的docker
-```
-pipeline{
-    agent{
-        docker{
-            image 'maven:3.6.3-jdk-8'
-            label 'agent01'
-        }
-    }
-    stages{
-        stage('Build'){
-            steps{
-                sh 'echo jdk version...'
-                sh 'java -version'
-            }
-        }
-        stage('Test'){
-            steps{
-                sh 'echo maven version...'
-                sh 'mvn --version'
-            }
-        }
-        stage('Deploy'){
-            steps{
-                sh 'echo Deploy stage...'
-            }
-        }
-    }
-}
-```
-* 并行使用多个docker镜像(parallel)
-```
-stage('Build'){
-    parallel{
-        stage('Front End Build: Angular'){
-            agent{
-                docker{
-                    image 'liumiaocn/angular:8.3.8'
-                }
-            }
-            steps{
-                sh 'echo Front End Build stage...'
-                sh 'ng --version'
-            }
-        }
-        stage('Back End build: Marven'){
-            agent{
-                docker{
-                    image 'maven:3.6.3-jdk-8'
-                }
-            }
-            steps{
-                sh 'echo Back End Build stage ...'
-                sh 'mvn --version'
-            }
-        }
-    }
-}
-```
-* dockerfile中定义构建环境
-    - 默认，需要在多分支pipeline或SCM-pipeline中使用
-    - 为了手动测试，可以在jenkins宿主机的绝对目录定义dockerfile
-```
-agent{
-    dockerfile{
-        filename 'Dockerfile'
-        dir '/tmp'
-        label 'agent01'
     }
 }
 ```
