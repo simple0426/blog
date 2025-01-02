@@ -229,13 +229,16 @@ kubectl sub_command resource_type resource_name cmd_option
     - proxy：创建一个可以访问APIServer的代理
     - cp：在容器间复制文件和目录
     - auth：显示授权信息
+    - debug：为工作负载（workload）或节点（node）创建一个调试的临时的会话窗口（容器）
+      - 对已经存在的pod，使用新版本镜像创建一个新的副本进行调试
+      - 在已经存在的pod中，启动一个包含调试工具的容器：`kubectl debug pod-label -it --image=busybox sh`
+      - 在节点（node）上上启动一个新的pod，可以访问节点的文件系统
 * 高级命令
     - diff：对比活动的资源信息和将要应用的资源信息
     - apply：基于文件名或标准输入应用资源配置信息
     - patch：使用策略合并补丁更新资源的字段信息
     - replace：基于文件名或标准输入替换一个资源
     - wait：实验性功能，等待一个或多个资源的特定条件
-    - convert：为不同api版本转换配置文件
 * 设置命令
     - label：更新资源标签
     - annotate：更新资源注解
@@ -263,16 +266,6 @@ kubectl sub_command resource_type resource_name cmd_option
 * -s：指定apiserver地址
 * --kubeconfig：指定kubeconfig文件【默认~/.kube/config】
 
-## 插件-kubectl-debug
-* [简介](https://github.com/aylei/kubectl-debug/blob/master/docs/zh-cn.md):通过启动一个安装了各种排障工具的容器，来诊断目标容器
-* [安装](https://github.com/aylei/kubectl-debug/releases)
-* 命令使用：`kubectl debug pod_name --agentless`
-* 命令参数：
-    - --fork：诊断一个处于CrashLookBackoff的pod
-    - --agentless：启动无代理模式【命令使用时自动创建一个agent】
-    - --image：指定使用的工具镜像【默认的镜像：nicolaka/netshoot】
-    - -c container-name：指定要进入的容器内
-
 # 常见对象操作
 ## 创建资源对象
 - 直接通过各种子命令管理资源对象：kubectl run
@@ -299,7 +292,7 @@ kubectl sub_command resource_type resource_name cmd_option
 * 参数： -c 指定容器名称
 
 ## 容器中执行命令
-* exec命令: kubectl exec -it pod_name -c container_name /bin/bash
+* exec命令: kubectl exec -it pod_name -c container_name -- /bin/bash
 
 ## pod弹性伸缩
 * scale命令: kubectl scale rc nginx --replicas=4

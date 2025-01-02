@@ -128,7 +128,7 @@ spec:
   - name: aliyun-simple
   containers:
   - name: nginx #容器名称
-    images: nginx:latest #镜像名称
+    image: nginx:latest #镜像名称
     imagePullPolicy: Always
 ```
 * 设置选项
@@ -265,13 +265,13 @@ metadata:
   name: pod-with-securitycontext
 spec:
   containers:
-    - name: busybox
-      image: busybox
-      command: ["/bin/sh", "-c", "sleep 86400"]
-      securityContext: #容器级别securitycontext
-        runAsNonRoot: true
-        runAsUser: 1000
-        allowPrivilegeEscalation: false
+  - name: busybox
+    image: busybox
+    command: ["/bin/sh", "-c", "sleep 86400"]
+    securityContext: #容器级别securitycontext
+      runAsNonRoot: true
+      runAsUser: 1000
+      allowPrivilegeEscalation: false
 ```
 
 # pod状态和重启
@@ -324,12 +324,12 @@ metadata:
     app: myapp
 spec:
   initContainers:
-    - name: init-something
-      image: busybox
-      command: ["sh", "-c", "sleep 10"]
+  - name: init-something
+    image: busybox
+    command: ["sh", "-c", "sleep 10"]
   containers:
-    - name: myapp-container
-      image: ikubernetes/myapp:v1
+  - name: myapp-container
+    image: ikubernetes/myapp:v1
 ```
 
 ## 钩子函数
@@ -349,17 +349,17 @@ metadata:
   name: lifecycle-demo
 spec:
   containers:
-    - name: lifecycle-demo-container
-      image: ikubernetes/myapp:v1
-      lifecycle: #定义钩子函数
-        postStart: #容器启动后执行
-          exec: #执行用户自定义命令
-            command: ["/bin/sh", "-c", "echo 'lifecycle hooks handler' > /usr/share/nginx/html/test.html"]
-        preStop: #容器终止前执行
-          httpGet: #发起http请求
-            host: blog.csdn.net
-            path: zhangmingli_summer/article/details/82145852
-            port: 443
+  - name: lifecycle-demo-container
+    image: ikubernetes/myapp:v1
+    lifecycle: #定义钩子函数
+      postStart: #容器启动后执行
+        exec: #执行用户自定义命令
+          command: ["/bin/sh", "-c", "echo 'lifecycle hooks handler' > /usr/share/nginx/html/test.html"]
+      preStop: #容器终止前执行
+        httpGet: #发起http请求
+          host: blog.csdn.net
+          path: zhangmingli_summer/article/details/82145852
+          port: 443
 ```
 ## 健康检查
 ### 检查种类
@@ -434,10 +434,10 @@ spec:
       lifecycle:
         postStart:
           exec:
-            command: ["/bin/sh", "-c", "echo Healthy > /usr/share/nginx/html/Healthz"]
+            command: ["/bin/sh", "-c", "echo Healthy > /usr/share/nginx/html/Healthy"]
       livenessProbe:
         httpGet:
-          path: /Healthz
+          path: /Healthy
           port: http
           scheme: HTTP
 ```
