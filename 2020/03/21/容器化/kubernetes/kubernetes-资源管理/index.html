@@ -88,7 +88,7 @@
 <meta property="og:description" content="管理方式-APIkubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，用于查询和修改集群的状态，并将结果存储于etcd中。 API设计模式 声明式 天然记录了状态 幂等操作，可在任意时刻反复操作 正常操作即巡检 可合并多个变更   命令式 如果命令没有响应，需要反复重试、记录当前的操作 如果多次重试、操作有可能出问题 需要单独的巡检操作，巡检本身也可能">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://simple0426-blog.oss-cn-beijing.aliyuncs.com/k8s-control-circle.jpg">
-<meta property="og:updated_time" content="2021-02-07T17:48:46.550Z">
+<meta property="og:updated_time" content="2025-01-01T09:06:33.860Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-资源管理">
 <meta name="twitter:description" content="管理方式-APIkubernetes API是管理各种资源的唯一入口，它提供了一个RESTful风格的CRUD接口，用于查询和修改集群的状态，并将结果存储于etcd中。 API设计模式 声明式 天然记录了状态 幂等操作，可在任意时刻反复操作 正常操作即巡检 可合并多个变更   命令式 如果命令没有响应，需要反复重试、记录当前的操作 如果多次重试、操作有可能出问题 需要单独的巡检操作，巡检本身也可能">
@@ -332,8 +332,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2021-02-08T01:48:46+08:00">
-                2021-02-08
+              <time title="更新于" itemprop="dateModified" datetime="2025-01-01T17:06:33+08:00">
+                2025-01-01
               </time>
             
           </span>
@@ -569,6 +569,12 @@
 <li>proxy：创建一个可以访问APIServer的代理</li>
 <li>cp：在容器间复制文件和目录</li>
 <li>auth：显示授权信息</li>
+<li>debug：为工作负载（workload）或节点（node）创建一个调试的临时的会话窗口（容器）<ul>
+<li>对已经存在的pod，使用新版本镜像创建一个新的副本进行调试</li>
+<li>在已经存在的pod中，启动一个包含调试工具的容器：<code>kubectl debug pod-label -it --image=busybox sh</code></li>
+<li>在节点（node）上上启动一个新的pod，可以访问节点的文件系统</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>高级命令<ul>
@@ -577,7 +583,6 @@
 <li>patch：使用策略合并补丁更新资源的字段信息</li>
 <li>replace：基于文件名或标准输入替换一个资源</li>
 <li>wait：实验性功能，等待一个或多个资源的特定条件</li>
-<li>convert：为不同api版本转换配置文件</li>
 </ul>
 </li>
 <li>设置命令<ul>
@@ -615,18 +620,6 @@
 <li>-s：指定apiserver地址</li>
 <li>–kubeconfig：指定kubeconfig文件【默认~/.kube/config】</li>
 </ul>
-<h2 id="插件-kubectl-debug"><a href="#插件-kubectl-debug" class="headerlink" title="插件-kubectl-debug"></a>插件-kubectl-debug</h2><ul>
-<li><a href="https://github.com/aylei/kubectl-debug/blob/master/docs/zh-cn.md" target="_blank" rel="noopener">简介</a>:通过启动一个安装了各种排障工具的容器，来诊断目标容器</li>
-<li><a href="https://github.com/aylei/kubectl-debug/releases" target="_blank" rel="noopener">安装</a></li>
-<li>命令使用：<code>kubectl debug pod_name --agentless</code></li>
-<li>命令参数：<ul>
-<li>–fork：诊断一个处于CrashLookBackoff的pod</li>
-<li>–agentless：启动无代理模式【命令使用时自动创建一个agent】</li>
-<li>–image：指定使用的工具镜像【默认的镜像：nicolaka/netshoot】</li>
-<li>-c container-name：指定要进入的容器内</li>
-</ul>
-</li>
-</ul>
 <h1 id="常见对象操作"><a href="#常见对象操作" class="headerlink" title="常见对象操作"></a>常见对象操作</h1><h2 id="创建资源对象"><a href="#创建资源对象" class="headerlink" title="创建资源对象"></a>创建资源对象</h2><ul>
 <li>直接通过各种子命令管理资源对象：kubectl run</li>
 <li>根据资源文件创建资源对象：kubectl create</li>
@@ -654,7 +647,7 @@
 <li>参数： -c 指定容器名称</li>
 </ul>
 <h2 id="容器中执行命令"><a href="#容器中执行命令" class="headerlink" title="容器中执行命令"></a>容器中执行命令</h2><ul>
-<li>exec命令: kubectl exec -it pod_name -c container_name /bin/bash</li>
+<li>exec命令: kubectl exec -it pod_name -c container_name – /bin/bash</li>
 </ul>
 <h2 id="pod弹性伸缩"><a href="#pod弹性伸缩" class="headerlink" title="pod弹性伸缩"></a>pod弹性伸缩</h2><ul>
 <li>scale命令: kubectl scale rc nginx –replicas=4</li>
@@ -859,7 +852,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#管理方式-API"><span class="nav-number">1.</span> <span class="nav-text">管理方式-API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计模式"><span class="nav-number">1.1.</span> <span class="nav-text">API设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-number">1.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看API资源"><span class="nav-number">1.3.</span> <span class="nav-text">查看API资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义API资源"><span class="nav-number">1.4.</span> <span class="nav-text">自定义API资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API使用"><span class="nav-number">1.5.</span> <span class="nav-text">API使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源对象"><span class="nav-number">2.</span> <span class="nav-text">资源对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象分类"><span class="nav-number">2.1.</span> <span class="nav-text">资源对象分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象格式"><span class="nav-number">2.2.</span> <span class="nav-text">资源对象格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象文档"><span class="nav-number">2.3.</span> <span class="nav-text">资源对象文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metadata"><span class="nav-number">2.4.</span> <span class="nav-text">metadata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必选字段"><span class="nav-number">2.4.1.</span> <span class="nav-text">必选字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选字段"><span class="nav-number">2.4.2.</span> <span class="nav-text">可选字段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签和标签选择器"><span class="nav-number">3.</span> <span class="nav-text">标签和标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签定义语法"><span class="nav-number">3.1.</span> <span class="nav-text">标签定义语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用标签范例"><span class="nav-number">3.2.</span> <span class="nav-text">常用标签范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源文件定义标签"><span class="nav-number">3.3.</span> <span class="nav-text">资源文件定义标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行修改标签"><span class="nav-number">3.4.</span> <span class="nav-text">命令行修改标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签显示"><span class="nav-number">3.5.</span> <span class="nav-text">标签显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签选择器"><span class="nav-number">3.6.</span> <span class="nav-text">标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理逻辑"><span class="nav-number">3.6.1.</span> <span class="nav-text">处理逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择器种类"><span class="nav-number">3.6.2.</span> <span class="nav-text">选择器种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行使用"><span class="nav-number">3.6.3.</span> <span class="nav-text">命令行使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源文件使用"><span class="nav-number">3.6.4.</span> <span class="nav-text">资源文件使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解-annotations"><span class="nav-number">4.</span> <span class="nav-text">注解-annotations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看注解"><span class="nav-number">4.3.</span> <span class="nav-text">查看注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行添加注解"><span class="nav-number">4.4.</span> <span class="nav-text">命令行添加注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectl命令"><span class="nav-number">5.</span> <span class="nav-text">kubectl命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法格式"><span class="nav-number">5.1.</span> <span class="nav-text">语法格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子命令"><span class="nav-number">5.2.</span> <span class="nav-text">子命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令选项"><span class="nav-number">5.3.</span> <span class="nav-text">命令选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件-kubectl-debug"><span class="nav-number">5.4.</span> <span class="nav-text">插件-kubectl-debug</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见对象操作"><span class="nav-number">6.</span> <span class="nav-text">常见对象操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建资源对象"><span class="nav-number">6.1.</span> <span class="nav-text">创建资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看资源对象"><span class="nav-number">6.2.</span> <span class="nav-text">查看资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改资源对象"><span class="nav-number">6.3.</span> <span class="nav-text">修改资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除资源对象"><span class="nav-number">6.4.</span> <span class="nav-text">删除资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看pod日志"><span class="nav-number">6.5.</span> <span class="nav-text">查看pod日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器中执行命令"><span class="nav-number">6.6.</span> <span class="nav-text">容器中执行命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod弹性伸缩"><span class="nav-number">6.7.</span> <span class="nav-text">pod弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像升级和回滚"><span class="nav-number">6.8.</span> <span class="nav-text">镜像升级和回滚</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#管理方式-API"><span class="nav-number">1.</span> <span class="nav-text">管理方式-API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计模式"><span class="nav-number">1.1.</span> <span class="nav-text">API设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-number">1.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看API资源"><span class="nav-number">1.3.</span> <span class="nav-text">查看API资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义API资源"><span class="nav-number">1.4.</span> <span class="nav-text">自定义API资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API使用"><span class="nav-number">1.5.</span> <span class="nav-text">API使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源对象"><span class="nav-number">2.</span> <span class="nav-text">资源对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象分类"><span class="nav-number">2.1.</span> <span class="nav-text">资源对象分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象格式"><span class="nav-number">2.2.</span> <span class="nav-text">资源对象格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源对象文档"><span class="nav-number">2.3.</span> <span class="nav-text">资源对象文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metadata"><span class="nav-number">2.4.</span> <span class="nav-text">metadata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必选字段"><span class="nav-number">2.4.1.</span> <span class="nav-text">必选字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选字段"><span class="nav-number">2.4.2.</span> <span class="nav-text">可选字段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标签和标签选择器"><span class="nav-number">3.</span> <span class="nav-text">标签和标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签定义语法"><span class="nav-number">3.1.</span> <span class="nav-text">标签定义语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用标签范例"><span class="nav-number">3.2.</span> <span class="nav-text">常用标签范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源文件定义标签"><span class="nav-number">3.3.</span> <span class="nav-text">资源文件定义标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行修改标签"><span class="nav-number">3.4.</span> <span class="nav-text">命令行修改标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签显示"><span class="nav-number">3.5.</span> <span class="nav-text">标签显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签选择器"><span class="nav-number">3.6.</span> <span class="nav-text">标签选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理逻辑"><span class="nav-number">3.6.1.</span> <span class="nav-text">处理逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择器种类"><span class="nav-number">3.6.2.</span> <span class="nav-text">选择器种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行使用"><span class="nav-number">3.6.3.</span> <span class="nav-text">命令行使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源文件使用"><span class="nav-number">3.6.4.</span> <span class="nav-text">资源文件使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解-annotations"><span class="nav-number">4.</span> <span class="nav-text">注解-annotations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看注解"><span class="nav-number">4.3.</span> <span class="nav-text">查看注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行添加注解"><span class="nav-number">4.4.</span> <span class="nav-text">命令行添加注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectl命令"><span class="nav-number">5.</span> <span class="nav-text">kubectl命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法格式"><span class="nav-number">5.1.</span> <span class="nav-text">语法格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子命令"><span class="nav-number">5.2.</span> <span class="nav-text">子命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令选项"><span class="nav-number">5.3.</span> <span class="nav-text">命令选项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见对象操作"><span class="nav-number">6.</span> <span class="nav-text">常见对象操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建资源对象"><span class="nav-number">6.1.</span> <span class="nav-text">创建资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看资源对象"><span class="nav-number">6.2.</span> <span class="nav-text">查看资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改资源对象"><span class="nav-number">6.3.</span> <span class="nav-text">修改资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除资源对象"><span class="nav-number">6.4.</span> <span class="nav-text">删除资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看pod日志"><span class="nav-number">6.5.</span> <span class="nav-text">查看pod日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器中执行命令"><span class="nav-number">6.6.</span> <span class="nav-text">容器中执行命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod弹性伸缩"><span class="nav-number">6.7.</span> <span class="nav-text">pod弹性伸缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像升级和回滚"><span class="nav-number">6.8.</span> <span class="nav-text">镜像升级和回滚</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -879,7 +872,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2024</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
