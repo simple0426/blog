@@ -17,6 +17,8 @@ kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns
 
 # [部署要求](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 >部署实践：https://gitee.com/simple0426/kubeadm-k8s.git
+>
+>k8s 1.32版本要求linux内核4.15，centos7默认为3.10，需要升级内核
 
 * 主机数：3个及以上
 * os：Ubuntu 16.04+、CentOS 7
@@ -46,16 +48,6 @@ systemctl disable iptables
 setenforce 0
 sed -i 's/=enforcing/=disabled/g' /etc/selinux/config
 ```
-* 启用ipvs模块
-```
-ipvs_mods_dir="/usr/lib/modules/$(uname -r)/kernel/net/netfilter/ipvs"
-for i in $(ls $ipvs_mods_dir|grep -o "^[^.]*");do
-/sbin/modinfo -F filename $i &> /dev/null
-if [ $? -eq 0 ];then
-/sbin/modprobe $i
-fi
-done
-```
 * iptables设置：可以查看网桥流量
 ```
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
@@ -68,22 +60,12 @@ sudo sysctl --system
 # 部署步骤
 ## 安装docker
 * master、node都操作
-* 为保证兼容性，使用[k8s推荐docker版本](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)
-
 * 根据kubeadm要求配置启动参数
 ```
 cat > /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
-  "registry-mirrors" : ["https://2x97hcl1.mirror.aliyuncs.com"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2",
-  "storage-opts": [
-    "overlay2.override_kernel_check=true"
-  ]
+  "registry-mirrors" : ["https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com"]
 }
 EOF
 systemctl daemon-reload
@@ -91,29 +73,44 @@ systemctl enable docker
 systemctl restart docker
 ```
 
+## 安装cri-dockerd
+
+因为k8s的新版本要求container runtime实现[Container Runtime Interface](https://kubernetes.io/docs/concepts/architecture/cri) (CRI)，而docker engine未实现，所以需要使用cri-dockerd这个适配器，这样kubelet可以操作docker engine
+
+```
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.14/cri-dockerd-0.3.14-3.el7.x86_64.rpm
+rpm -ivh cri-dockerd-0.3.14-3.el7.x86_64.rpm
+# pod使用的infra使用国内镜像
+sed -i '/ExecStart/s%$%--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.9%' /usr/lib/systemd/system/cri-docker.service
+systemctl daemon-reload
+systemctl enable cri-docker
+systemctl start cri-docker
+```
+
 ## [安装kubelet/kubeadm/kubectl](https://developer.aliyun.com/mirror/kubernetes)
+
 * master node、worker node都操作
 
 * 此处的kubelet、kubeadm、kubectl需要与下文中kubernetes版本保持一致；由于阿里镜像源滞后，所以需要测试镜像源是否包含指定版本
 
   ```
-  docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.19.6
+  docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.32.0
   ```
 
-* 指定版本安装：`yum install kubelet-1.19.6 kubeadm-1.19.6 kubectl-1.19.6 -y`
+* 安装：`yum install kubelet kubeadm kubectl -y`
 
 * kubelet开机启动：`systemctl enable kubelet`
 
 ## 集群初始化
->master操作
+>master操作：由于安装docker和cri-dockerd，k8s会扫描到2个socket，需要指定k8s链接的socket（cri-docked.sock）
 
 ```
-kubeadm init --kubernetes-version=v1.19.6 \
+kubeadm init --kubernetes-version=v1.32.0 \
 --pod-network-cidr=10.244.0.0/16 \
 --service-cidr=10.96.0.0/12 \
 --apiserver-advertise-address=192.168.31.201 \
 --image-repository=registry.aliyuncs.com/google_containers \
---ignore-preflight-errors=NumCPU
+--cri-socket=unix:///var/run/cri-dockerd.sock
 ```
 
 ## 根据init结果提示操作
@@ -130,25 +127,20 @@ kubeadm init --kubernetes-version=v1.19.6 \
   - kube-flannel.yml文件修改
 
     + pod网络设置(net-conf.json)
-    + 镜像地址修改：quay.mirrors.ustc.edu.cn
+    + 镜像地址修改：registry.cn-hangzhou.aliyuncs.com/simple00426/
     + 主机间通信接口设置(假设eth1为主机间通信接口：`--iface=eth1`)
 
   - 应用资源文件：kubectl apply -f kube-flannel.yml
 
-  - bug修复
-
-    ```
-    由kubeadm安装的1.17~1.18版本k8s集群使用flannel插件有bug，会造成访问service的地址长时间无响应，需要执行命令修复此问题：
-    ethtool --offload flannel.1 rx off tx off
-    ```
-
-* 允许master部署负载【master】
+* 允许master部署负载【control-plane即为master】
 
   ```
-  kubectl taint nodes --all node-role.kubernetes.io/master-
+  kubectl taint nodes --all node-role.kubernetes.io/control-plane-
   ```
 
-* 使用kubeadm join命令将node加入集群【node】
+* 使用kubeadm join命令将node加入集群【node节点操作，注意指定socket】
+
+  `--cri-socket=unix:///var/run/cri-dockerd.sock`
 
 # kubeadm管理
 ## 移除节点
@@ -170,23 +162,20 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 ```
 
 ## 证书管理
-* 查看证书过期时间(默认1年)：`kubeadm alpha certs check-expiration`
-* 证书续签(默认1年)：`kubeadm alpha certs renew all`
+* 查看证书过期时间(默认1年)：`kubeadm certs check-expiration`
+* 证书续签(默认1年)：`kubeadm certs renew all`
   - 续签后使用证书的组件重启：kubelet/kube-proxy/apiserver/scheduler/control-manager
 
 # 附加组件部署
-## dashboard
-- 下载资源文件：
+## ~~dashboard(废弃)~~
+> dashboard 7.0版本只能使用helm包管理器安装，原来的安装方式https访问报错
 
-    ```
-    curl -Lo kube-dashboard.yaml https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
-    ```
-
-- 资源文件修改
+- ~~资源文件修改~~
+    
     + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443/8000
     + dashboard部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
     
-- [建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
+- ~~[建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)~~
 
     ```
     apiVersion: v1
@@ -209,13 +198,13 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
       namespace: kubernetes-dashboard
     ```
 
-- 登录token获取
+- ~~登录token获取~~
 
     ```
     kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
     ```
 
-- web访问：https://192.168.31.202:8443/
+- ~~web访问：https://192.168.31.202:8443/~~
 
 ## ingress-nginx
 - 下载资源文件：
@@ -226,8 +215,20 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 
 - pod及service修改配置
     + ingress部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
-    + 修改nginx-ingress-controller镜像地址：registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:0.44.0
-    + 将ingress的访问端口暴露在宿主机上：Service--》nodePort：30080/30443
+    
+    + ingress的访问端口暴露在宿主机上：Service--》nodePort：30080/30443
+    
+    + 修改镜像地址：
+    
+      ```
+      registry.cn-hangzhou.aliyuncs.com/simple00426/kube-webhook-certgen:v1.5.0
+      registry.cn-hangzhou.aliyuncs.com/simple00426/nginx-ingress-controller:v1.12.0
+      ```
 
+## metrics-server
 
+参考：[kubernetes-监控和日志](https://simple0426.github.io/blog/2020/03/11/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E7%9B%91%E6%8E%A7%E5%92%8C%E6%97%A5%E5%BF%97/#metrics-server)
 
+## storageclass
+
+参考：[kubernetes-存储和持久化](https://simple0426.github.io/blog/2020/02/24/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E5%AD%98%E5%82%A8%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96/#storageclass%E5%88%9B%E5%BB%BA)

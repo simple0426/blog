@@ -86,7 +86,7 @@ metrics server从每个节点上的kubelet(cadvisor)公开的摘要API收集指�
 下载资源文件：
 
 ```
-curl -Lo metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.4.1/components.yaml
+curl -Lo metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
 修改资源文件
@@ -94,19 +94,14 @@ curl -Lo metrics-server.yaml https://github.com/kubernetes-sigs/metrics-server/r
 ```
   containers:
   - name: metrics-server
-    image: registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.4.1
-    imagePullPolicy: IfNotPresent
+    image: registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.7.2
     args:  
-      - --cert-dir=/tmp
-      - --secure-port=4443
       - --kubelet-insecure-tls
-      - --kubelet-preferred-address-types=InternalIP
 ```
 
-- 修改镜像地址(image)：registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.4.1
+- 修改镜像地址(image)：`registry.cn-hangzhou.aliyuncs.com/simple00426/metrics-server-amd64:v0.7.2`
 - 设置容器启动参数(args)
   + `--kubelet-insecure-tls`：metrics server连接kubelet(作为服务端)时，不对kubelet证书的ca进行校验
-  + `--kubelet-preferred-address-types=InternalIP`：metrics server通过内部ip（kubectl describe node|grep InternalIP）访问kubelet，获取指标数据
 
 可通过Metrics API在Kubernetes中获得资源使用率指标，例如容器CPU和内存使用率。这些度量标准既可以由用户直接访问（例如，通过使用`kubectl top`命令），也可以由集群中的控制器（例如，Horizontal Pod Autoscaler）用于进行决策。
 
