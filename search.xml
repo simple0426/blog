@@ -14248,7 +14248,7 @@ $name：值为$type.$id。
 </ul>
 <h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><ul>
 <li>master、node都操作</li>
-<li>根据kubeadm要求配置启动参数<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],</span><br><span class="line">  &quot;registry-mirrors&quot; : [&quot;https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+<li>根据kubeadm要求配置启动参数<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],</span><br><span class="line">  &quot;registry-mirrors&quot; : [&quot;https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com&quot;,</span><br><span class="line">  &quot;https://docker.m.daocloud.io&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="安装cri-dockerd"><a href="#安装cri-dockerd" class="headerlink" title="安装cri-dockerd"></a>安装cri-dockerd</h2><p>因为k8s的新版本要求container runtime实现<a href="https://kubernetes.io/docs/concepts/architecture/cri" target="_blank" rel="noopener">Container Runtime Interface</a> (CRI)，而docker engine未实现，所以需要使用cri-dockerd这个适配器，这样kubelet可以操作docker engine</p>
@@ -16492,7 +16492,7 @@ $name：值为$type.$id。
 </li>
 </ul>
 <h1 id="CronJob"><a href="#CronJob" class="headerlink" title="CronJob"></a>CronJob</h1><p>周期性任务,相当于linux中的crontab</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: batch/v1beta1</span><br><span class="line">kind: CronJob</span><br><span class="line">metadata:</span><br><span class="line">  name: hello</span><br><span class="line">spec:</span><br><span class="line">  schedule: &quot;*/1 * * * *&quot; #周期参数，与crontab相同</span><br><span class="line">  jobTemplate:</span><br><span class="line">    spec:</span><br><span class="line">      template:</span><br><span class="line">        spec:</span><br><span class="line">          containers:</span><br><span class="line">          - name: hello</span><br><span class="line">            image: busybox</span><br><span class="line">            args:</span><br><span class="line">            - /bin/sh</span><br><span class="line">            - -c</span><br><span class="line">            - date; echo Hello from the kubernetes cluster</span><br><span class="line">          restartPolicy: OnFailure</span><br><span class="line">  startingDeadlineSeconds: 10 #最长启动时间</span><br><span class="line">  concurrencyPolicy: Allow #是否允许并行运行(解决情况：任务的执行时间超过周期间隔)</span><br><span class="line">  successfulJobsHistoryLimit: 3 #允许留存的成功job数</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: batch/v1</span><br><span class="line">kind: CronJob</span><br><span class="line">metadata:</span><br><span class="line">  name: hello</span><br><span class="line">spec:</span><br><span class="line">  schedule: &quot;*/1 * * * *&quot; #周期参数，与crontab相同</span><br><span class="line">  jobTemplate:</span><br><span class="line">    spec:</span><br><span class="line">      template:</span><br><span class="line">        spec:</span><br><span class="line">          containers:</span><br><span class="line">          - name: hello</span><br><span class="line">            image: busybox</span><br><span class="line">            args:</span><br><span class="line">            - /bin/sh</span><br><span class="line">            - -c</span><br><span class="line">            - date; echo Hello from the kubernetes cluster</span><br><span class="line">          restartPolicy: OnFailure</span><br><span class="line">  startingDeadlineSeconds: 10 #最长启动时间</span><br><span class="line">  concurrencyPolicy: Allow #是否允许并行运行(解决情况：任务的执行时间超过周期间隔)</span><br><span class="line">  successfulJobsHistoryLimit: 3 #允许留存的成功job数</span><br></pre></td></tr></table></figure>
 <h1 id="DaemonSet"><a href="#DaemonSet" class="headerlink" title="DaemonSet"></a>DaemonSet</h1><p>相当于linux的守护进程，例如supervisor</p>
 <h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>保证集群中的每个节点都运行一个相同的pod</li>
@@ -16680,7 +16680,7 @@ $name：值为$type.$id。
 </ul>
 <h2 id="节点过滤规则"><a href="#节点过滤规则" class="headerlink" title="节点过滤规则"></a>节点过滤规则</h2><ul>
 <li>PodFitsHostPorts：检查节点端口是否满足pod需求</li>
-<li>PodFitsHost：检查节点主机名（hostname）是佛满足pod需求</li>
+<li>PodFitsHost：检查节点主机名（hostname）是否满足pod需求</li>
 <li>PodFitsResources：检查节点是否有可用资源（cpu、内存）满足pod需求</li>
 <li>PodMatchNodeSelector：检查pod的节点选择器是否匹配节点标签</li>
 <li>NoVolumeZoneConflict：在给定区域(zone)上，检查pod要求的存储卷在节点上是否可用</li>
@@ -16702,7 +16702,7 @@ $name：值为$type.$id。
 <li>SelectorSpreadPriority：是否可以将service、statefulset、replicaset所属的pod对象扩展到尽可能多的节点</li>
 <li>InterPodAffinityPriority：遍历pod对象的亲和性条目，并将那些能够匹配到给定节点的条目的权重相加，结果值越大的节点得分越高</li>
 <li>LeastRequestedPriority：request越少得分越高，比较倾向于让pod分配到空闲的机器上</li>
-<li>MostRequestedPriority：request越多得分越高，比较倾向于尽量压慢一台机器，避免过多碎片化</li>
+<li>MostRequestedPriority：request越多得分越高，比较倾向于尽量压满一台机器，避免过多碎片化</li>
 <li>RequestedToCapacityRatioPriority：按照请求和容量的比例记分</li>
 <li>BalancedResourceAllocation：cpu、内存使用更均衡的节点得分更高</li>
 <li>NodePreferAvoidPodsPriority：根据节点是否设置了注解【scheduler.alpha.kubernetes.io/preferAvoidPods】；使用这个选项，可以标识哪些pod不能运行在同一个节点上</li>
@@ -16715,7 +16715,7 @@ $name：值为$type.$id。
 </ul>
 <h1 id="节点选择-nodeName"><a href="#节点选择-nodeName" class="headerlink" title="节点选择-nodeName"></a>节点选择-nodeName</h1><ul>
 <li>位置：spec.nodeName</li>
-<li>功能：以下两者功能相同<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nodeName: minikube</span><br><span class="line">nodeSelector:</span><br><span class="line">  - kubernetes.io/hostname=minikube</span><br></pre></td></tr></table></figure>
+<li>功能：以下两者功能相同<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nodeName: minikube</span><br><span class="line">nodeSelector:</span><br><span class="line">  kubernetes.io/hostname=minikube</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h1 id="节点选择器-nodeSelector"><a href="#节点选择器-nodeSelector" class="headerlink" title="节点选择器-nodeSelector"></a>节点选择器-nodeSelector</h1><p>将pod调度至特定节点运行</p>
@@ -16723,12 +16723,12 @@ $name：值为$type.$id。
 <li>定义：kubectl label nodes minikube minikube=yes</li>
 <li>查看：kubectl get node –show-labels</li>
 </ul>
-<h2 id="内置节点标签"><a href="#内置节点标签" class="headerlink" title="内置节点标签"></a><a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#built-in-node-labels" target="_blank" rel="noopener">内置节点标签</a></h2><ul>
+<h2 id="内置节点标签"><a href="#内置节点标签" class="headerlink" title="内置节点标签"></a><a href="https://kubernetes.io/docs/reference/node/node-labels/#preset-labels" target="_blank" rel="noopener">内置节点标签</a></h2><ul>
 <li>kubernetes.io/os=linux：操作系统类型</li>
 <li>kubernetes.io/hostname=minikube：节点主机名</li>
 </ul>
-<h2 id="pod定义nodeSelector"><a href="#pod定义nodeSelector" class="headerlink" title="pod定义nodeSelector"></a>pod定义nodeSelector</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br><span class="line">  nodeSelector:</span><br><span class="line">    hostname: node2</span><br></pre></td></tr></table></figure>
-<h1 id="节点亲和调度"><a href="#节点亲和调度" class="headerlink" title="节点亲和调度"></a>节点亲和调度</h1><p>通过在节点定义标签，在pod对象上指定标签选择器来确定pod的运行位置</p>
+<h2 id="pod定义nodeSelector"><a href="#pod定义nodeSelector" class="headerlink" title="pod定义nodeSelector"></a>pod定义nodeSelector</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: myapp</span><br><span class="line">    image: ikubernetes/myapp:v1</span><br><span class="line">  nodeSelector:</span><br><span class="line">    kubernetes.io/hostname: node2</span><br></pre></td></tr></table></figure>
+<h1 id="节点亲和性调度"><a href="#节点亲和性调度" class="headerlink" title="节点亲和性调度"></a>节点亲和性调度</h1><p>通过在节点定义标签，在pod对象上指定标签选择器来确定pod的运行位置</p>
 <h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><ul>
 <li>硬亲和性（required）：pod对象调度时必须满足的规则，不满足时pod处于pending状态</li>
 <li>软亲和性（preferred）：pod对象调度时应当遵守的规则</li>
@@ -16736,7 +16736,7 @@ $name：值为$type.$id。
 <p>注意事项：IgnoredDuringExecution，在基于节点亲和性完成pod调度后，节点标签变更也不会将pod对象从节点移出，它只对新建的pod对象生效。</p>
 <h2 id="硬亲和性"><a href="#硬亲和性" class="headerlink" title="硬亲和性"></a>硬亲和性</h2><p>将pod调度到拥有zone标签且其值为foo的节点上<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spec:</span><br><span class="line">  affinity:</span><br><span class="line">    nodeAffinity:</span><br><span class="line">      requiredDuringSchedulingIgnoredDuringExecution:</span><br><span class="line">        nodeSelectorTerms:</span><br><span class="line">        - matchExpressions:</span><br><span class="line">          - key: zone</span><br><span class="line">            operator: In</span><br><span class="line">            values: [&quot;foo&quot;]</span><br></pre></td></tr></table></figure></p>
 <h2 id="软亲和性"><a href="#软亲和性" class="headerlink" title="软亲和性"></a>软亲和性</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spec:</span><br><span class="line">  affinity:</span><br><span class="line">    nodeAffinity:</span><br><span class="line">      preferredDuringSchedulingIgnoredDuringExecution:</span><br><span class="line">      - weight: 60</span><br><span class="line">        preference:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: zone</span><br><span class="line">              operator: In</span><br><span class="line">              values: [&quot;foo&quot;]</span><br><span class="line">      - weight: 30</span><br><span class="line">        preference:</span><br><span class="line">          matchExpressions:</span><br><span class="line">            - key: ssd</span><br><span class="line">              operator: Exists</span><br><span class="line">              values: []</span><br></pre></td></tr></table></figure>
-<h1 id="pod资源亲和调度"><a href="#pod资源亲和调度" class="headerlink" title="pod资源亲和调度"></a>pod资源亲和调度</h1><ul>
+<h1 id="pod亲和性调度"><a href="#pod亲和性调度" class="headerlink" title="pod亲和性调度"></a>pod亲和性调度</h1><ul>
 <li>亲和性：基于某些需求，需要把某些pod资源部署在相近的位置，此时这些pod资源间具有亲和性(affinity)  </li>
 <li>反亲和性：相反，需要把一些pod隔离开分散部署，此时这些资源具有反亲和性(anti-affinity)  </li>
 </ul>
