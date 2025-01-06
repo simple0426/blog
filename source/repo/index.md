@@ -16,20 +16,24 @@ date: 2019-06-24 21:54:01
 * alpine（约5M）：基于alpine linux的最小docker镜像
 
 # docker-hub镜像加速
-- 阿里云：https://2x97hcl1.mirror.aliyuncs.com
-- 163：http://hub-mirror.c.163.com
-- DaoCloud：https://f1361db2.m.daocloud.io
-- 七牛： https://reg-mirror.qiniu.com
+- 华为云：https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com
+- DaoCloud：https://docker.m.daocloud.io
 
 # 容器镜像代理
-* k8s.gcr.io：gcr.io/google-containers
-* gcr.io：
-  * 中科大：gcr.mirrors.ustc.edu.cn
-  * 阿里云：registry.aliyuncs.com/google_containers
-  * 七牛：gcr-mirror.qiniu.com
-* quay.io：
-  * 中科大：quay.mirrors.ustc.edu.cn
-  * 七牛：quay-mirror.qiniu.com
+> https://github.com/DaoCloud/public-image-mirror#%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%9B%BF%E6%8D%A2%E7%9A%84-registry-%E4%B8%8D%E6%8E%A8%E8%8D%90
+
+|                   |                       |                                       |
+| ----------------- | --------------------- | ------------------------------------- |
+| 源站              | 替换为                | 备注                                  |
+| docker.elastic.co | elastic.m.daocloud.io |                                       |
+| docker.io         | docker.m.daocloud.io  |                                       |
+| gcr.io            | gcr.m.daocloud.io     |                                       |
+| ghcr.io           | ghcr.m.daocloud.io    |                                       |
+| k8s.gcr.io        | k8s-gcr.m.daocloud.io | k8s.gcr.io 已被迁移到 registry.k8s.io |
+| registry.k8s.io   | k8s.m.daocloud.io     |                                       |
+| mcr.microsoft.com | mcr.m.daocloud.io     |                                       |
+| nvcr.io           | nvcr.m.daocloud.io    |                                       |
+| quay.io           | quay.m.daocloud.io    |                                       |
 
 # pypi阿里云
 - 命令行设置：-i https://mirrors.aliyun.com/pypi/simple/

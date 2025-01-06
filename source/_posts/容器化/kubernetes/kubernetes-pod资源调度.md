@@ -41,7 +41,7 @@ date: 2020-03-24 17:28:48
 
 ## 节点过滤规则
 * PodFitsHostPorts：检查节点端口是否满足pod需求
-* PodFitsHost：检查节点主机名（hostname）是佛满足pod需求
+* PodFitsHost：检查节点主机名（hostname）是否满足pod需求
 * PodFitsResources：检查节点是否有可用资源（cpu、内存）满足pod需求
 * PodMatchNodeSelector：检查pod的节点选择器是否匹配节点标签
 * NoVolumeZoneConflict：在给定区域(zone)上，检查pod要求的存储卷在节点上是否可用
@@ -61,7 +61,7 @@ date: 2020-03-24 17:28:48
 * SelectorSpreadPriority：是否可以将service、statefulset、replicaset所属的pod对象扩展到尽可能多的节点
 * InterPodAffinityPriority：遍历pod对象的亲和性条目，并将那些能够匹配到给定节点的条目的权重相加，结果值越大的节点得分越高
 * LeastRequestedPriority：request越少得分越高，比较倾向于让pod分配到空闲的机器上
-* MostRequestedPriority：request越多得分越高，比较倾向于尽量压慢一台机器，避免过多碎片化
+* MostRequestedPriority：request越多得分越高，比较倾向于尽量压满一台机器，避免过多碎片化
 * RequestedToCapacityRatioPriority：按照请求和容量的比例记分
 * BalancedResourceAllocation：cpu、内存使用更均衡的节点得分更高
 * NodePreferAvoidPodsPriority：根据节点是否设置了注解【scheduler.alpha.kubernetes.io/preferAvoidPods】；使用这个选项，可以标识哪些pod不能运行在同一个节点上
@@ -78,7 +78,7 @@ date: 2020-03-24 17:28:48
 ```
 nodeName: minikube
 nodeSelector:
-  - kubernetes.io/hostname=minikube
+  kubernetes.io/hostname=minikube
 ```
 
 # 节点选择器-nodeSelector
@@ -87,7 +87,7 @@ nodeSelector:
 - 定义：kubectl label nodes minikube minikube=yes
 - 查看：kubectl get node --show-labels
 
-## [内置节点标签](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#built-in-node-labels)
+## [内置节点标签](https://kubernetes.io/docs/reference/node/node-labels/#preset-labels)
 - kubernetes.io/os=linux：操作系统类型
 - kubernetes.io/hostname=minikube：节点主机名
 
@@ -98,10 +98,10 @@ spec:
   - name: myapp
     image: ikubernetes/myapp:v1
   nodeSelector:
-    hostname: node2
+    kubernetes.io/hostname: node2
 ```
 
-# 节点亲和调度
+# 节点亲和性调度
 通过在节点定义标签，在pod对象上指定标签选择器来确定pod的运行位置
 
 ## 分类
@@ -143,7 +143,7 @@ spec:
               values: []
 ```
 
-# pod资源亲和调度
+# pod亲和性调度
 * 亲和性：基于某些需求，需要把某些pod资源部署在相近的位置，此时这些pod资源间具有亲和性(affinity)  
 * 反亲和性：相反，需要把一些pod隔离开分散部署，此时这些资源具有反亲和性(anti-affinity)  
 

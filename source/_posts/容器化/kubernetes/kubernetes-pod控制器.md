@@ -181,7 +181,7 @@ spec:
 周期性任务,相当于linux中的crontab
 
 ```
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: hello

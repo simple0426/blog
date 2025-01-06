@@ -65,7 +65,8 @@ sudo sysctl --system
 cat > /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
-  "registry-mirrors" : ["https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com"]
+  "registry-mirrors" : ["https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com",
+  "https://docker.m.daocloud.io"]
 }
 EOF
 systemctl daemon-reload
@@ -171,7 +172,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 > dashboard 7.0版本只能使用helm包管理器安装，原来的安装方式https访问报错
 
 - ~~资源文件修改~~
-    
+  
     + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443/8000
     + dashboard部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
     
