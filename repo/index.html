@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="charts仓库 微软镜像charts仓库【适合国内】 stable：http://mirror.azure.cn/kubernetes/charts/ incubator：http://mirror.azure.cn/kubernetes/charts-incubator/    docker常用镜像 cirros（约12M）：CirrOS是一个Tiny操作系统，专门用于在云计算环境上运行；包含">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2025-01-06T12:12:16.211Z">
+<meta property="og:updated_time" content="2025-01-08T09:52:12.840Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="repo">
 <meta name="twitter:description" content="charts仓库 微软镜像charts仓库【适合国内】 stable：http://mirror.azure.cn/kubernetes/charts/ incubator：http://mirror.azure.cn/kubernetes/charts-incubator/    docker常用镜像 cirros（约12M）：CirrOS是一个Tiny操作系统，专门用于在云计算环境上运行；包含">
@@ -305,6 +305,7 @@
 <h1 id="docker-hub镜像加速"><a href="#docker-hub镜像加速" class="headerlink" title="docker-hub镜像加速"></a>docker-hub镜像加速</h1><ul>
 <li>华为云：<a href="https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com" target="_blank" rel="noopener">https://e97bf3ff28c74b62ac99a5f949cd62ba.mirror.swr.myhuaweicloud.com</a></li>
 <li>DaoCloud：<a href="https://docker.m.daocloud.io" target="_blank" rel="noopener">https://docker.m.daocloud.io</a></li>
+<li>自建：<a href="https://www.ewalk.site:5000" target="_blank" rel="noopener">https://www.ewalk.site:5000</a></li>
 </ul>
 <h1 id="容器镜像代理"><a href="#容器镜像代理" class="headerlink" title="容器镜像代理"></a>容器镜像代理</h1><blockquote>
 <p><a href="https://github.com/DaoCloud/public-image-mirror#%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%9B%BF%E6%8D%A2%E7%9A%84-registry-%E4%B8%8D%E6%8E%A8%E8%8D%90" target="_blank" rel="noopener">https://github.com/DaoCloud/public-image-mirror#%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%9B%BF%E6%8D%A2%E7%9A%84-registry-%E4%B8%8D%E6%8E%A8%E8%8D%90</a></p>
@@ -315,6 +316,7 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
@@ -322,50 +324,61 @@
 <td>源站</td>
 <td>替换为</td>
 <td>备注</td>
+<td>自建代理端口</td>
 </tr>
 <tr>
 <td>docker.elastic.co</td>
 <td>elastic.m.daocloud.io</td>
 <td></td>
+<td></td>
 </tr>
 <tr>
-<td>docker.io</td>
+<td><strong>docker.io</strong></td>
 <td>docker.m.daocloud.io</td>
 <td></td>
+<td>5000</td>
 </tr>
 <tr>
-<td>gcr.io</td>
+<td><strong>gcr.io</strong></td>
 <td>gcr.m.daocloud.io</td>
-<td></td>
+<td>测试镜像：kubeflow-images-public/admission-webhook:v1.1.0-g3ac3d08b</td>
+<td>5003</td>
 </tr>
 <tr>
 <td>ghcr.io</td>
 <td>ghcr.m.daocloud.io</td>
-<td></td>
+<td>【国内可用】测试镜像：nikiforovall/dotnet-script:latest</td>
+<td>5001</td>
 </tr>
 <tr>
 <td>k8s.gcr.io</td>
 <td>k8s-gcr.m.daocloud.io</td>
-<td>k8s.gcr.io 已被迁移到 registry.k8s.io</td>
+<td>k8s.gcr.io 已被迁移到 registry.k8s.io；</td>
+<td>5004</td>
 </tr>
 <tr>
-<td>registry.k8s.io</td>
+<td><strong>registry.k8s.io</strong></td>
 <td>k8s.m.daocloud.io</td>
-<td></td>
+<td>测试镜像：ingress-nginx/kube-webhook-certgen:v1.5.0</td>
+<td>5005</td>
 </tr>
 <tr>
 <td>mcr.microsoft.com</td>
 <td>mcr.m.daocloud.io</td>
+<td></td>
 <td></td>
 </tr>
 <tr>
 <td>nvcr.io</td>
 <td>nvcr.m.daocloud.io</td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td>quay.io</td>
 <td>quay.m.daocloud.io</td>
+<td>【国内可用】测试镜像：tigera/operator:v1.36.2</td>
+<td>5002</td>
 </tr>
 </tbody>
 </table>
