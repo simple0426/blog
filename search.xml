@@ -16612,7 +16612,7 @@ $name：值为$type.$id。
 </li>
 <li>traefik-1.7<ul>
 <li><a href="https://github.com/containous/traefik/tree/v1.7/examples/k8s" target="_blank" rel="noopener">官方安装</a></li>
-<li><a href="https://github.com/simple0426/kubernetes-vagrant-centos-cluster/tree/master/addon/traefik-ingress" target="_blank" rel="noopener">第三方安装</a></li>
+<li><a href="https://gitee.com/simple0426/kubernetes-vagrant-centos-cluster/tree/master/addon/traefik-ingress" target="_blank" rel="noopener">第三方安装</a></li>
 <li><a href="https://blog.51cto.com/m51cto/2328921" target="_blank" rel="noopener">traefik配置https</a></li>
 </ul>
 </li>
@@ -18841,7 +18841,7 @@ $name：值为$type.$id。
 <h3 id="环境变量方式"><a href="#环境变量方式" class="headerlink" title="环境变量方式"></a>环境变量方式</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: special-env-pod</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: test-container  </span><br><span class="line">    image: busybox</span><br><span class="line">    # 使用$(VAR_NAME)方式引用变量</span><br><span class="line">    # command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $(SPECIAL_TYPE)&quot;]</span><br><span class="line">    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $(special.how)&quot;]</span><br><span class="line">    # 加载全部变量</span><br><span class="line">    envFrom: </span><br><span class="line">      - configMapRef:</span><br><span class="line">          name: special-config</span><br><span class="line">          optional: false</span><br><span class="line">    # 加载部分变量</span><br><span class="line">    # env: </span><br><span class="line">    #   - name: SPECIAL_HOW</span><br><span class="line">    #     valueFrom:</span><br><span class="line">    #       configMapKeyRef:</span><br><span class="line">    #         name: special-config</span><br><span class="line">    #         key: special.how</span><br><span class="line">    #   - name: SPECIAL_TYPE</span><br><span class="line">    #     valueFrom:</span><br><span class="line">    #       configMapKeyRef:</span><br><span class="line">    #         name: special-config</span><br><span class="line">    #         key: special.type</span><br><span class="line">  restartPolicy: Never</span><br></pre></td></tr></table></figure>
 <h3 id="volume挂载方式"><a href="#volume挂载方式" class="headerlink" title="volume挂载方式"></a>volume挂载方式</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: spec-volume-pod</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">    - name: test-contaner1</span><br><span class="line">      image: busybox</span><br><span class="line">      # 文件名为key，文件内容为value</span><br><span class="line">      # command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;cat /etc/config/special.how&quot;] </span><br><span class="line">      command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;cat /etc/config/ok/special.how&quot;] </span><br><span class="line">      volumeMounts:</span><br><span class="line">        - name: config-volume</span><br><span class="line">          mountPath: /etc/config </span><br><span class="line">  volumes: </span><br><span class="line">    - name: config-volume</span><br><span class="line">      configMap:</span><br><span class="line">        name: special-config</span><br><span class="line">        # 加载部分变量,只将special.how这个key挂载到/etc/config目录下的相对路径ok/special.how</span><br><span class="line">        items:</span><br><span class="line">          - key: special.how</span><br><span class="line">            path: ok/special.how </span><br><span class="line">  # 加载全部变量</span><br><span class="line">  # volumes: </span><br><span class="line">  #   - name: config-volume</span><br><span class="line">  #     configMap:</span><br><span class="line">  #       name: special-config</span><br><span class="line">  restartPolicy: Never</span><br></pre></td></tr></table></figure>
 <h1 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h1><h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
-<li>Secrete是在集群中存储密码、token等敏感信息的对象</li>
+<li>Secret是在集群中存储密码、token等敏感信息的对象</li>
 <li>secret的存储和打印格式均是base64编码的字符串，因此用户创建secret时也要提供此种编码格式的数据</li>
 <li>Secret类型<ul>
 <li>Opaque：一般密文类型【默认类型】</li>
@@ -18855,7 +18855,7 @@ $name：值为$type.$id。
 <h2 id="创建secret"><a href="#创建secret" class="headerlink" title="创建secret"></a>创建secret</h2><h3 id="命令行方式"><a href="#命令行方式" class="headerlink" title="命令行方式"></a>命令行方式</h3><p>一般创建使用kubectl create命令创建opaque(generic)、tls、dockerregistry类型</p>
 <ul>
 <li>opaque-key/value形式：kubectl create secret generic mysecret –from-literal=username=hejingqi –from-literal=password=yuanshuo</li>
-<li>opaque-文件形式：kubectl create secret generic ssh-key-secret –from-file=ssh-priviatekey=C:\Users\simple.ssh\gitee –from-file=ssh-publickey=C:\Users\simple.ssh\gitee.pub</li>
+<li>opaque-文件形式：kubectl create secret generic ssh-key-secret –from-file=ssh-priviatekey=C:\Users\simple\.ssh\gitee –from-file=ssh-publickey=C:\Users\simple\.ssh\gitee.pub</li>
 <li>dockerregistry创建：<code>kubectl create secret docker-registry aliyun-simple --docker-username=perfect@qq.com --docker-password=123456 --docker-server=registry.cn-hangzhou.aliyuncs.com</code></li>
 <li>tls证书创建：<code>kubectl create secret tls k8s-ca --cert=&#39;ca.pem&#39; --key=&#39;ca-key.pem&#39;</code><h3 id="清单文件方式-1"><a href="#清单文件方式-1" class="headerlink" title="清单文件方式"></a>清单文件方式</h3></li>
 </ul>
@@ -18880,7 +18880,7 @@ $name：值为$type.$id。
 <li>应用程序监听本地配置文件变动，自行处理热加载</li>
 <li>使用sidecar通过inotify机制监听配置文件变更，动态更新</li>
 <li>与程序迭代更新一起滚动更新</li>
-<li>【不使用k8s的configmap/secret】采用配置中心(如disconf、Apollo)</li>
+<li>【不使用k8s的configmap/secret】采用配置中心(如disconf、Apollo、nacos)</li>
 </ul>
 ]]></content>
       <categories>
