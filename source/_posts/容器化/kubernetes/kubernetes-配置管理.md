@@ -132,7 +132,7 @@ spec:
 ```
 # Secret
 ## 使用场景
-* Secrete是在集群中存储密码、token等敏感信息的对象
+* Secret是在集群中存储密码、token等敏感信息的对象
 * secret的存储和打印格式均是base64编码的字符串，因此用户创建secret时也要提供此种编码格式的数据
 * Secret类型
     - Opaque：一般密文类型【默认类型】
@@ -147,7 +147,7 @@ spec:
 一般创建使用kubectl create命令创建opaque(generic)、tls、dockerregistry类型
 
 * opaque-key/value形式：kubectl create secret generic mysecret --from-literal=username=hejingqi --from-literal=password=yuanshuo
-* opaque-文件形式：kubectl create secret generic ssh-key-secret --from-file=ssh-priviatekey=C:\Users\simple\.ssh\gitee --from-file=ssh-publickey=C:\Users\simple\.ssh\gitee.pub
+* opaque-文件形式：kubectl create secret generic ssh-key-secret --from-file=ssh-priviatekey=C:\Users\simple\\.ssh\gitee --from-file=ssh-publickey=C:\Users\simple\\.ssh\gitee.pub
 * dockerregistry创建：`kubectl create secret docker-registry aliyun-simple --docker-username=perfect@qq.com --docker-password=123456 --docker-server=registry.cn-hangzhou.aliyuncs.com`
 * tls证书创建：`kubectl create secret tls k8s-ca --cert='ca.pem' --key='ca-key.pem'`
 ### 清单文件方式
@@ -216,4 +216,4 @@ spec:
 * 应用程序监听本地配置文件变动，自行处理热加载
 * 使用sidecar通过inotify机制监听配置文件变更，动态更新
 * 与程序迭代更新一起滚动更新
-* 【不使用k8s的configmap/secret】采用配置中心(如disconf、Apollo)
+* 【不使用k8s的configmap/secret】采用配置中心(如disconf、Apollo、nacos)

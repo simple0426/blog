@@ -242,5 +242,5 @@ metadata:
 
 [ingress-nginx-doc]: https://kubernetes.github.io/ingress-nginx/
 [traefik-offical]: https://github.com/containous/traefik/tree/v1.7/examples/k8s
-[traefik-simple0426]: https://github.com/simple0426/kubernetes-vagrant-centos-cluster/tree/master/addon/traefik-ingress
+[traefik-simple0426]: https://gitee.com/simple0426/kubernetes-vagrant-centos-cluster/tree/master/addon/traefik-ingress
 [traefik-https]: https://blog.51cto.com/m51cto/2328921
