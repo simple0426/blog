@@ -18,11 +18,11 @@ date: 2020-02-24 19:36:53
 
 ## 内置存储类
 
-> 可以直接在pod的volumes中引用
+> 可以直接在pod的volumes中引用，但是，当前版本（v1.32）删除多数对网络存储和云存储的内置支持，需要观察如何使用
 
 * 本地存储：emptyDir、hostpath、local
-* 网络存储：nfs、rbd、cephfs、glusterfs
-* 云存储：awsElasticBlockStorage、gcePersistentDisk、azureDisk
+* 网络存储：nfs、~~rbd~~、~~cephfs~~、~~glusterfs~~
+* ~~云存储：awsElasticBlockStorage、gcePersistentDisk、azureDisk~~
 * 配置存储：secret、ConfigMap、downwardAPI
 
 ## 持久化存储-pv/pvc
@@ -38,7 +38,7 @@ date: 2020-02-24 19:36:53
 
 >k8s核心代码外存储实现，一般为云厂商对接k8s存储的实现形式；这些插件最终都要通过volume或pv/pvc的方式接入k8s集群
 
-* flexvolume：存在于csi之前，使用命令行exec模式与存储驱动交互；flexvolume的存储驱动(存储系统的二进制管理命令)必须在每个节点安装；pod通过k8s核心代码内的flexvolume插件(运行于k8s的专有pod)与FlexVolume的存储驱动交互
+* 【废弃】~~flexvolume：存在于csi之前，使用命令行exec模式与存储驱动交互；flexvolume的存储驱动(存储系统的二进制管理命令)必须在每个节点安装；pod通过k8s核心代码内的flexvolume插件(运行于k8s的专有pod)与FlexVolume的存储驱动交互~~
 * CSI(container storage interface)：为容器编排系统(如k8s)定义了一个存储接口，从而可以将任意的存储系统暴露给容器负载(pod)；csi卷类型不支持直接从pod引用，必须从PersistentVolumeClaim对象引用
 
 # 本地存储
@@ -52,7 +52,7 @@ date: 2020-02-24 19:36:53
 * 范例
 
 ```
-piVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   name: volume-emptydir-pod
@@ -158,7 +158,22 @@ spec:
 ### 客户端http访问
 
 * 先在共享目录建立index.html文件
-* curl _port-ip_
+* curl _pod-ip_
+
+## nfs-server
+### 创建nfs服务器
+
+```
+mkdir nfs
+docker run -d --name nfs --net=host --privileged -v $(pwd)/nfs:/nfsshare -e SHARED_DIRECTORY=/nfsshare itsthenetwork/nfs-server-alpine:latest
+```
+
+### 客户端挂载测试
+
+```
+mkdir client
+mount -v 192.168.31.203:/ client/
+```
 
 # 持久化存储-pv/pvc
 
@@ -190,10 +205,10 @@ spec:
   + ReadWriteOnce：单节点读写：数据独立，一般为块设备
   + ReadOnlyMany：多节点读
   + ReadWriteMany：多节点读写，数据共享，一般是文件系统
-* persistentVolumeReclaimPolicy：pv空间被释放时的数据处理机制
-  - Retain：默认，保留pv和数据
+* persistentVolumeReclaimPolicy：pvc删除时，pv的处理机制
+  - Retain：保留pv和数据，静态创建的pv的默认选项
   - Recycle：保留pv，删除数据（目前仅nfs、hostpath支持）
-  - Delete：删除pv和数据，仅部分云端存储支持
+  - Delete：删除pv和数据，pvc通过存储类(storageClass)自动创建的pv默认选项
 * volumeMode：卷模型，当做块设备还是文件系统，默认文件系统(Filesystem)
 * storageClassName：当前pv所属的StorageClass名称
 * mountOptions：挂载选项
@@ -260,7 +275,12 @@ volumes:
 
 * [集群设置默认存储类](https://kubernetes.io/zh/docs/tasks/administer-cluster/change-default-storage-class/)
 
+  > 由于json格式在CMD终端问题，以下命令需要在linux终端执行
+
   ```
+  # 设置原来的默认存储类为非默认
+  kubectl patch storageclass standard -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+  # 设置默认存储类
   kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
   ```
 
@@ -296,85 +316,71 @@ volumes:
 * 删除pv的步骤：删除pod==》删除pvc==》删除pv
 * 无法删除pv的处理：`kubectl patch pv xxx -p '{"metadata":{"finalizers":null}}'`
 
-# 存储插件-oss使用
+# 存储插件-OSS
 
-## 使用方式
+由于flexvolumes方式被官方放弃，所以此处使用csi方式接入k8s集群；
 
-将oss部署到kubernetes集群中有两种方式【以下均以flexvolume为例】：
+此处主要是在阿里云以外的k8s集群中安装oss-csi插件，从而可以使用oss静态存储卷、oss动态存储卷功能
 
-- [CSI](https://help.aliyun.com/document_detail/134903.html)
-- flexvolume：
-  - 使用前需要先安装[插件](https://help.aliyun.com/document_detail/86785.html#title-36d-7xb-uaa)，且需要注意：
-    - 使用flexvolume需要kubelet关闭--enable-controller-attach-detach选项
-    - 在kube-system用户空间中部署flexvolume
-  - oss目前只支持静态存储卷，oss静态存储卷有两种使用方式
-    - [使用pv/pvc](#flexvolume方式使用oss)
-    - [直接使用volume方式](https://help.aliyun.com/document_detail/130911.html#title-a30-0jw-3t9)
+## 安装插件
 
-## [pv创建](https://help.aliyun.com/document_detail/130911.html#title-3r5-zwg-j87)
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-oss
-spec:
-  capacity: 
-    storage: 5Gi
-  accessModes: 
-    - ReadWriteMany
-  storageClassName: oss
-  flexVolume:
-    driver: "alicloud/oss"
-    options:
-      bucket: "docker"
-      url: "oss-cn-hangzhou.aliyuncs.com"
-      akId: ***
-      akSecret: ***
-      otherOpts: "-o max_stat_cache_size=0 -o allow_other"
-```
+官方参考：https://github.com/kubernetes-sigs/alibaba-cloud-csi-driver/blob/master/docs/install.md
 
-## pvc创建
-```
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: pvc-oss
-spec:
-  storageClassName: oss
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
-```
-## pod使用
-```
-volumes:
-- name: pvc-oss
-  persistentVolumeClaim:
-    claimName: pvc-oss   
-```
+* 前提条件：k8s版本\>= 1.26；kubectl已经配置好；安装helm 3；
 
-# 命令行使用oss的方式-ossfs
+* 创建一个访问秘钥（secret），它可以使插件访问阿里云的OpenAPI ；这个secret在helm部署插件时会用到
 
-* 此时oss作为共享存储直接挂载到操作系统(类似nfs)
-* [ossfs安装](https://help.aliyun.com/document_detail/153892.html)
+  ```
+  kubectl create secret -n kube-system generic csi-access-key \
+     --from-literal=id='LTA******************GWN' \
+     --from-literal=secret='***********'
+  ```
 
-* 使用
-    - 将认证信息存入文件（权限640）：echo ${bucket}:${access-key-id}:{access-key-secret} > /etc/passwd-ossfs
-    - 挂载：ossfs bucket_name mount_point -ourl=endpoint
+* 部署插件
 
-# nfs-server
-## 创建nfs服务器
+  ```
+  git clone https://github.com/kubernetes-sigs/alibaba-cloud-csi-driver.git
+  cd alibaba-cloud-csi-driver/deploy
+  helm upgrade --install alibaba-cloud-csi-driver ./chart --values chart/values-ecs.yaml --namespace kube-system
+  ```
+
+  * values-ecs.yaml：部署在阿里云ecs的集群，可以使用
+
+  * values-nonecs.yaml：集群不是部署在阿里云ecs时，可以使用；
+
+  * values.yaml：
+
+    * deploy.accessKey.enabled   使用上个步骤创建的秘钥；
+    * csi.<driver\>.enabled   可以开启或关闭非必要的驱动
+
+  * 部署：使用values-nonecs.yaml这个自定义参数文件进行安装，并修改参数不安装nas驱动
+
+    ```
+    csi:
+      disk:
+        enabled: false
+      nas:
+        enabled: false
+    ```
+
+* 确认安装
+
+  ```
+  kubectl get pods -n kube-system -l app=csi-plugin
+  kubectl get pods -n kube-system -l app=csi-provisioner
+  ```
+
+## oss静态存储卷
+
+参考使用：https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/mount-statically-provisioned-oss-volumes
+
+注意事项：如果集群中已经存在一个默认的存储类，则根据文档先后创建的pv、pvc会无法自动匹配；需要先将存储类设置为非默认状态
 
 ```
-mkdir nfs
-docker run -d --name nfs --net=host --privileged -v $(pwd)/nfs:/nfsshare -e SHARED_DIRECTORY=/nfsshare itsthenetwork/nfs-server-alpine:latest
+kubectl patch storageclass example-nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'     
+storageclass.storage.k8s.io/example-nfs patched
 ```
 
-## 客户端挂载测试
+## oss动态存储卷
 
-```
-mkdir client
-mount -v 192.168.31.203:/ client/
-```
+参考使用：https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-dynamically-provisioned-oss-volumes
