@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="运维自动化之路">
 <meta property="og:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2025-01-06T12:20:27.361Z">
+<meta property="og:updated_time" content="2025-01-16T06:09:23.779Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s实施-kubeadm方式部署">
 <meta name="twitter:description" content="kubeadm介绍kubeadm是kubernetes集群的全生命周期管理工具，可实现：集群部署、升级、降级、拆除kubeadm仅关心集群的初始化并启动集群，只安装必需的组件(dns)，其他的组件（dashboard、ingress、flannel）则需要管理员自行部署    kubeadm init：集群初始化，核心功能是部署master节点的各个组件(kube-api-server/kube-">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2025-01-06T20:20:27+08:00">
-                2025-01-06
+              <time title="更新于" itemprop="dateModified" datetime="2025-01-16T14:09:23+08:00">
+                2025-01-16
               </time>
             
           </span>
@@ -467,14 +467,14 @@
 </li>
 </ul>
 <h1 id="kubeadm管理"><a href="#kubeadm管理" class="headerlink" title="kubeadm管理"></a>kubeadm管理</h1><h2 id="移除节点"><a href="#移除节点" class="headerlink" title="移除节点"></a>移除节点</h2><ul>
-<li>master节点执行：<ul>
-<li><code>kubectl drain &lt;node name&gt; --delete-local-data --force --ignore-daemonsets</code></li>
-<li><code>kubectl delete node &lt;node name&gt;</code></li>
+<li>master节点执行：<code>kubectl drain &lt;node name&gt; --delete-emptydir-data --force --ignore-daemonsets</code></li>
+<li>被移除节点执行：<ul>
+<li>清除init或join命令产生的信息：<code>kubeadm reset --cri-socket=unix:///var/run/cri-dockerd.sock</code></li>
+<li>删除iptables：<code>iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X</code></li>
+<li>删除ipvs：<code>ipvsadm -C</code></li>
 </ul>
 </li>
-<li>被移除节点执行：kubeadm reset</li>
-<li>被移除节点删除iptables：<code>iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X</code></li>
-<li>被移除节点删除ipvs：ipvsadm -C</li>
+<li>master节点执行：<code>kubectl delete node &lt;node name&gt;</code></li>
 </ul>
 <h2 id="join认证信息"><a href="#join认证信息" class="headerlink" title="join认证信息"></a>join认证信息</h2><ul>
 <li>token：默认24小时过期<ul>
