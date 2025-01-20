@@ -36,10 +36,31 @@ categories: ['kubernetes']
 
 ## v2版本服务端安装
 
-* rbac配置
-  - `kubectl create serviceaccount --namespace kube-system tiller`
-  - `kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller`
-* 初始化安装tiller server：`helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://apphub.aliyuncs.com --debug`
+* [rbac配置](#https://v2.helm.sh/docs/using_helm/#role-based-access-control)：kubectl create -f rbac-config.yaml
+  
+  ```
+  apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: tiller
+    namespace: kube-system
+  ---
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRoleBinding
+  metadata:
+    name: tiller
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: cluster-admin
+  subjects:
+    - kind: ServiceAccount
+      name: tiller
+      namespace: kube-system
+  ```
+  
+* 初始化安装tiller server：`helm init --service-account tiller --tiller-image registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1`
+
 * 卸载：
   - `kubectl delete deploy tiller-deploy -n kube-system`
   - `helm reset`
@@ -97,33 +118,15 @@ categories: ['kubernetes']
 
 ## 公有hub
 
-> 可使用web搜索
-
-* 官方：https://hub.helm.sh/
-  * 代码地址(开发者)：https://github.com/helm/charts
-  * charts仓库：
-    * stable：`https://kubernetes-charts.storage.googleapis.com`
-    * incubator：`https://kubernetes-charts-incubator.storage.googleapis.com`
-  * 微软镜像charts仓库【适合国内】
-    * stable：`http://mirror.azure.cn/kubernetes/charts/`
-    * incubator：`http://mirror.azure.cn/kubernetes/charts-incubator/`
-* kubeapps：https://hub.kubeapps.com/
-  * 代码地址(开发者)：https://github.com/kubeapps/kubeapps
-  * charts仓库：`https://charts.bitnami.com/bitnami`
-* 阿里云：https://developer.aliyun.com/hub/
-  * 代码地址(开发者)：https://github.com/cloudnativeapp/charts
-  * charts仓库：`https://apphub.aliyuncs.com`【适合国内】
-
+官方：https://artifacthub.io/
 ## 命令使用
 
 * 显示仓库列表：helm repo list
 * 添加仓库：helm repo add name _URL_
-* 更新仓库元数据：helm repo update
+* 更新仓库元数据（更新仓库的本地缓存）：helm repo update
 * 删除仓库：helm repo remove name
-* 搜索仓库：helm search repo _chart_name_
-* 搜索hub：helm search hub _chart_name_ 
-  * --endpoint 指定要搜索的hub地址（默认官方）
-  * 可以搜索由[Monocular](https://github.com/helm/monocular)渲染的charts hub
+* 搜索仓库：helm search repo chart\_name
+* 搜索hub：helm search hub chart\_name
 
 ## charts仓库-原生实现
 
@@ -152,33 +155,28 @@ categories: ['kubernetes']
 
 # chart仓库-[ChartMuseum](https://github.com/helm/chartmuseum)
 
-> 此处使用在harbor中集成的chartmuseum仓库
+## 启动chartmuseum
 
-## harbor启用chartmuseum功能
-
-```fallback
-sudo ./install.sh --with-chartmuseum
+```
+docker run -idt \
+  -p 5002:8080 \
+  -e DEBUG=1 \
+  -e STORAGE=local \
+  -e BASIC_AUTH_USER=chart_u \
+  -e BASIC_AUTH_PASS=chart_654012 \
+  -e AUTH_ANONYMOUS_GET=1 \
+  -e STORAGE_LOCAL_ROOTDIR=/charts \
+  -v $(pwd)/charts:/charts \
+  ghcr.io/helm/chartmuseum:v0.14.0
 ```
 
-## [helm添加chartmuseum仓库](https://goharbor.io/docs/2.0.0/working-with-projects/working-with-images/managing-helm-charts/#working-with-chartmuseum-via-the-helm-cli)
-
-* 不指定项目名称：将charts推送到library项目
-
-  ```
-  helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo
-  ```
-
-  * --ca-file：指定自签名ca证书
-  * --username/--password：指定harbor认证信息
-  * __chartrepo__为harbor的chartmuseum接口
-
-* 指定项目名称：将charts推送到指定项目
-
-  ```
-  helm repo add --ca-file ca.crt --username=admin --password=Passw0rd myrepo https://xx.xx.xx.xx/chartrepo/myproject
-  ```
+* 设置基本的安全认证：user、pass
+* 非授权用户可以使用get方式（查看、下载安装等）
+* 使用本地存储(local)时，charts目录需要允许other用户有写权限（chmod o+w charts）
 
 ## 安装[helm-push插件](https://github.com/chartmuseum/helm-push)
+
+> push插件使用方式：helm cm-push
 
 * 在线方式：helm plugin命令
 
@@ -201,23 +199,25 @@ sudo ./install.sh --with-chartmuseum
       └── plugin.yaml
   ```
 
-## push推送charts到chartmuseum
+## 推送charts到chartmuseum
 
-* push .tgz压缩包：helm push mychart-0.1.0.tgz myrepo
-* push chart目录：helm push mychart myrepo
+> 添加chartmuseum仓库：helm repo add chartmuseum http://<remote_url>:5002
+
+* push .tgz压缩包：helm cm-push mychart-0.1.0.tgz chartmuseum
+* push chart目录：helm cm-push mychart chartmuseum
 * _push参数_：
   * --username/--password：认证信息
   * --ca-file=ca.crt：指定自签ca证书
   * --force/-f：强制推送【覆盖】
   * --version：自定义版本
-    * latest：helm push --version="latest" mychart myrepo 
-    * git版本：`helm push mychart/ --version="$(git log -1 --pretty=format:%h)" chartmuseum`
+    * latest：helm cm-push --version="latest" mychart myrepo 
+    * git版本：`helm cm-push mychart/ --version="$(git log -1 --pretty=format:%h)" chartmuseum`
 
 ## 从chartmuseum安装charts
 
 * 本地更新chart仓库：helm repo update
 * 搜索charts：helm search repo mychart
-* 安装charts：helm install web myrepo/library/mychart
+* 安装charts：helm install web mychart
   * --version：自定义版本
 
 # [chart模板语法](https://helm.sh/docs/chart_template_guide/)
@@ -412,11 +412,11 @@ sudo ./install.sh --with-chartmuseum
 * 检查chart语法：helm lint mychart
 * 渲染模板并输出：helm template sample mychart
 * 打包chart为压缩包：helm package mychart
-* 推送chart到chartmuseum【安装push插件】：helm push mychart myrepo
+* 推送chart到chartmuseum【安装push插件】：helm cm-push mychart myrepo
 
 ## 目录结构
 
-### [chart目录结构](https://helm.sh/docs/topics/charts/#the-chartyaml-file)
+### [chart目录结构](https://helm.sh/docs/topics/charts/#the-chart-file-structure)
 
 ```
 ├── LICENSE # 许可证信息【可选】

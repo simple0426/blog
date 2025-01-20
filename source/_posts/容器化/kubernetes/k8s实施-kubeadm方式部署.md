@@ -145,12 +145,12 @@ kubeadm init --kubernetes-version=v1.32.0 \
 
 # kubeadm管理
 ## 移除节点
-* master节点执行：
-    - `kubectl drain <node name> --delete-local-data --force --ignore-daemonsets`
-    - `kubectl delete node <node name>`
-* 被移除节点执行：kubeadm reset
-* 被移除节点删除iptables：`iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X`
-* 被移除节点删除ipvs：ipvsadm -C
+* master节点执行：`kubectl drain <node name> --delete-emptydir-data --force --ignore-daemonsets`
+* 被移除节点执行：
+    * 清除init或join命令产生的信息：`kubeadm reset --cri-socket=unix:///var/run/cri-dockerd.sock  `
+    * 删除iptables：`iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X`
+    * 删除ipvs：`ipvsadm -C`
+* master节点执行：`kubectl delete node <node name>`
 
 ## join认证信息
 * token：默认24小时过期
