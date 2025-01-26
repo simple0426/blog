@@ -68,18 +68,28 @@ APIserver支持的认证方式，如下：
 * ABAC：attribute-based access control，基于属性的访问控制
 * RBAC：role-based access control，基于角色的访问控制
 * webhook：基于http回调机制通过外部REST服务检查确认用户授权的访问控制
-* AlwaysAllow(总是允许)：用于期望不希望进行授权检查
-* AlwaysDeny(总是拒绝)：仅用于测试
 
 ## [准入控制器](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-does-each-admission-controller-do)
+* ~~AlwaysAdmit~~（被遗弃）：允许所有pod进入集群，好像没有控制器一样
+
+* ~~AlwaysDeny~~（被遗弃）：拒绝所有请求，没有任何意义
+
 * AlwaysPullImages：总是下载镜像，常用于多租户环境下确保私有镜像仅能被有权限的用户使用
+
 * DefaultStorageClass：为创建PVC设置一个默认的storageclass
+
 * DefaultTolerationSeconds：如果pod对象没有设置污点容忍期限，则在此设置默认宽容期
+
 * LimitRanger：pod可用资源限制
+
 * MutatingAdmissionWebhook：串行调用任何可能更改对象的webhook
+
 * NamespaceLifecycle：拒绝在不存在的名称空间创建对象，删除名称空间也会删除空间下的所有对象
+
 * ResourceQuota：定义名称空间内可使用的资源配额
+
 * serviceaccount：用于实现service account管控机制的自动化，实现创建pod对象时自动为其附加相关的service account对象（当前名称空间的default）
+
 * ValidatingAdmissionWebhook：并行调用匹配当前请求的所有验证类webhook，任何一个验证失败，请求即失败
 
 # 认证对象-ServiceAccount
@@ -406,14 +416,22 @@ kubectl get svc --kubeconfig=aliang.kubeconfig
 
 __以部署kube-dashboard为例__
 
-## [资源文件部署](https://github.com/kubernetes/dashboard/blob/master/aio/deploy/recommended.yaml)
-* 使用hostPort或NodePort将访问端口暴露在宿主机
-* 资源文件中也包含创建secret对象的内容【web访问所需https证书】
+## [部署dashboard](https://github.com/kubernetes/dashboard#installation)
 
-## 访问授权
+> dashboard 7.0版本只能使用helm安装，内置的访问方式需要使用port-forward进行实时代理
+
+```
+# Add kubernetes-dashboard repository
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+# 设置访问入口（实时代理）
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+```
+
+## [访问授权](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
 dashboard是部署于集群中的pod对象，访问集群中的资源需要使用ServiceAccount账户类型  
 同时这种ServiceAccount账户需要绑定集群角色(cluster-admin)，以获得对集群的相应操作权限  
-dashboard页面提供了kubeconfig和token两种访问认证方式  
 
 * 创建服务账号
 ```
@@ -438,37 +456,17 @@ subjects:
   name: admin-user
   namespace: kubernetes-dashboard
 ```
+* 获取访问token
+
+```
+kubectl -n kubernetes-dashboard create token admin-user
+```
+
 ## web访问
 
-* 使用ServiceAccount的token信息访问dashboard：`kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')`
-* 基于token信息制作kubeconfig，访问dashboard
-```
-kubectl config set-cluster kubernetes --embed-certs=true --server="https://172.17.8.101:6443" --certificate-authority=/etc/kubernetes/ssl/ca.pem --kubeconfig=./kubeconfig
-ADMIN_TOKEN=$(kubectl get secret admin-token-l7gjt -n kube-system -o jsonpath={.data.token}|base64 -d)
-kubectl config set-credentials kube-system:admin --token=${ADMIN_TOKEN} --kubeconfig=./kubeconfig
-kubectl config set-context admin --cluster=kubernetes --user=kube-system:admin --kubeconfig=./kubeconfig
-kubectl config use-context kube-system:admin --kubeconfig=./kubeconfig
-```
+https://127.0.0.1:8443/
 
-## https证书重建
-
-> 用于解决https证书错误
-
-* 创建私钥和证书
-
-```
-openssl genrsa -out certs/dashboard.key 2048
-openssl req -new -key certs/dashboard.key -out certs/dashboard.csr -subj "/CN=kube-user1/O=kubernetes"
-openssl x509 -req -in certs/dashboard.csr -CA /etc/kubernetes/pki/ca.pem -CAkey /etc/kubernetes/pki/ca-key.pem -CAcreateserial -out certs/dashboard.crt -days 3650
-```
-
-* 删除已存在的证书对象(secret):`kubectl delete secret kubernetes-dashboard-certs -n kube-system`
-* 创建证书对象(secret)【kubernetes-dashboard-certs】：`kubectl create secret generic kubernetes-dashboard-certs --from-file=certs -n kube-system`
-* 删除kubernetes-dashboard的pod，重建pod并重新加载https证书：`kubectl delete pods $(kubectl get pods -n kube-system|grep kubernetes-dashboard|awk '{print $1}') -n kube-system`
-
-
-
-# 准入控制
+# [准入控制](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 
 ## LimitRanger
 
@@ -567,7 +565,9 @@ spec:
     persistentvolumeclaims: "2"
 ```
 
-## PodSecuritypolicy
+## ~~PodSecuritypolicy（已废弃）~~
+
+> 新版本已使用[PodSecurity](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#podsecurity)代替
 
 * 定义：用于控制用户在配置pod资源时可以设定的特权类属性，比如
     - 是否可以使用特权容器、根名称空间、主机文件系统
@@ -579,12 +579,12 @@ spec:
         + 将UserAccount或ServiceAccount完成角色绑定
     - apiserver启用PodSecuritypolicy准入控制器(--enable-admission-plugins=PodSecurityPolicy)
 
-### PSP对象
+### ~~PSP对象~~
 
 * [特权PSP](https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/policy/privileged-psp.yaml)
 * [非特权PSP](https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/policy/restricted-psp.yaml)
 
-### RBAC
+### ~~RBAC~~
 
 * ClusterRole
 ```

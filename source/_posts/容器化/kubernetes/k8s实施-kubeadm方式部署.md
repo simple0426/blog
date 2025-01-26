@@ -170,13 +170,15 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 # 附加组件部署
 ## ~~dashboard(废弃)~~
 > dashboard 7.0版本只能使用helm包管理器安装，原来的安装方式https访问报错
+>
+> [dashboard7.0部署参考](https://simple0426.github.io/blog/2020/03/30/%E5%AE%B9%E5%99%A8%E5%8C%96/kubernetes/kubernetes-%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%92%8C%E5%87%86%E5%85%A5%E6%8E%A7%E5%88%B6/#%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E8%8C%83%E4%BE%8B-serviceaccount)
 
 - ~~资源文件修改~~
   
     + 将dashboard的访问端口暴露在宿主机上：containers--》ports--》hostPort: 8443/8000
     + dashboard部署在node02上：nodeSelector--》`kubernetes.io/hostname: "node02"`
     
-- ~~[建立管理员](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)~~
+- ~~建立管理员~~
 
     ```
     apiVersion: v1
